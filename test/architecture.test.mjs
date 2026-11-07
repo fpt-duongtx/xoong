@@ -71,16 +71,18 @@ describe('dependency direction (docs/architecture.md)', () => {
   });
 });
 
-describe('size budget (gzip of the unminified source; a regression guard, not the shipped size)', () => {
-  // data grew from 15 to 17 KB with unwrap, idempotency keys, multipart and declarative streaming (see docs/data-layer.md).
-  // Raised again to 19 for composite ids, untagged unions and filter controls. This is the unminified gzip; the roadmap's
-  // single-digit target applies to the minified size, which still has to be measured (docs/roadmap.md, size budgets).
-  const budgetKb = { core: 9, data: 19, ui: 10 }; // ui: 6 -> 10 KB with xo-router (mostly comments), filters, selection // core grew from 6 to 9 KB with XoControl (form-associated controls, mostly documentation comments)
+describe('size budget (gzip of the source without comments; a regression guard, not the shipped size)', () => {
+  // Comments and documentation grew with every feature and made the old budget (gzip of the raw files) move without the code
+  // growing, so the budget now measures code only. The roadmap's single-digit KB target applies to the *minified* size,
+  // which still has to be measured (docs/roadmap.md, size budgets, and the benchmark issue).
+  // Budgets sit about 10% above the measured values (core 5.0, data 12.5, ui 5.4 KB); raising one needs a reason in the commit.
+  const budgetKb = { core: 5.5, data: 13.5, ui: 6 };
+  const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {
-      const all = sources(name).map((s) => s.text).join('\n');
+      const all = sources(name).map((s) => stripComments(s.text)).join('\n');
       const size = gzipSync(all).length / 1024;
-      expect(size, `@xoong/${name} is ${size.toFixed(1)} KB gzipped, budget ${kb} KB`).toBeLessThanOrEqual(kb);
+      expect(size, `@xoong/${name} is ${size.toFixed(1)} KB gzipped (code only), budget ${kb} KB`).toBeLessThanOrEqual(kb);
     });
   }
 });

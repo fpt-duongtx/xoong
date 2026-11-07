@@ -22,7 +22,7 @@ published: `node packages/cli/src/cli.js new /tmp/demo --spec examples/admin/ope
 * **`llms.txt` is part of the public API.** Update it in the same change as any public API change; tests tie it to
   `xoong check`, the CLI and the runtime, and cap it at 3,000 tokens.
 * **Zero runtime dependencies** in `core` and `data` (and `ui` may use only those two). The architecture test enforces
-  it, and the size budgets next to it.
+  it, and the size budgets next to it (gzip of the code without comments).
 * **Light DOM, plain CSS, native elements.** No Shadow DOM, no CSS-in-JS, no utility classes. HTML in docs and examples
   must pass `xoong check`.
 * **One way to do each thing.** Before adding an attribute or an option, show why an existing one cannot do the job.
