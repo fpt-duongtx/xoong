@@ -3,6 +3,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { analyze, generateDts, runtimeTable } from './openapi.js';
+import { htmlData } from './html-data.js';
 
 /** Read an OpenAPI document from a file path or an http(s) URL. */
 export async function load(source) {
@@ -24,7 +25,9 @@ export async function load(source) {
 export async function sync(source, { out = '.xoong', hints } = {}) {
   const a = analyze(await load(source), { hints: hints ? JSON.parse(await readFile(hints, 'utf8')) : undefined });
   await mkdir(out, { recursive: true });
-  await writeFile(join(out, 'operations.json'), JSON.stringify(runtimeTable(a), null, 2) + '\n');
+  const table = runtimeTable(a);
+  await writeFile(join(out, 'operations.json'), JSON.stringify(table, null, 2) + '\n');
+  await writeFile(join(out, 'xoong.html-data.json'), JSON.stringify(htmlData(table), null, 2) + '\n'); // editor completion
   await writeFile(join(out, 'api.d.ts'), generateDts(a));
   return a;
 }

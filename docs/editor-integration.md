@@ -1,6 +1,6 @@
 # Editor and lint integrations
 
-Status: **Planned** (milestone 0.6.x). Nothing here is implemented yet.
+Status: milestone 0.6.x. **Section 1 (HTML custom data) is done**; everything else is planned.
 
 Goal: the mistakes `xoong check` reports should appear **while typing**, with the same message
 and the same fix, in any editor and in CI. One rule engine, several front ends.
@@ -22,12 +22,19 @@ flowchart LR
 Rules are written once. A new rule must appear in every front end without extra work, and its
 message must say how to fix the problem (see [ai-integration.md](ai-integration.md)).
 
-## 1. Cheapest first: HTML custom data (no extension needed)
+## 1. Cheapest first: HTML custom data (no extension needed) — done
 
-Ship `xoong.html-data.json` (the format VS Code's `html.customData` setting reads). It gives
-completion and hover docs for `<xo-view>`, `<xo-table>`, `xo-each`, `xo-if`, `xo-click`,
-`xo-submit`, `p-*` and the bubbling events. Works in VS Code today, and similar formats exist for
-other editors.
+`xoong sync` writes `.xoong/xoong.html-data.json` next to `operations.json` (the format VS Code's
+`html.customData` setting reads). Point the editor at it once:
+
+```json
+{ "html.customData": ["./.xoong/xoong.html-data.json"] }
+```
+
+It gives completion and hover docs for every `xo-*` element and attribute, offers the real operation names for
+`xo-click`, `xo-submit`, `<xo-view get>` and `<xo-form op>` (mutations only for `xo-click` and `xo-submit`, reads for
+`get`), and `p-<name>` attributes for the path parameters in your API. It is regenerated on every sync, and a test
+keeps it in step with the syntax lists. Similar formats exist for other editors; add them as needed.
 
 ## 2. Language server (the real integration)
 
