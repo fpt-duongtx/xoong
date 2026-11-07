@@ -75,7 +75,7 @@ describe('size budget (gzip of the unminified source; a regression guard, not th
   // data grew from 15 to 17 KB with unwrap, idempotency keys, multipart and declarative streaming (see docs/data-layer.md).
   // Raised again to 19 for composite ids, untagged unions and filter controls. This is the unminified gzip; the roadmap's
   // single-digit target applies to the minified size, which still has to be measured (docs/roadmap.md, size budgets).
-  const budgetKb = { core: 6, data: 19, ui: 6 };
+  const budgetKb = { core: 9, data: 19, ui: 6 }; // core grew from 6 to 9 KB with XoControl (form-associated controls, mostly documentation comments)
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {
       const all = sources(name).map((s) => s.text).join('\n');

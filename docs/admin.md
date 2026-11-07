@@ -36,6 +36,17 @@ An admin area is built from four things, all declarations:
 [`examples/admin`](../examples/admin) is this page, running against a fake backend and tested in a real
 browser. Its application script is only `configure()`.
 
+## Custom controls: `XoControl`
+
+`XoControl` (in `@xoong/core`) is the base class for controls that behave like native inputs: a rich text editor, a combobox, a
+tag input, your own image field. A control built on it submits its value in `FormData`, takes part in the form's constraint
+validation (`required`, `setCustomValidity`, `checkValidity`, `reportValidity`, blocking an invalid submit), resets with the form,
+is disabled by a disabled `<fieldset>`, and exposes the same state as signals everywhere: `value`, `dirty`, `pristine`, `touched`,
+`valid`. The host also carries `data-dirty`, `data-touched` and `data-invalid` for CSS. Override `render()`, call `userInput(value)`
+when the person changes the value, and optionally `validate(value)` (return a message, `''` when fine), `serialize(value)` (what the
+form submits) and `isEmpty(value)` (what `required` means for it). Where `ElementInternals` is missing (happy-dom) it keeps its own
+model; real behaviour is tested in Chromium (`packages/core/test/control.test.mjs`).
+
 ## `<xo-table>`
 
 Must be inside an `<xo-view get>`. It expands into an ordinary `<table class="xo-table">` (Light DOM; your CSS and
