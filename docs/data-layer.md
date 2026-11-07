@@ -171,7 +171,27 @@ See [test-corpus.md](test-corpus.md#unions-resolved-where-the-document-allows).
 * **Stream versions** are compared per entity and are in-memory: if the server
   restarts its counters, send `{ "type": "resync" }` so clients refetch.
 
-## 12. Security notes
+## 12. Backend shapes handled by hints and detection
+
+Real backends are rarely tidy. These are handled without touching the backend's OpenAPI document:
+
+| Shape | How |
+|---|---|
+| `{ code, message, data }` envelope on every response | hint `"unwrap": "data"`: operations whose success schema has that property are read as `data`; types and the entity store see the inner schema. Errors are not unwrapped. |
+| A request id the server wants fresh per attempt (`client_message_id`) | hint `"idempotencyKeys": { "sendMessage": "client_message_id" }`: `mutate()` and `stream()` fill the field with `crypto.randomUUID()` when the caller did not. `xoong sync` reports XO170 if the field does not exist. |
+| `multipart/form-data` request body | detected: `operations.json` gets `multipart: true`, `xo-submit` sends the form as `FormData` (files included), `<xo-form>` renders `type: string, format: binary` as a file input. |
+| Response `text/event-stream` (a chat reply over POST) | detected: `stream: true`. `xo-submit`/`xo-click` on it fill `$stream` (a list; each item is the event's JSON payload plus `event`, or `{ event, data }` for plain text) while `$streaming` is true. The list is replaced by each new call. When the stream ends, cached queries are refetched. From JavaScript, use `client.stream()`. |
+
+```html
+<xo-view>
+  <p xo-each="$stream"><b>{event}</b> {text}</p>
+  <form xo-submit="POST /sessions/{sid}/chat" p-sid="7"><input name="text"><button>Send</button></form>
+</xo-view>
+```
+
+Not covered: accumulating token deltas into one string (do it with `client.stream()` or a `derived`), upload progress.
+
+## 13. Security notes
 
 * Text interpolation is always safe (`textContent`).
 * Attribute interpolation refuses `on*` and `srcdoc`, and rewrites `javascript:`,
