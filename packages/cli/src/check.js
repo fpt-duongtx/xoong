@@ -15,6 +15,10 @@
  *   XO250 <xo-table sortable|page-size> but the view's operation lacks the query parameters (sort | limit, offset)
  *   XO204 client.load/query on a non-GET operation, or client.mutate/stream on a GET (JavaScript and TypeScript files)
  *   XO254 xo-selected not on an xo-click element, or xo-select not on a checkbox
+ *   XO260 route path missing, not starting with "/", or declared twice
+ *   XO261 layout="x" names a layout the router does not declare
+ *   XO262 a layout template without an xo-outlet
+ *   XO263 p-x=":name" outside a route, or naming a parameter the route does not have
  *   XO253 <xo-table filters="f"> but the view's operation has no query parameter "f"
  *   XO251 <xo-table> outside an <xo-view get>
  *   XO252 <xo-form op> operation has no simple request fields to generate a form from
@@ -143,7 +147,45 @@ export function checkHtml(source, table, file = '<input>') {
           }
         }
       }
-      ctx = { view };
+      // --- <xo-router>: routes, layouts, and route parameters used by views
+      let router = ctx.router;
+      let route = ctx.route;
+      if (tag === 'xo-router') {
+        const templates = (node.childNodes ?? []).filter((c) => c.tagName === 'template');
+        const layouts = new Set(templates.map((t) => attr(t, 'xo-layout')?.value).filter(Boolean));
+        router = { layouts };
+        const seen = new Set();
+        const hasOutlet = (n) => (n.childNodes ?? []).some((c) => attr(c, 'xo-outlet') || hasOutlet(c)) || (n.content?.childNodes ?? []).some((c) => attr(c, 'xo-outlet') || hasOutlet(c));
+        for (const t of templates) {
+          const path = attr(t, 'xo-route');
+          const layoutName = attr(t, 'xo-layout');
+          if (path) {
+            const p = path.value.trim();
+            if (!p || (p !== '*' && !p.startsWith('/'))) report('error', 'XO260', t, 'xo-route', `route path "${p}" must start with "/" (or be "*" for not found)`, 'Write xo-route="/users/:id"');
+            else if (seen.has(p)) report('error', 'XO260', t, 'xo-route', `route "${p}" is declared twice`, 'Remove the duplicate; the first one wins at runtime');
+            seen.add(p);
+          }
+          const uses = attr(t, 'layout');
+          if (uses && !layouts.has(uses.value)) {
+            const hint = nearest(uses.value, [...layouts]);
+            report('error', 'XO261', t, 'layout', `layout "${uses.value}" is not declared${hint ? ` (closest: "${hint}")` : ''}`, hint ? `Use layout="${hint}"` : `Add <template xo-layout="${uses.value}"> with an element that has xo-outlet`);
+          }
+          if (layoutName && !hasOutlet(t)) report('error', 'XO262', t, 'xo-layout', `layout "${layoutName.value}" has no element with xo-outlet`, 'Put xo-outlet on the element where the route content should appear, for example <main xo-outlet>');
+        }
+      }
+      if (tag === 'template' && attr(node, 'xo-route') && router) route = attr(node, 'xo-route').value.trim();
+      for (const a of node.attrs ?? []) {
+        if (a.name.startsWith('p-') && a.value.startsWith(':')) {
+          const name = a.value.slice(1);
+          const names = route ? [...route.matchAll(/:([\w-]+)/g)].map((m) => m[1]) : null;
+          if (!names) report('error', 'XO263', node, a.name, `${a.name}="${a.value}" reads a route parameter, but this is not inside a <template xo-route>`, 'Use it inside a route template, or write a fixed value or p-x="?query"');
+          else if (!names.includes(name)) {
+            const hint = nearest(name, names);
+            report('error', 'XO263', node, a.name, `route "${route}" has no parameter ":${name}"${hint ? ` (closest: ":${hint}")` : ''}`, hint ? `Use ${a.name}=":${hint}"` : `Add :${name} to the route path`);
+          }
+        }
+      }
+      ctx = { view, router, route };
     }
     for (const child of children) walk(child, ctx);
   }

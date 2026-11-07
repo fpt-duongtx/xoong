@@ -11,5 +11,5 @@ export const XO_ATTRIBUTES = ['xo-each', 'xo-if', 'xo-click', 'xo-submit', 'xo-b
 export const XO_ELEMENTS = ['xo-view'];
 
 /** Attributes and elements that come with @xoong/ui (the admin set). */
-export const XO_UI_ATTRIBUTES = ['xo-open', 'xo-close'];
-export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast'];
+export const XO_UI_ATTRIBUTES = ['xo-open', 'xo-close', 'xo-route', 'xo-layout', 'xo-outlet'];
+export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast', 'xo-router'];

@@ -32,6 +32,11 @@ import { isRef } from './store.js';
 import { getClient, acquireStream } from './default.js';
 import { XoongError } from './client.js';
 
+/** Where `p-id=":id"` finds route parameters (set by the router in @xoong/ui). */
+let paramSource = /** @type {((name: string) => string | undefined) | null} */ (null);
+/** @param {(name: string) => string | undefined} fn */
+export function setParamSource(fn) { paramSource = fn; }
+
 /** Components that expand into plain markup before binding (used by @xoong/ui). tag -> (el, { host, client }) => Node */
 const templates = new Map();
 /** @param {string} tag @param {(el: Element, env: { host: any, client: any }) => Node} expand */
@@ -151,6 +156,7 @@ class XoView extends XoElement {
       for (const a of this.attributes) {
         if (!a.name.startsWith('p-')) continue;
         // p-id="?id" reads ?id=... from the page URL (public pages that show one item); an absent or empty query parameter is left out
+        if (a.value.startsWith(':')) { const v = paramSource?.(a.value.slice(1)); if (v) initial[camel(a.name.slice(2))] = v; continue; } // p-id=":id": a route parameter
         if (a.value.startsWith('?')) { const v = new URLSearchParams(globalThis.location?.search).get(a.value.slice(1)); if (v) initial[camel(a.name.slice(2))] = v; } else initial[camel(a.name.slice(2))] = a.value;
       }
       this.#params.value = { ...initial, ...this.#params.peek() };

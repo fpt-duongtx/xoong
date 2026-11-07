@@ -31,6 +31,10 @@ export const EXPLANATIONS = {
   XO253: 'A filter box of <xo-table filters="..."> sets a query parameter of the same name, and the view\'s operation does not declare it. Add the parameter to the API or remove the filter.',
   XO204: 'client.load()/query() were given a write operation, or client.mutate()/stream() a GET. Reads: load/query. Writes: mutate.',
   XO254: 'xo-selected only makes sense on an xo-click button, and xo-select on a checkbox. Move the attribute.',
+  XO260: 'A route path must start with "/" (or be "*" for not found) and each path may be declared once per router. Write xo-route="/users/:id".',
+  XO261: 'layout="x" on a route (or layout) names a layout that is not declared in the same <xo-router>. Declare <template xo-layout="x">, or use the closest name the message gives.',
+  XO262: 'A layout template needs one element with xo-outlet where the route content is shown, for example <main xo-outlet>.',
+  XO263: 'p-x=":name" reads a route parameter: it only works inside a <template xo-route="..."> whose path contains :name. Fix the name, or use a fixed value or p-x="?query".',
   XO251: '<xo-table> must be inside an <xo-view get="...">, which supplies its data.',
   XO252: '<xo-form op> found no simple request fields to generate. Write the <form xo-submit> by hand.',
 };

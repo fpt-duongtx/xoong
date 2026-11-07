@@ -1,0 +1,267 @@
+// @ts-check
+/**
+ * <xo-router>: a History-API router declared in markup (see docs/decisions/0008-spa-router.md and docs/admin.md).
+ *
+ *   <xo-router base="/admin">
+ *     <template xo-layout="shell"><nav>...<a href="/users">Users</a></nav><main xo-outlet></main></template>
+ *     <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
+ *     <template xo-route="*">Not found</template>
+ *   </xo-router>
+ *
+ *   The `router` object (exported by @xoong/ui):
+ *   router.navigate('/users/3');
+ *   router.guard(async (to, from) => (loggedIn() ? true : '/login'));          // true | false | '/redirect'
+ *   router.beforeNavigate((to, from) => !form.dirty || confirm('Leave without saving?'));   // veto leaving
+ */
+import { XoElement, define } from '@xoong/core';
+import { setParamSource } from '@xoong/data/view';
+
+/** @typedef {{ path: string, params: Record<string,string>, query: URLSearchParams, url: string, route: Route | null }} Location */
+/** @typedef {{ pattern: string, regex: RegExp, names: string[], layout: string | null, title: string, template: HTMLTemplateElement, score: number }} Route */
+
+const trim = (s) => (s.length > 1 ? s.replace(/\/+$/, '') : s) || '/';
+
+/** Compile "/users/:id" or "*" into a matcher; static segments rank above parameters, parameters above the catch-all. */
+function compile(pattern) {
+  if (pattern === '*') return { regex: /^.*$/, names: [], score: 0 };
+  const names = [];
+  let score = 1000;
+  const source = trim(pattern).split('/').map((seg) => {
+    if (seg.startsWith(':')) { names.push(seg.slice(1)); score -= 10; return '([^/]+)'; }
+    score += 1;
+    return seg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }).join('/');
+  return { regex: new RegExp(`^${source || '/'}/?$`), names, score };
+}
+
+/** The router that is currently running (there is one per page). */
+/** @type {XoRouter | null} */
+let active = null;
+
+class XoRouter extends XoElement {
+  static props = { base: String };
+
+  /** @type {Route[]} */ #routes = [];
+  /** @type {Map<string, { template: HTMLTemplateElement, layout: string | null }>} */ #layouts = new Map();
+  /** @type {{ name: string, el: Element, outlet: Element }[]} */ #mounted = [];
+  /** @type {Location | null} */ #current = null;
+  /** @type {((to: Location, from: Location | null) => any)[]} */ #guards = [];
+  /** @type {((to: Location, from: Location | null, type: string) => any)[]} */ #vetoes = [];
+  #root = /** @type {HTMLElement | null} */ (null);
+  #token = 0;
+  #started = false;
+  #onClick = (/** @type {MouseEvent} */ e) => this.#click(e);
+  #onPop = () => { this.#go(this.#read(), 'replace', 'popstate').catch((e) => this.#report(e)); };
+
+  connected() {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => this.#start(), { once: true });
+    else queueMicrotask(() => this.#start());
+  }
+
+  disconnected() {
+    document.removeEventListener('click', this.#onClick);
+    removeEventListener('popstate', this.#onPop);
+    this.#started = false;
+    if (active === this) active = null;
+  }
+
+  // ---- public API (also available as the `router` object) --------------------------------------------------------------
+
+  /** The current location, or null before the first navigation finished. */
+  get current() { return this.#current; }
+
+  /** Go to a path (relative to `base`). Resolves with true when the navigation happened. */
+  navigate(path, { replace = false } = {}) {
+    return this.#go(this.#parse(path), replace ? 'replace' : 'push', 'api');
+  }
+
+  /** Run before every navigation. Return true to continue, false to cancel, or a path to redirect. */
+  guard(fn) { this.#guards.push(fn); return () => { this.#guards = this.#guards.filter((g) => g !== fn); }; }
+
+  /** Run before leaving the current location (links, back/forward, `navigate`). Return false to stay. */
+  beforeNavigate(fn) { this.#vetoes.push(fn); return () => { this.#vetoes = this.#vetoes.filter((g) => g !== fn); }; }
+
+  // ---- internals -----------------------------------------------------------------------------------------------------------
+
+  #start() {
+    if (this.#started || !this.isConnected) return;
+    this.#started = true;
+    active = this;
+    for (const t of /** @type {HTMLTemplateElement[]} */ ([...this.querySelectorAll(':scope > template')])) {
+      if (t.hasAttribute('xo-layout')) this.#layouts.set(t.getAttribute('xo-layout') ?? '', { template: t, layout: t.getAttribute('layout') });
+      else if (t.hasAttribute('xo-route')) {
+        const pattern = t.getAttribute('xo-route') ?? '';
+        this.#routes.push({ pattern, ...compile(pattern), layout: t.getAttribute('layout'), title: t.getAttribute('title') ?? '', template: t });
+      }
+    }
+    this.#routes.sort((a, b) => b.score - a.score);
+    this.#root = document.createElement('div');
+    this.#root.className = 'xo-router-root';
+    this.append(this.#root);
+    setParamSource((name) => this.#current?.params[name]); // p-id=":id" on a view
+    document.addEventListener('click', this.#onClick);
+    addEventListener('popstate', this.#onPop);
+    this.#go(this.#read(), 'replace', 'start').catch((e) => this.#report(e));
+  }
+
+  /** Navigation started by the page itself (first load, back/forward, a link click) cannot reject to a caller: report it. */
+  #report(e) {
+    console.error(e);
+    this.emit('xo-error', e);
+  }
+
+  get #base() { return trim(this.base || '/'); }
+
+  /** The browser location as a router location (path without the base). */
+  #read() {
+    return this.#parse(location.pathname + location.search + location.hash, true);
+  }
+
+  /** @param {string} target a path (with optional query) relative to the base, or a full path when `absolute` */
+  #parse(target, absolute = false) {
+    const url = new URL(target, `${location.origin}${absolute ? '' : this.#base === '/' ? '/' : this.#base + '/'}`);
+    let path = trim(decodeURI(url.pathname));
+    const base = this.#base;
+    if (base !== '/' && (path === base || path.startsWith(base + '/'))) path = trim(path.slice(base.length) || '/');
+    return this.#locate(path, url);
+  }
+
+  /** @returns {Location} */
+  #locate(path, url) {
+    const base = this.#base === '/' ? '' : this.#base;
+    const full = (base + (path === '/' ? '' : path)) || '/'; // as in the address bar: base + path, no trailing slash
+    const out = { path, params: {}, query: url.searchParams, url: full + url.search + url.hash, route: null };
+    for (const route of this.#routes) {
+      const m = route.regex.exec(path);
+      if (!m) continue;
+      out.params = Object.fromEntries(route.names.map((n, i) => [n, decodeURIComponent(m[i + 1])]));
+      out.route = route;
+      break;
+    }
+    return out;
+  }
+
+  #click(/** @type {MouseEvent} */ e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = /** @type {Element} */ (e.target)?.closest?.('a[href]');
+    if (!a || (a.getAttribute('target') && a.getAttribute('target') !== '_self') || a.hasAttribute('download') || a.getAttribute('rel')?.includes('external')) return;
+    const url = new URL(/** @type {string} */ (a.getAttribute('href')), location.href);
+    if (url.origin !== location.origin) return;
+    const base = this.#base;
+    if (base !== '/' && !(url.pathname === base || url.pathname.startsWith(base + '/'))) return; // not ours: let the browser navigate
+    if (url.pathname === location.pathname && url.search === location.search && url.hash) return; // in-page anchor
+    e.preventDefault();
+    this.#go(this.#parse(url.pathname + url.search + url.hash, true), 'push', 'link').catch((err) => this.#report(err));
+  }
+
+  /**
+   * Run the hooks, then show the location. `type`: 'start' | 'link' | 'api' | 'popstate'.
+   * @param {Location} to @param {'push'|'replace'} mode @param {string} type
+   */
+  async #go(to, mode, type, depth = 0) {
+    const token = ++this.#token;
+    const from = this.#current;
+    if (type !== 'start') {
+      for (const veto of [...this.#vetoes]) {
+        if ((await veto(to, from, type)) === false) { if (token === this.#token) this.#restore(type); return false; }
+        if (token !== this.#token) return false; // a newer navigation took over
+      }
+    }
+    for (const guard of [...this.#guards]) {
+      const result = await guard(to, from);
+      if (token !== this.#token) return false;
+      if (result === false) { this.#restore(type); return false; }
+      if (typeof result === 'string') {
+        if (depth >= 10) throw new Error('xoong router: too many redirects (a guard keeps redirecting)');
+        return this.#go(this.#parse(result), 'replace', 'redirect', depth + 1);
+      }
+    }
+    if (type !== 'popstate' && type !== 'start') this.#writeUrl(to, mode);
+    else if (type === 'start' && mode === 'replace') this.#writeUrl(to, 'replace');
+    this.#current = to;
+    this.#render(to);
+    this.#afterNavigate(to, from);
+    return true;
+  }
+
+  /** A vetoed or cancelled back/forward already moved the address bar: put the previous URL back. */
+  #restore(type) {
+    if (type === 'popstate' && this.#current) history.pushState(null, '', this.#current.url);
+  }
+
+  #writeUrl(to, mode) {
+    if (mode === 'replace') history.replaceState(null, '', to.url);
+    else if (to.url !== location.pathname + location.search + location.hash) history.pushState(null, '', to.url);
+  }
+
+  /** The layout chain of a route, outermost first, e.g. ['root', 'shell']. */
+  #chain(route) {
+    const names = [];
+    for (let name = route?.layout; name; ) {
+      if (names.includes(name)) throw new Error(`xoong router: layout "${name}" includes itself`);
+      const layout = this.#layouts.get(name);
+      if (!layout) throw new Error(`xoong router: layout "${name}" is not declared (<template xo-layout="${name}">)`);
+      names.unshift(name);
+      name = layout.layout ?? null;
+    }
+    return names;
+  }
+
+  /** Show the matched route: keep the layouts it shares with the previous route, replace the rest. */
+  #render(to) {
+    const root = /** @type {HTMLElement} */ (this.#root);
+    const route = to.route;
+    const chain = this.#chain(route);
+    let keep = 0;
+    while (keep < chain.length && keep < this.#mounted.length && this.#mounted[keep].name === chain[keep]) keep++;
+    for (const gone of this.#mounted.splice(keep)) gone.el.remove();
+    let parent = keep ? this.#mounted[keep - 1].outlet : root;
+    for (const name of chain.slice(keep)) {
+      const fragment = /** @type {HTMLTemplateElement} */ (this.#layouts.get(name)?.template).content.cloneNode(true);
+      const holder = document.createElement('div');
+      holder.className = 'xo-layout';
+      holder.append(fragment);
+      const outlet = holder.querySelector('[xo-outlet]');
+      if (!outlet) throw new Error(`xoong router: layout "${name}" has no element with xo-outlet`);
+      parent.replaceChildren(holder);
+      this.#mounted.push({ name, el: holder, outlet });
+      parent = outlet;
+    }
+    if (!route) { parent.replaceChildren(); return; }
+    parent.replaceChildren(route.template.content.cloneNode(true)); // views inside start (and fetch) now
+  }
+
+  #afterNavigate(to, from) {
+    if (to.route?.title) document.title = to.route.title;
+    for (const a of document.querySelectorAll('a[href]')) {
+      let path;
+      try { path = trim(new URL(a.getAttribute('href') ?? '', location.href).pathname); } catch { continue; }
+      const base = this.#base;
+      if (base !== '/' && path.startsWith(base)) path = trim(path.slice(base.length) || '/');
+      if (path === to.path) a.setAttribute('aria-current', 'page');
+      else if (path !== '/' && to.path.startsWith(path + '/')) a.setAttribute('aria-current', 'true'); // a parent section
+      else if (a.hasAttribute('aria-current')) a.toggleAttribute('aria-current', false);
+    }
+    const outlet = this.#mounted.at(-1)?.outlet ?? this.#root;
+    if (from) { // not on the first render: move focus to the new content and start at the top, like a page load
+      outlet?.setAttribute('tabindex', '-1');
+      /** @type {HTMLElement} */ (outlet)?.focus?.({ preventScroll: true });
+      scrollTo?.(0, 0);
+    }
+    this.emit('xo-navigate', { to, from });
+  }
+}
+define('xo-router', XoRouter);
+
+/** The running router, as an object: `router.navigate('/users')`. Throws when there is no <xo-router> on the page. */
+export const router = {
+  navigate: (path, options) => need().navigate(path, options),
+  guard: (fn) => need().guard(fn),
+  beforeNavigate: (fn) => need().beforeNavigate(fn),
+  get current() { return need().current; },
+};
+
+function need() {
+  if (!active) throw new Error('xoong router: there is no <xo-router> on this page yet (it starts after the page is parsed)');
+  return active;
+}

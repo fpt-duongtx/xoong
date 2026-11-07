@@ -84,6 +84,16 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
     <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
   <xo-toast></xo-toast> shows xo-error messages. Style by overriding the custom properties listed at the top of xoong.css; layout: <body class="xo-admin"> + header, nav, main.
 
+## Routing (admin apps; `import { router } from '@xoong/ui'`; public pages stay one HTML file each)
+    <xo-router base="/admin">
+      <template xo-layout="shell"><nav><a href="/users">Users</a></nav><main xo-outlet></main></template>
+      <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
+      <template xo-route="*">Not found</template>
+    </xo-router>
+  Links are intercepted; the active link gets aria-current. `p-id=":id"` reads a path parameter. In JS: `router.navigate('/users/3')`,
+  `router.guard((to, from) => ok ? true : '/login')` (true | false | redirect path), `router.beforeNavigate((to, from) => !dirty)` vetoes leaving.
+  401 -> login: `configure({ onUnauthorized: () => router.navigate('/login') })`.
+
 ## Live updates (server-sent events)
 One JSON object per message: {type:"patch", entity:"User", id:42, path:"/status", value:"disabled", version:7} |
 {type:"upsert", entity, id, value, version} | {type:"delete", entity, id, version} | {type:"resync"} (clients refetch).

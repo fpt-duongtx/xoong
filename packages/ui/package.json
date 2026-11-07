@@ -5,11 +5,15 @@
   "type": "module",
   "main": "src/index.js",
   "exports": {
-    ".": "./src/index.js",
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
     "./table": "./src/table.js",
     "./form": "./src/form.js",
     "./dialog": "./src/dialog.js",
     "./toast": "./src/toast.js",
+    "./router": "./src/router.js",
     "./xoong.css": "./src/xoong.css"
   },
   "sideEffects": true,
@@ -36,5 +40,6 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "types": "./src/index.d.ts"
 }

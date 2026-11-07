@@ -36,6 +36,42 @@ An admin area is built from four things, all declarations:
 [`examples/admin`](../examples/admin) is this page, running against a fake backend and tested in a real
 browser. Its application script is only `configure()`.
 
+## Router: `<xo-router>`
+
+Decision and reasons: [ADR-0008](decisions/0008-spa-router.md). For an admin use SPA routing; public pages stay one HTML file per page.
+One `<template>` per route, inert until it matches (views inside it do not fetch before then), optional layouts that stay while only the
+content changes:
+
+```html
+<xo-router base="/admin">
+  <template xo-layout="shell"><nav><a href="/admin/users">Users</a></nav><main xo-outlet></main></template>
+  <template xo-route="/" layout="shell" title="Home">...</template>
+  <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
+  <template xo-route="/login">...</template>
+  <template xo-route="*">Not found</template>
+</xo-router>
+```
+
+* **Routes.** `xo-route="/users/:id"` (static segments beat `:param` beats `*`). `title` sets `document.title`. `layout` names an
+  `xo-layout` template (layouts nest with `layout=` on a layout). Inside the route, `p-id=":id"` hands the path parameter to a view
+  (`p-id="?id"` still reads the query string).
+* **Links.** Same-origin links inside `base` are intercepted and use `pushState`. The router never touches modified clicks, other
+  mouse buttons, `target`, `download`, `rel="external"`, links to other origins or outside `base`, and in-page anchors. The link to the
+  current page gets `aria-current="page"`; a link to a section above it gets `aria-current="true"`.
+* **Navigation.** After each navigation the new content gets focus (`xo-outlet` becomes focusable) and the page scrolls to the top, like a page
+  load. Not for the first render. `xo-navigate` bubbles with `{ to, from }`.
+* **JavaScript.** `router.navigate(path, { replace })`, `router.current` (`path`, `params`, `query`, `url`, `route`),
+  `router.guard((to, from) => true | false | '/redirect')`, `router.beforeNavigate((to, from, type) => false)` to veto leaving
+  (type: `link`, `api`, `popstate`). Both return a function that removes them. Redirect loops stop after 10 with an error.
+* **401 to login.** `configure({ onUnauthorized: () => router.navigate('/login') })` plus a guard for pages that need a session.
+* **Unsaved changes.** `router.beforeNavigate(() => !form.dirty || confirm('Leave without saving?'))`. A vetoed Back/Forward cannot be
+  cancelled by the browser: the router puts the previous URL back with `pushState`, which drops the forward entry. Closing the tab is
+  `beforeunload`, which is yours to handle.
+* **Hosting.** The server must answer every path under `base` with the app's HTML (`xoong dev --spa`, `"spa": true`).
+* **Prerender.** `xoong render` takes the URL, so a route can be prerendered (`renderPage(html, { url })`).
+* **Checks.** `xoong check`: XO260 (route path), XO261 (undeclared layout), XO262 (layout without `xo-outlet`), XO263 (route parameter).
+* Not done: nested routers, route-level data loading hooks, per-route code splitting, scroll restoration on Back.
+
 ## Custom controls: `XoControl`
 
 `XoControl` (in `@xoong/core`) is the base class for controls that behave like native inputs: a rich text editor, a combobox, a
