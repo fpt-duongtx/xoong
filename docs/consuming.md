@@ -1,0 +1,38 @@
+# Using xoong from another project (before it is published)
+
+Nothing is published to npm. Each drop is a git tag (`v0.0.N`) with a GitHub Release in the private repository that carries one
+tarball per package and a `consume.json`. All packages share the version number.
+
+## Install a drop
+
+```bash
+# in your project (needs `gh` signed in to the private repository)
+gh release download v0.0.2 -R fpt-duongtx/xoong -D vendor/xoong
+```
+
+Then copy `dependencies` (only what you import) and the whole `overrides` from `vendor/xoong/consume.json` into your `package.json`
+(the overrides make the packages find each other as tarballs instead of looking on the registry), and run `npm install`:
+
+```json
+{
+  "dependencies": { "xoong": "file:./vendor/xoong/xoong-0.0.2.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.2.tgz" },
+  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.2.tgz", "...": "every package listed in consume.json" }
+}
+```
+
+`consume.json` also records the git commit the drop was built from. To move to a newer drop, download the new tag into the same folder,
+update the version in the paths, and run `npm install` again.
+
+## Build a drop yourself
+
+```bash
+node tools/pack.mjs dist-pack --prefix ./vendor/xoong   # tarballs and consume.json in dist-pack/
+```
+
+For a checkout on the same machine, `xoong new <folder> --spec <openapi> --link <path to the checkout>` makes a project that uses the
+checkout directly (no tarballs).
+
+## What a drop promises
+
+Versions are `0.0.N`: anything can change between drops, and breaking changes are listed in `CHANGELOG.md` with migration notes.
+Attributes already shipped in an earlier drop are changed only when marked as such there.

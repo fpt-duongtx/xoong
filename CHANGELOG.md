@@ -5,6 +5,10 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.2 (first drop for other projects, private)
+
+Everything below, as of this version. All packages carry the same version. Install by tarball (see docs/consuming.md); nothing is published to npm.
+
 ### Added
 * `@xoong/core`: signals, `html` templates, Light DOM custom elements.
 * `@xoong/data`: OpenAPI-driven client, auto cache and invalidation, entity store with replace/merge rules, eviction and
