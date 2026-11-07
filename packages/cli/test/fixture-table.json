@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "operations": {
+    "listUsers": {
+      "id": "listUsers",
+      "method": "GET",
+      "path": "/users",
+      "query": [
+        "page"
+      ],
+      "response": {
+        "t": "array",
+        "items": {
+          "t": "entity",
+          "name": "User"
+        }
+      }
+    },
+    "createUser": {
+      "id": "createUser",
+      "method": "POST",
+      "path": "/users",
+      "body": true,
+      "response": {
+        "t": "entity",
+        "name": "User"
+      }
+    },
+    "getUser": {
+      "id": "getUser",
+      "method": "GET",
+      "path": "/users/{id}",
+      "response": {
+        "t": "entity",
+        "name": "User"
+      }
+    },
+    "getOrders": {
+      "id": "getOrders",
+      "method": "GET",
+      "path": "/orders",
+      "response": {
+        "t": "object",
+        "props": {
+          "items": {
+            "t": "array",
+            "items": {
+              "t": "entity",
+              "name": "Order"
+            }
+          }
+        }
+      }
+    },
+    "getStats": {
+      "id": "getStats",
+      "method": "GET",
+      "path": "/stats"
+    },
+    "disableUser": {
+      "id": "disableUser",
+      "method": "POST",
+      "path": "/users/{id}/disable",
+      "response": {
+        "t": "entity",
+        "name": "User"
+      }
+    }
+  },
+  "entities": {
+    "User": {
+      "id": "id"
+    },
+    "Order": {
+      "id": "id",
+      "props": {
+        "customer": {
+          "t": "entity",
+          "name": "User"
+        }
+      }
+    }
+  }
+}
