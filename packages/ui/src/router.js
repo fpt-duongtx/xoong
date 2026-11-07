@@ -20,6 +20,8 @@ import { setParamSource } from '@xoong/data/view';
 /** @typedef {{ pattern: string, regex: RegExp, names: string[], layout: string | null, title: string, description: string | undefined, template: HTMLTemplateElement, score: number }} Route */
 
 const trim = (s) => (s.length > 1 ? s.replace(/\/+$/, '') : s) || '/';
+/** Decode a URL part; a malformed escape ("%zz") is kept as it is instead of throwing, like Vue Router. */
+const dec = (s, fn = decodeURIComponent) => { try { return fn(s); } catch { return s; } };
 
 /** Compile "/users/:id" or "*" into a matcher; static segments rank above parameters, parameters above the catch-all. */
 function compile(pattern) {
@@ -50,8 +52,18 @@ class XoRouter extends XoElement {
   #root = /** @type {HTMLElement | null} */ (null);
   #token = 0;
   #started = false;
+  /** Index of the current history entry (kept in history.state, like Vue Router): lets Back/Forward be cancelled with history.go. */
+  #pos = 0;
+  #reverting = false;
+  /** @type {Map<number, { x: number, y: number }>} scroll position per history entry, restored on Back/Forward */
+  #scrolls = new Map();
   #onClick = (/** @type {MouseEvent} */ e) => this.#click(e);
-  #onPop = () => { this.#go(this.#read(), 'replace', 'popstate').catch((e) => this.#report(e)); };
+  #onPop = () => {
+    if (this.#reverting) { this.#reverting = false; return; } // our own history.go(-delta) after a vetoed Back/Forward
+    const target = window.history.state?.xoPos;
+    const delta = typeof target === 'number' ? target - this.#pos : 0;
+    this.#go(this.#read(), 'replace', 'popstate', 0, delta, target).catch((e) => this.#report(e));
+  };
 
   connected() {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => this.#start(), { once: true });
@@ -100,6 +112,8 @@ class XoRouter extends XoElement {
     this.#root.className = 'xo-router-root';
     this.append(this.#root);
     setParamSource((name) => this.#current?.params[name]); // p-id=":id" on a view
+    try { window.history.scrollRestoration = 'manual'; } catch { /* a DOM without it */ } // we restore scroll ourselves, per entry
+    this.#pos = window.history.state?.xoPos ?? 0;
     document.addEventListener('click', this.#onClick);
     window.addEventListener('popstate', this.#onPop);
     this.#go(this.#read(), 'replace', 'start').catch((e) => this.#report(e));
@@ -121,7 +135,7 @@ class XoRouter extends XoElement {
   /** @param {string} target a path (with optional query) relative to the base, or a full path when `absolute` */
   #parse(target, absolute = false) {
     const url = new URL(target, `${window.location.origin}${absolute ? '' : this.#base === '/' ? '/' : this.#base + '/'}`);
-    let path = trim(decodeURI(url.pathname));
+    let path = trim(dec(url.pathname, decodeURI));
     const base = this.#base;
     if (base !== '/' && (path === base || path.startsWith(base + '/'))) path = trim(path.slice(base.length) || '/');
     return this.#locate(path, url);
@@ -135,7 +149,7 @@ class XoRouter extends XoElement {
     for (const route of this.#routes) {
       const m = route.regex.exec(path);
       if (!m) continue;
-      out.params = Object.fromEntries(route.names.map((n, i) => [n, decodeURIComponent(m[i + 1])]));
+      out.params = Object.fromEntries(route.names.map((n, i) => [n, dec(m[i + 1])]));
       out.route = route;
       break;
     }
@@ -159,40 +173,71 @@ class XoRouter extends XoElement {
    * Run the hooks, then show the location. `type`: 'start' | 'link' | 'api' | 'popstate'.
    * @param {Location} to @param {'push'|'replace'} mode @param {string} type
    */
-  async #go(to, mode, type, depth = 0) {
+  async #go(to, mode, type, depth = 0, delta = 0, popPos = undefined) {
     const token = ++this.#token;
     const from = this.#current;
+    // Same place as now: nothing to do (Vue Router calls this a duplicated navigation). Only the hash differs: no re-render, just
+    // scroll to the anchor (React Router / Vue Router behave the same way for in-page anchors).
+    if (from && type !== 'start' && type !== 'redirect' && to.path === from.path && to.query.toString() === from.query.toString()) {
+      if (type !== 'popstate' && to.url === from.url) return false;
+      if (type !== 'popstate') this.#writeUrl(to, mode);
+      else if (typeof popPos === 'number') this.#pos = popPos;
+      this.#current = { ...to, route: from.route };
+      this.#scrollTo(to, type, this.#pos);
+      this.emit('xo-navigate', { to, from });
+      return true;
+    }
     if (type !== 'start') {
       for (const veto of [...this.#vetoes]) {
-        if ((await veto(to, from, type)) === false) { if (token === this.#token) this.#restore(type); return false; }
+        if ((await veto(to, from, type)) === false) { if (token === this.#token) this.#restore(type, delta); return false; }
         if (token !== this.#token) return false; // a newer navigation took over
       }
     }
     for (const guard of [...this.#guards]) {
       const result = await guard(to, from);
       if (token !== this.#token) return false;
-      if (result === false) { this.#restore(type); return false; }
+      if (result === false) { this.#restore(type, delta); return false; }
       if (typeof result === 'string') {
         if (depth >= 10) throw new Error('xoong router: too many redirects (a guard keeps redirecting)');
         return this.#go(this.#parse(result), 'replace', 'redirect', depth + 1);
       }
     }
-    if (type !== 'popstate' && type !== 'start') this.#writeUrl(to, mode);
-    else if (type === 'start' && mode === 'replace') this.#writeUrl(to, 'replace');
+    if (from && type !== 'start') this.#scrolls.set(this.#pos, { x: window.scrollX, y: window.scrollY }); // where we were, for Back
+    if (type === 'popstate') { if (typeof popPos === 'number') this.#pos = popPos; }
+    else if (type === 'start') this.#writeUrl(to, 'replace');
+    else this.#writeUrl(to, mode);
     this.#current = to;
     this.#render(to);
-    this.#afterNavigate(to, from);
+    this.#afterNavigate(to, from, type);
     return true;
   }
 
-  /** A vetoed or cancelled back/forward already moved the address bar: put the previous URL back. */
-  #restore(type) {
-    if (type === 'popstate' && this.#current) window.history.pushState(null, '', this.#current.url);
+  /**
+   * A vetoed or cancelled Back/Forward already moved the address bar. Put it back with history.go(-delta), as Vue Router does:
+   * the history stays as it was, forward entries included. Where the position is unknown (or the DOM has no history.go), push the
+   * previous URL again as a fallback, which drops forward entries.
+   */
+  #restore(type, delta) {
+    if (type !== 'popstate' || !this.#current) return;
+    if (delta && typeof window.history.go === 'function') { this.#reverting = true; window.history.go(-delta); return; }
+    window.history.pushState({ xoPos: this.#pos }, '', this.#current.url);
   }
 
   #writeUrl(to, mode) {
-    if (mode === 'replace') window.history.replaceState(null, '', to.url);
-    else if (to.url !== window.location.pathname + window.location.search + window.location.hash) window.history.pushState(null, '', to.url);
+    if (mode === 'replace') window.history.replaceState({ xoPos: this.#pos }, '', to.url);
+    else if (to.url !== window.location.pathname + window.location.search + window.location.hash) {
+      this.#pos += 1;
+      window.history.pushState({ xoPos: this.#pos }, '', to.url);
+    }
+  }
+
+  /** After a navigation: Back/Forward restores the scroll position of that entry, an anchor scrolls to its element, otherwise to the top. */
+  #scrollTo(to, type, pos) {
+    const hash = to.url.includes('#') ? to.url.slice(to.url.indexOf('#') + 1) : '';
+    const target = hash ? document.getElementById(dec(hash)) : null;
+    if (type === 'popstate' && !hash) { const s = this.#scrolls.get(pos); window.scrollTo?.(s?.x ?? 0, s?.y ?? 0); }
+    else if (target) target.scrollIntoView?.();
+    else window.scrollTo?.(0, 0);
   }
 
   /** The layout chain of a route, outermost first, e.g. ['root', 'shell']. */
@@ -232,7 +277,7 @@ class XoRouter extends XoElement {
     parent.replaceChildren(route.template.content.cloneNode(true)); // views inside start (and fetch) now
   }
 
-  #afterNavigate(to, from) {
+  #afterNavigate(to, from, type) {
     if (to.route?.title) document.title = to.route.title;
     if (to.route?.description !== undefined) { // per-route description for search engines (kept by prerendering)
       let meta = document.head.querySelector('meta[name="description"]');
@@ -249,10 +294,10 @@ class XoRouter extends XoElement {
       else if (a.hasAttribute('aria-current')) a.toggleAttribute('aria-current', false);
     }
     const outlet = this.#mounted.at(-1)?.outlet ?? this.#root;
-    if (from) { // not on the first render: move focus to the new content and start at the top, like a page load
+    if (from) { // not on the first render: move focus to the new content, and scroll like a page load (or restore, on Back/Forward)
       outlet?.setAttribute('tabindex', '-1');
       /** @type {HTMLElement} */ (outlet)?.focus?.({ preventScroll: true });
-      window.scrollTo?.(0, 0);
+      this.#scrollTo(to, type, this.#pos);
     }
     this.emit('xo-navigate', { to, from });
   }

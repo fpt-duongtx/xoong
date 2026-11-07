@@ -90,6 +90,38 @@ describe('<xo-router> in a real browser', () => {
     await page.waitForFunction(() => window.ready && window.router.current);
   });
 
+  it('a vetoed Back is cancelled with history.go: the history is intact, and one Back press works afterwards', async () => {
+    await page.goto(dev.url + '/admin');
+    await page.waitForFunction(() => window.ready && window.router.current);
+    await page.evaluate(() => window.router.navigate('/users'));
+    await page.evaluate(() => window.router.navigate('/users/3'));
+    await page.waitForFunction(() => location.pathname === '/admin/users/3');
+    const length = await page.evaluate(() => history.length);
+    await page.evaluate(() => { window.__off = window.router.beforeNavigate(() => false); });
+    await page.goBack();
+    await new Promise((r) => setTimeout(r, 200));
+    expect(await path()).toBe('/admin/users/3'); // stayed
+    expect(await page.evaluate(() => history.length)).toBe(length); // nothing pushed (the old fallback pushed a duplicate entry)
+    await page.evaluate(() => window.__off());
+    await page.goBack(); // ONE press goes to the previous page
+    await page.waitForFunction(() => location.pathname === '/admin/users');
+    await page.goForward(); // and the forward entry is still there
+    await page.waitForFunction(() => location.pathname === '/admin/users/3');
+  });
+
+  it('Back restores the scroll position of the page you return to; a new navigation starts at the top', async () => {
+    await page.goto(dev.url + '/admin/users');
+    await page.waitForFunction(() => window.ready && window.router.current);
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await page.evaluate(() => window.router.navigate('/users/9'));
+    await page.waitForFunction(() => location.pathname === '/admin/users/9');
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/admin/users');
+    await page.waitForFunction(() => window.scrollY > 1000);
+    expect(await page.evaluate(() => Math.round(window.scrollY))).toBe(1200);
+  });
+
   it('a veto stops a link and Back, and the address bar is put back', async () => {
     await page.evaluate(() => { window.__off = window.router.beforeNavigate(() => false); });
     await page.click('#home');

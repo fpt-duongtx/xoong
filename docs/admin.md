@@ -65,8 +65,14 @@ content changes:
   (type: `link`, `api`, `popstate`). Both return a function that removes them. Redirect loops stop after 10 with an error.
 * **401 to login.** `configure({ onUnauthorized: () => router.navigate('/login') })` plus a guard for pages that need a session.
 * **Unsaved changes.** `router.beforeNavigate(() => !form.dirty || confirm('Leave without saving?'))`. A vetoed Back/Forward cannot be
-  cancelled by the browser: the router puts the previous URL back with `pushState`, which drops the forward entry. Closing the tab is
-  `beforeunload`, which is yours to handle.
+  prevented by the browser, so the router cancels it the way Vue Router does: each entry carries its position in `history.state`, and
+  a veto runs `history.go(-delta)`, which leaves the history (forward entries included) as it was. Closing the tab is `beforeunload`,
+  which is yours to handle.
+* **Behaviour borrowed from Vue Router and React Router:** going to the URL you are already on is a no-op (`navigate` resolves
+  `false`); a hash-only change does not re-render, it scrolls to the element with that id; Back/Forward restores the scroll position
+  of the entry you return to (the router sets `history.scrollRestoration = "manual"`), a new navigation starts at the top or at the
+  anchor; a malformed escape in the URL (`%zz`) is kept raw instead of throwing; a navigation started by a newer click wins over a
+  pending one.
 * **Hosting.** The server must answer every path under `base` with the app's HTML (`xoong dev --spa`, `"spa": true`).
 * **SEO and prerendering.** Yes, a site that needs search engines can use the router: prerender every public URL to a static file, and the
   router takes over in the browser. `xoong render index.html --api http://backend --url /users/7 --out dist/users/7/index.html` renders the
@@ -77,7 +83,7 @@ content changes:
   description are managed per route; the server must serve the right file per path. For a public site with few, mostly static pages,
   one HTML file per page (no router) is simpler and equally indexable.
 * **Checks.** `xoong check`: XO260 (route path), XO261 (undeclared layout), XO262 (layout without `xo-outlet`), XO263 (route parameter).
-* Not done: nested routers, route-level data loading hooks, per-route code splitting, scroll restoration on Back.
+* Not done: nested routers, route-level data loading hooks, per-route code splitting, relative paths in `navigate()` (paths are absolute under `base`).
 
 ## Custom controls: `XoControl`
 

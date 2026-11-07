@@ -177,6 +177,45 @@ describe('<xo-router> links', () => {
   });
 });
 
+describe('<xo-router> behaviour borrowed from Vue Router and React Router', () => {
+  it('navigating to the URL you are already on does nothing (no history entry, no re-render)', async () => {
+    await open();
+    await go('/users');
+    screen.$('main').dataset.keep = '1';
+    const entries = history.length;
+    expect(await router.navigate('/users')).toBe(false);
+    expect(history.length).toBe(entries);
+    expect(screen.$('main').dataset.keep).toBe('1');
+  });
+
+  it('a change of the hash only does not re-render; the router state follows the URL', async () => {
+    await open(APP('<template xo-route="/doc" layout="shell"><h1 id="top">Doc</h1><h2 id="part">Part</h2></template>'));
+    await go('/doc');
+    const heading = screen.$('#top');
+    expect(await router.navigate('/doc#part')).toBe(true);
+    expect(screen.$('#top')).toBe(heading); // same DOM: not rendered again
+    expect(location.hash).toBe('#part');
+    expect(router.current.url).toBe('/doc#part');
+    expect(router.current.route.pattern).toBe('/doc');
+  });
+
+  it('a malformed escape in the URL does not break the router; the raw text is kept', async () => {
+    history.replaceState(null, '', '/users/100%25%zz');
+    await open();
+    expect(router.current.params.id).toBe('100%25%zz'); // not decodable as a whole: kept raw, no exception
+    expect(screen.text('h1')).toBe('User');
+  });
+
+  it('keeps a history position in history.state (so Back/Forward can be cancelled without losing entries)', async () => {
+    await open();
+    expect(history.state).toEqual({ xoPos: 0 });
+    await go('/users');
+    expect(history.state).toEqual({ xoPos: 1 });
+    await router.navigate('/login', { replace: true });
+    expect(history.state).toEqual({ xoPos: 1 });
+  });
+});
+
 describe('<xo-router> base path', () => {
   it('works under a base: URLs include it, routes do not', async () => {
     history.replaceState(null, '', '/admin/users/5');
@@ -213,7 +252,7 @@ describe('<xo-router> guards and leaving', () => {
   it('a guard that keeps redirecting is stopped with a clear error', async () => {
     await open();
     router.guard(() => '/users');
-    await expect(router.navigate('/')).rejects.toThrow(/too many redirects/);
+    await expect(router.navigate('/login')).rejects.toThrow(/too many redirects/);
   });
 
   it('beforeNavigate can veto leaving (unsaved changes), for links and for navigate(); the screen stays', async () => {

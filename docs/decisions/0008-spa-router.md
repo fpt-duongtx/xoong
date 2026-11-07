@@ -37,6 +37,7 @@ to navigate. The first consumer of the admin set (rainlet, for Bloomoz) is an ad
 ## Consequences
 + An admin gets a persistent shell, lazy route content, deep links, a leave guard and a 404 with a small declarative surface.
 + Route content is created when the route matches, so views inside a route start (and fetch) then, and stop when leaving.
-- A vetoed back/forward button cannot be cancelled by the platform: the router restores the previous URL with `pushState`, so the
-  forward history entry is lost. This is a known limit of the History API.
+- A vetoed back/forward button cannot be prevented by the platform. The router stores a position in `history.state` and cancels the move
+  with `history.go(-delta)` (as Vue Router does), so the history is left intact. Where the position is unknown (an entry created by
+  something else) it falls back to `pushState`, which drops forward entries.
 - One more element and three attributes in `llms.txt`, `xoong check`, the editor data and the docs.
