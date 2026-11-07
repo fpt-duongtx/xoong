@@ -1,0 +1,20 @@
+{
+  "name": "@xoong/ui",
+  "version": "0.0.1",
+  "description": "xoong admin set: xoong.css design tokens, <xo-table>, <xo-form>, <xo-dialog>. Depends only on @xoong/core and @xoong/data.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./table": "./src/table.js",
+    "./form": "./src/form.js",
+    "./dialog": "./src/dialog.js",
+    "./xoong.css": "./src/xoong.css"
+  },
+  "sideEffects": true,
+  "license": "MIT",
+  "dependencies": {
+    "@xoong/core": "*",
+    "@xoong/data": "*"
+  }
+}
