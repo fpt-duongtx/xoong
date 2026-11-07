@@ -36,6 +36,18 @@ An admin area is built from four things, all declarations:
 [`examples/admin`](../examples/admin) is this page, running against a fake backend and tested in a real
 browser. Its application script is only `configure()`.
 
+## List state, tabs and bulk actions
+
+* `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL (a click on a tab or a page adds a history entry, typing replaces it; reload,
+  Back and a shared link restore them). Filter boxes show the current value. With a router the query is written through it without rendering the route again.
+* A button with `xo-param="status=draft"` gets `aria-current="true"` while that is the current value; `status=` matches "unset" (an "All" tab).
+* `xo-selected="ids"` on a bulk button sends **one** request with the ticked ids (as the API knows them: numbers stay numbers) plus `xo-with="status=published"` fields typed from the
+  schema; bare `xo-selected` runs once per row. `$selected` is the list of ticked rows (`xo-body="$selected"`).
+* `xo-confirm="Delete {title}?"` asks first in a native dialog (`confirm()` from `@xoong/ui` replaces the browser's, labels in `confirmLabels`). `xo-notice="Saved"` raises a toast
+  after success; from JavaScript `toast.show({ message, action: { label: 'Undo', run } })`.
+* Table: `empty="..."` or a `<template slot="empty">`, `filters="q:Search"`, `page-sizes="10,25,50"`, "1–3 of 5" text, and a column format `publishedAt:Published:datetime`
+  (date, datetime, time, relative, number, localized); the same formats work anywhere as `{publishedAt | datetime}`.
+
 ## Router: `<xo-router>`
 
 Decision and reasons: [ADR-0008](decisions/0008-spa-router.md). For an admin use SPA routing; public pages stay one HTML file per page.
@@ -121,39 +133,50 @@ tests see plain markup).
 
 Other children (typically buttons) form the actions cell. For layouts the table cannot express, write the table by hand with `xo-each`; it composes with everything else.
 
-## `<xo-form>`
+## Forms: `<form xo-submit>` and `<xo-form>`
 
-`op` is any operation with a JSON or multipart request body made of simple fields. Generated from `bodyFields`, which
-`xoong sync` writes into `operations.json`:
+Design and reasons: [ADR-0009](decisions/0009-forms-from-the-api-schema.md). Short version: a **model** (a typed draft of the record, the baseline it came
+from, state per path) with the DOM as a view; the rules come from the OpenAPI **request schema** (`bodySchema` in `operations.json`).
 
-| Schema | Control |
-|---|---|
-| `string` | `text`; `format: email`, `password`, `date`, `date-time`, `uri` choose the input type; `maxLength` sets `maxlength` |
-| `integer`, `number` | `number` |
-| `boolean` | checkbox |
-| `string` + `format: binary` | file input (multipart operations; an empty file input is left out) |
-| `enum` | `<select>` (with a blank choice when optional) |
-| `required` | `required` attribute |
+```html
+<xo-view get="getArticle" p-id=":id">
+  <form xo-submit="updateArticle">
+    <label>Slug <input name="slug"></label>              <!-- type, required, pattern, maxlength: from the schema -->
+    <label>Title <input name="title.en"></label>         <!-- nested path -->
+    <label>Publish <input name="publishedAt"></label>    <!-- date-time: a datetime-local control; the ISO string is kept until the person edits it -->
+    <p xo-if="$form.dirty">Unsaved changes</p>
+    <button>Save</button>
+  </form>
+</xo-view>
+```
 
-Nested objects, arrays and read-only properties are not generated; `xoong check` warns when nothing can be
-generated (XO252), and you write that `<form xo-submit>` by hand. `submit="Add"` sets the button text.
-
-Values are typed when sent: numbers as numbers, checkboxes as booleans, empty optional fields left out. This also
-applies to hand-written `xo-submit` forms whose operation has `bodyFields`.
-
-### Field errors
-
-When a mutation fails with field messages, the matching input gets `aria-invalid="true"` and
-`aria-describedby` pointing at a `<small class="xo-error">` placed after it. If no field matches, the error text
-is shown under the form (`role="alert"`). The messages are cleared on the next submit. This works for every
-`xo-submit` form. The server reports them in any of these shapes (see `XoongError.fields`):
-
-* FastAPI: `{ "detail": [{ "loc": ["body", "email"], "msg": "…" }] }`
-* envelope: `{ "error": { "code": "…", "message": "…", "fields": { "email": "…" } } }`
-* problem+json extension: `{ "errors": [{ "pointer": "#/email", "detail": "…" }] }`
-
-Errors of `xo-click` actions (a Delete that fails) still arrive as the bubbling `xo-error` event; show them with
-your own listener.
+* **Binding by `name`** (`a.b`, `items[0].x`; `items.0.x` is the same). Attributes the author did not write are completed from the schema
+  (`type`, `required`, `min`/`max`/`step`, `minlength`/`maxlength`, `pattern`, enum options); the author's attributes win. Any `XoControl` with a
+  `name` is a field too; it receives `schema`, `hints` (every hint key, unknown ones included) and `xoForm` (the model, to read other paths).
+* **Prefill.** An *edit* form (the operation has path parameters, or `xo-body="path"` names a record) starts from the record of its view; a *create*
+  form starts from the schema's defaults and empties after success (`xo-keep` keeps the values). After an edit succeeds the saved record is the new baseline.
+  If the record changes underneath (a live update) a pristine form follows it; a dirty form keeps its draft and `$form.stale` becomes true.
+* **Validation** is the model's, not the browser's: the form gets `novalidate`, so a hidden or off-screen invalid control can never block submit. Rules from the
+  schema: required, type, min/max and exclusive bounds, multipleOf, minLength/maxLength, pattern, format (email, uri, uuid, date, date-time), enum,
+  minItems/maxItems/uniqueItems. Messages are a replaceable catalogue (`setMessages` from `@xoong/forms`). Errors show once the field has been left
+  (or after submit), with `aria-invalid`, `aria-describedby` and a `<small class="xo-error">`; they update live while the field has an error.
+* **Custom rules** are plain functions by path on the form element, async allowed (`$form.pending`):
+  `form.rules = { slug: (v, { record }) => '' | 'message', 'items[].title': (v) => ..., '*': (record) => ({ 'a.b': 'message' }) }`.
+  The schema error of a path wins over a custom one; a throwing rule becomes an error, not a crash.
+* **State** in markup and JavaScript: `$form.dirty`, `valid`, `submitting`, `pending`, `stale`, and per path `$form.errors['title.vi']`,
+  `$form.touched[...]`, `$form.filled[...]`, `$form.dirtyAt[...]` (a tab can show a "missing translation" dot). The model is `form.model` (`field(path)`,
+  `set`, `body()`, `reset()`, `markPristine()`, `validate()`); per-path signals wake only that path's readers (tested with 800 fields).
+* **Payload.** Only properties of the request schema are sent (ids and timestamps of the record never go out); empty optional values follow `emptyAs`
+  (omit by default, `null` when asked); `pruneEmpty` on an object schema drops empty members and an object left empty follows its own `emptyAs`;
+  `form.serialize = (draft, body) => body` is the escape hatch. Dirty uses the same normalisation, so typing and deleting is pristine again.
+* **Submit.** Touch all, validate (async rules included), and when invalid nothing is sent: `xo-invalid` fires, then a cancelable `xo-reveal` `{ path }` lets the
+  application show the field (switch a tab) before it is focused. Server field errors (problem+json pointers, FastAPI, envelopes) land on the same paths and
+  clear when the field is edited.
+* **Hints** for presentation (`xoong.hints.json`, `fields["Schema.property"]`): `label`, `hint`, `placeholder`, `widget` (a built-in name or the tag of an `XoControl`),
+  `order`, `readOnly`, `hidden`, `group`, `emptyAs`, `pruneEmpty`; any other key is passed through to the widget. `x-xoong-widget` in the OpenAPI document does the same.
+* **Leaving.** A dirty form makes the router ask first (`xo-guard="off"` disables, other text is the question); closing the tab uses `beforeunload`.
+* `<xo-form op="...">` writes the controls for you (simple fields, enums, checkboxes, file inputs) and the same binder does the rest. Nested objects, arrays and unions
+  in generated forms are the next step; until then write those parts by hand (`xoong check` XO255 warns when a required field cannot be generated).
 
 ## `<xo-dialog>`
 

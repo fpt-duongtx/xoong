@@ -32,6 +32,13 @@ node tools/pack.mjs dist-pack --prefix ./vendor/xoong   # tarballs and consume.j
 For a checkout on the same machine, `xoong new <folder> --spec <openapi> --link <path to the checkout>` makes a project that uses the
 checkout directly (no tarballs).
 
+## Serving an app in production
+
+Use `xoong build` (it needs only your project, no bundler): `xoong build --root . --out dist [--base /admin] [--include public]`. It follows the
+HTML pages, rewrites package imports to URLs (no import map), strips TypeScript, copies what is referenced, and prints the Content-Security-Policy
+the output is tested with ([security.md](security.md)). Serve `dist` as static files, with the pages' routes answering the app's HTML if you use
+`<xo-router>`. Nothing is minified or bundled yet: the files are the ones you wrote, and `dist/build-report.json` lists sizes (also gzipped).
+
 ## What a drop promises
 
 Versions are `0.0.N`: anything can change between drops, and breaking changes are listed in `CHANGELOG.md` with migration notes.

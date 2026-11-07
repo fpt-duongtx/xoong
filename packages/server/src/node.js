@@ -44,6 +44,7 @@ async function packageDirOf(entry, name) {
 
 /**
  * Find installed @xoong/* packages from `from` and describe how to serve them to the browser.
+ * URL prefixes: @xoong/core -> /@xoong/core; the unscoped umbrella `xoong` -> /vendor/xoong.
  * @param {string} from  a folder inside the project
  * @param {string[]} names
  */
@@ -54,7 +55,7 @@ export async function findPackages(from, names = ['@xoong/core', '@xoong/data', 
   for (const name of names) {
     let found = null;
     try { found = await packageDirOf(require.resolve(name), name); } catch { /* not installed */ }
-    if (found) out[name] = { prefix: `/@${name.slice(1)}`, exports: found.pkg.exports ?? found.pkg.main ?? './src/index.js', dir: found.dir };
+    if (found) out[name] = { prefix: name.startsWith('@') ? `/${name}` : `/vendor/${name}`, exports: found.pkg.exports ?? found.pkg.main ?? './src/index.js', dir: found.dir };
   }
   return out;
 }

@@ -5,6 +5,20 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.4 (forms, list state, build)
+
+### Added
+* `@xoong/forms`: the schema-driven form model (draft, baseline, per-path state, rules by path incl. async, server errors, payload normalisation) and the
+  DOM binder every `<form xo-submit>` with a request schema now uses (ADR-0009). `xoong sync` writes `bodySchema` (request schemas) and hint fields.
+* `<xo-view url-params>`, `aria-current` on matching `xo-param` buttons, `xo-selected="ids"` (one request), `xo-with`, `xo-confirm` (native dialog),
+  `xo-notice` toasts with actions, dirty-form leave guard (`xo-guard`), `{value | format}` formats and `localized`, table empty state, labels, range, page size.
+* `xoong build`: static output for strict-CSP hosting (docs/security.md), tested under `default-src 'none'; script-src 'self'; style-src 'self'`.
+* ADR-0010 (internationalization) accepted; implementation follows.
+
+### Changed
+* The shell (`xo-admin`) works through the router's wrapper elements; `xo-toast` has an error region (`role="alert"`) and a notice region (`role="status"`).
+* Filter boxes in `<xo-table>`: the label is the placeholder and the accessible name (was "Filter by x").
+
 ## 0.0.3 (router)
 
 ### Fixed (after the tag, in the next drop)

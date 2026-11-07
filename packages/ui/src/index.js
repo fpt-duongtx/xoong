@@ -1,4 +1,5 @@
 // Importing the package registers every element of the admin set.
+import '@xoong/forms'; // every <form xo-submit> (and <xo-form>) uses the schema-driven form model
 import './table.js';
 import './form.js';
 import './dialog.js';

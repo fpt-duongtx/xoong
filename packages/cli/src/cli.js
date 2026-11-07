@@ -14,6 +14,7 @@ const HELP = `xoong <command>
   new <folder> --spec <openapi.json|yaml|url> [--title "My app"] [--link <xoong checkout>]   create a project with a first screen
   check <file|folder>... [--operations .xoong/operations.json] [--format text|json]   check HTML screens
   render <page.html> --api <url> [--url /users/7] [--operations .xoong/operations.json] [--out file]   prerender a page (a route, with --url) with its data (needs @xoong/ssr)
+  build [--root .] [--out dist] [--base /admin] [--include path]...   static output for strict-CSP hosting (no import map, no inline code)
   dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080] [--spa]   serve the app (static, proxy, .ts)
 `;
 
@@ -55,6 +56,16 @@ try {
     const html = await renderPage(await readFile(rest[0], 'utf8'), { operations, baseUrl: flag('--api'), ...(at ? { url: new URL(at, 'http://xoong.local').href } : {}) });
     const out = flag('--out');
     if (out) { await mkdir(dirname(out), { recursive: true }); await writeFile(out, html); console.log(`rendered ${rest[0]} -> ${out}`); } else process.stdout.write(html);
+  } else if (cmd === 'build') {
+    const { build, CSP } = await import('./build.js');
+    const include = rest.flatMap((v, i) => (rest[i - 1] === '--include' ? [v] : []));
+    const r = await build({ root: flag('--root', '.'), out: flag('--out', 'dist'), base: flag('--base', ''), include });
+    const total = r.files.reduce((n, f) => n + f.bytes, 0);
+    const gz = r.files.reduce((n, f) => n + f.gzip, 0);
+    console.log(`built ${r.files.length} files into ${r.out} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);
+    for (const w of r.warnings) console.warn(`warning: ${w}`);
+    console.log(`\nruns under:  Content-Security-Policy: ${CSP}`);
+    process.exitCode = r.warnings.length ? 0 : 0;
   } else if (cmd === 'dev') {
     const proxies = rest.flatMap((v, i) => (rest[i - 1] === '--proxy' ? [v] : []));
     const port = flag('--port');

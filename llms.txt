@@ -10,7 +10,7 @@ syntax is Draft. Light DOM only (no Shadow DOM). No virtual DOM, no JSX, no hook
 3. Style with plain CSS/SCSS (custom properties, `@layer`, `@scope`). No utility classes, no CSS-in-JS.
 4. Use native elements: `<button>`, `<form>`, `<dialog>`, `<details>`. Buttons need text or `aria-label`.
 5. Run `xoong check <html files>` and fix every error it prints; its messages contain the fix.
-6. Never invent attributes or operations. Allowed `xo-*` attributes are listed below.
+6. Never invent attributes or operations. Allowed `xo-*` attributes are below.
 
 ## Project setup
     xoong new my-app --spec openapi.json      # scaffold + first list screen
@@ -22,15 +22,14 @@ syntax is Draft. Light DOM only (no Shadow DOM). No virtual DOM, no JSX, no hook
 xoong.config.json: `{ "port": 5173, "proxy": { "/api": "http://localhost:8080" } }`
 xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } },
   "unwrap": "data", "idempotencyKeys": { "sendMessage": "client_message_id" } }`
-(hints fix the backend's spec without editing it: identity; `entity` makes schemas share a record; `unwrap` reads {code,message,data} as data;
-idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stream responses are detected by sync.
+(hints fix the spec without editing it: `entity` shares a record; `unwrap` reads {code,message,data} as data; idempotencyKeys get a fresh UUID per call;
+`fields: { "Schema.prop": { label, hint, placeholder, widget, order, readOnly, hidden, group, emptyAs } }`; `schemas.X.pruneEmpty`.) sync detects multipart and event streams.
 
 ## Start-up (src/main.ts, the only JavaScript most apps need)
     import { configure } from '@xoong/data';
     import '@xoong/data/view';
     import operations from '/.xoong/operations.json' with { type: 'json' };
     configure({ api: operations, baseUrl: '/api', streamUrl: '/api/events' });
-    document.addEventListener('xo-error', (e) => show(e.detail.detail));   // mutation errors
 
 ## Screens: HTML syntax (inside <xo-view>)
     <xo-view get="/users" live>                        read GET /users; `live` applies stream events
@@ -47,15 +46,15 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
   Variables: `$loading`, `$error` (has `status`, `code`, `detail`, `retryAfterS`), `$index`, `$stream`/`$streaming` (events of a call to an event-stream operation). Text is always escaped;
   `href/src/action` values with `javascript:` become about:blank; `on*` and `srcdoc` cannot be interpolated.
 - `xo-each="path"` repeats the element per item (keyed by entity id). `xo-if="path"` / `xo-if="!path"` (empty array = false).
-- `xo-click="OP"` calls an operation; `xo-submit="OP"` on a `<form>` sends the form fields as the JSON body and
-  resets the form on success (add `xo-keep` to keep values). `xo-body="path"` takes a click's body from the scope.
+- `xo-click="OP"` calls an operation; `xo-submit="OP"` on a `<form>` sends its fields as the JSON body (see Forms; a create form
+  empties on success, `xo-keep` keeps values). `xo-body="path"` takes a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
-- `xo-optimistic="status=disabled"` on an xo-click button inside xo-each: show those field values on the item at once, undone if the call fails.
+- `xo-optimistic="status=disabled"` on an xo-click inside xo-each shows those values at once; undone if the call fails.
 - `xo-select` on a checkbox in a row ticks that row (`all:items` in the header ticks all); `xo-selected` on an xo-click button runs it once per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts ticked rows.
 - `xo-confirm="Delete {title}?"` asks first (native dialog). `xo-notice="Saved"` shows a toast after success. `xo-with="status=published"` adds fixed body fields.
-  `xo-selected="ids"` (instead of bare `xo-selected`) sends ONE request with the ticked ids; `$selected` is the list of ticked rows.
+  `xo-selected="ids"` sends ONE request with the ticked ids; `$selected` = the ticked rows.
 - `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button with `xo-param="status=draft"` gets `aria-current` while it is the current value (`status=` matches "unset").
-- Formats: `{publishedAt | datetime}` (also date, time, relative, number, json; `setFormat(name, fn)` adds one).
+- Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json; `setFormat` adds one).
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles v / -v). Paging vars: `$hasPrev`, `$hasNext`.
 - Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. While a call runs the element has `aria-busy="true"`.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
@@ -75,6 +74,13 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
   (functions are reactive; an attribute value must be exactly one expression).
   class X extends XoElement { static props = { name: String, n: Number, on: Boolean }; render() { return html`...` } }
   define('x-card', X)   // tag needs a hyphen; implement render() only if the element owns its content
+
+## Forms (every `<form xo-submit>` whose operation has a request body schema)
+    <xo-view get="getArticle" p-id=":id"><form xo-submit="updateArticle"><input name="title.en"> <button>Save</button></form></xo-view>
+  `name` is a path (`a.b`, `items[0].x`). The view's record fills the fields (edit forms: the operation has {params}); type, required, min/max, pattern
+  come from the schema unless you set them. The model validates, not the browser (novalidate): errors show after blur/submit with aria-invalid.
+  `$form.dirty|valid|submitting|stale`, `$form.errors['a.b']`, `.touched[..]`, `.filled[..]`. Custom rules on the form element: `form.rules = { slug: (v, { record }) => '' | 'message',
+  '*': (record) => ({ path: 'message' }) }` (async ok); `form.serialize = (draft, body) => body`. Invalid submit: cancelable `xo-reveal` {path}, then focus; also `xo-invalid`.
 
 ## Admin set (@xoong/ui; `import '@xoong/ui'`, `<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">`)
     <xo-view get="/users" live>

@@ -10,6 +10,7 @@
     ".": "./src/index.js",
     "./check": "./src/check.js",
     "./cli": "./src/cli.js",
+    "./build": "./src/build.js",
     "./html-data": "./src/html-data.js"
   },
   "license": "MIT",
