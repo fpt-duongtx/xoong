@@ -19,3 +19,22 @@
   .xo-tooltip[hidden] { display: none; }
   xo-menu { position: relative; }
 }
+
+@layer xoong-controls {
+  xo-combobox, xo-tags { display: block; position: relative; }
+  .xo-combobox-box { display: flex; flex-wrap: wrap; gap: var(--xo-space-1, .25rem); align-items: center; padding: var(--xo-space-1, .25rem) var(--xo-space-2, .5rem); border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
+  .xo-combobox-box:focus-within { outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 1px; }
+  .xo-combobox-input { flex: 1 1 8rem; min-width: 6rem; border: 0; outline: none; background: transparent; font: inherit; color: inherit; padding: var(--xo-space-1, .25rem) 0; }
+  .xo-chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .25rem 0 .5rem; border-radius: 999px; background: var(--xo-color-hover, rgb(127 127 127 / .18)); font-size: .9em; }
+  .xo-chip button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; line-height: 1; padding: .15rem .3rem; border-radius: 50%; }
+  .xo-chip button:hover { background: rgb(127 127 127 / .3); }
+  .xo-combobox-list { margin: 0; padding: var(--xo-space-1, .25rem); list-style: none; max-height: 16rem; overflow-y: auto; background: var(--xo-color-surface, #fff); color: inherit; border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); box-shadow: 0 6px 18px rgb(0 0 0 / .15); }
+  .xo-combobox-list:not([popover]) { position: absolute; z-index: 10; inset-inline: 0; }
+  .xo-combobox-list[hidden] { display: none; }
+  .xo-combobox-list [role="option"], .xo-combobox-list .xo-empty { padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); border-radius: 4px; cursor: pointer; }
+  .xo-combobox-list .xo-empty { cursor: default; opacity: .7; }
+  .xo-combobox-list [role="option"].xo-active { background: var(--xo-color-hover, rgb(127 127 127 / .18)); }
+  .xo-combobox-list [role="option"][aria-selected="true"] { font-weight: 600; }
+  .xo-combobox-list [role="option"][aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+  xo-combobox[data-invalid] .xo-combobox-box, xo-tags[data-invalid] .xo-combobox-box { border-color: var(--xo-color-danger, #cf222e); }
+}

@@ -38,7 +38,7 @@ describe('xoong i18n extract', () => {
   });
 
   it('the English catalog shipped in @xoong/i18n is exactly what the source defaults say (regenerate it when you add a string)', async () => {
-    const { catalog, problems } = toCatalog(await extractFrom(['packages/core/src', 'packages/forms/src', 'packages/ui/src']));
+    const { catalog, problems } = toCatalog(await extractFrom(['packages/core/src', 'packages/forms/src', 'packages/ui/src', 'packages/controls/src']));
     expect(problems).toEqual([]);
     expect(catalog).toEqual(builtin);
   });

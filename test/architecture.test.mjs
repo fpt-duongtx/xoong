@@ -75,8 +75,8 @@ describe('size budget (gzip of the source without comments; a regression guard, 
   // Comments and documentation grew with every feature and made the old budget (gzip of the raw files) move without the code
   // growing, so the budget now measures code only. The roadmap's single-digit KB target applies to the *minified* size,
   // which still has to be measured (docs/roadmap.md, size budgets, and the benchmark issue).
-  // Budgets sit about 5-10% above the measured values (core 5.0, data 14.9, forms ~6, ui ~7.7 KB); raising one needs a reason in the commit.
-  const budgetKb = { core: 5.5, data: 15.5, forms: 9.5, i18n: 5, ui: 10 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
+  // Budgets sit about 5-10% above the measured values (core 5.0, data 14.9, forms ~6, ui ~9, controls ~6.5 KB); raising one needs a reason in the commit.
+  const budgetKb = { core: 5.5, data: 15.5, forms: 9.5, i18n: 5, ui: 10, controls: 7 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
   const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {
@@ -116,7 +116,7 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
   it('only mentions xo-* attributes that xoong defines, and documents all of them', async () => {
     const { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } = await import('../packages/core/src/syntax.js');
     const known = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES]);
-    const eventsAndPlanned = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS, 'xo-tab-change', 'xo-done', 'xo-error', 'xo-card', 'xo-reveal', 'xo-invalid', 'xo-navigate', 'xo-dirty', ...CSS_CLASSES]);
+    const eventsAndPlanned = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS, 'xo-tab-change', 'xo-search', 'xo-menu-open', 'xo-menu-close', 'xo-done', 'xo-error', 'xo-card', 'xo-reveal', 'xo-invalid', 'xo-navigate', 'xo-dirty', ...CSS_CLASSES]);
     const mentioned = new Set([...llms.matchAll(/\bxo-[a-z]+(?:-[a-z]+)*\b/g)].map((m) => m[0]));
     for (const name of mentioned) if (!eventsAndPlanned.has(name)) expect(known.has(name), `llms.txt mentions ${name}, which xoong does not define`).toBe(true);
     for (const name of known) expect(mentioned.has(name), `xoong defines ${name}, but llms.txt does not document it`).toBe(true);

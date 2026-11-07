@@ -16,6 +16,7 @@
  * - `xo-menu-open` and `xo-menu-close` fire on the element.
  */
 import { XoElement, define } from '@xoong/core';
+import { prepareLayer, showLayer, hideLayer } from './layer.js';
 
 let counter = 0;
 
@@ -24,6 +25,7 @@ class XoMenu extends XoElement {
 
   /** @type {HTMLElement | null} */ #trigger = null;
   /** @type {HTMLElement | null} */ #panel = null;
+  #stopFollowing = () => {};
   #onDocument = (/** @type {Event} */ event) => { if (!this.contains(/** @type {Node} */ (event.target))) this.close(); };
   // Escape works wherever the focus is: a click leaves it on the trigger (or on the page, in Safari, which does not focus buttons on click)
   #onEscape = (/** @type {KeyboardEvent} */ event) => { if (event.key === 'Escape' && this.isOpen) { event.preventDefault(); this.close({ focus: true }); } };
@@ -48,7 +50,6 @@ class XoMenu extends XoElement {
     panel.id = id;
     panel.setAttribute('role', 'menu');
     if (this.label) panel.setAttribute('aria-label', this.label);
-    panel.hidden = true;
     for (const item of children) {
       if (item === trigger) continue;
       item.setAttribute('role', 'menuitem');
@@ -62,7 +63,7 @@ class XoMenu extends XoElement {
     if (trigger instanceof HTMLButtonElement && !trigger.type) trigger.type = 'button';
     this.#trigger = trigger;
     this.#panel = panel;
-    if ('showPopover' in panel) panel.setAttribute('popover', 'manual'); // top layer; we dismiss it ourselves, the same way everywhere
+    prepareLayer(panel);
     trigger.addEventListener('click', () => (this.isOpen ? this.close() : this.open()));
     trigger.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowDown') { event.preventDefault(); this.open('first'); }
@@ -76,12 +77,7 @@ class XoMenu extends XoElement {
   open(at) {
     const panel = this.#panel;
     if (!panel || this.isOpen) { if (at) this.#focusItem(at === 'last' ? this.#items.length - 1 : 0); return; }
-    panel.hidden = false;
-    if (panel.hasAttribute('popover')) {
-      panel.showPopover();
-      const r = /** @type {HTMLElement} */ (this.#trigger).getBoundingClientRect();
-      Object.assign(panel.style, { position: 'fixed', inset: 'auto', margin: '0', top: `${r.bottom}px`, left: `${r.left}px` });
-    }
+    this.#stopFollowing = showLayer(panel, /** @type {HTMLElement} */ (this.#trigger));
     this.#trigger?.setAttribute('aria-expanded', 'true');
     document.addEventListener('pointerdown', this.#onDocument);
     document.addEventListener('keydown', this.#onEscape);
@@ -92,8 +88,8 @@ class XoMenu extends XoElement {
   close({ focus = false } = {}) {
     const panel = this.#panel;
     if (!panel || !this.isOpen) return;
-    if (panel.hasAttribute('popover')) panel.hidePopover();
-    panel.hidden = true;
+    this.#stopFollowing();
+    hideLayer(panel);
     this.#trigger?.setAttribute('aria-expanded', 'false');
     document.removeEventListener('pointerdown', this.#onDocument);
     document.removeEventListener('keydown', this.#onEscape);

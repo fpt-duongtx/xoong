@@ -1,8 +1,8 @@
 # xoong
 
-xoong is a small web framework on the browser platform. You declare screens in HTML, the data
-layer is generated from OpenAPI, styling is plain CSS. Status: 0.0.x prototype; the HTML
-syntax is Draft. Light DOM only; no virtual DOM, JSX, hooks or required build.
+xoong is a small web framework on the browser platform. Screens are HTML, the data layer is generated
+from OpenAPI, styling is plain CSS. Status: 0.0.x prototype; the HTML syntax is Draft. Light DOM only;
+no virtual DOM, JSX, hooks or required build.
 
 ## Rules (follow all of them)
 1. One way to do each thing. Reads: `<xo-view get>`. Writes: `xo-click` / `xo-submit`. Never call fetch/axios yourself.
@@ -18,12 +18,12 @@ syntax is Draft. Light DOM only; no virtual DOM, JSX, hooks or required build.
     xoong dev                                 # static server + API proxy + .ts stripping (xoong.config.json)
     xoong check index.html                    # lint screens against the API
     xoong doctor openapi.json                 # what in the OpenAPI document limits xoong
-    xoong build --out dist                    # static output for a strict CSP; xoong i18n extract <files> --out en.json
+    xoong build --out dist                    # strict-CSP static output; xoong i18n extract <files> --out en.json
 
 xoong.config.json: `{ "port": 5173, "proxy": { "/api": "http://localhost:8080" } }`
 xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } },
   "unwrap": "data", "idempotencyKeys": { "sendMessage": "client_message_id" } }`
-(hints fix the spec: `entity` shares a record; `unwrap` reads {code,message,data} as data; idempotencyKeys: fresh UUID per call;
+(hints fix the spec: `entity` shares a record; `unwrap` reads {code,message,data}; idempotencyKeys: fresh UUID per call;
 `fields: { "Schema.prop": { label, hint, placeholder, widget, order, readOnly, hidden, group, emptyAs } }`; `schemas.X.pruneEmpty`.)
 
 ## Start-up (src/main.ts, all the JavaScript most apps need)
@@ -42,18 +42,18 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     <xo-view><form xo-submit="POST /users"> <input name="name"> <button>Add</button> </form></xo-view>
 
 - `get`: "/path" (GET /path), "GET /path", or an operationId. Path params come from `p-<name>` attributes:
-  `<xo-view get="/users/{id}" p-id="42">`; `p-id="?id"` reads ?id= from the page URL (post.html?id=3). JS: `view.params = { id: 7 }`.
-- `{path}` reads a field of the current item (`.` = the item, `a.b` nested). Fields fall back to the view's `p-*` params.
-  Variables: `$loading`, `$error` (has `status`, `code`, `detail`, `retryAfterS`), `$index`, `$stream`/`$streaming` (events of a call to an event-stream operation). Text is escaped;
-  `href/src/action` values with `javascript:` become about:blank; `on*` and `srcdoc` cannot be interpolated.
+  `<xo-view get="/users/{id}" p-id="42">`; `p-id="?id"` reads ?id= from the page URL. JS: `view.params = { id: 7 }`.
+- `{path}` reads a field of the current item (`.` = the item, `a.b` nested), then the view's `p-*` params.
+  Variables: `$loading`, `$error` (`status`, `code`, `detail`, `retryAfterS`), `$index`, `$stream`/`$streaming` (events of an event-stream call). Text is escaped;
+  `javascript:` URLs become about:blank; `on*` and `srcdoc` cannot be interpolated.
 - `xo-each="path"` repeats the element per item (keyed by entity id). `xo-if="path"` / `xo-if="!path"` (empty array = false).
-- `xo-click="OP"` calls an operation; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; create forms empty on success,
+- `xo-click="OP"` calls one; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; create forms empty on success,
   `xo-keep` keeps values). `xo-body="path"` takes a click's body from the scope.
-  OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
+  OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each shows it at once; undone on failure.
 - `xo-select` on a row checkbox ticks the row (`all:items`: all); `xo-selected` on an xo-click button runs it per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts them.
-- `xo-confirm="Delete {title}?"` asks first (native dialog, `setConfirm(fn)` swaps it). `xo-notice="Saved"` toasts on success. `xo-with="status=published"` adds body fields.
-  `xo-selected="ids"` sends ONE request with the ticked ids; `$selected` = the ticked rows.
+- `xo-confirm="Delete {title}?"` asks first (native dialog; `setConfirm(fn)`). `xo-notice="Saved"` toasts on success. `xo-with="status=published"` adds body fields.
+  `xo-selected="ids"` sends ONE request with the ticked ids; `$selected` = ticked rows.
 - `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button with `xo-param="status=draft"` gets `aria-current` while current (`status=`: unset).
 - Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json; `setFormat` adds one).
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles). Vars: `$hasPrev`, `$hasNext`.
@@ -61,24 +61,24 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
   a detail query is not refetched if the response returned that entity. Override: `configure({ invalidate: { shipOrder: ['getDashboard'] } })`.
 
-## JavaScript API (use only when HTML is not enough)
+## JavaScript API (only when HTML is not enough)
 @xoong/data: `configure(opts)`, `getClient()`, `derived(({ all, get }) => value)`, `createClient(opts)`, `connectStream`.
-  opts: api (operations.json), baseUrl, headers (fn -> object, for auth), credentials, staleTime=30000, gcTime=300000, retry=2 (GET only),
+  opts: api (operations.json), baseUrl, headers (fn -> object: auth), credentials, staleTime=30000, gcTime=300000, retry=2 (GET only),
   evictEntities, retryDelay=300, invalidate, onError, onUnauthorized, streamUrl, fetch.
-  TypeScript: `createClient<Operations>(...)` (types from .xoong/api.d.ts) checks names, params, bodies.
+  TypeScript: `createClient<Operations>(...)` (from .xoong/api.d.ts) checks names, params, bodies.
   client.load(op, params) -> data | client.query(op, params) -> {data, status, error} signals | client.mutate(op, params, body)
   client.stream(op, params, body) -> async iterator of SSE events {event, data, json, id}
-  `derived` = computed over loaded entities of a type (`all('Order')`); no requests.
-@xoong/core: `signal(v)` (.value, .peek()), `computed(fn)`, `effect(fn)` (side effects only, never fetch in it), `batch`,
+  `derived` = computed over loaded entities of a type (`all('Order')`).
+@xoong/core: `signal(v)` (.value, .peek()), `computed(fn)`, `effect(fn)` (side effects only; never fetch), `batch`,
   `untracked`, `html` + `render(result, el)`, `XoElement` + `define(tag, class)`.
-  html`<p class=${() => c.value} ?hidden=${() => h.value} .value=${v} @click=${fn}>${() => text.value}</p>`  (functions react)
+  html`<p class=${() => c.value} ?hidden=${() => h.value} .value=${v} @click=${fn}>${() => text.value}</p>`
   class X extends XoElement { static props = { name: String, n: Number, on: Boolean }; render() { return html`...` } }
-  define('x-card', X)   // the tag needs a hyphen; custom form controls extend XoControl
+  define('x-card', X)   // the tag needs a hyphen; form controls extend XoControl
 
 ## Forms (`<form xo-submit>` with a request schema)
     <xo-view get="getArticle" p-id=":id"><form xo-submit="updateArticle"><input name="title.en"> <button>Save</button></form></xo-view>
-  `name` is a path (`a.b`, `items[0].x`). The view's record fills the fields; type, required, min/max, pattern come from the schema
-  unless you set them. The model validates (novalidate); errors show after blur/submit.
+  `name` is a path (`a.b`, `items[0].x`). The view's record fills the fields; type, required, min/max, pattern come from the schema.
+  The model validates (novalidate); errors show after blur/submit.
   `$form.dirty|valid|submitting|stale|errors['a.b']|touched[..]|filled[..]`. Arrays/unions: `xo-each="blocks"` over the draft with
   `name="blocks[{$index}].title"`, `xo-add="blocks" xo-with="type=image"`, `xo-remove="blocks[{$index}]"`, `xo-move="blocks[{$index}]:up"`, `xo-if="type=image"`. Rules: `form.rules = { slug: (v, { record }) => '' | 'message',
   '*': (record) => ({ path: 'message' }) }` (async ok); `form.serialize = (draft, body) => body`. Invalid submit: cancelable `xo-reveal` {path}, then focus; `xo-invalid`.
@@ -103,7 +103,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     </xo-router>
   Links are intercepted; `p-id=":id"` reads a path parameter. JS: `router.navigate('/users/3')`,
   `router.guard((to, from) => ok ? true : '/login')`, `router.beforeNavigate(() => !dirty)` vetoes leaving.
-  A dirty form makes the router ask before leaving (`xo-guard="off"` disables). 401: `configure({ onUnauthorized: () => router.navigate('/login') })`.
+  A dirty form makes the router ask first (`xo-guard="off"`: no). 401: `configure({ onUnauthorized: () => router.navigate('/login') })`.
 
 ## Languages (`import '@xoong/i18n'`; flat JSON catalogs, ICU-subset messages)
     <h1 xo-t="home.title">Welcome</h1>   <input xo-t="placeholder:k; aria-label:k2" placeholder="Search" aria-label="Search">
@@ -112,9 +112,10 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 
 ## Controls (`import '@xoong/controls'`)
     <xo-tabs label="Page"><section xo-tab="General">...</section><section xo-tab="SEO" id="seo">...</section></xo-tabs>
-  Panels stay in the DOM; `xo-reveal` selects the invalid field's tab.
-    <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><a href="/x">Open</a><button>Delete</button></xo-menu>
-  `xo-tooltip="text"` on any element describes it on hover/focus (icon buttons still need aria-label).
+    <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><a href="/x">Open</a></xo-menu>
+    <xo-combobox name="a" label="Author" multiple creatable><option value="1">Ada</option></xo-combobox>   <xo-tags name="kw"></xo-tags>
+  Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags are form controls (string, or array with `multiple`);
+  `remote` + `xo-search`, or `el.options = [...]`. `xo-tooltip="text"` describes any element (icon buttons still need aria-label).
 
 ## Live updates (server-sent events)
 JSON per message: {type:"patch", entity:"User", id:42, path:"/status", value:"x", version:7} | {type:"upsert", entity, id, value, version} |

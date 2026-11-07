@@ -15,6 +15,8 @@ const PAGE = `<!doctype html><html><head><link rel="stylesheet" href="/@xoong/co
   <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><button id="edit">Edit</button><button id="del">Delete</button></xo-menu>
 </div>
 <button id="tip" xo-tooltip="Save the draft" style="margin-top:80px">Save</button>
+<div style="overflow:hidden;height:60px;padding:10px"><xo-combobox id="cb" name="person" label="Person" multiple><option value="1">Ada</option><option value="2">Grace</option><option value="3">Barbara</option></xo-combobox></div>
+<xo-tags id="tg" name="kw" label="Keywords"></xo-tags>
 <xo-tabs label="Page"><section xo-tab="One"><input id="in1"></section><section xo-tab="Two" id="two"><input id="in2"></section></xo-tabs>
 <script type="module">import '@xoong/controls'; window.ready = true;</script></body></html>`;
 
@@ -79,6 +81,39 @@ describe('controls in a browser', () => {
     expect(await page.evaluate(() => document.activeElement.textContent)).toBe('Two');
     expect(await page.$eval('#two', (el) => el.hidden)).toBe(false);
     expect(await page.$eval('#in1', (el) => el.checkVisibility())).toBe(false);
+    expect(errors).toEqual([]);
+  });
+
+  it('combobox: the list is in the top layer under the field, picking works with the keyboard, chips and the value follow', async () => {
+    await page.focus('#cb .xo-combobox-input');
+    await page.keyboard.press('ArrowDown');
+    expect(await page.$eval('#cb [role=listbox]', (el) => el.matches(':popover-open'))).toBe(true);
+    const { box, list } = await page.evaluate(() => ({
+      box: document.querySelector('#cb .xo-combobox-box').getBoundingClientRect().toJSON(),
+      list: document.querySelector('#cb [role=listbox]').getBoundingClientRect().toJSON(),
+    }));
+    expect(Math.round(list.top)).toBe(Math.round(box.bottom));
+    expect(Math.round(list.width)).toBe(Math.round(box.width));
+    expect(list.bottom).toBeGreaterThan(60 + 10); // taller than the clipping box: not clipped
+    await page.keyboard.press('Enter'); // Ada; the highlight returns to the first remaining option
+    await page.keyboard.press('Enter'); // Grace
+    expect(await page.$eval('#cb', (el) => el.value)).toEqual(['1', '2']);
+    expect(await page.$$eval('#cb .xo-chip', (c) => c.map((x) => x.firstChild.textContent))).toEqual(['Ada', 'Grace']);
+    await page.keyboard.press('Escape');
+    expect(await page.$eval('#cb [role=listbox]', (el) => el.hidden)).toBe(true);
+    await page.keyboard.press('Backspace');
+    expect(await page.$eval('#cb', (el) => el.value)).toEqual(['1']);
+  });
+
+  it('tags: typing and Enter or comma make chips; the pointer picks a suggestion', async () => {
+    await page.click('#tg .xo-combobox-input');
+    await page.keyboard.type('one');
+    await page.keyboard.press('Enter');
+    await page.keyboard.type('two,');
+    expect(await page.$eval('#tg', (el) => el.value)).toEqual(['one', 'two']);
+    await page.click('#cb .xo-combobox-input');
+    await page.click('#cb [role=option]');
+    expect(await page.$eval('#cb', (el) => el.value)).toEqual(['1', '2']);
     expect(errors).toEqual([]);
   });
 });

@@ -66,6 +66,7 @@ const rowButtons = (path) => `<span class="xo-row-actions"><button type="button"
 
 function field(node, path, name, depth) {
   const text = label(name);
+  if (node.widget?.includes('-') && !PRIMITIVE.has(node.t)) return control(node, path, text); // a custom control owns a whole array, object or union (tags, a block picker)
   if (PRIMITIVE.has(node.t)) return control(node, path, text);
   if (node.t === 'object') return `<fieldset class="xo-object"><legend>${esc(node.title ?? text)}</legend>${fields(node, path, depth)}</fieldset>`;
   if (node.t === 'array') return array(node, path, text, depth);

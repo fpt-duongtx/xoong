@@ -1,8 +1,11 @@
 // The English catalog of xoong's own strings: the starting point for translators. A test keeps it identical to the defaults written in the source
-// (regenerate with: xoong i18n extract packages/core/src packages/forms/src packages/ui/src).
+// (regenerate with: xoong i18n extract packages/core/src packages/forms/src packages/ui/src packages/controls/src).
 export const builtin = {
   "xoong.confirm.cancel": "Cancel",
   "xoong.confirm.ok": "Confirm",
+  "xoong.controls.create": "Add \"{value}\"",
+  "xoong.controls.noResults": "No results",
+  "xoong.controls.remove": "Remove {label}",
   "xoong.form.add": "Add",
   "xoong.form.moveDown": "Move down",
   "xoong.form.moveUp": "Move up",
@@ -16,8 +19,8 @@ export const builtin = {
   "xoong.table.range": "{$from}–{$to} of {total}",
   "xoong.table.rowsPerPage": "Rows per page",
   "xoong.table.selectAll": "Select all rows",
-  "xoong.table.selected": "{$selectedCount} selected",
   "xoong.table.selectRow": "Select row",
+  "xoong.table.selected": "{$selectedCount} selected",
   "xoong.validation.enum": "Choose one of the listed values.",
   "xoong.validation.exclusiveMaximum": "Must be less than {max}.",
   "xoong.validation.exclusiveMinimum": "Must be greater than {min}.",
@@ -26,12 +29,12 @@ export const builtin = {
   "xoong.validation.format.email": "Enter a valid email address.",
   "xoong.validation.format.uri": "Enter a valid URL.",
   "xoong.validation.format.uuid": "Enter a valid ID.",
-  "xoong.validation.maximum": "Must be at most {max}.",
   "xoong.validation.maxItems": "Add at most {max}.",
   "xoong.validation.maxLength": "Use at most {max, plural, one {# character} other {# characters}}.",
-  "xoong.validation.minimum": "Must be at least {min}.",
+  "xoong.validation.maximum": "Must be at most {max}.",
   "xoong.validation.minItems": "Add at least {min}.",
   "xoong.validation.minLength": "Use at least {min, plural, one {# character} other {# characters}}.",
+  "xoong.validation.minimum": "Must be at least {min}.",
   "xoong.validation.multipleOf": "Must be a multiple of {step}.",
   "xoong.validation.pattern": "This does not match the expected format.",
   "xoong.validation.required": "Please fill in this field.",
