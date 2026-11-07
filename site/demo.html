@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo · xoong</title>
+  <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <header class="top">
+    <strong>xoong</strong>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="demo.html" aria-current="page">Demo</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Demo</h1>
+    <p>This table is a real <code>&lt;xo-table&gt;</code> reading <code>demo/people.json</code> through a typed operation. There is no server: GitHub Pages serves the file.</p>
+    <div class="demo">
+      <xo-view get="listPeople">
+        <p xo-if="$loading">Loading…</p>
+        <p xo-if="$error" role="alert">{$error.code}: {$error.detail}</p>
+        <xo-table columns="name,email:E-mail,role" sortable></xo-table>
+      </xo-view>
+    </div>
+    <h2>The markup</h2>
+    <pre><code>&lt;xo-view get="listPeople"&gt;
+  &lt;xo-table columns="name,email:E-mail,role" sortable&gt;&lt;/xo-table&gt;
+&lt;/xo-view&gt;</code></pre>
+  </main>
+  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Install · xoong</title>
+  <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/site.css">
+  
+</head>
+<body>
+  <header class="top">
+    <strong>xoong</strong>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="install.html" aria-current="page">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="demo.html">Demo</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Install</h1>
+    <p class="note">xoong is not on npm yet. Each version is a GitHub Release with one tarball per package. Until it goes public the repository is private, so you need <code>gh</code> signed in to an account that can read it.</p>
+    <h2>1. Download a release</h2>
+    <pre><code>gh release download v0.0.7 -R fpt-duongtx/xoong -D vendor/xoong</code></pre>
+    <h2>2. Point your <code>package.json</code> at the tarballs</h2>
+    <p>Copy <code>dependencies</code> (what you import) and all <code>overrides</code> from <code>vendor/xoong/consume.json</code>, then run <code>npm install</code>.</p>
+    <pre><code>{
+  "dependencies": { "xoong": "file:./vendor/xoong/xoong-0.0.7.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.7.tgz" },
+  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.7.tgz" }
+}</code></pre>
+    <h2>3. Generate typed operations and run</h2>
+    <pre><code>npx xoong sync openapi.json      # writes .xoong/operations.json and api.d.ts
+npx xoong dev                    # dev server with an API proxy
+npx xoong build --out dist       # static output for strict CSP hosting</code></pre>
+    <p>Node 22.12 or newer. Full notes: <code>docs/consuming.md</code> in the repository.</p>
+  </main>
+  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+</body>
+</html>

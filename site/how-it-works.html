@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How it works · xoong</title>
+  <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/site.css">
+  
+</head>
+<body>
+  <header class="top">
+    <strong>xoong</strong>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html" aria-current="page">How it works</a>
+      <a href="demo.html">Demo</a>
+    </nav>
+  </header>
+  <main>
+    <h1>How it works</h1>
+    <h2>Data</h2>
+    <p><code>xoong sync</code> turns your OpenAPI document into <code>operations.json</code>. A <code>&lt;xo-view get="listPeople"&gt;</code> calls the operation, caches the answer in a shared store (entities with the same id are shared between screens) and exposes <code>$loading</code>, <code>$error</code> and the data to the markup inside it.</p>
+    <h2>Actions and forms</h2>
+    <p>Buttons use <code>xo-click="POST /users/{id}/disable"</code>. A form with <code>&lt;xo-form op="createUser"&gt;</code> is drawn from the request schema: nested objects, arrays and unions included. Validation comes from the same schema, with your own rules by path.</p>
+    <h2>Pages</h2>
+    <p><code>&lt;xo-router&gt;</code> is a declarative History-API router with nested layouts, guards and a leave question for unsaved forms. Public pages can be prerendered with <code>@xoong/ssr</code>.</p>
+    <h2>Language</h2>
+    <p><code>@xoong/i18n</code> uses plain JSON catalogs and ICU-style messages; <code>xo-t</code> translates markup.</p>
+    <h2>Safety</h2>
+    <p><code>xoong build</code> rewrites imports to files and removes the need for inline code, so the output runs under <code>default-src 'none'; script-src 'self'</code>.</p>
+  </main>
+  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+</body>
+</html>

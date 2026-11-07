@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Standards-first web framework · xoong</title>
+  <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/site.css">
+  
+</head>
+<body>
+  <header class="top">
+    <strong>xoong</strong>
+    <nav aria-label="Main">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="demo.html">Demo</a>
+    </nav>
+  </header>
+  <main>
+    <h1>xoong</h1>
+    <p>Build data-driven web pages with HTML, plain CSS and your OpenAPI document. No virtual DOM, no runtime dependencies in the core, no build step needed to try it.</p>
+    <p class="note"><strong>Status:</strong> a working prototype (0.0.x). It is not published to npm yet, so installing is done from release files. See <a href="install.html">Install</a>.</p>
+    <h2>What you write</h2>
+    <pre><code>&lt;xo-view get="listPeople"&gt;
+  &lt;xo-table columns="name,email,role" sortable&gt;&lt;/xo-table&gt;
+&lt;/xo-view&gt;</code></pre>
+    <p>The table, its loading and error states, the cache and the types come from the OpenAPI document. <a href="demo.html">See it running.</a></p>
+    <h2>Ideas</h2>
+    <ul>
+      <li><strong>Standards first:</strong> custom elements in the Light DOM, the History API, native <code>&lt;dialog&gt;</code>, <code>Intl</code>.</li>
+      <li><strong>Your API is the contract:</strong> <code>xoong sync</code> reads OpenAPI and writes typed operations; forms and tables are drawn from the schemas.</li>
+      <li><strong>Strict CSP ready:</strong> <code>xoong build</code> produces static output with no inline code.</li>
+      <li><strong>Made for AI and humans:</strong> a short <code>llms.txt</code>, an MCP server, and <code>xoong check</code> that catches mistakes in markup.</li>
+    </ul>
+  </main>
+  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+</body>
+</html>

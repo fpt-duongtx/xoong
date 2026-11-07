@@ -1,0 +1,16 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Demo", "version": "1" },
+  "paths": {
+    "/demo/people.json": {
+      "get": {
+        "operationId": "listPeople",
+        "responses": {
+          "200": { "description": "ok", "content": { "application/json": { "schema": { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Person" } } } } } } },
+          "default": { "description": "error" }
+        }
+      }
+    }
+  },
+  "components": { "schemas": { "Person": { "type": "object", "required": ["id", "name"], "properties": { "id": { "type": "integer" }, "name": { "type": "string" }, "email": { "type": "string" }, "role": { "type": "string", "enum": ["admin", "editor", "viewer"] } } } } }
+}
