@@ -99,8 +99,12 @@ without extra setup because Vitest transpiles them. Browser tests use the Chromi
 
 Coverage gates (statements 88 / branches 79 / functions 88 / lines 92 overall, stricter for `core`)
 are set just under the measured values, so a drop fails the build. CI (`.github/workflows/ci.yml`)
-runs the suite with coverage on Node 20 and 22. The workflow has not been run on GitHub yet;
-every command in it has been run locally.
+runs the suite with coverage on Node 22 and 24.
+
+The development toolchain needs Node 22.12 or newer: Vitest 5 declares that range, and on Node 20 its
+reporter crashes (`Map.groupBy is not a function`) while one data test uses `Object.groupBy`. The first
+CI run failed this way on Node 20, so Node 20 was dropped from the matrix. Whether the runtime packages
+(`cli`, `server`) work on Node 20 is not verified; the browser packages do not run on Node at all.
 
 ## Rules of thumb
 

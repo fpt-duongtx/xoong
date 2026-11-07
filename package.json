@@ -13,7 +13,7 @@
     "test:screens": "vitest run --project screens"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^5.1.0",
