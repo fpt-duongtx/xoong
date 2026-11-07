@@ -34,11 +34,11 @@ first; optional server; OpenAPI is the data contract.
 | `packages/cli` | `sync`, `doctor`, `check`, `new`, `dev` | Done |
 | `packages/server` | `(Request) => Response` handler: static, proxy, TS stripping, import map; Node adapter | Done |
 | `packages/test` | `mount`, `mockApi`, `push`, `settle` on Vitest | Done |
-| `examples/admin` | CRUD + SSE app driven through `xoong dev` in real Chromium | Done, end-to-end test |
+| `packages/ui` | `xoong.css`, `xo-table`, `xo-form`, `xo-dialog` (see `docs/admin.md`, ADR-0007) | First version, screen tests + end to end |
+| `examples/admin` | Admin (table with sort/paging, generated form, dialog, SSE) through `xoong dev` in real Chromium | Done, end-to-end test |
 | `examples/chat` | Screen tests on an anonymised real API spec | Done |
 
-Not built (see `docs/roadmap.md`, "Where we are"): `xo-table`, `xo-form`, `xo-dialog`, admin layout, `xoong.css`
-tokens (0.5); MCP server; typed client (`createClient<Operations>`); SSR; stream gateway; router; editor
+Not built (see `docs/roadmap.md`, "Where we are"): custom table cells, filters and selection (0.5 leftovers); MCP server; typed client (`createClient<Operations>`); SSR; stream gateway; router; editor
 extension and lint presets (designed in `docs/editor-integration.md`); WebSocket; multipart uploads.
 
 Numbers at handover: **168 tests pass** (node 22): 146 in the `logic` project (unit + real browser + end to end) and 22 in `screens` (happy-dom); coverage 92.2% statements,

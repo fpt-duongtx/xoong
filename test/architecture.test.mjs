@@ -16,7 +16,7 @@ const imports = (text) => [...text.matchAll(/(?:import|export)\s[^'"]*?from\s*['
 const isBare = (s) => !s.startsWith('.') && !s.startsWith('/');
 
 /** Runtime packages ship to the browser; each may only depend on the ones listed. */
-const RUNTIME = { core: [], data: ['@xoong/core'] };
+const RUNTIME = { core: [], data: ['@xoong/core'], ui: ['@xoong/core', '@xoong/data'] };
 
 describe('zero runtime dependencies (ADR-0004)', () => {
   for (const [name, allowed] of Object.entries(RUNTIME)) {
@@ -72,7 +72,7 @@ describe('dependency direction (docs/architecture.md)', () => {
 });
 
 describe('size budget (gzip of the unminified source; a regression guard, not the shipped size)', () => {
-  const budgetKb = { core: 6, data: 15 };
+  const budgetKb = { core: 6, data: 15, ui: 6 };
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {
       const all = sources(name).map((s) => s.text).join('\n');
@@ -91,6 +91,9 @@ describe('workspace hygiene', () => {
   });
 });
 
+/** CSS classes of xoong.css that llms.txt documents; a test below checks each one exists in the stylesheet. */
+const CSS_CLASSES = ['xo-admin'];
+
 describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
   const llms = readFileSync('llms.txt', 'utf8');
 
@@ -106,9 +109,9 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
   });
 
   it('only mentions xo-* attributes that xoong defines, and documents all of them', async () => {
-    const { XO_ATTRIBUTES, XO_ELEMENTS } = await import('../packages/core/src/syntax.js');
-    const known = new Set(XO_ATTRIBUTES);
-    const eventsAndPlanned = new Set([...XO_ELEMENTS, 'xo-done', 'xo-error', 'xo-table', 'xo-form', 'xo-card']);
+    const { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } = await import('../packages/core/src/syntax.js');
+    const known = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES]);
+    const eventsAndPlanned = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, 'xo-done', 'xo-error', 'xo-card', ...CSS_CLASSES]);
     const mentioned = new Set([...llms.matchAll(/\bxo-[a-z]+\b/g)].map((m) => m[0]));
     for (const name of mentioned) if (!eventsAndPlanned.has(name)) expect(known.has(name), `llms.txt mentions ${name}, which xoong does not define`).toBe(true);
     for (const name of known) expect(mentioned.has(name), `xoong defines ${name}, but llms.txt does not document it`).toBe(true);
@@ -119,5 +122,17 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
     const view = readFileSync('packages/data/src/view.js', 'utf8');
     for (const name of XO_ATTRIBUTES) expect(view, `view.js does not mention ${name}`).toContain(name);
     for (const name of XO_ELEMENTS) expect(view, `view.js does not define <${name}>`).toContain(`define('${name}'`);
+  });
+
+  it('@xoong/ui implements every UI attribute and element xoong defines', async () => {
+    const { XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } = await import('../packages/core/src/syntax.js');
+    const ui = sources('ui').map((s) => s.text).join('\n');
+    for (const name of XO_UI_ATTRIBUTES) expect(ui, `@xoong/ui does not mention ${name}`).toContain(name);
+    for (const name of XO_UI_ELEMENTS) expect(ui, `@xoong/ui does not define <${name}>`).toMatch(new RegExp(`(define|defineTemplate)\\('${name}'`));
+  });
+
+  it('every CSS class llms.txt documents exists in xoong.css', () => {
+    const css = readFileSync('packages/ui/src/xoong.css', 'utf8');
+    for (const name of CSS_CLASSES) expect(css, `xoong.css has no .${name}`).toContain(`.${name}`);
   });
 });

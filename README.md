@@ -68,6 +68,7 @@ export const revenueByRegion = derived(({ orders }) => groupBy(orders, 'region')
 | [docs/architecture.md](docs/architecture.md) | Layers, packages, runtime flows (with diagrams) |
 | [docs/architecture.html](docs/architecture.html) | The same architecture as a single visual diagram |
 | [docs/design-principles.md](docs/design-principles.md) | The rules every feature must obey |
+| [docs/admin.md](docs/admin.md) | `xoong.css`, `xo-table`, `xo-form`, `xo-dialog`: the admin set |
 | [docs/data-layer.md](docs/data-layer.md) | OpenAPI client, cache, entity store, derived views, streaming |
 | [docs/styling.md](docs/styling.md) | CSS conventions and design tokens |
 | [docs/editor-integration.md](docs/editor-integration.md) | Planned VS Code extension and lint integrations |

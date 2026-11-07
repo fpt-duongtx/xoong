@@ -48,6 +48,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 - `xo-click="OP"` calls an operation; `xo-submit="OP"` on a `<form>` sends the form fields as the JSON body and
   resets the form on success (add `xo-keep` to keep values). `xo-body="path"` takes a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
+- `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles v / -v). Paging vars: `$hasPrev`, `$hasNext`.
 - Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. While a call runs the element has `aria-busy="true"`.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
   a detail query is not refetched if the response already returned that entity. Override: `configure({ invalidate: { shipOrder: ['getDashboard'] } })`.
@@ -66,6 +67,16 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   class X extends XoElement { static props = { name: String, n: Number, on: Boolean }; render() { return html`...` } }
   define('x-card', X)   // tag needs a hyphen; implement render() only if the element owns its content
 
+## Admin set (@xoong/ui; `import '@xoong/ui'`, `<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">`)
+    <xo-view get="/users" live>
+      <xo-table of="items" columns="name,email:E-mail,status" sortable page-size="25">   (needs query params sort, limit, offset; `total` in the response)
+        <button xo-click="DELETE /users/{id}">Delete</button>   (children = last cell of each row)
+      </xo-table>
+    </xo-view>
+    <xo-form op="POST /users" submit="Add"></xo-form>   (fields from the request schema; server field errors shown beside inputs)
+    <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
+  Style by overriding the custom properties listed at the top of xoong.css; layout: <body class="xo-admin"> + header, nav, main.
+
 ## Live updates (server-sent events)
 One JSON object per message: {type:"patch", entity:"User", id:42, path:"/status", value:"disabled", version:7} |
 {type:"upsert", entity, id, value, version} | {type:"delete", entity, id, version} | {type:"resync"} (clients refetch).
@@ -83,5 +94,5 @@ and FastAPI `{ detail: [{ msg }] }`. Unknown operations throw with the closest v
 Mock the network, never the data layer. Every behaviour you add needs a test.
 
 ## Limits today (do not work around them silently; tell the user)
-Swagger 2.0 must be converted first (`npx swagger2openapi`). No SSR, no xo-table/xo-form yet, no WebSocket, no multipart upload
+Swagger 2.0 must be converted first (`npx swagger2openapi`). No SSR, no WebSocket, no multipart upload
 in xo-submit, no declarative streaming for POST (use client.stream), unions without a tag property are not shared.
