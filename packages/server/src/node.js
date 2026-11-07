@@ -47,7 +47,7 @@ async function packageDirOf(entry, name) {
  * @param {string} from  a folder inside the project
  * @param {string[]} names
  */
-export async function findPackages(from, names = ['@xoong/core', '@xoong/data', '@xoong/ui']) {
+export async function findPackages(from, names = ['@xoong/core', '@xoong/data', '@xoong/ui', 'xoong']) {
   const require = createRequire(join(resolve(from), 'noop.js'));
   /** @type {Record<string, { prefix: string, exports: any, dir: string }>} */
   const out = {};

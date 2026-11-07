@@ -22,5 +22,15 @@
   ],
   "engines": {
     "node": ">=22.12"
-  }
+  },
+  "author": "Duong Tran Xuan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/server"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
 }

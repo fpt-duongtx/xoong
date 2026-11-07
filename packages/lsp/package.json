@@ -3,11 +3,36 @@
   "version": "0.0.1",
   "description": "Language server for xoong screens: the same diagnostics as `xoong check`, completion of operation names and xo-* attributes, hover docs. Any editor that speaks LSP.",
   "type": "module",
-  "bin": { "xoong-lsp": "src/cli.js" },
-  "exports": { ".": "./src/server.js" },
-  "files": ["src"],
-  "keywords": ["xoong", "language-server", "lsp"],
-  "engines": { "node": ">=22.12" },
+  "bin": {
+    "xoong-lsp": "src/cli.js"
+  },
+  "exports": {
+    ".": "./src/server.js"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "language-server",
+    "lsp"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
   "license": "MIT",
-  "dependencies": { "@xoong/cli": "*", "@xoong/core": "*" }
+  "dependencies": {
+    "@xoong/cli": "*",
+    "@xoong/core": "*"
+  },
+  "author": "Duong Tran Xuan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/lsp"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
 }

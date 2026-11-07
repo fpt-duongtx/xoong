@@ -130,8 +130,9 @@ becomes public only when there is something finished to show (see section 10). S
 
 ## 7. Open questions for the owner
 
-* Final project/package names and npm scope (the working name is `xoong`, the owner's daughter's nickname;
-  scope `@xoong` was assumed).
+* ~~Final project/package names~~ **Decided:** the package is `xoong` (project name, MIT licence, copyright "Duong Tran Xuan", as in `LICENSE`). The
+  unscoped name `xoong` and every `@xoong/*` name were free on npm on 2026-11-08; whether the `@xoong` scope itself can be
+  registered is not verified (npm does not say without an account: create the organisation `xoong` before the first publish).
 * Which of the owner's real projects goes first for dogfooding, and can we get an anonymised CRUD spec with
   pagination from it? The corpus has none from the owner's own stack besides the chat sample.
 * Browser support matrix of the owner's clients: needed before using newer platform features (Popover,

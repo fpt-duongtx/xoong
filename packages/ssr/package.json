@@ -3,15 +3,35 @@
   "version": "0.0.1",
   "description": "Prerender xoong pages: run the real <xo-view> runtime in Node (happy-dom), wait for the data, write HTML. No hydration step: the browser re-renders from the saved template.",
   "type": "module",
-  "exports": { ".": "./src/render.js" },
-  "files": ["src"],
-  "keywords": ["xoong", "ssr", "prerender"],
-  "engines": { "node": ">=22.12" },
+  "exports": {
+    ".": "./src/render.js"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "ssr",
+    "prerender"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
   "license": "MIT",
   "dependencies": {
     "@xoong/core": "*",
     "@xoong/data": "*",
     "@xoong/ui": "*",
     "happy-dom": "^21.0.4"
-  }
+  },
+  "author": "Duong Tran Xuan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/ssr"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
 }

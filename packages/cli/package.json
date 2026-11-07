@@ -9,6 +9,7 @@
   "exports": {
     ".": "./src/index.js",
     "./check": "./src/check.js",
+    "./cli": "./src/cli.js",
     "./html-data": "./src/html-data.js"
   },
   "license": "MIT",
@@ -29,5 +30,15 @@
   ],
   "engines": {
     "node": ">=22.12"
-  }
+  },
+  "author": "Duong Tran Xuan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
 }
