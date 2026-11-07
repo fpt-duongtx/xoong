@@ -28,10 +28,10 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { parse } from 'parse5';
 import { nearest } from '@xoong/core/closest';
-import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
 
-const ATTRS = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES]);
-const TAGS = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS]);
+const ATTRS = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES]);
+const TAGS = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS]);
 const INTERACTIVE = new Set(['button', 'a', 'input', 'select', 'textarea', 'summary']);
 
 /** @typedef {{ level: 'error'|'warn', code: string, file: string, line: number, column: number, message: string, fix: string }} Finding */

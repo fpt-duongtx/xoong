@@ -11,10 +11,10 @@
  */
 import { checkHtml, checkScript } from '@xoong/cli/check';
 import { ATTRIBUTE_DOCS, ELEMENT_DOCS } from '@xoong/cli/html-data';
-import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
 
-const ATTRS = [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES];
-const TAGS = [...XO_ELEMENTS, ...XO_UI_ELEMENTS];
+const ATTRS = [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES];
+const TAGS = [...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS];
 const isScript = (uri) => /\.(c|m)?[jt]sx?$/.test(uri);
 const isMutationAttr = (name) => name === 'xo-click' || name === 'xo-submit' || name === 'op';
 

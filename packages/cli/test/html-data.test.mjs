@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { htmlData } from '../src/html-data.js';
 import { sync } from '../src/index.js';
-import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
 
 const table = { operations: {
   listUsers: { id: 'listUsers', method: 'GET', path: '/users' },
@@ -15,8 +15,8 @@ const table = { operations: {
 
 test('every element and attribute xoong defines has custom data with a description', () => {
   const data = htmlData(table);
-  assert.deepEqual(data.tags.map((t) => t.name).sort(), [...XO_ELEMENTS, ...XO_UI_ELEMENTS].sort());
-  assert.deepEqual(data.globalAttributes.map((a) => a.name).sort(), [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES].sort());
+  assert.deepEqual(data.tags.map((t) => t.name).sort(), [...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS].sort());
+  assert.deepEqual(data.globalAttributes.map((a) => a.name).sort(), [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES].sort());
   for (const item of [...data.tags, ...data.globalAttributes]) assert.ok(item.description.length > 20, `${item.name} needs a real description`);
 });
 

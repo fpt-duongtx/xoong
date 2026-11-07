@@ -28,7 +28,7 @@ export function parseProxyFlags(values) {
 
 /**
  * Start the dev server.
- * @param {{ root?: string, port?: number, host?: string, allowedHosts?: string[], proxy?: Record<string,string>, spa?: boolean, resolveFrom?: string, quiet?: boolean }} [options]
+ * @param {{ root?: string, port?: number, host?: string, allowedHosts?: string[], proxy?: Record<string,string>, spa?: boolean, resolveFrom?: string, quiet?: boolean, packages?: string[] }} [options]
  */
 export async function startDev(options = {}) {
   const config = await loadConfig(options.root ?? '.');
@@ -36,7 +36,7 @@ export async function startDev(options = {}) {
   const proxy = { ...(config.proxy ?? {}), ...(options.proxy ?? {}) };
   const { createDevHandler, serve } = await import('@xoong/server/node');
   const handler = await createDevHandler({
-    root, resolveFrom: options.resolveFrom ?? root, proxy, packages: config.packages ?? [], spa: options.spa ?? config.spa ?? false,
+    root, resolveFrom: options.resolveFrom ?? root, proxy, packages: options.packages ?? config.packages ?? [], spa: options.spa ?? config.spa ?? false,
     onError: (error, request) => console.error(`xoong dev: ${request.method} ${new URL(request.url).pathname}: ${/** @type {Error} */ (error)?.message ?? error}`),
   });
   const running = await serve(handler, { port: options.port ?? config.port ?? 5173, host: options.host ?? '127.0.0.1', allowedHosts: options.allowedHosts ?? config.allowedHosts ?? [] });

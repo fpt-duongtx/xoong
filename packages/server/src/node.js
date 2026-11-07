@@ -48,7 +48,7 @@ async function packageDirOf(entry, name) {
  * @param {string} from  a folder inside the project
  * @param {string[]} names
  */
-export async function findPackages(from, names = ['@xoong/core', '@xoong/data', '@xoong/forms', '@xoong/ui', 'xoong'], extra = []) {
+export async function findPackages(from, names = ['@xoong/core', '@xoong/data', '@xoong/forms', '@xoong/i18n', '@xoong/controls', '@xoong/ui', 'xoong'], extra = []) {
   const require = createRequire(join(resolve(from), 'noop.js'));
   const xoong = new Set(names);
   names = [...names, ...extra.filter((n) => !xoong.has(n))];

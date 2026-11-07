@@ -5,6 +5,9 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+* New package `@xoong/controls` (zero dependencies besides core): `<xo-tabs>` (ARIA tabs, keyboard, `xo-reveal` selects the tab of an invalid field, `data-invalid` marker), `<xo-menu>` (menu button pattern, Popover API top layer, type-ahead), `xo-tooltip` (hover and focus, dismissible, hoverable); optional `controls.css`. Tested in happy-dom and in Chromium, Firefox and WebKit.
+* `xoong dev` and `xoong build` find `@xoong/i18n` and `@xoong/controls` without configuration.
+
 ## 0.0.8 (binder revert on edit forms)
 
 breaking: none.

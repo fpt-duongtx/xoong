@@ -5,7 +5,7 @@
  * for xo-click, xo-submit, <xo-view get> and <xo-form op> from the synced operations table.
  * Format: https://github.com/microsoft/vscode-html-languageservice/blob/main/docs/customData.md
  */
-import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
 
 export const ATTRIBUTE_DOCS = {
   'xo-each': 'Repeat this element for each item of the list at the given path (keyed by entity id).',
@@ -31,6 +31,9 @@ export const ATTRIBUTE_DOCS = {
   'xo-param': 'On an <input> or <select>: set the view parameter of that name to its value. On other elements, on click, set a view parameter and refetch: `name=value`, `name+=n`, `name-=n`, or `name~=value` (toggle value / -value, for sorting).',
   'xo-open': 'Open the <xo-dialog> matched by this selector, for example `#add`.',
   'xo-close': 'Close the <xo-dialog> this element is in.',
+  'xo-menu-trigger': 'On the button of <xo-menu> that opens it (the first button when none is marked).',
+  'xo-tooltip': 'On any element: a short description shown on hover and focus (and hidden on Escape). It is a description, not the accessible name.',
+  'xo-tab': 'On a section inside <xo-tabs>: the tab label. The section id is the tab key (its position when it has none).',
 };
 export const ELEMENT_DOCS = {
   'xo-view': ['Declare a screen: `get` names the GET operation to read. Children are bound to the result. Add `live` to apply server-sent updates.', [['get', 'A path ("/users") or operationId.'], ['live', 'Apply live updates from the event stream.'], ['url-params', 'Comma-separated param names kept in the page URL (shareable, survive reload and Back): `status,q,sort,offset`.']]],
@@ -38,6 +41,8 @@ export const ELEMENT_DOCS = {
   'xo-form': ['A form generated from the request schema of an operation.', [['op', 'The operation to submit to.'], ['submit', 'Text of the submit button.']]],
   'xo-toast': ['Shows the message of the latest xo-error event on the page; hides on the next xo-done or after `timeout` seconds.', [['timeout', 'Seconds before it hides (default 6, 0 = until the next success).']]],
   'xo-router': ['A History-API router declared in markup: one <template xo-route> per route, optional <template xo-layout> shells. Links are intercepted, aria-current marks the active one. Guards and leave-vetoes are JavaScript (`router.guard`, `router.beforeNavigate`).', [['base', 'Path prefix the app lives under, for example `/admin`.']]],
+  'xo-tabs': ['Accessible tabs (@xoong/controls) from the sections that have xo-tab. Panels stay in the DOM, so form controls on other tabs still count; xo-reveal selects the tab of an invalid field.', [['value', 'Key of the selected tab (default: the first).'], ['label', 'Accessible name of the tab list.']]],
+  'xo-menu': ['An action menu (@xoong/controls): a trigger button and items (buttons or links) with arrow keys, Home/End, type-ahead and Escape. Drawn in the top layer where the browser supports the Popover API.', [['label', 'Accessible name of the menu.']]],
   'xo-dialog': ['A modal on the native <dialog>. Open it with xo-open, close it with xo-close or by submitting a form inside.', []],
 };
 
@@ -52,13 +57,13 @@ export function htmlData(table) {
 
   return {
     version: 1.1,
-    tags: [...XO_ELEMENTS, ...XO_UI_ELEMENTS].map((name) => {
+    tags: [...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS].map((name) => {
       const [description, attrs] = ELEMENT_DOCS[name] ?? [name, []];
       const attributes = attrs.map(([n, d]) => ({ name: n, description: d, ...(n === 'get' ? { valueSet: 'xo-reads' } : n === 'op' ? { valueSet: 'xo-mutations' } : {}) }));
       if (name === 'xo-view') for (const p of params) attributes.push({ name: `p-${p}`, description: `Value of the path parameter "${p}" for the view's operation.` });
       return { name, description, attributes };
     }),
-    globalAttributes: [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES].map((name) => ({
+    globalAttributes: [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES].map((name) => ({
       name, description: ATTRIBUTE_DOCS[name] ?? name,
       ...(name === 'xo-click' || name === 'xo-submit' ? { valueSet: 'xo-mutations' } : {}),
     })),
