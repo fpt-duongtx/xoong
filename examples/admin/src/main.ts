@@ -1,15 +1,8 @@
 import { configure } from '@xoong/data';
 import '@xoong/data/view';
+import '@xoong/ui';
 import operations from '/.xoong/operations.json' with { type: 'json' };
 
-// One client for the whole app. `streamUrl` is used by every <xo-view live>.
-configure({ api: operations, baseUrl: '/api', streamUrl: '/api/events' });
-
-// Mutation failures arrive as bubbling `xo-error` events carrying the normalised error.
-const toast = document.getElementById('toast') as HTMLElement;
-document.addEventListener('xo-error', (event) => {
-  const error = (event as CustomEvent).detail as { code?: string; detail?: string; message: string };
-  toast.textContent = error.detail ?? error.message;
-  toast.hidden = false;
-});
-document.addEventListener('xo-done', () => { toast.hidden = true; });
+// The whole application script: one client for every screen. `streamUrl` serves every <xo-view live>.
+const options: Parameters<typeof configure>[0] = { api: operations, baseUrl: '/api', streamUrl: '/api/events' };
+configure(options);

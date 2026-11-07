@@ -7,9 +7,9 @@ export function startBackend({ port = 0 } = {}) {
   let nextId = 4;
   let version = 0;
   const users = new Map([
-    [1, { id: 1, name: 'Ada Lovelace', email: 'ada@example.com', status: 'active' }],
-    [2, { id: 2, name: 'Grace Hopper', email: 'grace@example.com', status: 'active' }],
-    [3, { id: 3, name: 'Alan Turing', email: 'alan@example.com', status: 'active' }],
+    [1, { id: 1, name: 'Ada Lovelace', email: 'ada@example.com', role: 'admin', status: 'active' }],
+    [2, { id: 2, name: 'Grace Hopper', email: 'grace@example.com', role: 'member', status: 'active' }],
+    [3, { id: 3, name: 'Alan Turing', email: 'alan@example.com', role: 'member', status: 'active' }],
   ]);
   /** @type {Set<import('node:http').ServerResponse>} */
   const streams = new Set();
@@ -20,7 +20,7 @@ export function startBackend({ port = 0 } = {}) {
     res.writeHead(status, { 'content-type': status >= 400 ? 'application/problem+json' : 'application/json' });
     res.end(body === undefined ? undefined : JSON.stringify(body));
   };
-  const fail = (res, status, code, message) => send(res, status, { error: { code, message } });
+  const fail = (res, status, code, message, fields) => send(res, status, { error: { code, message, ...(fields ? { fields } : {}) } });
   const readJson = async (req) => { let t = ''; for await (const c of req) t += c; try { return t ? JSON.parse(t) : {}; } catch { return null; } };
 
   const server = http.createServer(async (req, res) => {
@@ -37,16 +37,26 @@ export function startBackend({ port = 0 } = {}) {
       hits.list++;
       const status = url.searchParams.get('status');
       const limit = Number(url.searchParams.get('limit') ?? 100);
-      const items = [...users.values()].filter((u) => !status || u.status === status).slice(0, limit);
-      return send(res, 200, { items, total: items.length });
+      const offset = Number(url.searchParams.get('offset') ?? 0);
+      const sort = url.searchParams.get('sort');
+      const rows = [...users.values()].filter((u) => !status || u.status === status);
+      if (sort) {
+        const key = sort.replace(/^-/, '');
+        if (!(key in rows[0] ?? {})) return fail(res, 400, 'bad_sort', `cannot sort by ${key}`);
+        rows.sort((a, b) => String(a[key]).localeCompare(String(b[key])) * (sort.startsWith('-') ? -1 : 1));
+      }
+      return send(res, 200, { items: rows.slice(offset, offset + limit), total: rows.length });
     }
     if (req.method === 'POST' && url.pathname === '/users') {
       const body = await readJson(req);
       if (!body) return fail(res, 400, 'bad_json', 'body is not valid JSON');
-      if (!String(body.name ?? '').trim()) return fail(res, 422, 'validation_failed', 'name is required');
-      if (!/^\S+@\S+$/.test(String(body.email ?? ''))) return fail(res, 422, 'validation_failed', 'email is not valid');
+      const fields = {};
+      if (!String(body.name ?? '').trim()) fields.name = 'name is required';
+      if (!/^\S+@\S+$/.test(String(body.email ?? ''))) fields.email = 'email is not valid';
+      if (!['admin', 'member'].includes(body.role)) fields.role = 'role must be admin or member';
+      if (Object.keys(fields).length) return fail(res, 422, 'validation_failed', Object.values(fields)[0], fields);
       hits.create++;
-      const user = { id: nextId++, name: String(body.name).trim(), email: body.email, status: 'active' };
+      const user = { id: nextId++, name: String(body.name).trim(), email: body.email, role: body.role, status: 'active' };
       users.set(user.id, user);
       push({ type: 'resync' });
       return send(res, 201, user);

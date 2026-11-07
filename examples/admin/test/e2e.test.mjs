@@ -13,7 +13,9 @@ const repo = new URL('../../..', import.meta.url).pathname;
 let backend, dev, browser, page1, page2;
 const errors = [];
 const names = (page) => page.$$eval('tbody tr', (rows) => rows.map((r) => r.children[0].textContent.trim()));
-const statuses = (page) => page.$$eval('tbody tr', (rows) => rows.map((r) => r.querySelector('.badge')?.textContent.trim()));
+const statuses = (page) => page.$$eval('tbody tr', (rows) => rows.map((r) => r.children[3].textContent.trim()));
+const pager = (page) => page.$$eval('.xo-pager button', (b) => b.map((x) => x.textContent.trim()));
+const waitNames = (page, expected) => page.waitForFunction((want) => JSON.stringify([...document.querySelectorAll('tbody tr')].map((r) => r.children[0].textContent.trim())) === JSON.stringify(want), expected, { timeout: 5000 });
 const waitRows = (page, n) => page.waitForFunction((count) => document.querySelectorAll('tbody tr').length === count, n, { timeout: 5000 });
 
 beforeAll(async () => {
@@ -28,68 +30,97 @@ beforeAll(async () => {
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   }
   await page1.goto(dev.url);
-  await waitRows(page1, 3);
+  await waitRows(page1, 2);
 }, 60000);
 
 afterAll(async () => { await browser?.close(); await dev?.close(); await backend?.close(); });
 
-describe('admin example in a real browser', () => {
+describe('admin example in a real browser (declarations only, no application JavaScript beyond configure())', () => {
   it('its HTML passes `xoong check` against the synced API', async () => {
     const table = JSON.parse(await readFile(join(dir, '.xoong/operations.json'), 'utf8'));
     const { findings } = await checkFiles([join(dir, 'index.html')], table);
     expect(findings).toEqual([]);
   });
 
-  it('renders the list declared in HTML (no application JavaScript besides configure())', async () => {
-    expect(await names(page1)).toEqual(['Ada Lovelace', 'Grace Hopper', 'Alan Turing']);
-    expect(await statuses(page1)).toEqual(['active', 'active', 'active']);
+  it('renders the first page declared by <xo-table page-size>, with the layout and tokens from xoong.css', async () => {
+    expect(await names(page1)).toEqual(['Ada Lovelace', 'Grace Hopper']);
+    expect(await statuses(page1)).toEqual(['active', 'active']);
+    expect(await pager(page1)).toEqual(['Next']);
     expect(backend.hits.list).toBe(1);
+    expect(await page1.$eval('body', (b) => getComputedStyle(b).display)).toBe('grid'); // .xo-admin layout
+    const css = await fetch(dev.url + '/@xoong/ui/src/xoong.css');
+    expect(css.status).toBe(200);
   });
 
-  it('a click calls the operation, updates the row in place and refetches the list once', async () => {
+  it('paging asks the server for the next page and Previous goes back', async () => {
+    await page1.click('.xo-pager button:text("Next")');
+    await waitNames(page1, ['Alan Turing']);
+    expect(await pager(page1)).toEqual(['Previous']);
+    await page1.click('.xo-pager button:text("Previous")');
+    await waitNames(page1, ['Ada Lovelace', 'Grace Hopper']);
+  });
+
+  it('sorting is done by the server: ascending, descending, ascending again', async () => {
+    await page1.click('thead button:text("name")');
+    await waitNames(page1, ['Ada Lovelace', 'Alan Turing']);
+    await page1.click('thead button:text("name")');
+    await waitNames(page1, ['Grace Hopper', 'Alan Turing']);
+    await page1.click('thead button:text("name")');
+    await waitNames(page1, ['Ada Lovelace', 'Alan Turing']);
+  });
+
+  it('a row action calls the operation and updates in place; another tab sees it live, with no list request', async () => {
     await page1.evaluate(() => { document.querySelector('tbody tr').dataset.keep = '1'; });
+    await page2.goto(dev.url);
+    await waitRows(page2, 2);
+    await expect.poll(() => backend.streams.size).toBe(2);
+    const listBefore = backend.hits.list;
     await page1.click('tbody tr:nth-child(1) button:text("Disable")');
-    await page1.waitForFunction(() => document.querySelector('tbody tr .badge').textContent.trim() === 'disabled');
+    await page2.waitForFunction(() => document.querySelector('tbody tr').children[3].textContent.trim() === 'disabled', null, { timeout: 5000 });
+    await page1.waitForFunction(() => document.querySelector('tbody tr').children[3].textContent.trim() === 'disabled', null, { timeout: 5000 });
+    expect(await statuses(page1)).toEqual(['disabled', 'active']);
     expect(await page1.$eval('tbody tr', (r) => r.dataset.keep)).toBe('1'); // same DOM node: no re-render of the row
     expect(backend.hits.disable).toBe(1);
-    await expect.poll(() => backend.hits.list).toBe(2);
+    await expect.poll(() => backend.hits.list).toBe(listBefore + 1); // only the acting tab refetched
   });
 
-  it('another browser tab sees a change live, without polling or any list request', async () => {
-    await page2.goto(dev.url);
-    await waitRows(page2, 3);
-    expect(await statuses(page2)).toEqual(['disabled', 'active', 'active']);
-    await expect.poll(() => backend.streams.size).toBe(2); // both tabs are subscribed
-    const listBefore = backend.hits.list;
-    await page1.click('tbody tr:nth-child(2) button:text("Disable")');
-    await page2.waitForFunction(() => document.querySelectorAll('.badge')[1].textContent.trim() === 'disabled', null, { timeout: 5000 });
-    await expect.poll(() => backend.hits.list).toBe(listBefore + 1); // only the acting tab refetched; tab 2 got the patch
+  it('the dialog opens, shows a form generated from the request schema, and closes after a successful add', async () => {
+    expect(await page1.$eval('dialog', (d) => d.open)).toBe(false);
+    await page1.click('button:text("Add a person")');
+    expect(await page1.$eval('dialog', (d) => d.open)).toBe(true);
+    expect(await page1.$$eval('dialog label > span', (s) => s.map((x) => x.textContent))).toEqual(['Name', 'Email', 'Role']);
+    await page1.fill('dialog input[name=name]', 'Dana Scott');
+    await page1.fill('dialog input[name=email]', 'dana@example.com');
+    await page1.selectOption('dialog select[name=role]', 'member');
+    await page1.click('dialog form button');
+    await page1.waitForFunction(() => !document.querySelector('dialog').open, null, { timeout: 5000 });
+    await expect.poll(() => backend.users.size).toBe(4);
+    expect(await page1.inputValue('dialog input[name=name]')).toBe(''); // the form was reset
+    // the other tab got a resync event and refetched; the new person is on its second page
+    await page2.click('.xo-pager button:text("Next")');
+    await waitNames(page2, ['Alan Turing', 'Dana Scott']);
   });
 
-  it('adding a person refetches in the acting tab and, through a resync event, in the other one', async () => {
-    await page1.fill('input[name=name]', 'Dana Scott');
-    await page1.fill('input[name=email]', 'dana@example.com');
-    await page1.click('form button');
-    await waitRows(page1, 4);
-    await waitRows(page2, 4);
-    expect(await names(page2)).toContain('Dana Scott');
-    expect(await page1.inputValue('input[name=name]')).toBe(''); // the form was reset after a successful send
-  });
-
-  it('an API error is normalised and shown (message comes from the { error: { code, message } } envelope)', async () => {
-    await page1.fill('input[name=name]', '   ');
-    await page1.fill('input[name=email]', 'x@example.com');
-    await page1.click('form button');
-    await page1.waitForSelector('#toast:not([hidden])');
-    expect((await page1.textContent('#toast')).trim()).toBe('name is required');
-    expect(backend.users.size).toBe(4); // nothing was created
+  it('a validation error from the server appears beside the field and the dialog stays open', async () => {
+    await page1.click('button:text("Add a person")');
+    await page1.fill('dialog input[name=name]', '   ');
+    await page1.fill('dialog input[name=email]', 'x@example.com');
+    await page1.selectOption('dialog select[name=role]', 'admin');
+    await page1.click('dialog form button');
+    await page1.waitForSelector('dialog .xo-error');
+    expect((await page1.textContent('dialog .xo-error')).trim()).toBe('name is required');
+    expect(await page1.$eval('dialog input[name=name]', (i) => i.getAttribute('aria-invalid'))).toBe('true');
+    expect(await page1.$eval('dialog', (d) => d.open)).toBe(true);
+    expect(await page1.inputValue('dialog input[name=email]')).toBe('x@example.com'); // typed values survive an error
+    expect(backend.users.size).toBe(4);
+    await page1.click('dialog button:text("Cancel")');
+    expect(await page1.$eval('dialog', (d) => d.open)).toBe(false);
   });
 
   it('deleting removes the row in both tabs', async () => {
-    await page1.click('tbody tr:nth-child(3) button.danger');
-    await waitRows(page1, 3);
-    await waitRows(page2, 3);
-    expect(await names(page2)).toEqual(['Ada Lovelace', 'Grace Hopper', 'Dana Scott']);
+    await page1.click('tbody tr:nth-child(2) button.danger'); // Alan Turing
+    await waitNames(page1, ['Ada Lovelace', 'Dana Scott']);
+    await waitNames(page2, ['Dana Scott']);
   });
 
   it('produced no browser errors, and the dev server stripped the TypeScript on the way', async () => {
@@ -97,6 +128,6 @@ describe('admin example in a real browser', () => {
     expect(errors.filter((e) => !/status of 422/.test(e))).toEqual([]);
     expect(errors.filter((e) => /status of 422/.test(e))).toHaveLength(1);
     const main = await (await fetch(dev.url + '/src/main.ts')).text();
-    expect(main).not.toMatch(/as HTMLElement|as CustomEvent/);
+    expect(main).not.toMatch(/Parameters<typeof configure>/);
   });
 });
