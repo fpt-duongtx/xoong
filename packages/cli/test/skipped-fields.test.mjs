@@ -29,13 +29,15 @@ describe('required body fields that a generated form cannot produce', () => {
     assert.deepEqual(operations.createArticle.bodyFields.map((f) => f.name), ['slug']);
   });
 
-  it('xoong check warns (XO255) when a required field cannot be generated, and stays quiet when only optional ones are skipped', () => {
+  it('xoong check warns (XO255) only when there is no request schema to generate nested fields from, and stays quiet when only optional ones are skipped', () => {
     const { operations } = analyze(doc);
-    const table = { operations };
-    const f = checkHtml('<xo-form op="createArticle"></xo-form>', table);
+    expect(checkHtml('<xo-form op="createArticle"></xo-form>', { operations })).toEqual([]); // a request schema exists: nested fields are drawn
+    const noSchema = { createArticle: { ...operations.createArticle, bodySchema: undefined } }; // as for a multipart body
+    const f = checkHtml('<xo-form op="createArticle"></xo-form>', { operations: noSchema });
     expect(f.map((x) => x.code)).toEqual(['XO255']);
     expect(f[0].level).toBe('warn');
     expect(f[0].message).toContain('title (object)');
+    const table = { operations };
     const optionalOnly = analyze({ ...doc, components: { schemas: { NewArticle: obj({ slug: { type: 'string' }, tags: { type: 'array', items: { type: 'string' } } }, ['slug']) } } });
     expect(checkHtml('<xo-form op="createArticle"></xo-form>', { operations: optionalOnly.operations })).toEqual([]);
   });

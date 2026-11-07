@@ -175,8 +175,14 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
 * **Hints** for presentation (`xoong.hints.json`, `fields["Schema.property"]`): `label`, `hint`, `placeholder`, `widget` (a built-in name or the tag of an `XoControl`),
   `order`, `readOnly`, `hidden`, `group`, `emptyAs`, `pruneEmpty`; any other key is passed through to the widget. `x-xoong-widget` in the OpenAPI document does the same.
 * **Leaving.** A dirty form makes the router ask first (`xo-guard="off"` disables, other text is the question); closing the tab uses `beforeunload`.
-* `<xo-form op="...">` writes the controls for you (simple fields, enums, checkboxes, file inputs) and the same binder does the rest. Nested objects, arrays and unions
-  in generated forms are the next step; until then write those parts by hand (`xoong check` XO255 warns when a required field cannot be generated).
+* **Arrays, objects and unions in a hand-written form** (the form's scope is its draft): `<div xo-each="blocks">` over the array with `name="blocks[{$index}].title.en"` (inside a nested
+  array use `{$i0}` for the outer row, `{$i1}` for the next), `xo-add="blocks" xo-with="type=image"` (a union item needs its tag), `xo-remove="blocks[{$index}]"`,
+  `xo-move="blocks[{$index}]:up"` (or `:down`), and `xo-if="type=image"` to show the fields of one variant (`path=value` and `path!=value` compare with a literal).
+  Rows are plain buttons, so everything is keyboard accessible. Touched state follows an item that moves; errors, server errors and rules recompute for the new positions.
+* **`<xo-form op="...">`** writes that markup for you from the request schema (`bodySchema`): labelled controls, enums as selects, booleans as checkboxes, formats choosing the input type, nested objects as
+  fieldsets, arrays as rows with add/remove/up/down buttons, unions as one "Add <variant>" button each with the fields of the row's variant. Hints change it: `order`, `group` (a fieldset with
+  a legend), `widget` (textarea, password, url, email, color, date, datetime, select, or the tag of any `XoControl`), `hidden` (kept in the model and sent, not drawn), `readOnly` (not drawn, not sent), `label`/`hint`.
+  The same binder does the rest. An operation without a request schema (a multipart body) gets the flat generator, and `xoong check` XO255 warns when it cannot draw a required nested field.
 
 ## `<xo-dialog>`
 

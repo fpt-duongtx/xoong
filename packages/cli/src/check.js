@@ -15,7 +15,7 @@
  *   XO250 <xo-table sortable|page-size> but the view's operation lacks the query parameters (sort | limit, offset)
  *   XO204 client.load/query on a non-GET operation, or client.mutate/stream on a GET (JavaScript and TypeScript files)
  *   XO254 xo-selected not on an xo-click element, or xo-select not on a checkbox
- *   XO255 <xo-form op> operation has required body fields it cannot generate (nested objects, arrays): the form cannot succeed
+ *   XO255 <xo-form op> operation has no request schema (multipart) and required body fields the flat generator cannot draw: the form cannot succeed
  *   XO260 route path missing, not starting with "/", or declared twice
  *   XO261 layout="x" names a layout the router does not declare
  *   XO262 a layout template without an xo-outlet
@@ -122,7 +122,7 @@ export function checkHtml(source, table, file = '<input>') {
       if (tag === 'xo-form') {
         const ref = attr(node, 'op');
         const op = ref ? lookup(node, 'op', ref.value) : undefined;
-        const missing = (op?.bodySkipped ?? []).filter((s) => s.required);
+        const missing = op?.bodySchema ? [] : (op?.bodySkipped ?? []).filter((s) => s.required); // with a request schema the generator draws nested fields too
         if (op && missing.length) report('warn', 'XO255', node, 'op', `${op.method} ${op.path} requires ${missing.map((m) => `${m.name} (${m.type})`).join(', ')}, which <xo-form> cannot generate yet, so the generated form can never succeed`, 'Write this form by hand (<form xo-submit>), or make the field optional in the API');
         if (op && !(op.bodyFields ?? []).length) report('warn', 'XO252', node, 'op', `${op.method} ${op.path} has no simple request fields, so <xo-form> would be empty`, 'Write the <form xo-submit> by hand, or describe the request body as an object of strings, numbers and booleans');
       }
