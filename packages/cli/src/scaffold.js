@@ -13,20 +13,20 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
  * Returns { operation, listPath, columns } or null.
  */
 export function pickListScreen(a) {
-  const resolve = (s) => (s?.$ref ? a.schemas[refName(s.$ref)] : s);
+  const deref = (s) => (s?.$ref ? a.schemas[refName(s.$ref)] : s);
   const columnsOf = (item) => {
-    const schema = resolve(item);
+    const schema = deref(item);
     const props = { ...(schema?.properties ?? {}) };
-    for (const part of schema?.allOf ?? []) Object.assign(props, resolve(part)?.properties ?? {});
-    return Object.entries(props).filter(([, v]) => SCALAR.has(resolve(v)?.type)).map(([k]) => k).slice(0, 4);
+    for (const part of schema?.allOf ?? []) Object.assign(props, deref(part)?.properties ?? {});
+    return Object.entries(props).filter(([, v]) => SCALAR.has(deref(v)?.type)).map(([k]) => k).slice(0, 4);
   };
   for (const op of Object.values(a.operations)) {
     if (op.method !== 'GET' || /\{/.test(op.path)) continue;
-    const root = resolve(op._types.okSchema);
+    const root = deref(op._types.okSchema);
     if (!root) continue;
     if (root.type === 'array') { const columns = columnsOf(root.items); if (columns.length) return { operation: op, listPath: '.', columns }; }
     for (const [key, v] of Object.entries(root.properties ?? {})) {
-      const prop = resolve(v);
+      const prop = deref(v);
       if (prop?.type === 'array') { const columns = columnsOf(prop.items); if (columns.length) return { operation: op, listPath: key, columns }; }
     }
   }

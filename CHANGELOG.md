@@ -5,6 +5,14 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.7 (confirm regression, symlinked packages)
+
+breaking: none.
+
+### Fixed
+* `@xoong/ui`: `confirm()` threw `text is not a function` (a local variable hid the imported `text`), so `xo-confirm` and the dirty-form leave question never opened. Real-browser test added; a source test now fails when a declaration reuses the name of an import (`no-shadow` class).
+* `xoong build`: an app inside the package it consumes (`"rainlet": "file:.."`, workspaces) keeps its pages at the site root instead of under `/@pkg/...`; the root and output folder are compared by real path.
+
 ## 0.0.6 (custom controls, inline unions, config packages)
 
 breaking: none.

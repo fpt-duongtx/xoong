@@ -23,9 +23,9 @@ export function confirm(message, options = {}) {
     const d = document.createElement('dialog');
     d.className = 'xo-confirm';
     d.setAttribute('aria-labelledby', 'xo-confirm-text');
-    const text = document.createElement('p');
-    text.id = 'xo-confirm-text';
-    text.textContent = message;
+    const body = document.createElement('p');
+    body.id = 'xo-confirm-text';
+    body.textContent = message;
     const cancel = document.createElement('button');
     cancel.type = 'button';
     cancel.textContent = options.cancel ?? (labels.cancel === 'Cancel' ? text('xoong.confirm.cancel', 'Cancel') : labels.cancel);
@@ -36,7 +36,7 @@ export function confirm(message, options = {}) {
     const row = document.createElement('div');
     row.className = 'xo-confirm-actions';
     row.append(cancel, ok);
-    d.append(text, row);
+    d.append(body, row);
     let answer = false;
     const finish = () => { d.remove(); if (dialog === d) dialog = null; resolve(answer); };
     cancel.addEventListener('click', () => { answer = false; d.close ? d.close() : finish(); });

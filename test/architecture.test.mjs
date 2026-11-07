@@ -141,3 +141,20 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
     for (const name of CSS_CLASSES) expect(css, `xoong.css has no .${name}`).toContain(`.${name}`);
   });
 });
+
+describe('no declaration hides an import (the class of bug no-shadow catches)', () => {
+  const IMPORTED = /import\s*(?:(\w+)\s*,?\s*)?(?:\{([^}]*)\})?\s*from\s*['"][^'"]+['"]/g;
+  const names = (text) => [...text.matchAll(IMPORTED)].flatMap((m) => [m[1], ...(m[2] ?? '').split(',').map((s) => s.trim().split(/\s+as\s+/).pop())]).filter(Boolean);
+  const all = readdirSync('packages').filter((p) => existsSync(join('packages', p, 'src'))).flatMap((p) => sources(p));
+  it('no const, let, var, function or class in a source file reuses the name of something it imports', () => {
+    const clashes = [];
+    for (const { file, text } of all) {
+      const code = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+      for (const name of names(code)) {
+        const decl = new RegExp(`(?:\\b(?:const|let|var|function|class)\\s+${name}\\b|\\b(?:const|let|var)\\s*\\{[^}]*\\b${name}\\b[^}]*\\}\\s*=)`);
+        if (decl.test(code)) clashes.push(`${file}: "${name}" is imported and declared again`);
+      }
+    }
+    expect(clashes).toEqual([]);
+  });
+});

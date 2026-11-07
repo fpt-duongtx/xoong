@@ -12,8 +12,8 @@
  *   - nothing is minified or bundled; every file is the one you wrote (readable in the browser's tools).
  * What cannot be seen (a fetch() of a data file, an image named in JavaScript) is added with `--include <file-or-folder>`.
  */
-import { readFile, writeFile, mkdir, readdir, stat, copyFile } from 'node:fs/promises';
-import { dirname, join, relative, resolve, extname, posix, sep } from 'node:path';
+import { readFile, writeFile, mkdir, readdir, stat, copyFile, realpath } from 'node:fs/promises';
+import { basename, dirname, join, relative, resolve, extname, posix, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { parse } from 'parse5';
 import { findPackages, packagePath, stripTypes } from '@xoong/server/node';
@@ -32,8 +32,10 @@ export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; con
  * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string }>}
  */
 export async function build({ root = '.', out = 'dist', base = '', include = [], packages: extra } = {}) {
-  const rootDir = resolve(root);
-  const outDir = resolve(out);
+  const rootDir = await realpath(resolve(root)); // real path: packages are found by theirs, so an app inside a symlinked package must compare equal
+  // the output folder may not exist yet: resolve the part that does
+  const realOut = async (p) => { try { return await realpath(p); } catch { const up = dirname(p); return up === p ? p : join(await realOut(up), basename(p)); } };
+  const outDir = await realOut(resolve(out));
   const basePath = base ? `/${base.replace(/^\/+|\/+$/g, '')}` : '';
   const packages = await findPackages(rootDir, undefined, extra ?? (await loadConfig(rootDir)).packages ?? []);
   const importMap = buildImportMap(packages).imports;
@@ -55,8 +57,14 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     for (const p of Object.values(packages)) if (url.startsWith(`${p.prefix}/`)) return p.prefix + packagePath(p.exports, url.slice(p.prefix.length));
     return url;
   };
+  /**
+   * The URL of a file. The most specific owner wins: an app that lives inside the package it consumes (`"rainlet": "file:.."`, a workspace)
+   * keeps its own pages at the site root, while the package's files are still served under its prefix.
+   */
   const urlOf = (file) => {
-    for (const p of Object.values(packages)) if (file === p.dir || file.startsWith(p.dir + sep)) return `${p.prefix}${file.slice(p.dir.length).split(sep).join('/')}`;
+    const inside = (dir) => file === dir || file.startsWith(dir + sep);
+    const owner = Object.values(packages).filter((p) => inside(p.dir)).sort((a, b) => b.dir.length - a.dir.length)[0];
+    if (owner && !(inside(rootDir) && rootDir.length > owner.dir.length)) return `${owner.prefix}${file.slice(owner.dir.length).split(sep).join('/')}`;
     return `/${relative(rootDir, file).split(sep).join('/')}`;
   };
   const inOut = (f) => f === outDir || f.startsWith(outDir + sep); // the output folder is never an input, even when it sits inside the root

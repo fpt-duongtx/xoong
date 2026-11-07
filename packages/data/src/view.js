@@ -522,9 +522,9 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
         if (idsField) body = { ...(body ?? {}), ...extra, [idsField]: host.selectedRefs().map((r) => selectedId(client, r)) };
         else if (extra) body = { ...(body ?? {}), ...extra };
         if (op.stream) {
-          const signal = host.beginStream();
-          try { await host.consume(client.stream(ref, params, body, { signal })); } catch (e) { if (signal.aborted) return undefined; throw e; } // view gone: stop quietly
-          finally { if (!signal.aborted) client.invalidateAll(); } // the stream may have changed data that is on screen, even if it failed halfway
+          const abort = host.beginStream();
+          try { await host.consume(client.stream(ref, params, body, { signal: abort })); } catch (e) { if (abort.aborted) return undefined; throw e; } // view gone: stop quietly
+          finally { if (!abort.aborted) client.invalidateAll(); } // the stream may have changed data that is on screen, even if it failed halfway
           return undefined;
         }
         return client.mutate(ref, params, body, { optimistic: optimisticOf(el, sc, ctx) });
