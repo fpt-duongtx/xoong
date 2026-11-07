@@ -1,6 +1,6 @@
 {
   "name": "@xoong/mcp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "MCP server for xoong: gives AI assistants the spec (llms.txt), the API's operations, `xoong check` and error explanations over stdio.",
   "type": "module",
   "bin": {

@@ -100,10 +100,11 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     stops.push(effect(() => {
       const v = field.value;
       if (writing === el) return; // this control is where the change came from: do not rewrite what the person is typing
-      write(el, v, nodeAt(schema, parts, model.value));
+      const at = nodeAt(schema, parts, model.value);
+      untracked(() => write(el, v, at)); // only the model drives this effect: whatever the control reads or sets inside (its own value, its validity) must not subscribe it
     }));
     // errors -> DOM, only once the field has been visited (or submit touched everything)
-    stops.push(effect(() => showError(el, field.touched ? field.error : '')));
+    stops.push(effect(() => { const message = field.touched ? field.error : ''; untracked(() => showError(el, message)); }));
     bound.set(el, { name, stops });
   }
 

@@ -5,6 +5,12 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.8 (binder revert on edit forms)
+
+breaking: none.
+
+* Fixed: on an edit form (record with a stored value) typing in a custom `XoControl` was still reverted: the binder's first write set the control inside its effect, which subscribed the effect to the control's own signals. The whole write and the error display now run untracked.
+
 * `site/`: the end-user documentation site (home, install, how it works, a live demo table), built with `xoong build`; `.github/workflows/pages.yml` deploys it to GitHub Pages (manual run until Pages is enabled).
 * Fixed: `xoong build` read `href="src/app.css"` (a relative URL without `./`) in HTML and `url(img.png)` in CSS as a package name and left it unresolved.
 

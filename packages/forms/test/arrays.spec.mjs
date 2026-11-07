@@ -181,4 +181,16 @@ describe('a custom XoControl in a form', () => {
     expect(host.value).toBe('x');
     expect(model().get('subtitle.en')).toBe('x');
   });
+
+  it('on an edit form whose record has a stored value, userInput also reaches the model', async () => {
+    screen = await mount('<xo-view get="getPage" p-id="3"><form xo-submit="updatePage"><xo-test-mini name="title.en"></xo-test-mini></form></xo-view>', { api: api() });
+    await settle();
+    const host = screen.$('xo-test-mini');
+    expect(host.value).toBe('Home'); // prefilled by the binder: the first write sets the control inside the effect
+    await screen.click('xo-test-mini button');
+    expect(host.value).toBe('x');
+    expect(model().get('title.en')).toBe('x');
+    host.setCustomValidity('nope'); // a validity change from outside does not make the binder write the model back either
+    expect(host.value).toBe('x');
+  });
 });
