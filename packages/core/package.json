@@ -1,0 +1,15 @@
+{
+  "name": "@xoong/core",
+  "version": "0.0.1",
+  "description": "xoong core: signals, Light DOM custom elements, html templates. Zero dependencies.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./signals": "./src/signals.js",
+    "./closest": "./src/closest.js",
+    "./syntax": "./src/syntax.js"
+  },
+  "sideEffects": false,
+  "license": "MIT"
+}
