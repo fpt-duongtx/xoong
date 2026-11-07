@@ -10,6 +10,10 @@ describe('sanitizeHtml: what stays', () => {
     expect(clean('<ul><li>a</li><li>b<ul><li>c</li></ul></li></ul><ol><li>1</li></ol>')).toBe('<ul><li>a</li><li>b<ul><li>c</li></ul></li></ul><ol><li>1</li></ol>');
   });
 
+  it('keeps underline (u) and maps nothing else onto it', () => {
+    expect(clean('<p>a <u>under</u> <span style="text-decoration:underline">not</span></p>')).toBe('<p>a <u>under</u> not</p>');
+  });
+
   it('maps b, i, h1, h4-h6 and div; wraps loose text and inline runs in paragraphs', () => {
     expect(clean('<h1>A</h1><h5>B</h5><div>C <b>x</b> <i>y</i></div>')).toBe('<h2>A</h2><h3>B</h3><p>C <strong>x</strong> <em>y</em></p>');
     expect(clean('loose <strong>text</strong>')).toBe('<p>loose <strong>text</strong></p>');

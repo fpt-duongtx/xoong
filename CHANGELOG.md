@@ -5,6 +5,9 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+* `--xo-form-max-width` (default 28rem) replaces the fixed `max-width` of `.xo-form`; `none` lifts it. Nothing else in `xoong.css` fixes the width of the content area.
+* `<xo-richtext>`: two toolbar sizes chosen by the editor's own width (Full from 580px, Compact with a More menu below; `toolbar="full|compact"` forces one, never wraps or scrolls sideways), new Underline (`u` is allowed in the output) and Text style (Paragraph, Heading 2, Heading 3, Mixed) tools, and `expand()`/`collapse()` with `xo-richtext-expand` and `xo-richtext-done` to edit in a 960px dialog (the whole screen under 768px). The default tool order is now `undo redo style bold italic underline ul ol quote link image`. The `@xoong/richtext` size budget is raised from 6 to 8.5 KB for this.
+
 ## 0.0.11 (late-defined controls, reordering)
 
 breaking: none.

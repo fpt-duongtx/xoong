@@ -22,6 +22,7 @@
     --xo-space-3: 1rem;
     --xo-space-4: 1.5rem;
     --xo-radius: 0.375rem;
+    --xo-form-max-width: 28rem; /* generated forms; `none` for editors that should use the whole width */
 
     --xo-color-bg: light-dark(#f7f8fa, #14161a);
     --xo-color-surface: light-dark(#fff, #1d2026);
@@ -93,7 +94,7 @@
   .xo-toast[hidden] { display: none; }
   .xo-pager { display: flex; gap: var(--xo-space-2); justify-content: flex-end; padding: var(--xo-space-2); }
 
-  .xo-form { display: grid; gap: var(--xo-space-3); max-width: 28rem; }
+  .xo-form { display: grid; gap: var(--xo-space-3); max-width: var(--xo-form-max-width); }
   .xo-object, .xo-array, .xo-group { margin: 0; padding: var(--xo-space-3); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); display: grid; gap: var(--xo-space-3); }
   .xo-group { border: 0; padding: 0; }
   .xo-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }

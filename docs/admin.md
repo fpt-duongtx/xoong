@@ -179,6 +179,8 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
 * **Writing a widget (an `XoControl`).** Call `this.userInput(value)` when the person changes it: the value is set and `input` fires, and the form model takes it.
   Setting `control.value` or `setValue()` from code does not change the model (as with a native input). In `connectedCallback` the `xoForm` property and the value may not be
   set yet: read the model (`xoForm.get(path)`, `xoForm.field(path).value`), not the control, to decide things such as "follow another field until edited".
+* **Width.** Generated forms are capped at `--xo-form-max-width` (28rem by default, a token like the others: `:root { --xo-form-max-width: none }` for editors that use the whole width).
+  Tables, views and dialogs have no fixed width on the content area.
 * **Leaving.** A dirty form makes the router ask first (`xo-guard="off"` disables, other text is the question); closing the tab uses `beforeunload`.
   What the person sees: importing `@xoong/ui` installs a native modal `<dialog class="xo-confirm">` (message, Cancel, Confirm; Escape answers no; focus starts on Cancel;
   texts in `confirmLabels` or the `xoong.confirm.*` catalog keys; style `.xo-confirm`). Without `@xoong/ui` (only the router module) the browser's own `confirm()` is used,

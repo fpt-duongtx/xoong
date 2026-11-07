@@ -22,7 +22,7 @@ validity, `maxlength` (text characters; the schema `maxLength` applies to the st
 | Allowed | Notes |
 |---|---|
 | `p`, `h2`, `h3`, `blockquote`, `ul`, `ol`, `li`, `br` | `h1` becomes `h2`, `h4` to `h6` become `h3`, `div` becomes `p`; loose text is wrapped in `p` |
-| `strong`, `em` | `b` and `i` are mapped |
+| `strong`, `em`, `u` | `b` and `i` are mapped; underline is `u` |
 | `a` with `href` (and `title`) | only `http:`, `https:`, `mailto:`, `tel:`; `rel="noopener noreferrer"` is added; any other link keeps its text and loses the link |
 | `img` with `src`, `alt`, `width`, `height` | `src` must be `http(s)` or a relative URL (no `data:`, no `javascript:`, no `//host`); sizes are digits only |
 
@@ -35,8 +35,25 @@ Paste and drop never insert the browser's own markup: the clipboard HTML is sani
 
 ## Toolbar and keys
 
-`role="toolbar"` with one tab stop: Tab reaches it once, Left, Right, Home and End move inside it, the next Tab goes to the editor. The tools are `bold italic h2 ul ol quote link image undo redo`
-(`tools="bold italic link"` picks and orders them; `image` needs `media`). Buttons show `aria-pressed` for the formatting at the caret. Ctrl or Cmd+B, +I and +K work.
+`role="toolbar"` with one tab stop: Tab reaches it once, Left, Right, Home and End move inside it, the next Tab goes to the editor. The tools, in the default order, are
+`undo redo style bold italic underline ul ol quote link image` (`tools="bold italic link"` picks and orders them; `image` needs `media`; `h2` is also available as a plain toggle
+button). `style` is a select with Paragraph, Heading 2 and Heading 3, and shows Mixed when the selection spans different blocks. Buttons show `aria-pressed` for the formatting at the
+caret. Ctrl or Cmd+B, +I, +U and +K work.
+
+**Two sizes, never wrapped, never scrolling sideways.** The toolbar is chosen by the editor's own width (a `ResizeObserver` on the editor, not the viewport), so an editor in a narrow
+inspector gets the compact one even on a wide screen:
+
+| Size | When | Shows |
+|---|---|---|
+| Full | the editor is 580px wide or more | every tool |
+| Compact | narrower | style (P, H2, H3, Mixed), bold, italic, bulleted list, link, image, and a **More** menu holding underline, numbered list, quote, undo and redo |
+
+`toolbar="full"` or `toolbar="compact"` forces one size. The More menu is a menu button: Enter, Space or a click opens it, ArrowDown opens it on the first item, arrows wrap, Home and End jump,
+Escape closes it and returns to the button, Tab closes it, choosing an item runs it. `data-size` on the toolbar tells CSS which size is on.
+
+**Expanding.** `el.expand()` opens the same editor (it moves, it is not copied: value, caret and undo history stay) in a dialog, 960px wide, the whole screen under 768px; Done and Escape close it,
+`el.collapse()` does the same from code. It fires `xo-richtext-expand` and `xo-richtext-done` and never saves anything: it only changes where the editor is shown. The host places its own
+Expand button (for example on the field's label row) and calls `expand()`; `el.expanded` says whether it is open.
 
 Editing uses the browser's own commands (`document.execCommand`), so undo and redo, IME, spell checking and platform shortcuts behave natively. That API is deprecated on paper and has no
 replacement that works across browsers yet; the editor keeps all of it in one place and the browser tests (Chromium, Firefox, WebKit) will tell when it must change.

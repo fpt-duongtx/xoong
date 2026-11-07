@@ -3,8 +3,17 @@
   xo-richtext { display: block; }
   .xo-richtext-box { border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
   .xo-richtext-box:focus-within { outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 1px; }
-  .xo-richtext-toolbar { display: flex; flex-wrap: wrap; gap: 2px; padding: var(--xo-space-1, .25rem); border-bottom: 1px solid var(--xo-color-border, #d8dee4); }
-  .xo-richtext-toolbar button { min-width: 2rem; height: 2rem; border: 0; border-radius: 4px; background: none; cursor: pointer; font: inherit; font-weight: 600; color: inherit; }
+  /* one row, never wrapped and never scrolled sideways: the full toolbar fits from 580px of the editor's width, the compact one below it (the More menu holds the rest) */
+  .xo-richtext-toolbar { display: flex; flex-wrap: nowrap; align-items: center; gap: 2px; padding: var(--xo-space-1, .25rem); border-bottom: 1px solid var(--xo-color-border, #d8dee4); }
+  .xo-richtext-toolbar [hidden] { display: none !important; }
+  .xo-richtext-toolbar select { height: 2rem; border: 1px solid transparent; border-radius: 4px; background: none; font: inherit; color: inherit; cursor: pointer; max-width: 9rem; }
+  .xo-richtext-toolbar select:hover:not(:disabled) { background: var(--xo-color-hover, rgb(127 127 127 / .18)); }
+  .xo-richtext-toolbar button { flex: none; }
+  .xo-richtext-toolbar[data-size="compact"] select { width: 4.25rem; } /* P, H2, H3, Mixed */
+  .xo-richtext-morewrap { position: relative; flex: none; }
+  .xo-richtext-more { position: absolute; inset-inline-end: 0; top: 100%; z-index: 10; min-width: 11rem; padding: var(--xo-space-1, .25rem); background: var(--xo-color-surface, #fff); border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); box-shadow: 0 6px 18px rgb(0 0 0 / .15); }
+  .xo-richtext-more [role="menuitem"] { display: block; width: 100%; height: auto; padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); text-align: start; font-weight: 400; white-space: nowrap; }
+  .xo-richtext-toolbar button { min-width: 1.75rem; height: 2rem; border: 0; border-radius: 4px; background: none; cursor: pointer; font: inherit; font-weight: 600; color: inherit; }
   .xo-richtext-toolbar button:hover:not(:disabled) { background: var(--xo-color-hover, rgb(127 127 127 / .18)); }
   .xo-richtext-toolbar button[aria-pressed="true"] { background: var(--xo-color-hover, rgb(127 127 127 / .3)); }
   .xo-richtext-toolbar button:disabled { opacity: .4; cursor: not-allowed; }
@@ -20,4 +29,14 @@
   .xo-richtext-editable blockquote { margin-inline: 0; padding-inline-start: 1rem; border-inline-start: 3px solid var(--xo-color-border, #d8dee4); }
   .xo-richtext-editable img { max-width: 100%; height: auto; }
   xo-richtext[data-invalid] .xo-richtext-box { border-color: var(--xo-color-danger, #cf222e); }
+
+  /* expanded: the same editor in a dialog, 960px wide, the whole screen on narrow ones */
+  .xo-richtext-dialog { box-sizing: border-box; width: min(960px, calc(100vw - 2rem)); max-width: none; max-height: calc(100dvh - 2rem); padding: 0; display: none; flex-direction: column; border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); color: inherit; }
+  .xo-richtext-dialog[open] { display: flex; }
+  .xo-richtext-dialog-bar { display: flex; justify-content: flex-end; padding: var(--xo-space-2, .5rem); border-bottom: 1px solid var(--xo-color-border, #d8dee4); }
+  .xo-richtext-dialog .xo-richtext-box { border: 0; border-radius: 0; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .xo-richtext-dialog .xo-richtext-editable { flex: 1; min-height: 50dvh; overflow: auto; }
+  @media (max-width: 767px) {
+    .xo-richtext-dialog { width: 100vw; height: 100dvh; max-height: none; margin: 0; border: 0; border-radius: 0; }
+  }
 }

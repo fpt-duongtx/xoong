@@ -2,7 +2,7 @@
 /**
  * The HTML that <xo-richtext> keeps. Anything else is removed, whether it comes from a paste, from `value`, or from the server.
  *
- * Allowed: p, h2, h3, strong, em, ul, ol, li, blockquote, br, a (href, title) and img (src, alt, width, height).
+ * Allowed: p, h2, h3, strong, em, u, ul, ol, li, blockquote, br, a (href, title) and img (src, alt, width, height).
  * Mapped: b -> strong, i -> em, h1 -> h2, h4 to h6 -> h3, div -> p. Everything else is unwrapped (its text stays); script, style, iframe, object,
  * embed, svg, math, template and noscript go with their content. No attribute other than the ones above survives (no style, class, id, on*).
  * Links keep only http, https, mailto and tel; images keep only http, https and relative URLs. Loose text at the top level is wrapped in <p>.
@@ -14,7 +14,7 @@
  */
 
 const DROP = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'SVG', 'MATH', 'TEMPLATE', 'NOSCRIPT', 'HEAD', 'TITLE', 'META', 'LINK', 'BASE', 'INPUT', 'BUTTON', 'SELECT', 'TEXTAREA', 'CANVAS', 'AUDIO', 'VIDEO']);
-const RENAME = { B: 'strong', STRONG: 'strong', I: 'em', EM: 'em', H1: 'h2', H2: 'h2', H3: 'h3', H4: 'h3', H5: 'h3', H6: 'h3', DIV: 'p', P: 'p', UL: 'ul', OL: 'ol', LI: 'li', BLOCKQUOTE: 'blockquote' };
+const RENAME = { B: 'strong', STRONG: 'strong', I: 'em', EM: 'em', U: 'u', H1: 'h2', H2: 'h2', H3: 'h3', H4: 'h3', H5: 'h3', H6: 'h3', DIV: 'p', P: 'p', UL: 'ul', OL: 'ol', LI: 'li', BLOCKQUOTE: 'blockquote' };
 const BLOCK = new Set(['p', 'h2', 'h3', 'ul', 'ol', 'blockquote', 'li']);
 const LINK_SCHEMES = /^(https?:|mailto:|tel:)/i;
 
@@ -72,7 +72,7 @@ export function sanitizeHtml(html, { images = true } = {}) {
       return `<a href="${esc(href.trim())}"${title ? ` title="${esc(title)}"` : ''} rel="noopener noreferrer">${body}</a>`;
     }
     const name = /** @type {Record<string, string>} */ (RENAME)[tag];
-    if (name === 'strong' || name === 'em') { const body = inline(el); return body ? `<${name}>${body}</${name}>` : ''; }
+    if (name === 'strong' || name === 'em' || name === 'u') { const body = inline(el); return body ? `<${name}>${body}</${name}>` : ''; }
     if (name && BLOCK.has(name)) {
       if (inInline) return inline(el); // a block inside inline content (a heading in a link, a list in a paragraph) becomes its text
       return block(el, name);

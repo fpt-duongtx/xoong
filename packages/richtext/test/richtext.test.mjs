@@ -12,7 +12,7 @@ const errors = [];
 
 const PAGE = `<!doctype html><html><head><link rel="stylesheet" href="/@xoong/richtext/src/richtext.css"></head><body>
 <button id="before">before</button>
-<form id="f"><xo-richtext id="rt" name="body" label="Body" media placeholder="Write here"></xo-richtext></form>
+<div id="wrap" style="width:880px"><form id="f"><xo-richtext id="rt" name="body" label="Body" media placeholder="Write here"></xo-richtext></form></div>
 <script type="module">import '@xoong/richtext'; window.ready = true;</script></body></html>`;
 
 beforeAll(async () => {
@@ -57,11 +57,14 @@ describe('<xo-richtext> in a browser', () => {
     await tool('italic');
     expect(await value()).toBe('<p><em>some words</em></p>');
     await tool('italic');
-    await tool('h2');
+    await page.selectOption('select[data-tool=style]', 'h2');
     expect(await value()).toBe('<h2>some words</h2>');
-    expect(await page.getAttribute('[data-tool=h2]', 'aria-pressed')).toBe('true');
-    await tool('h2'); // toggles back to a paragraph
+    expect(await page.$eval('select[data-tool=style]', (el) => el.value)).toBe('h2');
+    await page.selectOption('select[data-tool=style]', 'p'); // back to a paragraph
     expect(await value()).toBe('<p>some words</p>');
+    await tool('underline');
+    expect(await value()).toBe('<p><u>some words</u></p>');
+    await tool('underline');
     await tool('ul');
     expect(await value()).toBe('<ul><li>some words</li></ul>');
     await tool('ul');
@@ -129,9 +132,9 @@ describe('<xo-richtext> in a browser', () => {
   it('keyboard order: Tab reaches the toolbar once, arrows move inside it, the next Tab is the editor', async () => {
     await page.focus('#before');
     await page.keyboard.press('Tab');
-    expect(await page.evaluate(() => document.activeElement.dataset.tool)).toBe('bold');
+    expect(await page.evaluate(() => document.activeElement.dataset.tool)).toBe('undo');
     await page.keyboard.press('ArrowRight');
-    expect(await page.evaluate(() => document.activeElement.dataset.tool)).toBe('italic');
+    expect(await page.evaluate(() => document.activeElement.dataset.tool)).toBe('redo');
     await page.keyboard.press('Tab');
     expect(await page.evaluate(() => document.activeElement.classList.contains('xo-richtext-editable'))).toBe(true);
   });
@@ -154,6 +157,90 @@ describe('<xo-richtext> in a browser', () => {
     await page.evaluate(() => document.querySelector('#f').reset());
     expect(await value()).toBe('');
     expect(await page.$eval('.xo-richtext-editable', (el) => el.innerHTML)).toBe('');
+    expect(errors).toEqual([]);
+  });
+
+  it('the toolbar has two sizes chosen by the editor\'s own width, one row, never scrolling sideways', async () => {
+    const measure = () => page.evaluate(() => {
+      const bar = document.querySelector('.xo-richtext-toolbar');
+      const items = [...bar.querySelectorAll('[data-tool]')].filter((el) => !el.closest('.xo-richtext-more') && el.getClientRects().length);
+      const tops = new Set(items.map((el) => Math.round(el.getBoundingClientRect().top)));
+      return { size: bar.dataset.size, tools: items.map((el) => el.dataset.tool), rows: tops.size, overflow: bar.scrollWidth > bar.clientWidth };
+    });
+    const full = await measure(); // 880px wide
+    expect(full).toMatchObject({ size: 'full', rows: 1, overflow: false });
+    expect(full.tools).toEqual(['undo', 'redo', 'style', 'bold', 'italic', 'underline', 'ul', 'ol', 'quote', 'link', 'image']);
+    for (const width of [579, 340, 280]) { // the viewport stays wide: only the editor's own width counts
+      await page.evaluate((w) => { document.querySelector('#wrap').style.width = `${w}px`; }, width);
+      await page.waitForFunction(() => document.querySelector('.xo-richtext-toolbar').dataset.size === 'compact');
+      const compact = await measure();
+      expect(compact, String(width)).toMatchObject({ size: 'compact', rows: 1, overflow: false });
+      expect(compact.tools).toEqual(['style', 'bold', 'italic', 'ul', 'link', 'image', 'more']);
+    }
+    await page.evaluate(() => { document.querySelector('#wrap').style.width = '580px'; });
+    await page.waitForFunction(() => document.querySelector('.xo-richtext-toolbar').dataset.size === 'full');
+    expect(await measure()).toMatchObject({ size: 'full', rows: 1, overflow: false });
+  });
+
+  it('compact: the More menu holds underline, numbered list, quote, undo and redo, and its items work', async () => {
+    await page.evaluate(() => { document.querySelector('#wrap').style.width = '340px'; });
+    await page.waitForFunction(() => document.querySelector('.xo-richtext-toolbar').dataset.size === 'compact');
+    await typeIn('menu text');
+    await selectLine();
+    await page.click('[data-tool=more]');
+    expect(await page.$$eval('.xo-richtext-more [role=menuitem]', (items) => items.map((i) => i.dataset.tool))).toEqual(['underline', 'ol', 'quote', 'undo', 'redo']);
+    const inside = await page.evaluate(() => { const m = document.querySelector('.xo-richtext-more').getBoundingClientRect(); const b = document.querySelector('.xo-richtext-box').getBoundingClientRect(); return m.left >= b.left - 1 && m.right <= b.right + 1; });
+    expect(inside).toBe(true); // the menu does not hang outside the editor
+    await page.click('.xo-richtext-more [data-tool=ol]');
+    expect(await value()).toBe('<ol><li>menu text</li></ol>');
+    expect(await page.$eval('.xo-richtext-more', (el) => el.hidden)).toBe(true);
+    await page.focus('[data-tool=more]'); // by keyboard: a mouse click keeps the focus in the editor
+    await page.keyboard.press('ArrowDown');
+    expect(await page.evaluate(() => document.activeElement.dataset.tool)).toBe('underline');
+    await page.keyboard.press('Escape');
+    expect(await page.evaluate(() => document.activeElement.dataset.tool)).toBe('more');
+    expect(await page.$eval('.xo-richtext-more', (el) => el.hidden)).toBe(true);
+  });
+
+  it('expand(): the same editor opens in a 960px dialog (the screen on a narrow viewport); Done and Escape close it, nothing is saved', async () => {
+    await typeIn('long text');
+    await page.evaluate(() => { document.querySelector('#wrap').style.width = '340px'; });
+    await page.waitForFunction(() => document.querySelector('.xo-richtext-toolbar').dataset.size === 'compact');
+    await page.evaluate(() => { window.log = []; const el = document.querySelector('#rt'); el.addEventListener('xo-richtext-expand', () => window.log.push('expand')); el.addEventListener('xo-richtext-done', () => window.log.push('done')); el.expand(); });
+    await page.waitForSelector('dialog.xo-richtext-dialog[open]', { timeout: 4000 });
+    const open = await page.evaluate(() => {
+      const d = document.querySelector('dialog.xo-richtext-dialog').getBoundingClientRect();
+      return { width: Math.round(d.width), size: document.querySelector('.xo-richtext-toolbar').dataset.size, text: document.querySelector('.xo-richtext-editable').textContent, focused: document.activeElement.classList.contains('xo-richtext-editable') };
+    });
+    expect(open).toMatchObject({ size: 'full', text: 'long text', focused: true }); // the editor is narrow in the page, the dialog gives the full toolbar back
+    expect(open.width).toBeGreaterThanOrEqual(860); // the 900px viewport minus margins
+    expect(open.width).toBeLessThanOrEqual(900);
+    await page.keyboard.type(' more');
+    await page.click('.xo-richtext-done');
+    await page.waitForFunction(() => !document.querySelector('dialog'), null, { timeout: 4000 });
+    expect(await value()).toBe('<p>long text more</p>');
+    expect(await page.$eval('#rt .xo-richtext-editable', (el) => el.textContent)).toBe('long text more'); // back in place
+    expect(await page.$eval('.xo-richtext-toolbar', (el) => el.dataset.size)).toBe('compact');
+    await page.evaluate(() => document.querySelector('#rt').expand());
+    await page.waitForSelector('dialog.xo-richtext-dialog[open]', { timeout: 4000 });
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('dialog'), null, { timeout: 4000 });
+    expect(await page.evaluate(() => window.log)).toEqual(['expand', 'done', 'expand', 'done']);
+    expect(await page.$eval('#rt', (el) => el.touched)).toBe(false);
+    await page.setViewportSize({ width: 700, height: 600 });
+    await page.evaluate(() => document.querySelector('#rt').expand());
+    await page.waitForSelector('dialog.xo-richtext-dialog[open]', { timeout: 4000 });
+    const small = await page.evaluate(() => { const d = document.querySelector('dialog.xo-richtext-dialog').getBoundingClientRect(); return { w: Math.round(d.width), h: Math.round(d.height) }; });
+    expect(small).toEqual({ w: 700, h: 600 }); // the whole screen under 768px
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('dialog'), null, { timeout: 4000 });
+    await page.setViewportSize({ width: 1400, height: 700 });
+    await page.evaluate(() => document.querySelector('#rt').expand());
+    await page.waitForSelector('dialog.xo-richtext-dialog[open]', { timeout: 4000 });
+    expect(await page.$eval('dialog.xo-richtext-dialog', (d) => Math.round(d.getBoundingClientRect().width))).toBe(960); // capped at 960px
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('dialog'), null, { timeout: 4000 });
+    await page.setViewportSize({ width: 900, height: 700 });
     expect(errors).toEqual([]);
   });
 });

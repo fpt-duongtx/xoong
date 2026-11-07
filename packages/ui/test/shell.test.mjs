@@ -69,3 +69,28 @@ for (const [name, path] of [['body.xo-admin', '/'], ['xo-router.xo-admin', '/rou
     });
   });
 }
+
+describe('width of generated forms', () => {
+  it('a form is capped at 28rem by default, and the token --xo-form-max-width changes it without a selector (`none` lifts the cap)', async () => {
+    await open('/');
+    const widths = await page.evaluate(() => {
+      const form = document.createElement('form');
+      form.className = 'xo-form';
+      form.innerHTML = '<input>';
+      document.querySelector('main').append(form);
+      const read = () => ({ cap: getComputedStyle(form).maxWidth, width: Math.round(form.getBoundingClientRect().width) });
+      const out = { def: read() };
+      document.documentElement.style.setProperty('--xo-form-max-width', 'none');
+      out.none = read();
+      document.documentElement.style.setProperty('--xo-form-max-width', '40rem');
+      out.wide = read();
+      document.documentElement.style.removeProperty('--xo-form-max-width');
+      form.remove();
+      return out;
+    });
+    expect(widths.def).toEqual({ cap: '448px', width: 448 });
+    expect(widths.none.cap).toBe('none');
+    expect(widths.none.width).toBeGreaterThan(448);
+    expect(widths.wide.cap).toBe('640px');
+  });
+});
