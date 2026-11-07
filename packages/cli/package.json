@@ -16,5 +16,17 @@
     "yaml": "^2.8.0",
     "@xoong/server": "*",
     "@xoong/core": "*"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "web-framework",
+    "openapi",
+    "custom-elements"
+  ],
+  "engines": {
+    "node": ">=22.12"
   }
 }

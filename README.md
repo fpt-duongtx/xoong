@@ -7,12 +7,12 @@
 helpers exist and are tested (150+ tests, including a real-browser end-to-end run of
 [`examples/admin`](examples/admin)). The HTML syntax is still **Draft** and may change before 0.1.
 Planned parts (admin components, SSR, MCP server, editor extension) are marked as such in
-[`docs/`](docs). Picking this project up? Read [HANDOVER.md](HANDOVER.md) first.
+[`docs/`](docs). Picking this project up? Read [HANDOVER.md](HANDOVER.md) first. Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
 npm install
 npm test                         # everything
-node packages/cli/src/cli.js new /tmp/demo --spec examples/admin/openapi.json
+node packages/cli/src/cli.js new /tmp/demo --spec examples/admin/openapi.json --link $(pwd)   # a project using these packages
 node examples/admin/backend.mjs  # example backend on :8080 ...
 (cd examples/admin && node ../../packages/cli/src/cli.js sync openapi.json --hints xoong.hints.json \
   && node ../../packages/cli/src/cli.js dev)   # ... and the app on http://127.0.0.1:5173

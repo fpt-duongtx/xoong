@@ -17,5 +17,14 @@
   "dependencies": {
     "@xoong/core": "*",
     "@xoong/data": "*"
-  }
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "web-framework",
+    "openapi",
+    "custom-elements"
+  ]
 }

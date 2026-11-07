@@ -11,5 +11,14 @@
     "./syntax": "./src/syntax.js"
   },
   "sideEffects": false,
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "web-framework",
+    "openapi",
+    "custom-elements"
+  ]
 }

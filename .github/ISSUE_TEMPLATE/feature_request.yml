@@ -1,0 +1,13 @@
+name: Feature request
+description: Propose a change to xoong
+body:
+  - type: textarea
+    id: problem
+    attributes: { label: The problem, description: What you are trying to build and what blocks you }
+    validations: { required: true }
+  - type: textarea
+    id: today
+    attributes: { label: What you do today, description: The closest existing way, and why it is not enough (one way to do each thing) }
+  - type: textarea
+    id: idea
+    attributes: { label: Proposal }

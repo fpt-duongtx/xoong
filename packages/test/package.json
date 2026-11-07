@@ -3,8 +3,24 @@
   "version": "0.0.1",
   "description": "Test helpers for xoong UI: mount screens, mock the API from operations.json, push live events. Runs on Vitest (happy-dom or browser mode).",
   "type": "module",
-  "exports": { ".": "./src/index.js" },
-  "peerDependencies": { "vitest": ">=2" },
-  "dependencies": { "@xoong/core": "*", "@xoong/data": "*" },
-  "license": "MIT"
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "peerDependencies": {
+    "vitest": ">=2"
+  },
+  "dependencies": {
+    "@xoong/core": "*",
+    "@xoong/data": "*"
+  },
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "web-framework",
+    "openapi",
+    "custom-elements"
+  ]
 }

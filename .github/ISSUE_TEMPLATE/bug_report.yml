@@ -1,0 +1,18 @@
+name: Bug report
+description: Something does not work as documented
+labels: []
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: What you expected and what you got }
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes: { label: Minimal reproduction, description: "A screen (HTML), the relevant part of the OpenAPI document, and what the server returned" }
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes: { label: Commit or version, description: Output of `git rev-parse --short HEAD` }
+  - type: input
+    id: env
+    attributes: { label: Environment, description: "Node version, browser and version" }

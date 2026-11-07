@@ -72,9 +72,9 @@ ${view}
 /**
  * Create a project folder from an OpenAPI document.
  * @param {string} dir  target folder (created; must not contain files we would overwrite)
- * @param {{ spec: string, title?: string }} options
+ * @param {{ spec: string, title?: string, link?: string }} options  `link`: path to a checkout of xoong; the project then depends on its packages by path (they are not published yet)
  */
-export async function scaffold(dir, { spec, title }) {
+export async function scaffold(dir, { spec, title, link }) {
   const target = resolve(dir);
   try { await access(join(target, 'package.json')); throw new Error(`xoong: ${target} already contains a project (package.json exists)`); } catch (error) {
     if (!/ENOENT/.test(String(/** @type {any} */ (error)?.code))) throw error;
@@ -84,6 +84,7 @@ export async function scaffold(dir, { spec, title }) {
   const name = basename(target).toLowerCase().replace(/[^a-z0-9-]/g, '-') || 'xoong-app';
   const pick = pickListScreen(a);
   const heading = title ?? doc.info?.title ?? name;
+  const pkg = (n) => (link ? `file:${resolve(link, 'packages', n)}` : '*');
 
   await mkdir(join(target, 'src'), { recursive: true });
   await mkdir(join(target, 'test'), { recursive: true });
@@ -92,8 +93,10 @@ export async function scaffold(dir, { spec, title }) {
     'package.json': JSON.stringify({
       name, version: '0.0.0', private: true, type: 'module',
       scripts: { dev: 'xoong dev', sync: 'xoong sync openapi.json --hints xoong.hints.json', check: 'xoong check index.html', test: 'vitest run' },
-      dependencies: { '@xoong/core': '*', '@xoong/data': '*' },
-      devDependencies: { '@xoong/cli': '*', '@xoong/test': '*', vitest: '*', 'happy-dom': '*' },
+      dependencies: { '@xoong/core': pkg('core'), '@xoong/data': pkg('data'), '@xoong/ui': pkg('ui') },
+      devDependencies: { '@xoong/cli': pkg('cli'), '@xoong/test': pkg('test'), vitest: '*', 'happy-dom': '*' },
+      // The packages depend on each other by name: point those names at the checkout too.
+      ...(link ? { overrides: Object.fromEntries(['core', 'data', 'ui', 'cli', 'test', 'server'].map((n) => [`@xoong/${n}`, pkg(n)])) } : {}),
     }, null, 2) + '\n',
     'xoong.config.json': JSON.stringify({ port: 5173, proxy: { '/api': 'http://localhost:8080' } }, null, 2) + '\n',
     'xoong.hints.json': JSON.stringify({ idNames: ['id'] }, null, 2) + '\n',

@@ -10,7 +10,7 @@ const HELP = `xoong <command>
 
   sync <openapi.json|yaml|url> [--out .xoong] [--hints hints.json]   generate operations.json and api.d.ts
   doctor <openapi.json|yaml|url> [--hints hints.json] [--all]   audit the OpenAPI document for xoong
-  new <folder> --spec <openapi.json|yaml|url> [--title "My app"]   create a project with a first screen
+  new <folder> --spec <openapi.json|yaml|url> [--title "My app"] [--link <xoong checkout>]   create a project with a first screen
   check <file|folder>... [--operations .xoong/operations.json] [--format text|json]   check HTML screens
   dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080] [--spa]   serve the app (static, proxy, .ts)
 `;
@@ -32,8 +32,8 @@ try {
     console.log(text);
     process.exitCode = errors ? 1 : 0;
   } else if (cmd === 'new' && rest[0] && flag('--spec')) {
-    const result = await scaffold(rest[0], { spec: flag('--spec'), title: flag('--title') });
-    console.log(`created ${result.dir}\n  first screen: ${result.screen ?? 'none (no list operation found)'}\n  next: cd ${rest[0]} && npm install && npm run dev\n  (the @xoong/* packages are not published yet: see the note in the generated README)`);
+    const result = await scaffold(rest[0], { spec: flag('--spec'), title: flag('--title'), link: flag('--link') });
+    console.log(`created ${result.dir}\n  first screen: ${result.screen ?? 'none (no list operation found)'}\n  next: cd ${rest[0]} && npm install && npm run dev\n  ${flag('--link') ? '(packages linked from ' + flag('--link') + ')' : '(the @xoong/* packages are not published yet: run again with --link <path to the xoong repository>)'}`);
   } else if (cmd === 'check' && rest.length) {
     const opsFile = flag('--operations', '.xoong/operations.json');
     let table;

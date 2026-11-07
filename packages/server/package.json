@@ -10,5 +10,17 @@
   "license": "MIT",
   "dependencies": {
     "amaro": "^1.3.0"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "web-framework",
+    "openapi",
+    "custom-elements"
+  ],
+  "engines": {
+    "node": ">=22.12"
   }
 }

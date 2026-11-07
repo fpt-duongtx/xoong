@@ -121,9 +121,9 @@ becomes public only when there is something finished to show (see section 10). S
 6. **0.6.x editor and lint**: HTML custom data first (cheap), then the language server; design in
    `docs/editor-integration.md`. Extract the `check` rules as a library.
 7. **0.7**: SSR for public pages (no hydration), per-tag lazy loading, benchmark on a large example site.
-8. Release prep: package names and scope, `files`/`exports`/types per package, CHANGELOG, CONTRIBUTING,
-   SECURITY, issue templates, a docs site. Make `xoong new` installable (it prints a caveat today because the
-   packages are unpublished).
+8. Release prep: done except the owner decisions (package names and scope, `author`/`repository` fields, copyright
+   holder, a docs site): `files`, `exports`, types, `engines`, CHANGELOG, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT and
+   issue/PR templates exist; `xoong new --link <checkout>` creates a project that installs and runs from the unpublished packages.
 9. Low priority: built-in Swagger 2.0 input (users can run `swagger2openapi`), WebSocket, optimistic updates.
 
 ## 7. Open questions for the owner
