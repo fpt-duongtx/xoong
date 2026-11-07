@@ -28,6 +28,11 @@ describe('sanitizeHtml: what stays', () => {
     expect(clean('<p>t</p><img src="/a.png">', { images: false })).toBe('<p>t</p>');
   });
 
+  it('drops the trailing line break of a block (a browser placeholder) but keeps a break inside text and a blank line', () => {
+    expect(clean('<ul><li>a<br></li></ul><p>b<br></p><h2>c<br></h2>')).toBe('<ul><li>a</li></ul><p>b</p><h2>c</h2>');
+    expect(clean('<p>a<br>b</p><p><br></p><p>c</p>')).toBe('<p>a<br>b</p><p><br></p><p>c</p>');
+  });
+
   it('turns non-breaking spaces into spaces and trims blank paragraphs at the very start and end only', () => {
     expect(clean('<p>a&nbsp;&nbsp;b</p>')).toBe('<p>a  b</p>');
     expect(clean('<p><br></p><ul><li>x</li></ul><p><br></p>')).toBe('<ul><li>x</li></ul>');

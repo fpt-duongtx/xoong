@@ -6,7 +6,8 @@
  * Mapped: b -> strong, i -> em, h1 -> h2, h4 to h6 -> h3, div -> p. Everything else is unwrapped (its text stays); script, style, iframe, object,
  * embed, svg, math, template and noscript go with their content. No attribute other than the ones above survives (no style, class, id, on*).
  * Links keep only http, https, mailto and tel; images keep only http, https and relative URLs. Loose text at the top level is wrapped in <p>.
- * Non-breaking spaces become plain spaces; empty paragraphs at the very start or end are removed.
+ * Non-breaking spaces become plain spaces; empty paragraphs at the very start or end are removed; a line break at the very end of a block
+ * (a browser's placeholder) is removed.
  *
  * The result is built as a string with its own escaping from an inert parse (`<template>`), so what is returned never goes through the parser again
  * in a different shape than the one that was checked.
@@ -38,6 +39,9 @@ export function isSafeImage(/** @type {string} */ url) {
 export function sanitizeHtml(html, { images = true } = {}) {
   const template = document.createElement('template');
   template.innerHTML = String(html ?? '');
+
+  /** A line break at the very end of a block is a browser's placeholder, not content (`<li>text<br></li>`); a block with only a break is a blank line and keeps it. */
+  const trimBreak = (/** @type {string} */ body) => (body.endsWith('<br>') && body !== '<br>' ? body.slice(0, -4) : body);
 
   /** Inline content of a node, as a string (no block tags inside: they are unwrapped). */
   function inline(/** @type {Node} */ node) {
@@ -88,13 +92,13 @@ export function sanitizeHtml(html, { images = true } = {}) {
         const tag = child.nodeType === 1 ? /** @type {Element} */ (child).tagName : '';
         out += tag === 'UL' || tag === 'OL' ? one(child, false) : one(child, true); // nested lists stay; other blocks flatten to text
       }
-      return `<li>${out}</li>`;
+      return `<li>${trimBreak(out)}</li>`;
     }
     if (name === 'blockquote') {
       const inner = blocks(el);
       return inner ? `<blockquote>${inner}</blockquote>` : '';
     }
-    const body = inline(el);
+    const body = trimBreak(inline(el));
     return body.replace(/<br>$/, '') === '' && !body.includes('<img') ? (name === 'p' ? '<p><br></p>' : '') : `<${name}>${body}</${name}>`;
   }
 
