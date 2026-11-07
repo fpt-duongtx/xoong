@@ -5,6 +5,10 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.6 (custom controls, inline unions, config packages)
+
+breaking: none.
+
 * `xoong.config.json` `"packages": [...]`: dev server and `xoong build` serve and resolve installed packages beyond xoong's own (exports maps with wildcards and subpaths, `./server` skipped).
 * Unions whose members are inline objects are told apart by the fixed value of the tag; a union that cannot be told apart is reported at sync as `XO161` (was silently free-form).
 * Fixed: `userInput()` of a custom `XoControl` in a form never reached the form model (the binder reverted the control before the `input` event). Docs for widget authors in docs/admin.md.
