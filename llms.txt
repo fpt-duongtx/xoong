@@ -79,16 +79,17 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     <xo-view get="getArticle" p-id=":id"><form xo-submit="updateArticle"><input name="title.en"> <button>Save</button></form></xo-view>
   `name` is a path (`a.b`, `items[0].x`). The view's record fills the fields (edit forms: the operation has {params}); type, required, min/max, pattern
   come from the schema unless you set them. The model validates, not the browser (novalidate): errors show after blur/submit with aria-invalid.
-  `$form.dirty|valid|submitting|stale`, `$form.errors['a.b']`, `.touched[..]`, `.filled[..]`. Custom rules on the form element: `form.rules = { slug: (v, { record }) => '' | 'message',
+  `$form.dirty|valid|submitting|stale`, `$form.errors['a.b']`, `.touched[..]`, `.filled[..]`. Arrays/unions: `xo-each="blocks"` over the draft with
+  `name="blocks[{$index}].title"`, `xo-add="blocks" xo-with="type=image"`, `xo-remove="blocks[{$index}]"`, `xo-move="blocks[{$index}]:up"`, `xo-if="type=image"`. Custom rules on the form element: `form.rules = { slug: (v, { record }) => '' | 'message',
   '*': (record) => ({ path: 'message' }) }` (async ok); `form.serialize = (draft, body) => body`. Invalid submit: cancelable `xo-reveal` {path}, then focus; also `xo-invalid`.
 
 ## Admin set (@xoong/ui; `import '@xoong/ui'`, `<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">`)
     <xo-view get="/users" live>
-      <xo-table of="items" columns="name,email:E-mail,status" sortable filters="name" selectable page-size="25">   (query params sort, limit, offset, <filter field>; `total` in the response)
-        <span slot="status" class="badge">{status}</span>   (slot="column" replaces that cell)
+      <xo-table columns="name,email:E-mail,created:Created:datetime" sortable filters="name:Search" selectable page-size="25" empty="No users">
+        <span slot="status" class="badge">{status}</span>   (slot="column" replaces a cell)
         <button xo-click="DELETE /users/{id}">Delete</button>   (other children = last cell of each row)
-        <button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>   (once per ticked row; needs selectable)
-      </xo-table>
+        <button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>
+      </xo-table>   (needs query params sort, limit, offset, <filter fields>; `total` in the response)
     </xo-view>
     <xo-form op="POST /users" submit="Add"></xo-form>   (fields from the request schema; server field errors shown beside inputs)
     <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
@@ -100,26 +101,24 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
       <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
       <template xo-route="*">Not found</template>
     </xo-router>
-  Links are intercepted; the active link gets aria-current. `p-id=":id"` reads a path parameter. In JS: `router.navigate('/users/3')`,
-  `router.guard((to, from) => ok ? true : '/login')` (true | false | redirect path), `router.beforeNavigate((to, from) => !dirty)` vetoes leaving.
-  A dirty `<form xo-submit>` makes the router ask before leaving (`xo-guard="off"` disables, other text is the question).
-  401 -> login: `configure({ onUnauthorized: () => router.navigate('/login') })`.
+  Links are intercepted (active one: aria-current). `p-id=":id"` reads a path parameter. JS: `router.navigate('/users/3')`,
+  `router.guard((to, from) => ok ? true : '/login')`, `router.beforeNavigate((to, from) => !dirty)` vetoes leaving.
+  A dirty form makes the router ask before leaving (`xo-guard="off"` disables). 401 -> login: `configure({ onUnauthorized: () => router.navigate('/login') })`.
 
 ## Live updates (server-sent events)
 One JSON object per message: {type:"patch", entity:"User", id:42, path:"/status", value:"disabled", version:7} |
 {type:"upsert", entity, id, value, version} | {type:"delete", entity, id, version} | {type:"resync"} (clients refetch).
-Field changes use patch/upsert; membership changes (create/delete) use resync. `version` must increase per entity.
+Field changes: patch/upsert; create/delete: resync. `version` must increase per entity.
 
 ## Errors
-Mutation and query failures become XoongError: understands problem+json, `{ error: { code, message, retry_after_s } }`
-and FastAPI `{ detail: [{ msg }] }`. Unknown operations throw with the closest valid name.
+Failures become XoongError (problem+json, `{ error: { code, message, retry_after_s, fields } }`, FastAPI `{ detail: [{ msg }] }`; `fields` by path).
 
 ## Testing (Vitest)
     const api = mockApi(operations, { listUsers: () => [{ id: 1, name: 'Ada' }] });
     const screen = await mount('<xo-view get="/users">...</xo-view>', { api });
     await screen.click('button'); await screen.submit('form', { name: 'Cy' }); await screen.push(event);
     expect(screen.texts('li')).toEqual([...]); expect(api.unhandled).toEqual([]); expect(screen.errors).toEqual([]);
-Mock the network, never the data layer. Every behaviour you add needs a test.
+Mock the network, never the data layer. Every behaviour needs a test.
 
 ## Limits today (do not work around them silently; tell the user)
-Swagger 2.0 is converted by `sync` (basic: paths, params, bodies, responses, definitions; use `npx swagger2openapi` for anything exotic). No request-time SSR (prerender per URL with `xoong render --url /path`), no WebSocket, unions without a tag property are not shared.
+Swagger 2.0 is converted by `sync` (basic; use `npx swagger2openapi` for exotic files). No request-time SSR (prerender per URL: `xoong render --url /path`), no WebSocket.

@@ -5,7 +5,7 @@
  */
 
 /** Attributes understood inside <xo-view>. */
-export const XO_ATTRIBUTES = ['xo-each', 'xo-if', 'xo-click', 'xo-submit', 'xo-body', 'xo-keep', 'xo-param', 'xo-optimistic', 'xo-select', 'xo-selected', 'xo-with', 'xo-confirm', 'xo-notice'];
+export const XO_ATTRIBUTES = ['xo-each', 'xo-if', 'xo-click', 'xo-submit', 'xo-body', 'xo-keep', 'xo-param', 'xo-optimistic', 'xo-select', 'xo-selected', 'xo-with', 'xo-confirm', 'xo-notice', 'xo-add', 'xo-remove', 'xo-move'];
 
 /** Custom elements shipped by xoong. */
 export const XO_ELEMENTS = ['xo-view'];

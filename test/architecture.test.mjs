@@ -76,7 +76,7 @@ describe('size budget (gzip of the source without comments; a regression guard, 
   // growing, so the budget now measures code only. The roadmap's single-digit KB target applies to the *minified* size,
   // which still has to be measured (docs/roadmap.md, size budgets, and the benchmark issue).
   // Budgets sit about 5-10% above the measured values (core 5.0, data 14.9, forms ~6, ui ~7.7 KB); raising one needs a reason in the commit.
-  const budgetKb = { core: 5.5, data: 15.5, forms: 8, ui: 8.5 }; // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
+  const budgetKb = { core: 5.5, data: 15.5, forms: 9.5, ui: 8.5 }; // forms: schema rules, model, binder, array editing // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
   const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {

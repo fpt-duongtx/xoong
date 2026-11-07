@@ -304,3 +304,101 @@ describe('size: a record with hundreds of fields', () => {
     expect(f.dirty).toBe(true);
   });
 });
+
+describe('arrays: append, removeAt, moveItem', () => {
+  const str2 = (extra = {}) => ({ t: 'string', ...extra });
+  const page = {
+    t: 'object',
+    props: {
+      tags: { t: 'array', items: str2({ maxLength: 4 }), maxItems: 4 },
+      blocks: { t: 'array', items: { t: 'union', key: 'type', map: {
+        text: { t: 'object', required: ['body'], props: { type: str2(), body: str2() } },
+        image: { t: 'object', required: ['url'], props: { type: str2(), url: str2({ format: 'uri' }), caption: str2() } },
+      } } },
+    },
+  };
+  const make2 = (value) => createForm({ schema: page, value });
+
+  it('append adds an item, a string starts empty, a union item gets its variant defaults and the tag', () => {
+    const f = make2({ tags: ['a'], blocks: [] });
+    expect(f.append('tags')).toBe(1);
+    expect(f.get('tags')).toEqual(['a', '']);
+    f.append('tags', 'zz');
+    expect(f.get('tags')).toEqual(['a', '', 'zz']);
+    f.append('blocks', { type: 'image' });
+    f.append('blocks', { type: 'text', body: 'hello' });
+    expect(f.get('blocks')).toEqual([{ type: 'image' }, { type: 'text', body: 'hello' }]);
+    expect(f.dirty).toBe(true);
+  });
+
+  it('append creates the array when it is missing, and validation sees the new item right away', () => {
+    const f = make2({});
+    f.append('blocks', { type: 'image' });
+    expect(f.errors['blocks[0].url']).toBe('Please fill in this field.');
+    f.set('blocks[0].url', 'https://x.test/a.png');
+    expect(f.errors['blocks[0].url']).toBe('');
+  });
+
+  it('removeAt drops the item and keeps touched state with the items that moved up', () => {
+    const f = make2({ tags: ['one', 'two', 'three'] });
+    f.touch('tags[2]');
+    f.touch('tags[0]');
+    f.removeAt('tags[1]');
+    expect(f.get('tags')).toEqual(['one', 'three']);
+    expect(f.touched['tags[1]']).toBe(true); // "three" moved from 2 to 1 and was touched
+    expect(f.touched['tags[0]']).toBe(true);
+    expect(f.touched['tags[2]']).toBe(false);
+  });
+
+  it('removeAt of an item with an error removes the error; a later item keeps its own', () => {
+    const f = make2({ tags: ['ok', 'toolong', 'fine', 'toolong2'] });
+    expect(Object.keys(f.errors)).toEqual(['tags[1]', 'tags[3]']);
+    f.removeAt('tags[1]');
+    expect(Object.keys(f.errors)).toEqual(['tags[2]']);
+    expect(f.get('tags')[2]).toBe('toolong2');
+  });
+
+  it('moveItem swaps neighbours, ignores moves past the ends, and carries touched state along', () => {
+    const f = make2({ tags: ['a', 'b', 'c'] });
+    f.touch('tags[0]');
+    f.moveItem('tags[0]', 1);
+    expect(f.get('tags')).toEqual(['b', 'a', 'c']);
+    expect(f.touched['tags[1]']).toBe(true);
+    expect(f.touched['tags[0]']).toBe(false);
+    f.moveItem('tags[0]', -1);
+    f.moveItem('tags[2]', 1);
+    expect(f.get('tags')).toEqual(['b', 'a', 'c']);
+    f.moveItem('tags[2]', -2);
+    expect(f.get('tags')).toEqual(['c', 'b', 'a']);
+  });
+
+  it('structure edits count for dirty, and undoing them is pristine again; max items is validated', () => {
+    const f = make2({ tags: ['a', 'b'] });
+    f.append('tags', 'c');
+    f.removeAt('tags[2]');
+    expect(f.dirty).toBe(false);
+    f.moveItem('tags[0]', 1);
+    expect(f.dirty).toBe(true);
+    f.moveItem('tags[1]', -1);
+    expect(f.dirty).toBe(false);
+    f.append('tags', 'c'); f.append('tags', 'd'); f.append('tags', 'e');
+    expect(f.errors['tags']).toBe('Add at most 4.');
+  });
+
+  it('field readers follow structure changes: the reader of tags[1] sees the item that moved there', () => {
+    const f = make2({ tags: ['a', 'b', 'c'] });
+    const seen = [];
+    effect(() => { seen.push(f.field('tags[1]').value); });
+    f.removeAt('tags[0]');
+    f.moveItem('tags[0]', 1);
+    expect(seen).toEqual(['b', 'c', 'b']);
+  });
+
+  it('server and async errors under a changed array are dropped (they would point at the wrong item)', () => {
+    const f = make2({ tags: ['a', 'b', 'c'] });
+    f.setServerErrors({ 'tags[2]': 'server says no', other: 'x' });
+    f.removeAt('tags[0]');
+    expect(f.errors['tags[2]']).toBe('');
+    expect(f.errors['other']).toBe('x');
+  });
+});

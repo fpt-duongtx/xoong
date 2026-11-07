@@ -164,6 +164,21 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
     });
   }
 
+  /** After items of an array moved: touched paths follow their item, and per-path messages of that array are dropped (they are recomputed). */
+  function remap(parent, to) {
+    const prefix = pathKey(parent);
+    const re = new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\[(\\d+)\\](.*)$`);
+    const touched = [...touchedSet];
+    for (const k of touched) {
+      const m = re.exec(k);
+      if (!m) continue;
+      touchedSet.delete(k);
+      const n = to(Number(m[1]));
+      if (n >= 0) touchedSet.add(`${prefix}[${n}]${m[2]}`);
+    }
+    for (const map of [serverErrors, asyncErrors]) for (const k of Object.keys(map)) if (re.test(k)) delete map[k];
+  }
+
   /** @param {string | (string|number)[]} path */
   function field(path) {
     const parts = typeof path === 'string' ? parsePath(path) : path;
@@ -230,6 +245,53 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
       delete asyncErrors[k];
       publish(runRules(new Set([k])));
       return next;
+    },
+
+    /**
+     * Add an item to the array at `path`. `value` is the new item; for a union item only `{ [key]: variant }` is needed, the variant's defaults are filled in.
+     * With no value a string item is '' and an object item starts from its schema defaults. Returns the new item's index.
+     */
+    append(path, value) {
+      const parts = parsePath(path);
+      const node = nodeAt(schema, parts, draft);
+      const items = node?.items;
+      const list = getAt(draft, parts);
+      const current = Array.isArray(list) ? list : [];
+      let item = value;
+      if (items?.t === 'union' && item && typeof item === 'object') item = { ...defaults(variant(items, item)), ...item };
+      else if (item === undefined) item = items?.t === 'string' ? '' : defaults(items) ?? (items?.t === 'object' ? {} : undefined);
+      draft = setAt(draft, parts, [...current, item]);
+      publish(runRules(undefined));
+      return current.length;
+    },
+
+    /** Remove the array item at `path` (`blocks[2]`): the rows after it move up, and touched/error state follows them. */
+    removeAt(path) {
+      const parts = parsePath(path);
+      const index = parts.at(-1);
+      const parent = parts.slice(0, -1);
+      const list = getAt(draft, parent);
+      if (!Array.isArray(list) || typeof index !== 'number' || index >= list.length) return;
+      draft = setAt(draft, parent, list.filter((_, i) => i !== index));
+      remap(parent, (i) => (i === index ? -1 : i > index ? i - 1 : i));
+      publish(runRules(undefined));
+    },
+
+    /** Move the array item at `path` by `delta` places (-1 up, +1 down); a move past either end does nothing. */
+    moveItem(path, delta) {
+      const parts = parsePath(path);
+      const from = parts.at(-1);
+      const parent = parts.slice(0, -1);
+      const list = getAt(draft, parent);
+      if (!Array.isArray(list) || typeof from !== 'number') return;
+      const to = from + delta;
+      if (to < 0 || to >= list.length || to === from) return;
+      const next = [...list];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      draft = setAt(draft, parent, next);
+      remap(parent, (i) => (i === from ? to : from < to ? (i > from && i <= to ? i - 1 : i) : (i >= to && i < from ? i + 1 : i)));
+      publish(runRules(undefined));
     },
 
     touch(path) { touchedSet.add(pathKey(parsePath(path))); publish(); },

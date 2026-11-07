@@ -333,7 +333,11 @@ function bindNode(node, scope, ctx, disposers) {
   for (const attr of [...el.attributes]) {
     if (attr.name === 'xo-click' || attr.name === 'xo-submit') {
       const engine = bindAction(el, attr.name === 'xo-click' ? 'click' : 'submit', attr.value, scope, ctx, disposers);
-      if (engine) childScope = { value: scope.value, parent: scope, vars: { $form: () => engine.model } }; // `$form.dirty`, `$form.errors['title.vi']` ... inside the form
+      if (engine) childScope = { value: () => engine.model.value, parent: scope, vars: { $form: () => engine.model } }; // `$form.dirty`, `$form.errors['title.vi']` ... inside the form
+      continue;
+    }
+    if (attr.name === 'xo-add' || attr.name === 'xo-remove' || attr.name === 'xo-move') {
+      bindArrayAction(el, attr.name, attr.value, scope, ctx, disposers);
       continue;
     }
     if (attr.name === 'xo-select') {
@@ -375,8 +379,11 @@ function isSafeUrl(value) {
 
 function bindIf(el, scope, ctx, disposers) {
   const expr = el.getAttribute('xo-if').trim();
-  const negate = expr.startsWith('!');
-  const path = negate ? expr.slice(1).trim() : expr;
+  // `xo-if="type=image"` / `xo-if="status!=draft"`: compare a path with a literal (the text of the value; quotes optional)
+  const cmp = /^(.+?)\s*(!?=)\s*(?:'([^']*)'|"([^"]*)"|(.*?))\s*$/.exec(expr);
+  const negate = cmp ? cmp[2] === '!=' : expr.startsWith('!');
+  const path = cmp ? cmp[1].trim() : negate ? expr.slice(1).trim() : expr;
+  const literal = cmp ? (cmp[3] ?? cmp[4] ?? cmp[5]) : undefined;
   const tpl = el.cloneNode(true);
   tpl.removeAttribute('xo-if');
   const marker = document.createComment('xo-if');
@@ -385,7 +392,7 @@ function bindIf(el, scope, ctx, disposers) {
   let shown = null;
   disposers.push(effect(() => {
     const v = ctx.lookup(scope, path);
-    const truthy = Array.isArray(v) ? v.length > 0 : !!v;
+    const truthy = literal !== undefined ? String(v ?? '') === literal : Array.isArray(v) ? v.length > 0 : !!v;
     const want = negate ? !truthy : truthy;
     if (want && !shown) {
       const node = /** @type {Element} */ (tpl.cloneNode(true));
@@ -690,4 +697,31 @@ function withOf(el, scope, ctx, op) {
     out[m[1]] = type === 'integer' || type === 'number' ? Number(text) : type === 'boolean' ? text === 'true' : text;
   }
   return out;
+}
+
+/**
+ * Array editing inside a `<form xo-submit>` (the model owns the draft):
+ *   <button type="button" xo-add="blocks" xo-with="type=image">Add image</button>      append (a union item needs its tag)
+ *   <button type="button" xo-remove="blocks[{$index}]">Remove</button>                  remove this item
+ *   <button type="button" xo-move="blocks[{$index}]:up">Up</button>   (or :down)        move this item
+ * Plain buttons: keyboard accessible, no drag needed.
+ */
+function bindArrayAction(el, kind, spec, scope, ctx, disposers) {
+  const handler = (event) => {
+    event.preventDefault();
+    const model = ctx.lookup(scope, '$form');
+    if (!model) { console.error(`xoong: ${kind} only works inside a <form xo-submit> whose operation has a request schema`); return; }
+    const text = evalParts(parseInterpolation(spec) ?? [spec], scope, ctx.lookup);
+    if (kind === 'xo-add') {
+      const fields = withOf(el, scope, ctx, { bodyFields: [] });
+      model.append(text, fields && Object.keys(fields).length ? fields : undefined);
+    } else if (kind === 'xo-remove') model.removeAt(text);
+    else {
+      const m = /^(.*):(up|down|-?\d+)$/.exec(text);
+      if (!m) { console.error(`xoong: xo-move="${text}" is not "path:up" or "path:down"`); return; }
+      model.moveItem(m[1], m[2] === 'up' ? -1 : m[2] === 'down' ? 1 : Number(m[2]));
+    }
+  };
+  el.addEventListener('click', handler);
+  disposers.push(() => el.removeEventListener('click', handler));
 }
