@@ -15,7 +15,7 @@ import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } from '@x
 
 const ATTRS = [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES];
 const TAGS = [...XO_ELEMENTS, ...XO_UI_ELEMENTS];
-const isScript = (uri) => /\.(m?[jt]s)$/.test(uri);
+const isScript = (uri) => /\.(c|m)?[jt]sx?$/.test(uri);
 const isMutationAttr = (name) => name === 'xo-click' || name === 'xo-submit' || name === 'op';
 
 /**
@@ -60,7 +60,7 @@ export function createLanguageServer(ctx) {
 
   async function complete(uri, pos) {
     const line = before(uri, pos);
-    const value = /\b(xo-click|xo-submit|get|op)\s*=\s*(["'])([^"']*)$/.exec(line);
+    const value = /(?<![\w:.-])(xo-click|xo-submit|get|op)\s*=\s*(["'])([^"']*)$/.exec(line);
     if (value) {
       const table = await ctx.operations();
       if (!table) return [];
@@ -102,23 +102,43 @@ export function createLanguageServer(ctx) {
       if (!closest) continue;
       const text = docs.get(uri) ?? '';
       const row = text.split('\n')[d.range.start.line] ?? '';
-      const quoted = /(["'])([^"']*)\1/.exec(row.slice(d.range.start.character));
-      if (!quoted) continue;
-      const start = d.range.start.character + quoted.index + 1;
+      let start, length;
+      if (isScript(uri)) { // the diagnostic starts at the operation name itself
+        const typo = /unknown operation "([^"]+)"/.exec(d.message)?.[1];
+        if (!typo || !row.startsWith(typo, d.range.start.character)) continue;
+        start = d.range.start.character; length = typo.length;
+      } else { // the diagnostic starts at the attribute: replace the quoted value after it
+        const quoted = /(["'])([^"']*)\1/.exec(row.slice(d.range.start.character));
+        if (!quoted) continue;
+        start = d.range.start.character + quoted.index + 1; length = quoted[2].length;
+      }
       actions.push({ title: `Use "${closest}"`, kind: 'quickfix', diagnostics: [d], isPreferred: true,
-        edit: { changes: { [uri]: [{ range: { start: { line: d.range.start.line, character: start }, end: { line: d.range.start.line, character: start + quoted[2].length } }, newText: closest }] } } });
+        edit: { changes: { [uri]: [{ range: { start: { line: d.range.start.line, character: start }, end: { line: d.range.start.line, character: start + length } }, newText: closest }] } } });
     }
     return actions;
   }
 
   /** @param {any} msg @returns {Promise<any[]>} */
   async function handle(msg) {
+    try {
+      return await dispatch(msg ?? {});
+    } catch (e) { // one bad message must never take the server down
+      return msg?.id !== undefined ? [{ jsonrpc: '2.0', id: msg.id, error: { code: -32603, message: String(e instanceof Error ? e.message : e) } }] : [];
+    }
+  }
+
+  async function dispatch(msg) {
     const { method, id, params } = msg;
     switch (method) {
       case 'initialize': return [reply(id, { capabilities: { textDocumentSync: 1, completionProvider: { triggerCharacters: ['"', "'", '-', '<'] }, hoverProvider: true, codeActionProvider: true }, serverInfo: { name: 'xoong-lsp', version: '0.0.1' } })];
       case 'shutdown': return [reply(id, null)];
       case 'textDocument/didOpen': docs.set(params.textDocument.uri, params.textDocument.text); return [await diagnose(params.textDocument.uri)];
-      case 'textDocument/didChange': docs.set(params.textDocument.uri, params.contentChanges.at(-1).text); return [await diagnose(params.textDocument.uri)];
+      case 'textDocument/didChange': {
+        const text = params?.contentChanges?.at(-1)?.text;
+        if (typeof text !== 'string') return []; // nothing usable: keep the last known text
+        docs.set(params.textDocument.uri, text);
+        return [await diagnose(params.textDocument.uri)];
+      }
       case 'textDocument/didSave': return docs.has(params.textDocument.uri) ? [await diagnose(params.textDocument.uri)] : []; // also picks up a fresh `xoong sync`
       case 'textDocument/didClose': docs.delete(params.textDocument.uri); return [notify('textDocument/publishDiagnostics', { uri: params.textDocument.uri, diagnostics: [] })];
       case 'textDocument/completion': return [reply(id, await complete(params.textDocument.uri, params.position))];

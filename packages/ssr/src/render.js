@@ -8,6 +8,11 @@
  *   const html = await renderPage(pageHtml, { operations, baseUrl: 'http://localhost:8080' });
  *
  * Render pages one after another: the DOM globals are process-wide, so calls are queued.
+ *
+ * Two things to know: (1) the first render installs `window`, `document` and friends on `globalThis` for the rest of the process,
+ * so libraries that detect a browser by `typeof window` will think they run in one: prerender in a build script or a
+ * dedicated process, not inside a server that also runs such code. (2) A page whose API calls fail still renders (its
+ * `$error` branches show); pass `failOnError: true`, or collect them with `onError`, to treat that as a failure.
  */
 import { Window } from 'happy-dom';
 
@@ -33,7 +38,7 @@ async function boot() {
 
 /**
  * @param {string} html                     the page
- * @param {{ operations: any, baseUrl?: string, fetch?: typeof fetch, headers?: () => Record<string,string>, timeoutMs?: number, url?: string }} options
+ * @param {{ operations: any, baseUrl?: string, fetch?: typeof fetch, headers?: () => Record<string,string>, timeoutMs?: number, url?: string, onError?: (e: any) => void, failOnError?: boolean }} options
  *   `operations`: contents of .xoong/operations.json. `baseUrl`: where the API is reachable from the server.
  * @returns {Promise<string>}
  */
@@ -43,11 +48,13 @@ export function renderPage(html, options) {
   return run;
 }
 
-async function render(html, { operations, baseUrl = '', fetch: fetchImpl, headers, timeoutMs = 10_000, url = 'http://xoong.local/' }) {
+async function render(html, { operations, baseUrl = '', fetch: fetchImpl, headers, timeoutMs = 10_000, url = 'http://xoong.local/', onError, failOnError = false }) {
   booted ??= boot();
-  const data = await booted;
+  /** @type {any} */ let data;
+  try { data = await booted; } catch (e) { booted = null; throw e; } // a failed boot (happy-dom missing) is not cached
+  const failures = [];
   /** @type {any} */ (globalThis).window.happyDOM.setURL(url); // so p-id="?id" sees the request's query string
-  const client = data.configure({ api: operations, baseUrl, fetch: fetchImpl, headers, retry: 0 });
+  const client = data.configure({ api: operations, baseUrl, fetch: fetchImpl, headers, retry: 0, onError: (e) => { failures.push(e); onError?.(e); } });
 
   const parsed = new /** @type {any} */ (globalThis).DOMParser().parseFromString(html, 'text/html');
   // Remember each top-level view's original markup before it renders.
@@ -64,6 +71,7 @@ async function render(html, { operations, baseUrl = '', fetch: fetchImpl, header
       calm = client.pending === 0 ? calm + 1 : 0;
       if (Date.now() > deadline) throw new Error(`xoong ssr: the page did not finish loading its data within ${timeoutMs} ms`);
     }
+    if (failOnError && failures.length) throw Object.assign(new Error(`xoong ssr: ${failures.length} API call(s) failed: ${failures.map((e) => e.operation ?? e.message).join(', ')}`), { errors: failures });
     originals.forEach((markup, i) => {
       const view = body.querySelector(`xo-view[data-xo-ssr="${i}"]`);
       if (!view) return;
@@ -74,8 +82,8 @@ async function render(html, { operations, baseUrl = '', fetch: fetchImpl, header
       view.prepend(tpl);
     });
     const root = parsed.documentElement;
-    const attrs = [...root.attributes].map((a) => ` ${a.name}="${a.value.replace(/"/g, '&quot;')}"`).join('');
-    return `<!doctype html>\n<html${attrs}>\n<head>${parsed.head.innerHTML}</head>\n<body${[...parsed.body.attributes].map((a) => ` ${a.name}="${a.value.replace(/"/g, '&quot;')}"`).join('')}>${body.innerHTML}</body>\n</html>\n`;
+    const attrs = (el) => [...el.attributes].map((a) => ` ${a.name}="${a.value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`).join('');
+    return `<!doctype html>\n<html${attrs(root)}>\n<head>${parsed.head.innerHTML}</head>\n<body${attrs(parsed.body)}>${body.innerHTML}</body>\n</html>\n`;
   } finally {
     body.innerHTML = ''; // disconnect the views so nothing keeps running
   }

@@ -42,7 +42,7 @@ keeps it in step with the syntax lists. Similar formats exist for other editors;
 `@xoong/lsp` (`xoong-lsp`, LSP over stdio) is implemented with: **diagnostics** (the exact findings of `xoong check`, same code,
 message and fix, for HTML and for JS/TS files), **completion** of operation names inside `xo-click`, `xo-submit`, `get` and `op`
 (mutations for the first three, reads written as paths for `get`) and of `xo-*` attribute and element names, **hover** docs, and a
-**quick fix** that replaces an unknown operation with the closest one. It finds `.xoong/operations.json` from the workspace folder
+**quick fix** that replaces an unknown operation with the closest one. One malformed message never ends the session (requests get an error reply), and messages are handled in order. It finds `.xoong/operations.json` from the workspace folder
 upward and re-reads it when it changes (saving a file re-checks it). Not done: scope-aware completion of `{field}` paths, hover for
 operation types, go to definition. Any editor that can launch a language server for HTML/JS/TS files can use it, for example
 Neovim (`vim.lsp.start({ cmd = { 'node', 'packages/lsp/src/cli.js' }, ... })`).

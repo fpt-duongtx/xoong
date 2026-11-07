@@ -67,6 +67,10 @@ const html = await renderPage(pageHtml, { operations, baseUrl: 'http://backend',
 
 * Scope: public, cacheable pages. Personalised pages stay client-rendered until a later ADR (the server would need the
   visitor's credentials; use `headers` only for service credentials).
+* The first render installs `window`, `document` and friends on `globalThis` for the rest of the process: prerender in a build
+  script or a dedicated process, not inside a server that runs code that detects a browser by `typeof window`.
+* A page whose API calls fail still renders (its `$error` branches show). Pass `failOnError: true` to make that an error (it carries
+  `.errors`), or `onError` to observe the failures and answer 404/502 yourself.
 * Pages render one after another (DOM globals are process-wide). A page whose data does not load within `timeoutMs`
   (default 10 s) fails with a clear error instead of rendering half.
 * Scripts and stylesheets of the page are neither run nor fetched during rendering.

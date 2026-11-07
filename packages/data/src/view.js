@@ -133,8 +133,8 @@ class XoView extends XoElement {
       const initial = {};
       for (const a of this.attributes) {
         if (!a.name.startsWith('p-')) continue;
-        // p-id="?id" reads ?id=... from the page URL (public pages that show one item); an absent query parameter is left out
-        if (a.value.startsWith('?')) { const v = new URLSearchParams(globalThis.location?.search).get(a.value.slice(1)); if (v !== null) initial[camel(a.name.slice(2))] = v; } else initial[camel(a.name.slice(2))] = a.value;
+        // p-id="?id" reads ?id=... from the page URL (public pages that show one item); an absent or empty query parameter is left out
+        if (a.value.startsWith('?')) { const v = new URLSearchParams(globalThis.location?.search).get(a.value.slice(1)); if (v) initial[camel(a.name.slice(2))] = v; } else initial[camel(a.name.slice(2))] = a.value;
       }
       this.#params.value = { ...initial, ...this.#params.peek() };
     }

@@ -147,8 +147,31 @@ describe('xoong check: JavaScript and TypeScript', () => {
 
   it('finds html`...` templates, ignoring ${} holes, nested templates and escapes', () => {
     const code = 'const a = html`<p class=${c}>${() => html`<i>${x}</i>`}</p>`;\nconst b = html`<b>\\`</b>`; const c = 1;';
-    expect(htmlTemplates(code).map((t) => t.text)).toEqual(['<p class=x>x</p>', '<b>\\`</b>']);
+    expect(htmlTemplates(code).map((t) => t.text.replace(/ +/g, ' '))).toEqual(['<p class=x >x </p>', '<b>\\`</b>']); // holes keep their width (blanks)
     expect(htmlTemplates(code)[1]).toMatchObject({ line: 2 });
+  });
+
+  it('line and column stay right after multi-line holes and same-line holes (review findings)', () => {
+    const multi = 'const a = html`<ul>${items.map((i) =>\n  html`<li>${i}</li>`\n).join("")}</ul>\n<xo-bogus></xo-bogus>`;';
+    expect(src(multi).find((f) => f.code === 'XO230')).toMatchObject({ line: 4, column: 1 });
+    const same = src('x = html`<p>${x}</p><xo-zz>`;').find((f) => f.code === 'XO230');
+    expect(same.column).toBe('x = html`<p>${x}</p>'.length + 1);
+  });
+
+  it('understands enough JavaScript: braces in strings, comments, strings and regexes that mention html`', () => {
+    expect(src("html`<b>${ '}' }</b><xo-bogus>`").map((f) => f.code)).toEqual(['XO230']);
+    expect(src("// don't use html` here\nconst y = `a`;\nconst z = 1;")).toEqual([]);
+    expect(src('const s = "html`<xo-bogus>`"; const r = /`/; const t = html`<p>ok</p>`;')).toEqual([]);
+    expect(htmlTemplates('const t = html`<p>${html`<i>${a}</i>`}</p>`; const u = html`<b></b>`;')).toHaveLength(2);
+  });
+
+  it('only checks calls on something that looks like a xoong client, and directory scans skip build output', async () => {
+    expect(src("db.query('SELECT 1'); router.load('/x'); client.load('listUser'); apiClient.mutate('GET /users'); getClient().load('nope');").map((f) => f.code)).toEqual(['XO201', 'XO204', 'XO201']);
+    const dir = await mkdtemp(join(tmpdir(), 'xoong-skip-'));
+    await mkdir(join(dir, 'dist'));
+    await writeFile(join(dir, 'dist', 'bundle.js'), 'client.load("nope");');
+    await writeFile(join(dir, 'vendor.min.js'), 'client.load("nope");');
+    expect((await checkFiles([dir], table)).files).toBe(0);
   });
 
   it('checks HTML inside templates and maps findings to the right line and column of the file', () => {

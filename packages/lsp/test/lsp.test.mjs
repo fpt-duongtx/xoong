@@ -106,3 +106,36 @@ test('the stdio program frames messages with Content-Length and finds .xoong/ope
   assert.equal(got[0].id, 1);
   assert.equal(got[1].params.diagnostics[0].code, 'XO201');
 });
+
+test('a malformed message never crashes the server: requests get an error, notifications are ignored', async () => {
+  const s = make();
+  await open(s, '<p></p>');
+  assert.deepEqual(await s.handle({ jsonrpc: '2.0', method: 'textDocument/didChange', params: { textDocument: { uri }, contentChanges: [] } }), []);
+  assert.deepEqual(await s.handle({ jsonrpc: '2.0', method: 'textDocument/didOpen', params: {} }), []); // no textDocument
+  const [bad] = await s.handle({ jsonrpc: '2.0', id: 9, method: 'textDocument/hover', params: {} });
+  assert.equal(bad.error.code, -32603);
+  assert.deepEqual(await s.handle(null), []);
+  const throwing = createLanguageServer({ operations: async () => { throw new Error('disk gone'); } });
+  assert.deepEqual(await open(throwing, '<p></p>'), []); // a failing operations() does not end the session
+});
+
+test('the quick fix edits the right text in script files, even with other arguments on the line', async () => {
+  const s = make();
+  const text = "client.load('listUsr', { a: 'b' });";
+  const u = 'file:///app/a.ts';
+  const d = diagnostics(await open(s, text, u));
+  const [r] = await s.handle({ jsonrpc: '2.0', id: 2, method: 'textDocument/codeAction', params: { textDocument: { uri: u }, context: { diagnostics: d } } });
+  const edit = r.result[0].edit.changes[u][0];
+  assert.equal(text.slice(0, edit.range.start.character) + edit.newText + text.slice(edit.range.end.character), "client.load('listUsers', { a: 'b' });");
+});
+
+test('completion ignores look-alike attributes (data-op, ?get=) and .tsx counts as a script', async () => {
+  const s = make();
+  const text = '<a data-op="dis" href="?get=l">';
+  await open(s, text);
+  const at = (c) => s.handle({ jsonrpc: '2.0', id: 1, method: 'textDocument/completion', params: { textDocument: { uri }, position: { line: 0, character: c } } }).then(([r]) => r.result);
+  assert.deepEqual(await at(text.indexOf('dis') + 3), []);
+  assert.deepEqual(await at(text.indexOf('=l') + 2), []);
+  const ts = diagnostics(await open(s, 'client.load("nope");', 'file:///app/a.tsx'));
+  assert.equal(ts[0].code, 'XO201');
+});

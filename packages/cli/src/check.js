@@ -150,37 +150,78 @@ export function checkHtml(source, table, file = '<input>') {
 }
 
 /**
- * Template literals tagged `html` in a script: [{ text, line, column }] where `${...}` holes are replaced by "x"
- * (an attribute value or a text), and line/column point at the first character of the template.
+ * Template literals tagged `html` in a script: [{ text, line, column }]. `text` has the same shape as the source (same line
+ * breaks, same widths): each `${...}` hole becomes "x" followed by spaces and keeps its newlines, so line and column of any
+ * finding inside the template map straight back to the file. `line`/`column` point at the first character of the template.
+ *
+ * A small scanner, not a parser: it skips comments, strings, nested templates and regex literals, so `html\`` inside a comment or
+ * string is not a template and braces inside strings do not end a hole. Anything it cannot read is skipped, never guessed.
  */
 export function htmlTemplates(source) {
   const out = [];
-  const re = /\bhtml\s*`/g;
-  let m;
-  while ((m = re.exec(source))) {
-    let i = re.lastIndex;
-    let text = '';
-    let depth = 0; // inside ${ ... }
-    for (; i < source.length; i++) {
-      const c = source[i];
-      if (depth === 0) {
-        if (c === '\\') { text += source.slice(i, i + 2); i++; continue; }
-        if (c === '`') break;
-        if (c === '$' && source[i + 1] === '{') { depth = 1; text += 'x'; i++; continue; }
-        text += c;
-      } else {
-        if (c === '{') depth++;
-        else if (c === '}') depth--;
-        else if (c === '`') { // nested template inside a hole: skip it whole
-          for (i++; i < source.length && source[i] !== '`'; i++) if (source[i] === '\\') i++;
-        }
-        if (depth === 0) continue;
-      }
+  const n = source.length;
+  let i = 0;
+  let prevSignificant = ''; // last non-space code character: tells a regex literal from a division
+
+  /** Skip a quoted string starting at i (the quote); returns the index after it. */
+  const skipString = (q) => { for (i++; i < n && source[i] !== q && source[i] !== '\n'; i++) if (source[i] === '\\') i++; return i + 1; };
+  /** Skip a template literal (any tag) starting at i (the backtick), including its holes; returns the index after it. */
+  const skipTemplate = () => {
+    for (i++; i < n && source[i] !== '`'; i++) {
+      if (source[i] === '\\') i++;
+      else if (source[i] === '$' && source[i + 1] === '{') { i += 2; skipCode('}'); i--; }
     }
-    const start = re.lastIndex;
-    const before = source.slice(0, start).split('\n');
-    out.push({ text, line: before.length, column: before[before.length - 1].length + 1 });
-    re.lastIndex = i + 1;
+    return i + 1;
+  };
+  /** Skip code until the closing brace of a hole (depth 0), starting after the opening one. Leaves i after the brace. */
+  const skipCode = (until) => {
+    let depth = 0;
+    while (i < n) {
+      const c = source[i];
+      if (c === '"' || c === "'") { i = skipString(c); continue; }
+      if (c === '`') { i = skipTemplate(); continue; }
+      if (c === '/' && source[i + 1] === '/') { while (i < n && source[i] !== '\n') i++; continue; }
+      if (c === '/' && source[i + 1] === '*') { const e = source.indexOf('*/', i + 2); i = e < 0 ? n : e + 2; continue; }
+      if (c === '{') depth++;
+      else if (c === '}') { if (depth === 0 && until === '}') { i++; return; } depth--; }
+      i++;
+    }
+  };
+
+  while (i < n) {
+    const c = source[i];
+    if (c === '"' || c === "'") { i = skipString(c); prevSignificant = c; continue; }
+    if (c === '/' && source[i + 1] === '/') { while (i < n && source[i] !== '\n') i++; continue; }
+    if (c === '/' && source[i + 1] === '*') { const e = source.indexOf('*/', i + 2); i = e < 0 ? n : e + 2; continue; }
+    if (c === '/' && /[(,=:[!&|?{};]|^$/.test(prevSignificant)) { // regex literal
+      let inClass = false;
+      for (i++; i < n && source[i] !== '\n'; i++) {
+        if (source[i] === '\\') i++; else if (source[i] === '[') inClass = true; else if (source[i] === ']') inClass = false; else if (source[i] === '/' && !inClass) break;
+      }
+      i++; prevSignificant = '/'; continue;
+    }
+    if (c === '`') {
+      const tagged = /(?:^|[^\w$.])html\s*$/.test(source.slice(Math.max(0, i - 40), i));
+      if (!tagged) { i = skipTemplate(); prevSignificant = '`'; continue; }
+      const start = i + 1;
+      let text = '';
+      for (i++; i < n && source[i] !== '`'; i++) {
+        if (source[i] === '\\') { text += source.slice(i, i + 2); i++; continue; }
+        if (source[i] === '$' && source[i + 1] === '{') {
+          const from = i;
+          i += 2; skipCode('}'); i--; // i is now on the closing brace
+          const hole = source.slice(from, i + 1);
+          text += 'x' + hole.slice(1).replace(/[^\n]/g, ' ');
+          continue;
+        }
+        text += source[i];
+      }
+      const before = source.slice(0, start).split('\n');
+      out.push({ text, line: before.length, column: before[before.length - 1].length + 1 });
+      i++; prevSignificant = '`'; continue;
+    }
+    if (!/\s/.test(c)) prevSignificant = c;
+    i++;
   }
   return out;
 }
@@ -198,13 +239,14 @@ export function checkScript(source, table, file = '<input>') {
   const findings = [];
   for (const t of htmlTemplates(source)) {
     for (const f of checkHtml(t.text, table, file)) {
-      findings.push({ ...f, line: t.line + f.line - 1, column: f.line === 1 ? t.column + f.column - 1 : f.column });
+      findings.push({ ...f, line: t.line + f.line - 1, column: f.line === 1 ? t.column + f.column - 1 : f.column }); // text has the source's shape
     }
   }
   const ops = operationIndex(table);
   const known = [...ops.keys()];
   const lineCol = (index) => { const lines = source.slice(0, index).split('\n'); return { line: lines.length, column: lines[lines.length - 1].length + 1 }; };
-  for (const m of source.matchAll(/\.(load|query|mutate|stream)\(\s*(['"])([^'"\n]+)\2/g)) {
+  // Only calls on something that looks like a xoong client: `client`, `xoongClient`, `getClient()`, `xo` (so `db.query('SELECT 1')` is left alone).
+  for (const m of source.matchAll(/(?:\b\w*[cC]lient|\bxo|\bgetClient\(\))\s*\.(load|query|mutate|stream)\(\s*(['"])([^'"\n]+)\2/g)) {
     const [, method, , ref] = m;
     const key = ref.startsWith('/') ? `GET ${ref}` : ref.replace(/\s+/g, ' ').trim();
     const at = lineCol(m.index + m[0].indexOf(ref));
@@ -228,8 +270,8 @@ export async function collectHtml(paths) {
   const visit = async (p) => {
     const s = await stat(p);
     if (s.isDirectory()) {
-      for (const name of await readdir(p)) if (name !== 'node_modules' && !name.startsWith('.')) await visit(join(p, name));
-    } else if (['.html', '.htm', '.js', '.mjs', '.ts', '.mts'].includes(extname(p).toLowerCase()) && !p.endsWith('.d.ts')) out.push(p);
+      for (const name of await readdir(p)) if (!['node_modules', 'dist', 'build', 'coverage'].includes(name) && !name.startsWith('.')) await visit(join(p, name));
+    } else if (['.html', '.htm', '.js', '.mjs', '.ts', '.mts'].includes(extname(p).toLowerCase()) && !p.endsWith('.d.ts') && !p.endsWith('.min.js')) out.push(p);
   };
   for (const p of paths) await visit(p);
   return out.sort();

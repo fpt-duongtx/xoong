@@ -201,11 +201,14 @@ export function createStore(entityDefs = {}) {
   return store;
 }
 
-/** Identity of a record: one property, or several joined with "/" for a composite id. undefined when a part is missing. */
+/**
+ * Identity of a record: one property, or several for a composite id (each part percent-encoded, joined with "/", so
+ * ["a/b","c"] and ["a","b/c"] stay different). undefined when a part is missing. Stream events address it the same way.
+ */
 export function idOf(idDef, value) {
   if (!Array.isArray(idDef)) return value[idDef] ?? undefined;
   const parts = idDef.map((k) => value[k]);
-  return parts.some((p) => p === undefined || p === null) ? undefined : parts.join('/');
+  return parts.some((p) => p === undefined || p === null) ? undefined : parts.map((p) => encodeURIComponent(String(p))).join('/');
 }
 
 /** Normalize a plain entity object into a record whose nested entities are refs. */

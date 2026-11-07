@@ -179,7 +179,7 @@ See [test-corpus.md](test-corpus.md#unions-resolved-where-the-document-allows).
 Identity and unions, in addition to the table below:
 
 * **Composite identity** (Kubernetes: `namespace` + `name`): hint `"schemas": { "Pod": { "id": ["namespace", "name"] } }`.
-  The id is the parts joined with `/`; stream events address it the same way (`"id": "a/web"`). A record missing a part
+  The id is the parts percent-encoded and joined with `/` (so `["a/b","c"]` and `["a","b/c"]` stay different); stream events address it the same way (`"id": "a/web"`, or `"a%2Fb/c"`). A record missing a part
   stays inline instead of being stored.
 * **Unions without a tag** (GitHub: an issue and a pull request in one list): when every member has a *required*
   property that no other member declares, the member is recognised by that property being present. If any member cannot

@@ -21,7 +21,9 @@ possible so it cannot drift.
 
 **Implemented** for HTML files and for JavaScript/TypeScript (`xoong check <files|folders> [--format json]`): in `.js`, `.mjs`, `.ts`
 and `.mts` files it checks the HTML inside html`...` templates (findings point at the file's own lines) and the operation named in a
-string literal passed to `client.load/query/mutate/stream`. Calls that build the name dynamically are not checked.
+string literal passed to `client.load/query/mutate/stream`. Calls that build the name dynamically are not checked, and only calls on something that looks like a xoong client (`client`,
+`apiClient`, `getClient()`, `xo`) are examined, so `db.query('SELECT 1')` is left alone. The template scanner is a small scanner, not a
+JavaScript parser: it skips comments, strings and regex literals and keeps line and column exact, and skips what it cannot read.
 Codes: XO201 unknown operation (with closest match), XO202 xo-click on a GET, XO203 get on a non-GET,
 XO204 read/write method mismatch in JS, XO210 missing `p-*`, XO220 xo-submit not on a form, XO221 empty expression, XO230 unknown xo-* attribute or
 element, XO240/XO241 accessibility. Locations are line:column.

@@ -63,3 +63,15 @@ test('p-id="?id" takes the param from the request URL', async () => {
   assert.deepEqual(calls, ['/users/2']);
   assert.match(html, /<h1>Bob<\/h1>/);
 });
+
+test('root attributes keep their entities, failed API calls can fail the render', async () => {
+  const html = await renderPage('<!doctype html><html data-x="a&amp;quot;b" lang="en"><body data-y="1 &lt; 2"><xo-view get="/users"><i xo-each="items">{id}</i></xo-view></body></html>', { operations, fetch: api() });
+  assert.match(html, /<html data-x="a&amp;quot;b" lang="en">/);
+  assert.match(html, /<body data-y="1 < 2">/); // `<` is legal inside a quoted attribute value
+  const failing = async () => new Response(JSON.stringify({ title: 'Boom' }), { status: 500, headers: { 'content-type': 'application/problem+json' } });
+  const seen = [];
+  const lenient = await renderPage(page('<xo-view get="/users"><p xo-if="$error" class="e">failed</p></xo-view>'), { operations, fetch: failing, onError: (e) => seen.push(e.status) });
+  assert.match(lenient, /class="e"/); // the error state is rendered ...
+  assert.deepEqual(seen, [500]); // ... and the caller can see that it happened
+  await assert.rejects(() => renderPage(page('<xo-view get="/users"><p>x</p></xo-view>'), { operations, fetch: failing, failOnError: true }), (e) => /1 API call\(s\) failed: listUsers/.test(e.message) && e.errors.length === 1);
+});

@@ -530,3 +530,8 @@ test('a union without a tag is resolved by a property only one member has', asyn
   assert.deepEqual(c.store.refs('Pull').map((r) => r.$ref), ['Pull#1']); // same id, different entity types
   assert.deepEqual(items[2], { id: 9 }); // unrecognised: kept as received
 });
+
+test('composite ids with separators in a part do not collide', () => {
+  const c = createClient({ api: { entities: { K: { id: ['a', 'b'] } }, operations: { l: { id: 'l', method: 'GET', path: '/k', response: { t: 'array', items: { t: 'entity', name: 'K' } } } } }, fetch: fakeFetch({ 'GET /k': () => [{ a: 'x/y', b: 'z' }, { a: 'x', b: 'y/z' }] }) });
+  return c.load('l').then(() => assert.equal(c.store.refs('K').length, 2));
+});

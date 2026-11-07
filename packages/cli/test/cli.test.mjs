@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { analyze, sync, doctor, generateDts } from '../src/index.js';
+import { swagger2ToOpenApi3 } from '../src/swagger2.js';
 const generateDtsSync = generateDts;
 
 const fixture = new URL('./fixture.json', import.meta.url).pathname;
@@ -424,4 +425,16 @@ test('Swagger 2.0 is converted: parameters, body, formData, responses and defini
   assert.deepEqual(a.operations.uploadPhoto.bodyFields, [{ name: 'file', type: 'file', required: true }, { name: 'caption', type: 'string' }]);
   assert.equal(a.problems.filter((p) => p.level === 'error').length, 0);
   assert.match(generateDts(a), /createPet|addPet/);
+});
+
+test('Swagger 2: csv and multi arrays keep their wire format, file responses become binary strings', () => {
+  const sw = { swagger: '2.0', info: { title: 't', version: '1' }, paths: { '/x': { get: { operationId: 'x',
+    parameters: [{ name: 'a', in: 'query', type: 'array', items: { type: 'string' } }, { name: 'b', in: 'query', type: 'array', items: { type: 'string' }, collectionFormat: 'multi' }, { name: 'c', in: 'query', type: 'array', items: { type: 'string' }, collectionFormat: 'pipes' }],
+    produces: ['application/octet-stream'], responses: { 200: { description: 'ok', schema: { type: 'file' } }, default: { description: 'e' } } } } } };
+  const out = swagger2ToOpenApi3(sw).paths['/x'].get;
+  const by = (n) => out.parameters.find((p) => p.name === n);
+  assert.deepEqual([by('a').style, by('a').explode], ['form', false]);
+  assert.deepEqual([by('b').style, by('b').explode], ['form', true]);
+  assert.deepEqual([by('c').style, by('c').explode], ['pipeDelimited', false]);
+  assert.deepEqual(out.responses['200'].content['application/octet-stream'].schema, { type: 'string', format: 'binary' });
 });

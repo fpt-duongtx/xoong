@@ -7,6 +7,9 @@
 
 const JSON_MIME = 'application/json';
 
+/** A Swagger 2 `type: file` schema is a binary string in OpenAPI 3. */
+const fileSchema = (schema) => (schema?.type === 'file' ? { type: 'string', format: 'binary' } : schema);
+
 /** Rewrite "#/definitions/X" (and parameters/responses) references into their OpenAPI 3 homes. */
 function rewriteRefs(node) {
   if (Array.isArray(node)) return node.map(rewriteRefs);
@@ -25,8 +28,11 @@ function parameter3(p, doc) {
   const { name, in: where, description, required, ...rest } = p;
   const schema = {};
   for (const k of ['type', 'format', 'items', 'enum', 'default', 'minimum', 'maximum', 'minLength', 'maxLength', 'pattern']) if (k in rest) schema[k] = rest[k];
-  if (rest.collectionFormat === 'multi') schema.type = schema.type ?? 'array';
-  return { name, in: where, ...(description ? { description } : {}), ...(required || where === 'path' ? { required: true } : {}), schema: rewriteRefs(schema) };
+  // Swagger 2 `collectionFormat`: csv (the default) is "a=1,2", multi is "a=1&a=2".
+  const style = schema.type === 'array' && (where === 'query' || where === 'header' || where === 'path')
+    ? (rest.collectionFormat === 'multi' ? { style: 'form', explode: true } : rest.collectionFormat === 'ssv' ? { style: 'spaceDelimited', explode: false } : rest.collectionFormat === 'pipes' ? { style: 'pipeDelimited', explode: false } : { style: where === 'query' ? 'form' : 'simple', explode: false })
+    : {};
+  return { name, in: where, ...(description ? { description } : {}), ...(required || where === 'path' ? { required: true } : {}), ...style, schema: rewriteRefs(schema) };
 }
 
 /** @param {any} doc a Swagger 2.0 document @returns {any} */
@@ -52,7 +58,7 @@ export function swagger2ToOpenApi3(doc) {
         o.requestBody = { ...(body.required ? { required: true } : {}), content: Object.fromEntries((consumes.length ? consumes : [JSON_MIME]).map((m) => [m, { schema: rewriteRefs(body.schema) }])) };
       } else if (form.length) {
         const multipart = consumes.includes('multipart/form-data') || form.some((f) => f.type === 'file');
-        const properties = Object.fromEntries(form.map((f) => [f.name, f.type === 'file' ? { type: 'string', format: 'binary' } : rewriteRefs(Object.fromEntries(['type', 'format', 'enum', 'items'].filter((k) => k in f).map((k) => [k, f[k]])))]));
+        const properties = Object.fromEntries(form.map((f) => [f.name, f.type === 'file' ? { type: 'string', format: 'binary' } : rewriteRefs(Object.fromEntries(['type', 'format', 'enum', 'items', 'default', 'minimum', 'maximum', 'minLength', 'maxLength', 'pattern'].filter((k) => k in f).map((k) => [k, f[k]])))]));
         const required = form.filter((f) => f.required).map((f) => f.name);
         o.requestBody = { content: { [multipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded']: { schema: { type: 'object', properties, ...(required.length ? { required } : {}) } } } };
       }
@@ -60,7 +66,7 @@ export function swagger2ToOpenApi3(doc) {
       for (const [code, r] of Object.entries(op.responses ?? {})) {
         if (r.$ref) { o.responses[code] = rewriteRefs(r); continue; }
         const res = { description: r.description ?? '' };
-        if (r.schema) res.content = Object.fromEntries((produces.length ? produces : [JSON_MIME]).map((m) => [m, { schema: rewriteRefs(r.schema) }]));
+        if (r.schema) res.content = Object.fromEntries((produces.length ? produces : [JSON_MIME]).map((m) => [m, { schema: rewriteRefs(fileSchema(r.schema)) }]));
         o.responses[code] = res;
       }
       out[method] = o;
