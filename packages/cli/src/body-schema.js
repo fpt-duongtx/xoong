@@ -7,6 +7,8 @@
 const refName = (r) => r.slice(r.lastIndexOf('/') + 1);
 const PRIMITIVE = new Set(['string', 'integer', 'number', 'boolean']);
 const MAX_DEPTH = 10;
+/** Where a union of objects could not be told apart, collected by `bodySchemaOf(..., lost)`. */
+let lostUnions;
 
 /**
  * @param {any} schema the request body schema (maybe a $ref)
@@ -15,8 +17,10 @@ const MAX_DEPTH = 10;
  *   `fields`: presentation hints keyed "SchemaName.property" for specs that cannot be edited
  * @returns {any | undefined} an object node, or undefined when the body is not an object
  */
-export function bodySchemaOf(schema, schemas, hints) {
+export function bodySchemaOf(schema, schemas, hints, lost) {
+  lostUnions = lost;
   const n = convert(schema, schemas, hints, 0, undefined);
+  lostUnions = undefined;
   return n && n.t === 'object' ? n : undefined;
 }
 
@@ -45,7 +49,7 @@ function flatten(schema, schemas, owner, depth) {
 
 function convert(schema, schemas, hints, depth, owner) {
   if (depth > MAX_DEPTH) return { t: 'any' };
-  const { s, name } = flatten(schema, schemas, owner, depth);
+  let { s, name } = flatten(schema, schemas, owner, depth);
   if (!s || typeof s !== 'object') return { t: 'any' };
 
   // oneOf / anyOf: [X, null] is a nullable X; several objects need a tag to be told apart
@@ -55,12 +59,14 @@ function convert(schema, schemas, hints, depth, owner) {
     const nullable = real.length !== alternatives.length;
     if (real.length === 1) return decorate({ ...convert(real[0], schemas, hints, depth + 1, name), ...(nullable ? { nullable: true } : {}) }, s);
     const union = unionOf(s, real, schemas, hints, depth, name);
+    if (!union && real.some((m) => deref(m, schemas).s?.type === 'object' || deref(m, schemas).s?.properties)) lostUnions?.push(name ?? owner ?? 'the request body');
     return union ? decorate({ ...union, ...(nullable ? { nullable: true } : {}) }, s) : { t: 'any' };
   }
 
   let type = s.type;
   let nullable = s.nullable === true;
   if (Array.isArray(type)) { nullable = type.includes('null'); type = type.find((t) => t !== 'null'); }
+  if (!type && s.const !== undefined) { type = typeof s.const === 'number' ? 'number' : typeof s.const === 'boolean' ? 'boolean' : 'string'; s = { ...s, enum: [s.const] }; }
   if (!type) type = s.properties ? 'object' : s.items ? 'array' : s.enum ? typeof s.enum[0] === 'number' ? 'number' : 'string' : undefined;
 
   /** @type {any} */ let node;
@@ -134,8 +140,9 @@ function unionOf(s, members, schemas, hints, depth, owner) {
   let key = d?.propertyName;
   /** @type {(string|number|boolean)[] | undefined} */ let values;
   if (key) {
-    values = members.map((m) => {
-      if (!m.$ref) return undefined;
+    const single = (p) => (p && 'const' in p ? p.const : p?.enum?.length === 1 ? p.enum[0] : undefined);
+    values = members.map((m, i) => {
+      if (!m.$ref) return single(deref(resolved[i].s?.properties?.[key], schemas).s); // an inline member names itself by the fixed value of the tag
       const mapped = Object.entries(d.mapping ?? {}).find(([, target]) => target === m.$ref || String(target).endsWith('/' + refName(m.$ref)));
       return mapped ? mapped[0] : refName(m.$ref);
     });

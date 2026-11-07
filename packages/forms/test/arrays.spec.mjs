@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { mount, mockApi, respond } from '@xoong/test';
 import '@xoong/forms';
+import { define, XoControl, html } from '@xoong/core';
 
 const str = (extra = {}) => ({ t: 'string', ...extra });
 const localized = { t: 'object', nullable: true, pruneEmpty: true, emptyAs: 'null', props: { en: str(), vi: str() } };
@@ -159,5 +160,25 @@ describe('a large page: 40 blocks of 20 fields (800 controls)', () => {
     expect(other.value).toBe(before);
     expect(model().get('blocks')[17].f3).toBe('typed 9');
     expect(perEdit).toBeLessThan(80);
+  });
+});
+
+class MiniControl extends XoControl {
+  render() { return html`<button type="button" @click=${() => this.userInput('x')}>set</button>`; }
+}
+define('xo-test-mini', MiniControl);
+
+describe('a custom XoControl in a form', () => {
+  it('userInput reaches the form model (the control is not reverted before the model hears), and a programmatic value does not change the model', async () => {
+    screen = await mount('<xo-view get="getPage" p-id="3"><form xo-submit="updatePage"><xo-test-mini name="subtitle.en"></xo-test-mini></form></xo-view>', { api: api() });
+    await settle();
+    const host = screen.$('xo-test-mini');
+    host.setValue('aaa');
+    expect(host.value).toBe('aaa'); // the binder's effect does not revert a programmatic change
+    expect(model().get('subtitle')?.en ?? '').toBe(''); // and a programmatic value is not an edit, as with native inputs
+    host.setValue('');
+    await screen.click('xo-test-mini button');
+    expect(host.value).toBe('x');
+    expect(model().get('subtitle.en')).toBe('x');
   });
 });

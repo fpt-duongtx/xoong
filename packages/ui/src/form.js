@@ -15,7 +15,7 @@
 import { defineTemplate } from '@xoong/data/view';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-const label = (name) => String(name).replace(/[_-]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase());
+const label = (name) => /^[a-z]{2}(-[A-Za-z]{2})?$/.test(name) ? String(name).replace(/^[a-z]{2}/, (c) => c.toUpperCase()) : String(name).replace(/[_-]+/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase());
 const TYPES = { email: 'email', password: 'password', date: 'date', 'date-time': 'datetime-local', uri: 'url', url: 'url' }; // the flat generator (bodyFields only)
 const TYPE_OF_WIDGET = { password: 'password', url: 'url', email: 'email', color: 'color', date: 'date', datetime: 'datetime-local', time: 'time' };
 const PRIMITIVE = new Set(['string', 'integer', 'number', 'boolean']);
@@ -58,6 +58,9 @@ function fields(node, path, depth, skip = []) {
   }).join('');
 }
 
+/** The heading of an array row: its number and, for unions, the variant. */
+const rowTitle = (text) => `<span class="xo-row-title"><span class="xo-row-no">{$n}.</span>${text ? ` <strong>${esc(text)}</strong>` : ''}</span>`;
+
 /** Buttons of an array row. */
 const rowButtons = (path) => `<span class="xo-row-actions"><button type="button" xo-move="${path}:up" aria-label="Move up" xo-t="aria-label:xoong.form.moveUp">↑</button><button type="button" xo-move="${path}:down" aria-label="Move down" xo-t="aria-label:xoong.form.moveDown">↓</button><button type="button" xo-remove="${path}" aria-label="Remove" xo-t="aria-label:xoong.form.remove">×</button></span>`;
 
@@ -86,10 +89,10 @@ function array(node, path, text, depth) {
   let row;
   let adds;
   if (item.t === 'union') {
-    row = Object.entries(item.map).map(([v, n]) => `<div class="xo-variant" xo-if="type=${esc(v)}"><strong>${esc(n.title ?? label(v))}</strong>${fields(n, rowPath, depth + 1, [item.key])}</div>`).join('');
+    row = Object.entries(item.map).map(([v, n]) => `<div class="xo-variant" xo-if="type=${esc(v)}">${rowTitle(n.title ?? label(v))}${fields(n, rowPath, depth + 1, [item.key])}</div>`).join('');
     adds = Object.keys(item.map).map((v) => `<button type="button" xo-add="${esc(path)}" xo-with="${esc(item.key)}=${esc(v)}">Add ${esc(label(item.map[v].title ?? v))}</button>`).join('');
   } else {
-    row = PRIMITIVE.has(item.t) ? control({ ...item, title: item.title ?? `${text} item` }, rowPath, text) : item.t === 'object' ? fields(item, rowPath, depth + 1) : '';
+    row = PRIMITIVE.has(item.t) ? control({ ...item, title: item.title ?? `${text} item` }, rowPath, text) : item.t === 'object' ? rowTitle(item.title ?? '') + fields(item, rowPath, depth + 1) : '';
     adds = `<button type="button" xo-add="${esc(path)}" xo-t="xoong.form.add">Add</button>`;
   }
   return `<fieldset class="xo-array"><legend>${esc(node.title ?? text)}</legend>${node.description ? `<small class="xo-hint">${esc(node.description)}</small>` : ''}`

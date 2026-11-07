@@ -121,6 +121,13 @@ describe('<xo-form> from a request schema with nesting, arrays, unions and hints
     expect(screen.$('form').model.get('blocks')[1]).toEqual({ type: 'image' });
   });
 
+  it('array rows have a numbered title with the variant; two-letter child names are language codes in upper case; a property title is its label', async () => {
+    screen = await edit(mockApi(table, { getPage: () => ({ ...record, blocks: [{ type: 'text', body: 'Hi' }, { type: 'image', url: 'x' }] }) }));
+    expect(screen.texts('.xo-variant .xo-row-title')).toEqual(['1. Text block', '2. Image block']);
+    expect(screen.texts('fieldset.xo-object label > span').slice(0, 2)).toEqual(['EN', 'VI']);
+    expect(screen.texts('.xo-array:has([name^="faq["]) .xo-row-title')).toEqual(['1.']);
+  });
+
   it('a union property: choose the variant, and only that variant\'s fields show', async () => {
     screen = await edit(mockApi(table, { getPage: () => ({ ...record, layout: { kind: 'hero', heading: 'Hi' } }) }));
     expect(screen.$('select[name="layout.kind"]').value).toBe('hero');

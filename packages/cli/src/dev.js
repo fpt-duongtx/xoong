@@ -4,7 +4,8 @@ import { join, resolve } from 'node:path';
 
 /**
  * Read `xoong.config.json` from `dir` (all fields optional):
- *   { "root": ".", "port": 5173, "proxy": { "/api": "http://localhost:8080" }, "spa": false, "allowedHosts": [] }
+ *   { "root": ".", "port": 5173, "proxy": { "/api": "http://localhost:8080" }, "spa": false, "allowedHosts": [], "packages": ["rainlet"] }
+ * `packages`: installed packages (besides xoong's own) whose browser code the app imports; served at /@name and listed in the import map.
  */
 export async function loadConfig(dir = '.') {
   try { return JSON.parse(await readFile(join(dir, 'xoong.config.json'), 'utf8')); } catch (error) {
@@ -35,7 +36,7 @@ export async function startDev(options = {}) {
   const proxy = { ...(config.proxy ?? {}), ...(options.proxy ?? {}) };
   const { createDevHandler, serve } = await import('@xoong/server/node');
   const handler = await createDevHandler({
-    root, resolveFrom: options.resolveFrom ?? root, proxy, spa: options.spa ?? config.spa ?? false,
+    root, resolveFrom: options.resolveFrom ?? root, proxy, packages: config.packages ?? [], spa: options.spa ?? config.spa ?? false,
     onError: (error, request) => console.error(`xoong dev: ${request.method} ${new URL(request.url).pathname}: ${/** @type {Error} */ (error)?.message ?? error}`),
   });
   const running = await serve(handler, { port: options.port ?? config.port ?? 5173, host: options.host ?? '127.0.0.1', allowedHosts: options.allowedHosts ?? config.allowedHosts ?? [] });

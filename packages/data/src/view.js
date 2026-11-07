@@ -441,7 +441,7 @@ function bindEach(el, scope, ctx, disposers) {
         // `$index` is the nearest row; `$i0`, `$i1` ... are the rows of the enclosing `xo-each`s, outermost first (names of nested array fields)
         let depth = 0;
         for (let s = scope; s; s = s.parent) if (s.vars?.$index) depth++;
-        const itemScope = { value: () => current.value, parent: scope, vars: { $index: () => index.value, [`$i${depth}`]: () => index.value } };
+        const itemScope = { value: () => current.value, parent: scope, vars: { $index: () => index.value, $n: () => index.value + 1, [`$i${depth}`]: () => index.value } };
         const stops = [];
         batch(() => bindNode(node, itemScope, ctx, stops));
         row = { node, stops, index, current };

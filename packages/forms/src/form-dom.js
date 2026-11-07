@@ -10,7 +10,7 @@
  *
  * Used by `xo-submit` (packages/data/src/view.js) for every operation that has a request schema.
  */
-import { effect } from '@xoong/core/signals';
+import { effect, untracked } from '@xoong/core/signals';
 import { createForm } from './form-model.js';
 import { parsePath, nodeAt, isRequired, defaults } from './schema.js';
 
@@ -117,7 +117,8 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
 
   /** Model value -> control. */
   function write(el, v, node) {
-    if (isCustom(el)) { if (JSON.stringify(el.value) !== JSON.stringify(v ?? '')) el.setValue(v ?? ''); return; }
+    // the control's own value is read untracked: only the model drives this write (a control that sets its value and then fires `input` must not be reverted before the model hears)
+    if (isCustom(el)) { if (JSON.stringify(untracked(() => el.value)) !== JSON.stringify(v ?? '')) el.setValue(v ?? ''); return; }
     if (el.type === 'checkbox') { el.checked = v === true; return; }
     if (el.type === 'radio') { el.checked = show(v) === el.value; return; }
     if (el.tagName === 'SELECT' && el.multiple) { const set = new Set(Array.isArray(v) ? v.map(String) : []); for (const o of el.options) o.selected = set.has(o.value); return; }

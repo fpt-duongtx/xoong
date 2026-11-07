@@ -40,6 +40,12 @@ into HTML pages that have none) and strips TypeScript types from `.ts` files on 
 only; the transform keeps line and column positions). Import local TypeScript with the `.ts` extension.
 Not done yet: live reload and SCSS compilation.
 
+**Your own packages.** A package that ships browser code (a component library, a theme) is named in `xoong.config.json`:
+`{ "packages": ["rainlet"] }`. `xoong dev` and `xoong build` then serve it under `/@rainlet/...` (scoped names keep their scope: `/@acme/ui/...`)
+and resolve `import 'rainlet'` and `import 'rainlet/widgets/slug'` through its `exports` map the way Node does: conditions (`browser`, `import`, `default`),
+subpaths such as `"./theme.css"` (usable as `<link href="/@rainlet/theme.css">`), and wildcards (`"./widgets/*": "./src/widgets/*.js"`, so import `rainlet/widgets/slug`
+without the extension). Entries under `./server` are Node-only and never served. The package must be installed (`node_modules`) and import only relative files or xoong packages.
+
 ## 2. Proxy
 
 * Removes CORS pain in development and production.

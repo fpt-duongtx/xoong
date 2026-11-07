@@ -16,7 +16,8 @@ import { readFile, writeFile, mkdir, readdir, stat, copyFile } from 'node:fs/pro
 import { dirname, join, relative, resolve, extname, posix, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { parse } from 'parse5';
-import { findPackages, stripTypes } from '@xoong/server/node';
+import { findPackages, packagePath, stripTypes } from '@xoong/server/node';
+import { loadConfig } from './dev.js';
 import { buildImportMap } from '@xoong/server';
 
 const SCRIPT_EXT = new Set(['.js', '.mjs', '.ts', '.mts']);
@@ -30,11 +31,11 @@ export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; con
  * @param {{ root?: string, out?: string, base?: string, include?: string[] }} [options]
  * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string }>}
  */
-export async function build({ root = '.', out = 'dist', base = '', include = [] } = {}) {
+export async function build({ root = '.', out = 'dist', base = '', include = [], packages: extra } = {}) {
   const rootDir = resolve(root);
   const outDir = resolve(out);
   const basePath = base ? `/${base.replace(/^\/+|\/+$/g, '')}` : '';
-  const packages = await findPackages(rootDir);
+  const packages = await findPackages(rootDir, undefined, extra ?? (await loadConfig(rootDir)).packages ?? []);
   const importMap = buildImportMap(packages).imports;
   /** @type {string[]} */ const warnings = [];
   /** @type {Map<string, string>} output path (relative to out, with a leading slash) -> source file */
@@ -49,6 +50,11 @@ export async function build({ root = '.', out = 'dist', base = '', include = [] 
     }
     return join(rootDir, urlPath);
   }
+  /** An exports subpath used as a URL ("/@rainlet/theme.css") becomes the real file's URL, so relative references inside it keep working. */
+  const canon = (url) => {
+    for (const p of Object.values(packages)) if (url.startsWith(`${p.prefix}/`)) return p.prefix + packagePath(p.exports, url.slice(p.prefix.length));
+    return url;
+  };
   const urlOf = (file) => {
     for (const p of Object.values(packages)) if (file === p.dir || file.startsWith(p.dir + sep)) return `${p.prefix}${file.slice(p.dir.length).split(sep).join('/')}`;
     return `/${relative(rootDir, file).split(sep).join('/')}`;
@@ -67,6 +73,7 @@ export async function build({ root = '.', out = 'dist', base = '', include = [] 
     } else if (spec.startsWith('/')) target = spec.split(/[?#]/)[0];
     else if (spec.startsWith('.')) target = posix.normalize(posix.join(posix.dirname(fromUrl), spec.split(/[?#]/)[0]));
     else return spec; // an absolute URL: not ours
+    target = canon(target);
     const suffix = (spec.match(/[?#].*$/) ?? [''])[0];
     queue.push(target);
     return `${basePath}${toJs(target)}${suffix}`;
@@ -136,7 +143,7 @@ export async function build({ root = '.', out = 'dist', base = '', include = [] 
   /** Links inside the page to other pages are left; files the page loads are queued and given the base. */
   async function rewriteHtmlUrl(url, fromUrl) {
     const target = url.startsWith('/') ? url.split(/[?#]/)[0] : posix.normalize(posix.join(posix.dirname(fromUrl), url.split(/[?#]/)[0]));
-    if (!(await exists(fileFor(target)))) return url; // not a file we can serve (a route): keep as written
+    if (!(await exists(fileFor(canon(target))))) return url; // not a file we can serve (a route): keep as written
     return rewrite(url, fromUrl);
   }
 

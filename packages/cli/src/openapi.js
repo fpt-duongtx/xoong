@@ -290,6 +290,10 @@ export function analyze(doc, { hints } = {}) {
       }
       const hasError = Object.keys(o.responses ?? {}).some((c) => /^[45]/.test(c) || c === 'default');
       if (!hasError) problems.push({ level: 'warn', code: 'XO130', where: `${method.toUpperCase()} ${path}`, message: 'no error responses documented', fix: 'Document 4xx/5xx or default with application/problem+json' });
+      const lost = [];
+      const builtBodyNode = bodySchema && !multipart ? bodySchemaOf(bodySchema, schemas, hints, lost) : undefined;
+      const builtBody = () => builtBodyNode;
+      for (const where of new Set(lost)) problems.push({ level: 'warn', code: 'XO161', where: `${method.toUpperCase()} ${path}`, message: `a union in ${where} cannot be told apart, so a generated form draws it as free-form`, fix: 'Add a discriminator (propertyName) or give each member a property with one fixed value (const or a one-value enum)' });
       operations[id] = {
         id, method: method.toUpperCase(), path,
         ...(params.some((p) => p.in === 'query') ? { query: params.filter((p) => p.in === 'query').map((p) => p.name) } : {}),
@@ -300,7 +304,7 @@ export function analyze(doc, { hints } = {}) {
         ...(stream ? { stream: true } : {}),
         ...(bodyFieldsOf(bodySchema, schemas) ? { bodyFields: bodyFieldsOf(bodySchema, schemas) } : {}),
         ...(bodySkippedOf(bodySchema, schemas) ? { bodySkipped: bodySkippedOf(bodySchema, schemas) } : {}),
-        ...(bodySchema && !multipart && bodySchemaOf(bodySchema, schemas, hints) ? { bodySchema: bodySchemaOf(bodySchema, schemas, hints) } : {}),
+        ...(bodySchema && !multipart && builtBody(bodySchema) ? { bodySchema: builtBody(bodySchema) } : {}),
         ...(response ? { response } : {}),
       };
       operations[id]._types = { params, okSchema, bodySchema };

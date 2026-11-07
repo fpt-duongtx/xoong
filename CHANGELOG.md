@@ -5,6 +5,11 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+* `xoong.config.json` `"packages": [...]`: dev server and `xoong build` serve and resolve installed packages beyond xoong's own (exports maps with wildcards and subpaths, `./server` skipped).
+* Unions whose members are inline objects are told apart by the fixed value of the tag; a union that cannot be told apart is reported at sync as `XO161` (was silently free-form).
+* Fixed: `userInput()` of a custom `XoControl` in a form never reached the form model (the binder reverted the control before the `input` event). Docs for widget authors in docs/admin.md.
+* Generated array rows have a numbered title (`.xo-row-title`) with the variant; two-letter child names are drawn as language codes (`EN`, `VI`).
+
 ## 0.0.5 (arrays, unions, generated forms, i18n)
 
 breaking: none for markup. `xoong build` and `xoong check` are stricter: unknown `build` options are refused, `filters` accept `name:Label`.

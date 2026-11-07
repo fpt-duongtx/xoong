@@ -42,3 +42,20 @@ describe('required body fields that a generated form cannot produce', () => {
     expect(checkHtml('<xo-form op="createArticle"></xo-form>', { operations: optionalOnly.operations })).toEqual([]);
   });
 });
+
+describe('unions with inline members', () => {
+  const inline = { openapi: '3.0.3', info: { title: 't', version: '1' }, paths: { '/p': { put: { operationId: 'u',
+    requestBody: { content: { 'application/json': { schema: { $ref: '#/components/schemas/P' } } } }, responses: { default: { description: 'e' } } } } },
+  components: { schemas: { P: obj({
+    sections: { type: 'array', items: { oneOf: [obj({ type: { type: 'string', enum: ['hero'] }, h: { type: 'string' } }), obj({ type: { const: 'faq' }, q: { type: 'string' } })], discriminator: { propertyName: 'type' } } },
+    odd: { oneOf: [obj({ a: { type: 'string' } }), obj({ b: { type: 'string' } })] },
+  }) } } };
+  it('are told apart by the fixed value of the tag, and a union that cannot be told apart is reported (XO161)', () => {
+    const { operations, problems } = analyze(inline);
+    const items = operations.u.bodySchema.props.sections.items;
+    expect(items.t).toBe('union');
+    expect(Object.keys(items.map)).toEqual(['hero', 'faq']);
+    expect(items.map.faq.props.type).toMatchObject({ t: 'string', enum: ['faq'] });
+    expect(problems.filter((p) => p.code === 'XO161').map((p) => p.message)).toEqual(['a union in P cannot be told apart, so a generated form draws it as free-form']);
+  });
+});
