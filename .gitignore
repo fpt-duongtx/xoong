@@ -1,0 +1,7 @@
+node_modules
+.xoong
+*.log
+coverage
+.tmp
+*.tar.gz
+*.zip
