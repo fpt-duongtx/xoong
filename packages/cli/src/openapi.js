@@ -90,9 +90,9 @@ export function analyze(doc, { hints } = {}) {
     const explicit = schema['x-xoong-id'];
     if (explicit) {
       // One property, or several for a composite identity (Kubernetes: ["namespace", "name"]).
-      const missing = [].concat(explicit).filter((k) => !props[k]);
-      if (!missing.length) { idKeys[name] = explicit; entityOf[name] = schema['x-xoong-entity'] ?? name; }
-      else problems.push({ level: 'error', code: 'XO101', where: `#/components/schemas/${name}`, message: `x-xoong-id "${missing[0]}" is not a property of ${name}`, fix: 'Name existing properties or remove x-xoong-id' });
+      const absent = [].concat(explicit).filter((k) => !props[k]);
+      if (!absent.length) { idKeys[name] = explicit; entityOf[name] = schema['x-xoong-entity'] ?? name; }
+      else problems.push({ level: 'error', code: 'XO101', where: `#/components/schemas/${name}`, message: `x-xoong-id "${absent[0]}" is not a property of ${name}`, fix: 'Name existing properties or remove x-xoong-id' });
     } else {
       // Conventional identity: `id`, or the first property named in hints.idNames (for example "gid" or "pk").
       const key = ['id', ...(hints?.idNames ?? [])].find((k) => props[k]);

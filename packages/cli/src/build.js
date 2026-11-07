@@ -143,9 +143,9 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     };
     await visit(doc);
     edits.sort((x, y) => y[0] - x[0]);
-    let out = source;
-    for (const [s, e, text] of edits) out = out.slice(0, s) + text + out.slice(e);
-    return out;
+    let result = source;
+    for (const [s, e, text] of edits) result = result.slice(0, s) + text + result.slice(e);
+    return result;
   }
 
   /** Links inside the page to other pages are left; files the page loads are queued and given the base. */
@@ -180,10 +180,10 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
   };
   await walk(rootDir);
   if (!pages.length) throw new Error(`xoong build: no .html page found under ${rootDir}`);
-  for (const extra of include) {
-    const p = resolve(rootDir, extra);
+  for (const item of include) {
+    const p = resolve(rootDir, item);
     const s = await stat(p).catch(() => null);
-    if (!s) { warnings.push(`--include ${extra}: not found`); continue; }
+    if (!s) { warnings.push(`--include ${item}: not found`); continue; }
     const files = [];
     const collect = async (d) => { for (const n of await readdir(d)) { const f = join(d, n); if (inOut(f)) continue; if ((await stat(f)).isDirectory()) await collect(f); else files.push(f); } };
     if (s.isDirectory()) await collect(p); else files.push(p);

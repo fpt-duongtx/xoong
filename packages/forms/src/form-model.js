@@ -251,13 +251,13 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
      * Add an item to the array at `path`. `value` is the new item; for a union item only `{ [key]: variant }` is needed, the variant's defaults are filled in.
      * With no value a string item is '' and an object item starts from its schema defaults. Returns the new item's index.
      */
-    append(path, value) {
+    append(path, initial) {
       const parts = parsePath(path);
       const node = nodeAt(schema, parts, draft);
       const items = node?.items;
       const list = getAt(draft, parts);
       const current = Array.isArray(list) ? list : [];
-      let item = value;
+      let item = initial;
       if (items?.t === 'union' && item && typeof item === 'object') item = { ...defaults(variant(items, item)), ...item };
       else if (item === undefined) item = items?.t === 'string' ? '' : defaults(items) ?? (items?.t === 'object' ? {} : undefined);
       draft = setAt(draft, parts, [...current, item]);

@@ -264,11 +264,11 @@ class XoView extends XoElement {
       }));
       // Back/Forward (or anything else that changes the query): read it into the params
       this.#bound.push(sync.subscribe(() => {
-        const q = sync.read();
+        const query = sync.read();
         const next = { ...this.#params.peek() };
         let changed = false;
         for (const n of urlNames) {
-          const v = q.get(n) ?? '';
+          const v = query.get(n) ?? '';
           if (String(next[n] ?? '') !== v) { changed = true; if (v === '') delete next[n]; else next[n] = v; }
         }
         if (changed) this.#params.value = next;

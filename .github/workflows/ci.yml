@@ -21,6 +21,8 @@ jobs:
       - run: npm ci
       # Real-browser tests drive Chromium through Playwright.
       - run: npx playwright install --with-deps chromium
+      - name: Lint (a name must not hide another: no-shadow)
+        run: npm run lint
       - name: Tests with coverage (thresholds enforced)
         run: npm run test:coverage
       - name: Type-check generated types for the sample specs

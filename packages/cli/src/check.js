@@ -252,20 +252,20 @@ export function htmlTemplates(source) {
       const tagged = /(?:^|[^\w$.])html\s*$/.test(source.slice(Math.max(0, i - 40), i));
       if (!tagged) { i = skipTemplate(); prevSignificant = '`'; continue; }
       const start = i + 1;
-      let text = '';
+      let code = '';
       for (i++; i < n && source[i] !== '`'; i++) {
-        if (source[i] === '\\') { text += source.slice(i, i + 2); i++; continue; }
+        if (source[i] === '\\') { code += source.slice(i, i + 2); i++; continue; }
         if (source[i] === '$' && source[i + 1] === '{') {
           const from = i;
           i += 2; skipCode('}'); i--; // i is now on the closing brace
           const hole = source.slice(from, i + 1);
-          text += 'x' + hole.slice(1).replace(/[^\n]/g, ' ');
+          code += 'x' + hole.slice(1).replace(/[^\n]/g, ' ');
           continue;
         }
-        text += source[i];
+        code += source[i];
       }
       const before = source.slice(0, start).split('\n');
-      out.push({ text, line: before.length, column: before[before.length - 1].length + 1 });
+      out.push({ text: code, line: before.length, column: before[before.length - 1].length + 1 });
       i++; prevSignificant = '`'; continue;
     }
     if (!/\s/.test(c)) prevSignificant = c;

@@ -5,6 +5,8 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+* `npm run lint` (oxlint, rule `no-shadow`) runs in CI; nine shadowed names renamed.
+
 ## 0.0.7 (confirm regression, symlinked packages)
 
 breaking: none.

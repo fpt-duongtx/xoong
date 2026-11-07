@@ -111,7 +111,7 @@ export function createClient(options) {
   let mutating = 0;
 
   const byRoute = new Map();
-  for (const op of Object.values(api.operations)) byRoute.set(`${op.method.toUpperCase()} ${op.path}`, op);
+  for (const operation of Object.values(api.operations)) byRoute.set(`${operation.method.toUpperCase()} ${operation.path}`, operation);
 
   /** Resolve "listUsers" or "GET /users". */
   function op(ref) {
@@ -142,10 +142,10 @@ export function createClient(options) {
     return out;
   }
 
-  async function request(o, params, body, signal) {
+  async function request(o, params, body, abort) {
     const url = baseUrl + fillPath(o.path, params, o.id) + buildQuery(o.query, params);
     const extra = headers ? await headers() : {};
-    const init = { method: o.method.toUpperCase(), headers: { accept: 'application/json', ...extra }, signal, credentials };
+    const init = { method: o.method.toUpperCase(), headers: { accept: 'application/json', ...extra }, signal: abort, credentials };
     setBody(init, body);
     const attempts = o.method.toUpperCase() === 'GET' ? retry : 0;
     for (let n = 0; ; n++) {
@@ -153,7 +153,7 @@ export function createClient(options) {
       try {
         res = await doFetch(url, init);
       } catch (cause) {
-        if (signal?.aborted) throw cause;
+        if (abort?.aborted) throw cause;
         if (n < attempts) { await sleep(retryDelay * 2 ** n); continue; }
         throw new XoongError({ operation: o.id, cause });
       }
@@ -352,15 +352,15 @@ export function createClient(options) {
      * Each event is { event, data, json, id }; `json` is `data` parsed when it is valid JSON.
      * Pass { signal } to cancel. Not cached; use a normal operation for data you want in the store.
      */
-    async *stream(ref, params = {}, body, { signal } = {}) {
+    async *stream(ref, params = {}, body, { signal: abort } = {}) {
       const o = op(ref);
       const url = baseUrl + fillPath(o.path, params, o.id) + buildQuery(o.query, params);
       const extra = headers ? await headers() : {};
-      const init = { method: o.method.toUpperCase(), headers: { accept: 'text/event-stream', ...extra }, signal, credentials };
+      const init = { method: o.method.toUpperCase(), headers: { accept: 'text/event-stream', ...extra }, signal: abort, credentials };
       setBody(init, withKeys(o, body));
       let res;
       try { res = await doFetch(url, init); } catch (cause) {
-        if (signal?.aborted) throw cause;
+        if (abort?.aborted) throw cause;
         const e = new XoongError({ operation: o.id, cause }); fail(e); throw e;
       }
       if (!res.ok) {
@@ -369,7 +369,7 @@ export function createClient(options) {
       }
       if (!res.body) return;
       const reader = res.body.getReader();
-      signal?.addEventListener('abort', () => reader.cancel().catch(() => {}), { once: true }); // stop reading even if fetch ignores the signal
+      abort?.addEventListener('abort', () => reader.cancel().catch(() => {}), { once: true }); // stop reading even if fetch ignores the signal
       const decoder = new TextDecoder();
       let buffer = '';
       try {
