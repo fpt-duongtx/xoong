@@ -20,6 +20,7 @@
  *   xo-submit="OP"    same, on form submit; body = the form fields.
  *   xo-body="path"    (xo-click) take the request body from the scope.
  *   xo-keep           (xo-submit) keep the field values after a successful send (default: the form is reset).
+ *   xo-param="name"    on an <input>/<select>: set the view param `name` to its value as it changes (empty removes it).
  *   xo-param="k=v"     on click, set a view param and refetch: `k=v`, `k+=n`, `k-=n` (never below 0),
  *                     `k~=v` (toggle between `v` and `-v`, for sorting). `{path}` in v is resolved.
  * Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
@@ -422,6 +423,21 @@ function showFieldErrors(form, fields = {}, summary = '') {
 }
 
 function bindParam(el, spec, scope, ctx, disposers) {
+  if (/^[\w-]+$/.test(spec.trim()) && ['input', 'select', 'textarea'].includes(el.localName)) { // a filter control
+    const name = camel(spec.trim());
+    let timer;
+    const apply = () => {
+      const params = { ...ctx.host.params };
+      if (el.value === '') delete params[name]; else params[name] = el.value;
+      if ('offset' in params) params.offset = 0;
+      ctx.host.params = params;
+    };
+    const onInput = () => { clearTimeout(timer); timer = setTimeout(apply, el.localName === 'select' ? 0 : 250); }; // wait for the typing to pause
+    const type = el.localName === 'select' ? 'change' : 'input';
+    el.addEventListener(type, onInput);
+    disposers.push(() => { clearTimeout(timer); el.removeEventListener(type, onInput); });
+    return;
+  }
   const m = /^\s*([\w-]*\w)\s*(\+=|-=|~=|=)\s*(.*?)\s*$/.exec(spec);
   if (!m) { console.error(`xoong: xo-param="${spec}" is not "name=value", "name+=n", "name-=n" or "name~=value"`); return; }
   const [, rawName, op, rawValue] = m;

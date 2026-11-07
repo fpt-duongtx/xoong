@@ -13,6 +13,7 @@
  *   XO240 button/link triggered by xo-click has no accessible name
  *   XO241 xo-click on a non-interactive element (not reachable by keyboard)
  *   XO250 <xo-table sortable|page-size> but the view's operation lacks the query parameters (sort | limit, offset)
+ *   XO253 <xo-table filters="f"> but the view's operation has no query parameter "f"
  *   XO251 <xo-table> outside an <xo-view get>
  *   XO252 <xo-form op> operation has no simple request fields to generate a form from
  */
@@ -105,6 +106,9 @@ export function checkHtml(source, table, file = '<input>') {
         else if (op) {
           const need = [...(attr(node, 'sortable') ? ['sort'] : []), ...(attr(node, 'page-size') ? ['limit', 'offset'] : [])];
           const lacking = need.filter((q) => !(op.query ?? []).includes(q));
+          for (const f of (attr(node, 'filters')?.value ?? '').split(',').map((x) => x.trim()).filter(Boolean)) {
+            if (!(op.query ?? []).includes(f)) report('error', 'XO253', node, 'filters', `${op.method} ${op.path} has no query parameter "${f}", which the filter box for "${f}" sets`, `Add "${f}" to the operation's parameters, or remove it from filters`);
+          }
           if (lacking.length) report('error', 'XO250', node, attr(node, 'sortable') && lacking.includes('sort') ? 'sortable' : 'page-size', `${op.method} ${op.path} has no query parameter ${lacking.map((q) => `"${q}"`).join(', ')}, which <xo-table> needs for ${attr(node, 'sortable') ? 'sorting' : 'paging'}`, `Add ${lacking.join(', ')} to the operation's parameters, or remove ${lacking.includes('sort') ? 'sortable' : 'page-size'}`);
         }
       }

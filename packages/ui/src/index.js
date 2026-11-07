@@ -2,3 +2,4 @@
 import './table.js';
 import './form.js';
 import './dialog.js';
+import './toast.js';

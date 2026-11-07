@@ -9,6 +9,7 @@
     "./table": "./src/table.js",
     "./form": "./src/form.js",
     "./dialog": "./src/dialog.js",
+    "./toast": "./src/toast.js",
     "./xoong.css": "./src/xoong.css"
   },
   "sideEffects": true,

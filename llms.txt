@@ -72,13 +72,14 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
 
 ## Admin set (@xoong/ui; `import '@xoong/ui'`, `<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">`)
     <xo-view get="/users" live>
-      <xo-table of="items" columns="name,email:E-mail,status" sortable page-size="25">   (needs query params sort, limit, offset; `total` in the response)
-        <button xo-click="DELETE /users/{id}">Delete</button>   (children = last cell of each row)
+      <xo-table of="items" columns="name,email:E-mail,status" sortable filters="name" page-size="25">   (query params sort, limit, offset, <filter field>; `total` in the response)
+        <span slot="status" class="badge">{status}</span>   (slot="column" replaces that cell)
+        <button xo-click="DELETE /users/{id}">Delete</button>   (other children = last cell of each row)
       </xo-table>
     </xo-view>
     <xo-form op="POST /users" submit="Add"></xo-form>   (fields from the request schema; server field errors shown beside inputs)
     <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
-  Style by overriding the custom properties listed at the top of xoong.css; layout: <body class="xo-admin"> + header, nav, main.
+  <xo-toast></xo-toast> shows xo-error messages. Style by overriding the custom properties listed at the top of xoong.css; layout: <body class="xo-admin"> + header, nav, main.
 
 ## Live updates (server-sent events)
 One JSON object per message: {type:"patch", entity:"User", id:42, path:"/status", value:"disabled", version:7} |

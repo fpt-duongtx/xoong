@@ -97,6 +97,54 @@ describe('<xo-table>', () => {
   });
 });
 
+describe('<xo-table> filters and custom cells', () => {
+  const ft = { ...table, operations: { ...table.operations, listUsers: { ...table.operations.listUsers, query: ['sort', 'limit', 'offset', 'name'] } } };
+  const byName = ({ query }) => ({ items: all.filter((u) => !query.name || u.name.includes(query.name)), total: all.length });
+
+  it('a filter box sets the query parameter as typing pauses, and empty removes it', async () => {
+    const api = mockApi(ft, { listUsers: byName });
+    screen = await mount('<xo-view get="/users"><xo-table columns="name,email" filters="name"></xo-table></xo-view>', { api });
+    const input = screen.$('.xo-filters input');
+    expect(input.getAttribute('aria-label')).toBe('Filter by name');
+    input.value = 'User 3';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    await screen.settle();
+    expect(api.calls.at(-1).query).toEqual({ name: 'User 3' });
+    expect(screen.texts('tbody tr td:first-child')).toEqual(['User 3']);
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    await screen.settle();
+    expect(screen.texts('tbody tr td:first-child')).toHaveLength(5);
+  });
+
+  it('a child with slot="field" replaces that column\'s cell and sees the row', async () => {
+    screen = await mount('<xo-view get="/users"><xo-table columns="name,email"><b slot="email" class="mail" title="{id}">{email}!</b><button>Act</button></xo-table></xo-view>', { api: mockApi(table, { listUsers: list }) });
+    expect(screen.texts('tbody tr:first-child td')).toEqual(['User 1', 'u1@x.test!', 'Act']);
+    expect(screen.$('.mail').getAttribute('title')).toBe('1');
+    expect(screen.$('.mail').hasAttribute('slot')).toBe(false);
+  });
+});
+
+describe('<xo-toast>', () => {
+  it('shows the latest xo-error from anywhere, hides on xo-done and after the timeout', async () => {
+    const api = mockApi(table, { createUser: () => respond(422, { error: { code: 'bad', message: 'name is required' } }), deleteUser: () => respond(204, null), listUsers: list });
+    screen = await mount('<xo-toast timeout="0.05"></xo-toast><xo-view get="/users"><xo-form op="POST /users"></xo-form></xo-view>', { api });
+    const toast = () => screen.$('.xo-toast');
+    expect(toast().hidden).toBe(true);
+    await screen.submit('form', { name: 'A', email: 'a@x.test', role: 'admin' });
+    expect(toast().hidden).toBe(false);
+    expect(toast().textContent).toBe('name is required');
+    await new Promise((r) => setTimeout(r, 120));
+    expect(toast().hidden).toBe(true);
+    screen.container.dispatchEvent(new CustomEvent('xo-error', { bubbles: true, detail: new Error('boom') }));
+    expect(toast().textContent).toBe('boom');
+    screen.container.dispatchEvent(new CustomEvent('xo-done', { bubbles: true }));
+    expect(toast().hidden).toBe(true);
+  });
+});
+
 describe('<xo-form>', () => {
   const html = '<xo-view><xo-form op="POST /users" submit="Add"></xo-form></xo-view>';
 

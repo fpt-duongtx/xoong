@@ -76,6 +76,9 @@
   .xo-table :where(th button:focus-visible) { outline: var(--xo-focus); }
   .xo-table :where(tbody tr:last-child td) { border-bottom: 0; }
   .xo-table .xo-actions { display: flex; gap: var(--xo-space-2); justify-content: flex-end; }
+  .xo-filters { display: flex; flex-wrap: wrap; gap: var(--xo-space-2); padding: var(--xo-space-2); border-bottom: 1px solid var(--xo-color-border); }
+  .xo-toast { position: fixed; inset-block-end: var(--xo-space-4); inset-inline-end: var(--xo-space-4); max-width: 24rem; margin: 0; padding: var(--xo-space-2) var(--xo-space-3); color: var(--xo-color-danger); background: var(--xo-color-surface); border: 1px solid var(--xo-color-danger); border-radius: var(--xo-radius); }
+  .xo-toast[hidden] { display: none; }
   .xo-pager { display: flex; gap: var(--xo-space-2); justify-content: flex-end; padding: var(--xo-space-2); }
 
   .xo-form { display: grid; gap: var(--xo-space-3); max-width: 28rem; }

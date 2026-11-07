@@ -28,6 +28,7 @@ export const EXPLANATIONS = {
   XO240: 'A button or link triggered by xo-click has no accessible name. Add visible text or aria-label.',
   XO241: 'xo-click is on an element that keyboards cannot reach. Use a <button>, or add role="button" and tabindex="0".',
   XO250: '<xo-table sortable> needs a `sort` query parameter on the view\'s operation, and page-size needs `limit` and `offset`. Add them to the API or remove the attribute.',
+  XO253: 'A filter box of <xo-table filters="..."> sets a query parameter of the same name, and the view\'s operation does not declare it. Add the parameter to the API or remove the filter.',
   XO251: '<xo-table> must be inside an <xo-view get="...">, which supplies its data.',
   XO252: '<xo-form op> found no simple request fields to generate. Write the <form xo-submit> by hand.',
 };

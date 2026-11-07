@@ -12,4 +12,4 @@ export const XO_ELEMENTS = ['xo-view'];
 
 /** Attributes and elements that come with @xoong/ui (the admin set). */
 export const XO_UI_ATTRIBUTES = ['xo-open', 'xo-close'];
-export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog'];
+export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast'];
