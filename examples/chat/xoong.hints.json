@@ -1,0 +1,8 @@
+{
+  "schemas": {
+    "SessionResponse":       { "entity": "Session", "id": "session_id" },
+    "ChatResponse":          { "entity": "Session", "id": "session_id" },
+    "CreateSessionResponse": { "entity": "Session", "id": "session_id" },
+    "TaskView":              { "id": "task_id" }
+  }
+}

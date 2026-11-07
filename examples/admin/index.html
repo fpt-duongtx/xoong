@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team admin</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/src/app.css">
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+  <main>
+    <h1>Team</h1>
+    <p id="toast" role="alert" class="toast" hidden></p>
+
+    <xo-view live get="/users">
+      <p xo-if="$loading" class="muted">Loading…</p>
+      <p xo-if="$error" class="error">{$error.code}: {$error.detail}</p>
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr xo-each="items">
+            <td>{name}</td>
+            <td>{email}</td>
+            <td><span class="badge" data-status="{status}">{status}</span></td>
+            <td class="actions">
+              <button xo-click="POST /users/{id}/disable">Disable</button>
+              <button xo-click="DELETE /users/{id}" class="danger">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </xo-view>
+
+    <h2>Add a person</h2>
+    <xo-view>
+      <form xo-submit="POST /users">
+        <label>Name <input name="name" autocomplete="off"></label>
+        <label>Email <input name="email" type="email" autocomplete="off"></label>
+        <button>Add</button>
+      </form>
+    </xo-view>
+  </main>
+</body>
+</html>

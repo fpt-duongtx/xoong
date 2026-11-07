@@ -1,0 +1,27 @@
+/* Plain CSS: no utility classes, no framework styles. */
+:root {
+  --space: 1rem; --border: #d0d7de; --muted: #57606a; --accent: #0b5fff; --danger: #b42318; --ok: #1a7f37;
+  --bg: #fff; --fg: #1f2328;
+}
+@media (prefers-color-scheme: dark) { :root { --bg: #0d1117; --fg: #e6edf3; --border: #30363d; --muted: #8b949e; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
+main { max-width: 52rem; margin: 0 auto; padding: var(--space); }
+h1 { margin: 0 0 var(--space); }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: .5rem .75rem; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .04em; }
+.actions { text-align: right; white-space: nowrap; }
+button { font: inherit; padding: .3rem .7rem; border: 1px solid var(--border); border-radius: .4rem; background: transparent; color: inherit; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button[aria-busy="true"] { opacity: .5; cursor: progress; }
+button.danger { color: var(--danger); }
+.badge { padding: .1rem .5rem; border-radius: 1rem; font-size: .8rem; border: 1px solid currentColor; }
+.badge[data-status="active"] { color: var(--ok); }
+.badge[data-status="disabled"] { color: var(--muted); }
+form { display: flex; gap: .75rem; flex-wrap: wrap; align-items: end; }
+label { display: grid; gap: .2rem; font-size: .85rem; color: var(--muted); }
+input { font: inherit; padding: .35rem .5rem; border: 1px solid var(--border); border-radius: .4rem; background: transparent; color: var(--fg); }
+.toast { padding: .5rem .75rem; border-radius: .4rem; border: 1px solid var(--danger); color: var(--danger); }
+.error { color: var(--danger); }
+.muted { color: var(--muted); }
