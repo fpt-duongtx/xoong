@@ -31,13 +31,14 @@ criteria pass.
 | 0.2 Data basics | Done (sync, cache, mutations, errors, `xoong dev` with proxy and `.ts`, `@xoong/test`); `unwrap` hint, idempotency keys, multipart and declarative POST streaming done (data-layer.md section 12) |
 | 0.3 Shared data | Entity store, `derived`, unions, composite ids and untagged unions (by a unique required property) done; router open |
 | 0.4 Live | SSE client done and tested end to end; stream gateway open |
-| 0.5 Admin | First version done in `@xoong/ui` and `examples/admin` ([admin.md](admin.md)): `xoong.css`, `xo-table` (sort, paging), `xo-form`, `xo-dialog`, layout. Custom cells, filters, selection open |
+| 0.5 Admin | Done in `@xoong/ui`, `@xoong/forms`, `@xoong/i18n` and `examples/admin` ([admin.md](admin.md)): `xoong.css`, `xo-table` (sort, paging, filters, selection, bulk actions, empty state), schema-driven `xo-form` (nested objects, arrays, unions, hints), `xo-dialog`, toasts, confirm, router, i18n. Open: custom table cells, editable cells |
+| 0.5.x Controls | Done: `@xoong/controls` (`xo-tabs`, `xo-menu`, `xo-tooltip`, `xo-combobox`, `xo-tags`, [controls.md](controls.md)) and `@xoong/richtext` ([richtext.md](richtext.md)), tested in Chromium, Firefox and WebKit. Open: axe-core accessibility checks (needs a dev dependency) |
 | 0.6 AI & types | `llms.txt`, `xoong check` (HTML), `xoong doctor`, MCP server (first version), typed client and JS/TS checks and the benchmark harness (first small measurement) done |
 | 0.6.x Editor & lint | HTML custom data and a first language server (`@xoong/lsp`) done; VS Code extension, lint presets designed only |
 | 0.7 SSR & perf | Prerendering done in `@xoong/ssr` (docs/server.md section 3); per-tag lazy loading and benchmarks open |
 | 0.8+ | Not started |
 
-The router (`<xo-router>`) shipped with the 0.5 Admin work (ADR-0008), together with `XoControl`; form validation, nested forms and rich text follow.
+The router (`<xo-router>`) shipped with the 0.5 Admin work (ADR-0008), together with `XoControl`, the schema-driven form model (ADR-0009) and i18n (ADR-0010). The business parts of an admin (media library, block editor, shell theme) belong to the application on top of these pieces.
 
 ## Dogfooding
 
