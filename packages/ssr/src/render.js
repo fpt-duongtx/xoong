@@ -25,6 +25,7 @@ async function boot() {
     if (name === 'window') g.window = window;
     else Object.defineProperty(g, name, { value: /** @type {any} */ (window)[name], configurable: true, writable: true });
   }
+  Object.defineProperty(g, 'location', { get: () => window.location, configurable: true }); // p-id="?id" reads it
   await import('@xoong/data/view'); // registers <xo-view>
   await import('@xoong/ui'); // registers <xo-table>, <xo-form>, ...
   return /** @type {{ configure: any }} */ (await import('@xoong/data'));
@@ -32,7 +33,7 @@ async function boot() {
 
 /**
  * @param {string} html                     the page
- * @param {{ operations: any, baseUrl?: string, fetch?: typeof fetch, headers?: () => Record<string,string>, timeoutMs?: number }} options
+ * @param {{ operations: any, baseUrl?: string, fetch?: typeof fetch, headers?: () => Record<string,string>, timeoutMs?: number, url?: string }} options
  *   `operations`: contents of .xoong/operations.json. `baseUrl`: where the API is reachable from the server.
  * @returns {Promise<string>}
  */
@@ -42,9 +43,10 @@ export function renderPage(html, options) {
   return run;
 }
 
-async function render(html, { operations, baseUrl = '', fetch: fetchImpl, headers, timeoutMs = 10_000 }) {
+async function render(html, { operations, baseUrl = '', fetch: fetchImpl, headers, timeoutMs = 10_000, url = 'http://xoong.local/' }) {
   booted ??= boot();
   const data = await booted;
+  /** @type {any} */ (globalThis).window.happyDOM.setURL(url); // so p-id="?id" sees the request's query string
   const client = data.configure({ api: operations, baseUrl, fetch: fetchImpl, headers, retry: 0 });
 
   const parsed = new /** @type {any} */ (globalThis).DOMParser().parseFromString(html, 'text/html');

@@ -1,0 +1,1 @@
+Build an admin page `index.html` for the users API: a table of users (name, email, role, status), a form to add a user (name, email, role), a Disable button and a Delete button on every row. Plain CSS in `app.css`. Use only what the xoong spec allows.

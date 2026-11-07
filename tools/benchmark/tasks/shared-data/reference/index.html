@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Dashboard</title></head>
+<body><main><h1>Orders</h1>
+<xo-view get="/orders"><ul><li xo-each="items">#{id}: {total} for {customer.name}</li></ul></xo-view>
+<h1>Customers</h1>
+<xo-view get="/customers"><ul><li xo-each="."><b>{name}</b> {email}</li></ul></xo-view></main></body></html>

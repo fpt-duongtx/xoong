@@ -19,8 +19,7 @@ criteria pass.
 
 ## Backlog (no milestone yet)
 
-* Swagger 2.0 input (built-in conversion). Low priority: `swagger2openapi` already works as a
-  pre-step and the error message names it.
+* Swagger 2.0: built-in basic conversion is done (`packages/cli/src/swagger2.js`); `swagger2openapi` remains the answer for exotic documents.
 * WebSocket transport, optimistic updates.
 
 ## Where we are
@@ -32,7 +31,7 @@ criteria pass.
 | 0.3 Shared data | Entity store, `derived`, unions, composite ids and untagged unions (by a unique required property) done; router open |
 | 0.4 Live | SSE client done and tested end to end; stream gateway open |
 | 0.5 Admin | First version done in `@xoong/ui` and `examples/admin` ([admin.md](admin.md)): `xoong.css`, `xo-table` (sort, paging), `xo-form`, `xo-dialog`, layout. Custom cells, filters, selection open |
-| 0.6 AI & types | `llms.txt`, `xoong check` (HTML), `xoong doctor`, MCP server (first version), typed client and JS/TS checks done; benchmark open |
+| 0.6 AI & types | `llms.txt`, `xoong check` (HTML), `xoong doctor`, MCP server (first version), typed client and JS/TS checks and the benchmark harness (first small measurement) done |
 | 0.6.x Editor & lint | HTML custom data and a first language server (`@xoong/lsp`) done; VS Code extension, lint presets designed only |
 | 0.7 SSR & perf | Prerendering done in `@xoong/ssr` (docs/server.md section 3); per-tag lazy loading and benchmarks open |
 | 0.8+ | Not started |

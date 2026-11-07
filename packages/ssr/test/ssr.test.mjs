@@ -54,3 +54,12 @@ test('pages render one after another with their own data, and a stuck request ti
   const again = await renderPage(page('<xo-view get="/users"><i xo-each="items">{id}</i></xo-view>'), { operations, fetch: api() });
   assert.match(again, /<i[^>]*>2<\/i>/); // still works after a timeout
 }, 30000);
+
+test('p-id="?id" takes the param from the request URL', async () => {
+  const ops = { ...operations, operations: { ...operations.operations, getUser: { id: 'getUser', method: 'GET', path: '/users/{id}', response: { t: 'entity', name: 'User' } } } };
+  const calls = [];
+  const fetchUser = async (url) => { calls.push(new URL(url, 'http://api.test').pathname); return new Response(JSON.stringify({ id: 2, name: 'Bob' }), { status: 200 }); };
+  const html = await renderPage(page('<xo-view get="getUser" p-id="?id"><h1>{name}</h1></xo-view>'), { operations: ops, fetch: fetchUser, url: 'http://site.test/post.html?id=2' });
+  assert.deepEqual(calls, ['/users/2']);
+  assert.match(html, /<h1>Bob<\/h1>/);
+});

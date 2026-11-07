@@ -1,7 +1,7 @@
 # AI integration
 
 Status: `llms.txt`, `xoong check` (HTML), `xoong doctor` and the MCP server (first version) are **implemented**; the
-first-attempt-correctness benchmark and the `scaffold` tool are **planned**. Packages: `@xoong/cli`, `@xoong/mcp`.
+first-attempt-correctness benchmark harness (with a first small measurement) is **implemented**; the `scaffold` tool is **planned**. Packages: `@xoong/cli`, `@xoong/mcp`.
 
 Goal: an AI assistant that has never seen xoong should write correct code on
 the first attempt, using only a short spec and fast, precise feedback.
@@ -67,11 +67,42 @@ The expected loop: read spec, write code, `check`, fix from the error message.
 
 ## 5. Measuring it
 
-Success metric: **first-attempt correctness**. A fixed set of tasks (small
-site, CRUD admin, shared-data dashboard, live updates) is given to an assistant
-with only `llms.txt` and MCP access; we track the share that pass `check` and
-run correctly without human edits. The suite lives in `examples/` and is run
-before each release.
+Success metric: **first-attempt correctness**: the share of tasks an assistant solves in **one attempt**, with only `llms.txt` and the
+list of the API's operations, that pass the scorer without human edits.
+
+The harness is in [`tools/benchmark`](../tools/benchmark): four tasks (small site, CRUD admin, shared-data dashboard, live updates),
+each with an OpenAPI file, a task text and a reference solution. `node tools/benchmark/score.mjs <task> <folder>` and
+`node tools/benchmark/run.mjs <attempts folder>` score what an assistant wrote. A task passes when all expected files exist,
+`xoong check` reports no errors, the required operations and constructs are used, and nothing forbidden appears (hand-written
+`fetch`, an HTTP library, `innerHTML`, utility classes, inline handlers). A test keeps the scorer honest: every reference solution must
+pass and typical mistakes must fail.
+
+### First measurement (2026-11-08)
+
+One attempt per task, by a small model (Claude Haiku) that could read only `llms.txt` and the operations list and could not run
+`xoong check` (so no feedback loop, which is the pessimistic case):
+
+| Task | Result |
+|---|---|
+| CRUD admin | pass |
+| Shared-data dashboard | pass |
+| Live updates | pass |
+| Small site | scorer first said fail, see below |
+
+What this does and does not show:
+
+* **n = 4, one run each, one model.** It is an existence proof that the spec carries first attempts, not a rate. Do not quote
+  "100%".
+* The small-site "failure" was a defect in the scorer, not in the attempt: it demanded `p-id` on the view, while the assistant used
+  `view.params = { id }` from a script, which `llms.txt` documents. I fixed the scorer to accept either, and re-scored (4/4).
+  I changed the scorer after seeing the result; treat the number with that in mind.
+* It exposed a real gap: a public page that shows one item selected by `?id=` needed JavaScript. `p-id="?id"` now reads the
+  page URL declaratively (also in prerendering with the `url` option), and `llms.txt` says so.
+* Not measured yet: the loop with feedback (`check` through MCP), other models, harder tasks, or whether the page *works* in a browser
+  (the scorer is static; the reference solutions are what the end-to-end tests cover).
+
+To repeat it: give an assistant `llms.txt`, a task from `tools/benchmark/tasks/*/task.md` and the matching operations list
+(`list_operations` of `@xoong/mcp` prints it), collect the files in `<folder>/<task>/`, run `run.mjs`.
 
 ## 6. Fine-tuning (later)
 

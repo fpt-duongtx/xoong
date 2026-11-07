@@ -1,0 +1,1 @@
+Build a small public blog with xoong: `index.html` lists the posts (title and author, each title links to `post.html?id=<id>`), and `post.html` shows one post (title and body). No build step. Use only what the xoong spec allows.

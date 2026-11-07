@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Users</title><link rel="stylesheet" href="app.css"></head>
+<body><main><h1>Users</h1>
+<xo-view get="/users"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+<tbody><tr xo-each="items"><td>{name}</td><td>{email}</td><td>{role}</td><td>{status}</td>
+<td><button xo-click="POST /users/{id}/disable">Disable</button> <button xo-click="DELETE /users/{id}">Delete</button></td></tr></tbody></table></xo-view>
+<xo-view><form xo-submit="POST /users"><label>Name <input name="name"></label><label>Email <input name="email" type="email"></label>
+<label>Role <select name="role"><option>member</option><option>admin</option></select></label><button>Add</button></form></xo-view>
+</main></body></html>

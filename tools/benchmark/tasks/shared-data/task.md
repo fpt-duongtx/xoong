@@ -1,0 +1,1 @@
+Build a dashboard `index.html` with two lists on one page: all orders (id, total and the customer's name) and all customers (name, email). Both lists must be driven by the API and show the same customer data consistently. Use only what the xoong spec allows.

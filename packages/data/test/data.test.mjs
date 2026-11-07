@@ -100,7 +100,7 @@ test('in-flight requests are deduplicated; invalidate during flight refetches af
   q.retain();
   assert.equal(n, 1);
   q.invalidate();
-  await tick(40);
+  for (let i = 0; i < 100 && q.data.peek()?.n !== 2; i++) await tick(10); // poll: a fixed wait is flaky under parallel load
   assert.equal(n, 2);
   assert.equal(q.data.peek().n, 2);
 });

@@ -25,7 +25,7 @@ mismatch.
 | Generated `api.d.ts` compiles under `tsc --strict` | 100% (incl. 1.5 MB GitHub types) |
 | YAML twin gives the same result as JSON twin | all 8 pairs |
 | Deliberately broken specs (missing `paths`, dangling `$ref`) | reported as errors `XO100`, `XO150` |
-| Swagger 2.0 (Kubernetes, Mall admin/portal, Apache Answer) | **not supported yet** (4 of 19); the error names the converter |
+| Swagger 2.0 (Kubernetes, Mall admin/portal, Apache Answer) | converted on the fly by a basic built-in converter (4 of 19); not yet run against these four, because the corpus lives outside the repository |
 
 Operations / entities with one-line hints (`idNames`):
 Asana 271 / 210 (`gid`), Authentik 1,196 / 181 (`pk`), Box 295 / 109, GitHub 1,272 / 238,
@@ -59,7 +59,7 @@ Stripe 612 / 170, OpenAI 388 / 388, Prefect 442 / 116, Invoice Ninja 365 / 42.
 | Problem | Seen in | Impact |
 |---|---|---|
 | Unions of entities **with no tag at all** (GitHub `simple-user \| enterprise`; Stripe `bank_account \| card \| deleted_*` needs two tags) are reported (`XO160`) but not normalised | GitHub 73 ops, Stripe 6 | Those responses are not shared through the entity store. A per-union hint is planned |
-| Swagger 2.0 not read directly | Kubernetes, Mall, Apache Answer | Convert first with `swagger2openapi`; built-in conversion is backlog (low priority) |
+| Swagger 2.0 | Kubernetes, Mall, Apache Answer | Basic built-in conversion; run `tools/corpus.mjs` on the corpus to see what it misses, and use `swagger2openapi` for the rest |
 | Composite identity (Kubernetes `namespace` + `name`) | Kubernetes | Not expressible by `x-xoong-id` yet |
 | Response envelope (`{code, message, data}` on every endpoint) | Mall admin (160/160 ops) | Works, but screens read `{data.name}`; an `unwrap` hint is planned |
 | `multipart/form-data` uploads | Invoice Ninja, Box | Types generate, but `xo-submit` sends JSON only |

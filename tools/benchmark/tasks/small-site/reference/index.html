@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Blog</title><script type="module" src="/src/main.ts"></script></head>
+<body><main><h1>Blog</h1>
+<xo-view get="/posts"><p xo-if="$loading">Loading…</p><ul><li xo-each="."><a href="post.html?id={id}">{title}</a> <small>{author}</small></li></ul></xo-view>
+</main></body></html>

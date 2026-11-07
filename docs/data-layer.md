@@ -136,7 +136,10 @@ against `api.d.ts` by `xoong check`.
 
 Implemented in `@xoong/data/view` (0.0.x prototype): `<xo-view get="/path" p-id="1" live>`,
 `{path}` interpolation, `xo-each`, `xo-if`, `xo-click`, `xo-submit`, `xo-body`,
-`$loading`, `$error`, `$index`, and the bubbling events `xo-done` / `xo-error`.
+`$loading`, `$error`, `$index`, `$stream`, `xo-param`, and the bubbling events `xo-done` / `xo-error`.
+`p-<name>="?q"` takes the param from the page URL (`post.html?id=3` with `p-id="?id"`); an absent query parameter is left out, so the
+request cannot be built and the view reports it. Evidence for it: a public "show one item" page was the one task an assistant could not
+solve declaratively in the benchmark.
 The syntax stays **Draft** until dogfooded on real projects.
 
 ## 9. What the data layer will not do

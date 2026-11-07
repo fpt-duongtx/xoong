@@ -142,3 +142,21 @@ describe('streams and multipart in screens', () => {
     expect([...seen.keys()]).toEqual(['title']);
   });
 });
+
+describe('p-<name>="?query" reads the page URL', () => {
+  it('uses the query string value, and leaves the param out when it is absent', async () => {
+    const api = mockApi(table, { getUser: ({ params }) => ({ id: Number(params.id), name: `User ${params.id}` }) });
+    history.replaceState(null, '', '/post.html?id=7');
+    screen = await mount(`<xo-view get="/users/{id}" p-id="?id"><b>{name}</b></xo-view>`, { api });
+    expect(screen.text('b')).toBe('User 7');
+    expect(api.callsOf('getUser')[0].params).toEqual({ id: '7' });
+    screen.unmount();
+    history.replaceState(null, '', '/post.html');
+    const errors = [];
+    const original = console.error;
+    console.error = (...a) => errors.push(a.join(' '));
+    try { screen = await mount(`<xo-view get="/users/{id}" p-id="?id"><b>{name}</b></xo-view>`, { api: mockApi(table, { getUser: () => ({ id: 1, name: 'x' }) }) }); } finally { console.error = original; history.replaceState(null, '', '/'); }
+    expect(screen.text('b')).toBe(''); // no id in the URL: the request cannot be built, and nothing is rendered
+    expect(errors.join('\n')).toMatch(/id/);
+  });
+});

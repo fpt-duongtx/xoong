@@ -42,7 +42,7 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
     <xo-view><form xo-submit="POST /users"> <input name="name"> <button>Add</button> </form></xo-view>
 
 - `get`: "/path" (means GET /path), "GET /path", or an operationId. Path params come from `p-<name>` attributes:
-  `<xo-view get="/users/{id}" p-id="42">`. From JS: `view.params = { id: 7 }`.
+  `<xo-view get="/users/{id}" p-id="42">`; `p-id="?id"` reads ?id= from the page URL (post.html?id=3). From JS: `view.params = { id: 7 }`.
 - `{path}` reads a field of the current item (`.` = the item, `a.b` nested). Fields fall back to the view's `p-*` params.
   Variables: `$loading`, `$error` (has `status`, `code`, `detail`, `retryAfterS`), `$index`, `$stream`/`$streaming` (events of a call to an event-stream operation). Text is always escaped;
   `href/src/action` values with `javascript:` become about:blank; `on*` and `srcdoc` cannot be interpolated.
@@ -98,4 +98,4 @@ and FastAPI `{ detail: [{ msg }] }`. Unknown operations throw with the closest v
 Mock the network, never the data layer. Every behaviour you add needs a test.
 
 ## Limits today (do not work around them silently; tell the user)
-Swagger 2.0 must be converted first (`npx swagger2openapi`). No SSR, no WebSocket, unions without a tag property are not shared.
+Swagger 2.0 is converted by `sync` (basic: paths, params, bodies, responses, definitions; use `npx swagger2openapi` for anything exotic). No request-time SSR (prerender with `xoong render`), no WebSocket, unions without a tag property are not shared.

@@ -1,4 +1,5 @@
 // @ts-check
+import { swagger2ToOpenApi3 } from './swagger2.js';
 /**
  * OpenAPI 3.x (JSON) -> xoong tables.
  * Produces:
@@ -55,9 +56,7 @@ function collectRefs(doc) {
  *     "idempotencyKeys": { "sendMessage": "client_message_id" } }   // a fresh UUID is filled in per call
  */
 export function analyze(doc, { hints } = {}) {
-  if (doc && typeof doc === 'object' && String(doc.swagger ?? '').startsWith('2')) {
-    throw new Error('xoong: Swagger 2.0 is not supported yet. Convert it first: npx swagger2openapi <file> --outfile openapi3.json');
-  }
+  if (doc && typeof doc === 'object' && String(doc.swagger ?? '').startsWith('2')) doc = swagger2ToOpenApi3(doc); // Swagger 2.0 is converted first
   if (!doc || typeof doc !== 'object' || !String(doc.openapi ?? '').startsWith('3')) {
     throw new Error('xoong: expected an OpenAPI 3.x document (field "openapi" starting with "3")');
   }

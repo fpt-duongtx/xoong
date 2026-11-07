@@ -53,9 +53,8 @@ test('CLI: exit codes and messages', async () => {
   assert.match(help.stdout, /sync <openapi/);
 });
 
-test('non-OpenAPI input is rejected clearly; Swagger 2.0 says how to convert', () => {
+test('non-OpenAPI input is rejected clearly', () => {
   assert.throws(() => analyze({ foo: 1 }), /OpenAPI 3/);
-  assert.throws(() => analyze({ swagger: '2.0' }), /swagger2openapi/);
 });
 
 test('schema names that are not TS identifiers produce compilable names', async () => {
@@ -396,3 +395,33 @@ test('xoong render prerenders a page through @xoong/ssr', async () => {
     assert.match(await readFile(out, 'utf8'), /<b[^>]*>Ada<\/b>/);
   } finally { api.close(); }
 }, 30000);
+
+test('Swagger 2.0 is converted: parameters, body, formData, responses and definitions', () => {
+  const swagger = { swagger: '2.0', info: { title: 'Pets', version: '1' }, host: 'api.test', basePath: '/v1', schemes: ['https'],
+    consumes: ['application/json'], produces: ['application/json'],
+    paths: {
+      '/pets': {
+        get: { operationId: 'listPets', parameters: [{ name: 'limit', in: 'query', type: 'integer' }, { name: 'tag', in: 'query', type: 'array', items: { type: 'string' }, collectionFormat: 'multi' }],
+          responses: { 200: { description: 'ok', schema: { type: 'array', items: { $ref: '#/definitions/Pet' } } }, default: { description: 'e' } } },
+        post: { operationId: 'addPet', parameters: [{ name: 'pet', in: 'body', required: true, schema: { $ref: '#/definitions/NewPet' } }],
+          responses: { 201: { description: 'created', schema: { $ref: '#/definitions/Pet' } }, default: { description: 'e' } } },
+      },
+      '/pets/{id}/photo': {
+        parameters: [{ name: 'id', in: 'path', required: true, type: 'integer' }],
+        post: { operationId: 'uploadPhoto', consumes: ['multipart/form-data'], parameters: [{ name: 'file', in: 'formData', type: 'file', required: true }, { name: 'caption', in: 'formData', type: 'string' }],
+          responses: { 204: { description: 'ok' }, default: { description: 'e' } } },
+      },
+    },
+    definitions: { Pet: { type: 'object', required: ['id', 'name'], properties: { id: { type: 'integer' }, name: { type: 'string' }, parent: { $ref: '#/definitions/Pet' } } }, NewPet: { type: 'object', required: ['name'], properties: { name: { type: 'string' } } } } };
+  const before = JSON.stringify(swagger);
+  const a = analyze(swagger);
+  assert.equal(JSON.stringify(swagger), before, 'the input document is not modified');
+  assert.deepEqual(a.operations.listPets.query, ['limit', 'tag']);
+  assert.deepEqual(a.operations.listPets.response, { t: 'array', items: { t: 'entity', name: 'Pet', replace: true } });
+  assert.deepEqual(a.operations.addPet.bodyFields, [{ name: 'name', type: 'string', required: true }]);
+  assert.equal(a.operations.addPet.response.name, 'Pet');
+  assert.equal(a.operations.uploadPhoto.multipart, true);
+  assert.deepEqual(a.operations.uploadPhoto.bodyFields, [{ name: 'file', type: 'file', required: true }, { name: 'caption', type: 'string' }]);
+  assert.equal(a.problems.filter((p) => p.level === 'error').length, 0);
+  assert.match(generateDts(a), /createPet|addPet/);
+});

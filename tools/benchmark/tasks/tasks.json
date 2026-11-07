@@ -1,0 +1,6 @@
+{
+  "small-site": { "spec": "small-site/openapi.json", "files": ["index.html", "post.html"], "mustUse": ["listPosts", "getPost"], "mustContain": ["xo-each", "p-id|params", "href="] },
+  "crud-admin": { "spec": "crud-admin/openapi.json", "files": ["index.html"], "mustUse": ["listUsers", "createUser", "disableUser", "deleteUser"], "mustContain": ["xo-each", "xo-submit", "xo-click"] },
+  "shared-data": { "spec": "shared-data/openapi.json", "hints": "shop-hints.json", "files": ["index.html"], "mustUse": ["listOrders", "listCustomers"], "mustContain": ["xo-each", "customer.name"] },
+  "live-updates": { "spec": "live-updates/openapi.json", "files": ["index.html"], "mustUse": ["listUsers", "disableUser"], "mustContain": ["live", "xo-each", "xo-click"] }
+}

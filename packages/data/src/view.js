@@ -131,7 +131,11 @@ class XoView extends XoElement {
       const saved = this.firstElementChild?.localName === 'template' && this.firstElementChild.hasAttribute('data-xo-template') ? /** @type {HTMLTemplateElement} */ (this.firstElementChild) : null;
       this.#tpl = [...(saved ? saved.content.childNodes : this.childNodes)].map((n) => n.cloneNode(true));
       const initial = {};
-      for (const a of this.attributes) if (a.name.startsWith('p-')) initial[camel(a.name.slice(2))] = a.value;
+      for (const a of this.attributes) {
+        if (!a.name.startsWith('p-')) continue;
+        // p-id="?id" reads ?id=... from the page URL (public pages that show one item); an absent query parameter is left out
+        if (a.value.startsWith('?')) { const v = new URLSearchParams(globalThis.location?.search).get(a.value.slice(1)); if (v !== null) initial[camel(a.name.slice(2))] = v; } else initial[camel(a.name.slice(2))] = a.value;
+      }
       this.#params.value = { ...initial, ...this.#params.peek() };
     }
     const q = signal(/** @type {any} */ (null));
