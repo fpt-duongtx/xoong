@@ -1,7 +1,7 @@
 # AI integration
 
-Status: `llms.txt`, `xoong check` (HTML) and `xoong doctor` are **implemented**; the MCP server and the
-first-attempt-correctness benchmark are **planned**. Packages: `@xoong/cli`, `@xoong/mcp`.
+Status: `llms.txt`, `xoong check` (HTML), `xoong doctor` and the MCP server (first version) are **implemented**; the
+first-attempt-correctness benchmark and the `scaffold` tool are **planned**. Packages: `@xoong/cli`, `@xoong/mcp`.
 
 Goal: an AI assistant that has never seen xoong should write correct code on
 the first attempt, using only a short spec and fast, precise feedback.
@@ -44,7 +44,13 @@ Audits the OpenAPI document and reports what limits xoong: missing
 
 ## 4. MCP server
 
-Tools exposed to an AI assistant:
+**Implemented** as `@xoong/mcp` (`xoong-mcp [--operations .xoong/operations.json] [--llms llms.txt] [--docs docs]`):
+JSON-RPC over stdio, no SDK, no dependency beyond `@xoong/cli`. Register it in an assistant, for example
+`{ "mcpServers": { "xoong": { "command": "npx", "args": ["xoong-mcp"] } } }` (the packages are not published yet:
+use `node packages/mcp/src/cli.js`). Tools: `get_spec`, `list_operations`, `check`, `explain_error`, `search_docs`.
+`scaffold` is not built yet. A test keeps `explain_error` complete for every code `check` can print.
+
+Design (as planned):
 
 | Tool | Purpose |
 |---|---|

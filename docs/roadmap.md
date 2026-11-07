@@ -32,7 +32,7 @@ criteria pass.
 | 0.3 Shared data | Entity store, `derived`, unions done; router and composite ids open |
 | 0.4 Live | SSE client done and tested end to end; stream gateway open |
 | 0.5 Admin | First version done in `@xoong/ui` and `examples/admin` ([admin.md](admin.md)): `xoong.css`, `xo-table` (sort, paging), `xo-form`, `xo-dialog`, layout. Custom cells, filters, selection open |
-| 0.6 AI & types | `llms.txt`, `xoong check` (HTML), `xoong doctor` done; typed client, MCP, JS/TS template checks open |
+| 0.6 AI & types | `llms.txt`, `xoong check` (HTML), `xoong doctor`, MCP server (first version) done; typed client, JS/TS template checks, benchmark open |
 | 0.6.x Editor & lint | HTML custom data done (`xoong sync` writes it); language server, extension, lint presets designed only |
 | 0.7+ | Not started |
 
