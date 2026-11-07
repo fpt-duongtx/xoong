@@ -1,0 +1,23 @@
+/* Optional styles for @xoong/richtext, in one @layer, using the --xo-* tokens of @xoong/ui with fallbacks. */
+@layer xoong-richtext {
+  xo-richtext { display: block; }
+  .xo-richtext-box { border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
+  .xo-richtext-box:focus-within { outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 1px; }
+  .xo-richtext-toolbar { display: flex; flex-wrap: wrap; gap: 2px; padding: var(--xo-space-1, .25rem); border-bottom: 1px solid var(--xo-color-border, #d8dee4); }
+  .xo-richtext-toolbar button { min-width: 2rem; height: 2rem; border: 0; border-radius: 4px; background: none; cursor: pointer; font: inherit; font-weight: 600; color: inherit; }
+  .xo-richtext-toolbar button:hover:not(:disabled) { background: var(--xo-color-hover, rgb(127 127 127 / .18)); }
+  .xo-richtext-toolbar button[aria-pressed="true"] { background: var(--xo-color-hover, rgb(127 127 127 / .3)); }
+  .xo-richtext-toolbar button:disabled { opacity: .4; cursor: not-allowed; }
+  .xo-richtext-link { display: flex; flex-wrap: wrap; gap: var(--xo-space-2, .5rem); align-items: center; padding: var(--xo-space-2, .5rem); border-bottom: 1px solid var(--xo-color-border, #d8dee4); }
+  .xo-richtext-link[hidden] { display: none; }
+  .xo-richtext-link input { flex: 1 1 14rem; font: inherit; }
+  .xo-richtext-error { flex-basis: 100%; color: var(--xo-color-danger, #cf222e); }
+  .xo-richtext-error:empty { display: none; }
+  .xo-richtext-editable { min-height: 10rem; padding: var(--xo-space-3, .75rem); outline: none; overflow-wrap: anywhere; }
+  .xo-richtext-editable[data-empty]::before { content: attr(data-placeholder); opacity: .55; pointer-events: none; position: absolute; }
+  .xo-richtext-editable > :first-child { margin-top: 0; }
+  .xo-richtext-editable > :last-child { margin-bottom: 0; }
+  .xo-richtext-editable blockquote { margin-inline: 0; padding-inline-start: 1rem; border-inline-start: 3px solid var(--xo-color-border, #d8dee4); }
+  .xo-richtext-editable img { max-width: 100%; height: auto; }
+  xo-richtext[data-invalid] .xo-richtext-box { border-color: var(--xo-color-danger, #cf222e); }
+}

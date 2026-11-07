@@ -1,5 +1,5 @@
 // The English catalog of xoong's own strings: the starting point for translators. A test keeps it identical to the defaults written in the source
-// (regenerate with: xoong i18n extract packages/core/src packages/forms/src packages/ui/src packages/controls/src).
+// (regenerate with: xoong i18n extract packages/core/src packages/forms/src packages/ui/src packages/controls/src packages/richtext/src).
 export const builtin = {
   "xoong.confirm.cancel": "Cancel",
   "xoong.confirm.ok": "Confirm",
@@ -12,6 +12,23 @@ export const builtin = {
   "xoong.form.remove": "Remove",
   "xoong.form.save": "Save",
   "xoong.guard.leave": "You have unsaved changes. Leave this page?",
+  "xoong.richtext.apply": "Apply",
+  "xoong.richtext.bold": "Bold",
+  "xoong.richtext.editor": "Rich text",
+  "xoong.richtext.h2": "Heading",
+  "xoong.richtext.image": "Image",
+  "xoong.richtext.italic": "Italic",
+  "xoong.richtext.link": "Link",
+  "xoong.richtext.linkInvalid": "Use an address that starts with http://, https://, mailto: or tel:.",
+  "xoong.richtext.linkUrl": "Link address",
+  "xoong.richtext.ol": "Numbered list",
+  "xoong.richtext.quote": "Quote",
+  "xoong.richtext.redo": "Redo",
+  "xoong.richtext.removeLink": "Remove link",
+  "xoong.richtext.tooLong": "Use at most {max} characters.",
+  "xoong.richtext.toolbar": "Formatting",
+  "xoong.richtext.ul": "Bulleted list",
+  "xoong.richtext.undo": "Undo",
   "xoong.table.actions": "Actions",
   "xoong.table.next": "Next",
   "xoong.table.pagination": "Pagination",

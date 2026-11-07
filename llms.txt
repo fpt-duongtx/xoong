@@ -47,19 +47,18 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   Variables: `$loading`, `$error` (`status`, `code`, `detail`, `retryAfterS`), `$index`, `$stream`/`$streaming` (events of an event-stream call). Text is escaped;
   `javascript:` URLs become about:blank; `on*` and `srcdoc` cannot be interpolated.
 - `xo-each="path"` repeats the element per item (keyed by entity id). `xo-if="path"` / `xo-if="!path"` (empty array = false).
-- `xo-click="OP"` calls one; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; create forms empty on success,
-  `xo-keep` keeps values). `xo-body="path"` takes a click's body from the scope.
+- `xo-click="OP"` calls one; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; `xo-keep` keeps them). `xo-body="path"`: a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each shows it at once; undone on failure.
 - `xo-select` on a row checkbox ticks the row (`all:items`: all); `xo-selected` on an xo-click button runs it per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts them.
 - `xo-confirm="Delete {title}?"` asks first (native dialog; `setConfirm(fn)`). `xo-notice="Saved"` toasts on success. `xo-with="status=published"` adds body fields.
   `xo-selected="ids"` sends ONE request with the ticked ids; `$selected` = ticked rows.
 - `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button with `xo-param="status=draft"` gets `aria-current` while current (`status=`: unset).
-- Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json; `setFormat` adds one).
+- Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json; `setFormat` adds).
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles). Vars: `$hasPrev`, `$hasNext`.
-- Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. While a call runs: `aria-busy="true"`.
+- Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. A running call sets `aria-busy`.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
-  a detail query is not refetched if the response returned that entity. Override: `configure({ invalidate: { shipOrder: ['getDashboard'] } })`.
+  not a detail query whose entity the response returned. Override: `configure({ invalidate: { shipOrder: ['getDashboard'] } })`.
 
 ## JavaScript API (only when HTML is not enough)
 @xoong/data: `configure(opts)`, `getClient()`, `derived(({ all, get }) => value)`, `createClient(opts)`, `connectStream`.
@@ -86,14 +85,14 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 ## Admin set (@xoong/ui; `import '@xoong/ui'`, `<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">`)
     <xo-view get="/users" live>
       <xo-table columns="name,email:E-mail,created:Created:datetime" sortable filters="name:Search" selectable page-size="25" empty="No users">
-        <span slot="status" class="badge">{status}</span>   (slot="column": a cell)
-        <button xo-click="DELETE /users/{id}">Delete</button>   (other children: last cell)
+        <span slot="status" class="badge">{status}</span>   (slot="column": cell)
+        <button xo-click="DELETE /users/{id}">Delete</button>   (other: last cell)
         <button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>
-      </xo-table>   (needs query params sort, limit, offset, <filter fields>; `total` in the response)
+      </xo-table>   (needs query params sort, limit, offset, filter fields; `total` in the response)
     </xo-view>
-    <xo-form op="POST /users" submit="Add"></xo-form>   (draws the request schema)
+    <xo-form op="POST /users" submit="Add"></xo-form>
     <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
-  <xo-toast></xo-toast> shows errors and xo-notice. Style: custom properties in xoong.css; layout: `<body class="xo-admin">` + header, nav, main.
+  <xo-toast></xo-toast> shows errors and xo-notice. Style: xoong.css properties; layout: `<body class="xo-admin">` + header, nav, main.
 
 ## Routing (admin apps; `import { router } from '@xoong/ui'`; public pages stay one HTML file each)
     <xo-router base="/admin">
@@ -114,15 +113,16 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     <xo-tabs label="Page"><section xo-tab="General">...</section><section xo-tab="SEO" id="seo">...</section></xo-tabs>
     <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><a href="/x">Open</a></xo-menu>
     <xo-combobox name="a" label="Author" multiple creatable><option value="1">Ada</option></xo-combobox>   <xo-tags name="kw"></xo-tags>
-  Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags are form controls (string, or array with `multiple`);
-  `remote` + `xo-search`, or `el.options = [...]`. `xo-tooltip="text"` describes any element (icon buttons still need aria-label).
+    <xo-richtext name="body" media></xo-richtext>   (`@xoong/richtext`: sanitised HTML value; `xo-pick-media` is cancelable, call `e.detail.insert({ src, alt })`)
+  Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags: string, or array with `multiple`;
+  `remote` + `xo-search`, or `el.options = [...]`. `xo-tooltip="text"` describes any element (icon buttons need aria-label).
 
 ## Live updates (server-sent events)
 JSON per message: {type:"patch", entity:"User", id:42, path:"/status", value:"x", version:7} | {type:"upsert", entity, id, value, version} |
 {type:"delete", entity, id, version} | {type:"resync"}. `version` must increase per entity.
 
 ## Errors
-Failures become XoongError (problem+json, `{ error: { code, message, retry_after_s, fields } }`, FastAPI `{ detail }`).
+Failures become XoongError (problem+json, `{ error: { code, message, retry_after_s, fields } }`, `{ detail }`).
 
 ## Testing (Vitest)
     const api = mockApi(operations, { listUsers: () => [{ id: 1, name: 'Ada' }] });

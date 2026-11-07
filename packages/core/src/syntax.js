@@ -14,6 +14,6 @@ export const XO_ELEMENTS = ['xo-view'];
 export const XO_UI_ATTRIBUTES = ['xo-open', 'xo-close', 'xo-route', 'xo-layout', 'xo-outlet', 'xo-guard'];
 export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast', 'xo-router'];
 
-/** Attributes and elements of @xoong/controls. */
+/** Attributes and elements of @xoong/controls and @xoong/richtext. */
 export const XO_CONTROL_ATTRIBUTES = ['xo-tab', 'xo-menu-trigger', 'xo-tooltip'];
-export const XO_CONTROL_ELEMENTS = ['xo-tabs', 'xo-menu', 'xo-combobox', 'xo-tags'];
+export const XO_CONTROL_ELEMENTS = ['xo-tabs', 'xo-menu', 'xo-combobox', 'xo-tags', 'xo-richtext'];

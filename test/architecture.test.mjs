@@ -16,7 +16,7 @@ const imports = (text) => [...text.matchAll(/(?:import|export)\s[^'"]*?from\s*['
 const isBare = (s) => !s.startsWith('.') && !s.startsWith('/');
 
 /** Runtime packages ship to the browser; each may only depend on the ones listed. */
-const RUNTIME = { core: [], data: ['@xoong/core'], forms: ['@xoong/core', '@xoong/data'], i18n: ['@xoong/core', '@xoong/data'], ui: ['@xoong/core', '@xoong/data', '@xoong/forms'], controls: ['@xoong/core'] };
+const RUNTIME = { core: [], data: ['@xoong/core'], forms: ['@xoong/core', '@xoong/data'], i18n: ['@xoong/core', '@xoong/data'], ui: ['@xoong/core', '@xoong/data', '@xoong/forms'], controls: ['@xoong/core'], richtext: ['@xoong/core'] };
 
 describe('zero runtime dependencies (ADR-0004)', () => {
   for (const [name, allowed] of Object.entries(RUNTIME)) {
@@ -76,7 +76,7 @@ describe('size budget (gzip of the source without comments; a regression guard, 
   // growing, so the budget now measures code only. The roadmap's single-digit KB target applies to the *minified* size,
   // which still has to be measured (docs/roadmap.md, size budgets, and the benchmark issue).
   // Budgets sit about 5-10% above the measured values (core 5.0, data 14.9, forms ~6, ui ~9, controls ~6.5 KB); raising one needs a reason in the commit.
-  const budgetKb = { core: 5.5, data: 15.5, forms: 9.5, i18n: 5, ui: 10, controls: 7 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
+  const budgetKb = { core: 5.5, data: 15.5, forms: 9.5, i18n: 5, ui: 10, controls: 7, richtext: 6 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
   const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {
@@ -116,7 +116,7 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
   it('only mentions xo-* attributes that xoong defines, and documents all of them', async () => {
     const { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } = await import('../packages/core/src/syntax.js');
     const known = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES]);
-    const eventsAndPlanned = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS, 'xo-tab-change', 'xo-search', 'xo-menu-open', 'xo-menu-close', 'xo-done', 'xo-error', 'xo-card', 'xo-reveal', 'xo-invalid', 'xo-navigate', 'xo-dirty', ...CSS_CLASSES]);
+    const eventsAndPlanned = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS, 'xo-tab-change', 'xo-search', 'xo-pick-media', 'xo-menu-open', 'xo-menu-close', 'xo-done', 'xo-error', 'xo-card', 'xo-reveal', 'xo-invalid', 'xo-navigate', 'xo-dirty', ...CSS_CLASSES]);
     const mentioned = new Set([...llms.matchAll(/\bxo-[a-z]+(?:-[a-z]+)*\b/g)].map((m) => m[0]));
     for (const name of mentioned) if (!eventsAndPlanned.has(name)) expect(known.has(name), `llms.txt mentions ${name}, which xoong does not define`).toBe(true);
     for (const name of known) expect(mentioned.has(name), `xoong defines ${name}, but llms.txt does not document it`).toBe(true);
@@ -136,11 +136,11 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
     for (const name of XO_UI_ELEMENTS) expect(ui, `@xoong/ui does not define <${name}>`).toMatch(new RegExp(`(define|defineTemplate)\\('${name}'`));
   });
 
-  it('@xoong/controls implements every control attribute and element xoong defines', async () => {
+  it('@xoong/controls and @xoong/richtext implement every control attribute and element xoong defines', async () => {
     const { XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } = await import('../packages/core/src/syntax.js');
-    const text = sources('controls').map((s) => s.text).join('\n');
-    for (const name of XO_CONTROL_ATTRIBUTES) expect(text, `@xoong/controls does not mention ${name}`).toContain(name);
-    for (const name of XO_CONTROL_ELEMENTS) expect(text, `@xoong/controls does not define <${name}>`).toMatch(new RegExp(`define\\('${name}'`));
+    const text = [...sources('controls'), ...sources('richtext')].map((s) => s.text).join('\n');
+    for (const name of XO_CONTROL_ATTRIBUTES) expect(text, `the control packages do not mention ${name}`).toContain(name);
+    for (const name of XO_CONTROL_ELEMENTS) expect(text, `the control packages do not define <${name}>`).toMatch(new RegExp(`define\\('${name}'`));
   });
 
   it('every CSS class llms.txt documents exists in xoong.css', () => {
