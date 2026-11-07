@@ -1,6 +1,6 @@
 {
   "name": "@xoong/cli",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "xoong CLI: sync (OpenAPI -> typed client tables), doctor (spec audit).",
   "type": "module",
   "bin": {

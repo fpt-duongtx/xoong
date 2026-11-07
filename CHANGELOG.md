@@ -5,6 +5,19 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.5 (arrays, unions, generated forms, i18n)
+
+breaking: none for markup. `xoong build` and `xoong check` are stricter: unknown `build` options are refused, `filters` accept `name:Label`.
+
+### Added
+* Forms: arrays and unions (`xo-add`, `xo-remove`, `xo-move`, `xo-if="path=value"`), nested objects, `<xo-form op="...">` draws every field from the request schema with hints (`order`, `group`, `widget`, `hidden`, `emptyAs`, `pruneEmpty`; OpenAPI `x-xoong-widget`, `x-xoong-prune-empty`, `x-xoong-empty-as`, other `x-*` keys reach widgets in `schema.hints`).
+* `@xoong/i18n`: ICU-subset catalogs, `xo-t`, `locale` signal, Intl formats, Vietnamese for built-in strings; `xoong i18n extract|check`.
+* `setConfirm(fn(message, context))` replaces the confirm and leave dialogs; `confirm()` and `toast.show()` exported from `@xoong/ui`.
+* Tests and CI run in Firefox and WebKit as well (`npm run test:browsers`).
+
+### Fixed
+* `xoong build` ignores its own output folder and validates its options; `xoong --help` exits before any work.
+
 ## 0.0.4 (forms, list state, build)
 
 ### Added

@@ -52,7 +52,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each shows it at once; undone on failure.
 - `xo-select` on a checkbox in a row ticks that row (`all:items` in the header ticks all); `xo-selected` on an xo-click button runs it once per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts ticked rows.
-- `xo-confirm="Delete {title}?"` asks first (native dialog). `xo-notice="Saved"` shows a toast after success. `xo-with="status=published"` adds fixed body fields.
+- `xo-confirm="Delete {title}?"` asks first (native dialog, `setConfirm(fn)` swaps it). `xo-notice="Saved"` toasts on success. `xo-with="status=published"` adds body fields.
   `xo-selected="ids"` sends ONE request with the ticked ids; `$selected` = the ticked rows.
 - `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button with `xo-param="status=draft"` gets `aria-current` while it is the current value (`status=` matches "unset").
 - Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json; `setFormat` adds one).
