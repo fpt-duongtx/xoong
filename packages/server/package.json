@@ -1,0 +1,14 @@
+{
+  "name": "@xoong/server",
+  "version": "0.0.1",
+  "description": "xoong server: one (Request) => Response handler for static files, an API proxy and TypeScript type stripping, plus a Node adapter. Dev and optional production use; never shipped to the browser.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./node": "./src/node.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "amaro": "^1.3.0"
+  }
+}
