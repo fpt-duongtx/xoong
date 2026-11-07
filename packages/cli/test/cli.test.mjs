@@ -359,3 +359,23 @@ test('sync marks an entity\'s own schema as replace, shared and partial schemas 
   assert.deepEqual(operations.b.response, { t: 'entity', name: 'Full' });
   assert.deepEqual(operations.c.response, { t: 'entity', name: 'Part' });
 });
+
+test('composite ids from hints, and untagged unions resolved by a unique required property', () => {
+  const obj = (props, required) => ({ type: 'object', required, properties: Object.fromEntries(props.map((p) => [p, { type: 'string' }])) });
+  const json = (schema) => ({ description: 'ok', content: { 'application/json': { schema } } });
+  const doc = { openapi: '3.0.3', info: { title: 't', version: '1' }, paths: {
+    '/pods': { get: { operationId: 'pods', responses: { 200: json({ type: 'array', items: { $ref: '#/components/schemas/Pod' } }), default: { description: 'e' } } } },
+    '/items': { get: { operationId: 'items', responses: { 200: json({ type: 'array', items: { oneOf: [{ $ref: '#/components/schemas/Issue' }, { $ref: '#/components/schemas/Pull' }] } }), default: { description: 'e' } } } },
+    '/amb': { get: { operationId: 'amb', responses: { 200: json({ oneOf: [{ $ref: '#/components/schemas/Issue' }, { $ref: '#/components/schemas/Twin' }] }), default: { description: 'e' } } } },
+  }, components: { schemas: {
+    Pod: obj(['namespace', 'name'], ['namespace', 'name']),
+    Issue: obj(['id', 'labels'], ['id', 'labels']), Pull: obj(['id', 'pull_request'], ['id', 'pull_request']), Twin: obj(['id', 'labels'], ['id']),
+  } } };
+  const a = analyze(doc, { hints: { schemas: { Pod: { id: ['namespace', 'name'] } } } });
+  assert.deepEqual(a.entities.Pod.id, ['namespace', 'name']);
+  assert.deepEqual(a.operations.items.response.items, { t: 'union', has: [['labels', { t: 'entity', name: 'Issue', replace: true }], ['pull_request', { t: 'entity', name: 'Pull', replace: true }]] });
+  assert.equal(a.operations.amb.response, undefined); // no member can be recognised: stays unresolved
+  assert.ok(a.problems.some((p) => p.code === 'XO160'));
+  const bad = analyze(doc, { hints: { schemas: { Pod: { id: ['namespace', 'nope'] } } } });
+  assert.equal(bad.problems.find((p) => p.code === 'XO101').level, 'error');
+});

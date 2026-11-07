@@ -504,3 +504,29 @@ test('unwrap: a success body without the envelope field is an error, not silent 
   const c = createClient({ api: wrapped, fetch: fakeFetch({ 'GET /u': () => ({ other: 1 }) }), retry: 0 });
   await assert.rejects(() => c.load('list'), (e) => e instanceof XoongError && /no "data" field/.test(e.detail));
 });
+
+test('composite identity: several properties make one id; missing parts keep the object inline', async () => {
+  const k8s = { entities: { Pod: { id: ['namespace', 'name'] } }, operations: {
+    list: { id: 'list', method: 'GET', path: '/pods', response: { t: 'array', items: { t: 'entity', name: 'Pod' } } },
+  } };
+  const c = createClient({ api: k8s, fetch: fakeFetch({ 'GET /pods': () => [
+    { namespace: 'a', name: 'web', phase: 'Running' }, { namespace: 'b', name: 'web', phase: 'Pending' }, { name: 'orphan' },
+  ] }) });
+  const items = await c.load('list');
+  assert.deepEqual(c.store.refs('Pod').map((r) => r.$ref).sort(), ['Pod#a/web', 'Pod#b/web']); // same name, different namespace: two pods
+  assert.equal(items.length, 3);
+  assert.deepEqual(items[2], { name: 'orphan' });
+  assert.equal(c.store.applyEvent({ type: 'patch', entity: 'Pod', id: 'a/web', path: '/phase', value: 'Failed' }), true);
+  assert.equal(c.store.read('Pod#a/web').phase, 'Failed');
+});
+
+test('a union without a tag is resolved by a property only one member has', async () => {
+  const gh = { entities: { Issue: { id: 'id' }, Pull: { id: 'id' } }, operations: {
+    list: { id: 'list', method: 'GET', path: '/items', response: { t: 'array', items: { t: 'union', has: [['pull_request', { t: 'entity', name: 'Pull' }], ['labels', { t: 'entity', name: 'Issue' }]] } } },
+  } };
+  const c = createClient({ api: gh, fetch: fakeFetch({ 'GET /items': () => [{ id: 1, labels: [] }, { id: 1, pull_request: { url: 'x' } }, { id: 9 }] }) });
+  const items = await c.load('list');
+  assert.deepEqual(c.store.refs('Issue').map((r) => r.$ref), ['Issue#1']);
+  assert.deepEqual(c.store.refs('Pull').map((r) => r.$ref), ['Pull#1']); // same id, different entity types
+  assert.deepEqual(items[2], { id: 9 }); // unrecognised: kept as received
+});

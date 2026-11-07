@@ -89,8 +89,10 @@ export function analyze(doc, { hints } = {}) {
     const props = collectProps(schema, schemas);
     const explicit = schema['x-xoong-id'];
     if (explicit) {
-      if (props[explicit]) { idKeys[name] = explicit; entityOf[name] = schema['x-xoong-entity'] ?? name; }
-      else problems.push({ level: 'error', code: 'XO101', where: `#/components/schemas/${name}`, message: `x-xoong-id "${explicit}" is not a property of ${name}`, fix: 'Name an existing property or remove x-xoong-id' });
+      // One property, or several for a composite identity (Kubernetes: ["namespace", "name"]).
+      const missing = [].concat(explicit).filter((k) => !props[k]);
+      if (!missing.length) { idKeys[name] = explicit; entityOf[name] = schema['x-xoong-entity'] ?? name; }
+      else problems.push({ level: 'error', code: 'XO101', where: `#/components/schemas/${name}`, message: `x-xoong-id "${missing[0]}" is not a property of ${name}`, fix: 'Name existing properties or remove x-xoong-id' });
     } else {
       // Conventional identity: `id`, or the first property named in hints.idNames (for example "gid" or "pk").
       const key = ['id', ...(hints?.idNames ?? [])].find((k) => props[k]);
@@ -168,9 +170,22 @@ export function analyze(doc, { hints } = {}) {
       const real = alternatives.filter((s) => !isScalarSchema(s));
       if (real.length === 0) return null;
       if (real.length === 1) return describe(real[0], seen, depth + 1);
-      // Several object shapes: usable only when a tag property tells them apart.
+      // Several object shapes: usable when a tag property tells them apart, or each has a required property no other has.
       const tag = unionTag(schema, real);
-      if (!tag) return null;
+      if (!tag) {
+        const sets = real.map((s) => {
+          const resolved = s.$ref ? schemas[refName(s.$ref)] : s;
+          return { props: new Set(Object.keys(collectProps(s, schemas))), required: [...new Set([...(resolved?.required ?? []), ...(resolved?.allOf ?? []).flatMap((p) => (p.$ref ? schemas[refName(p.$ref)] : p)?.required ?? [])])] };
+        });
+        const has = [];
+        for (let i = 0; i < real.length; i++) {
+          const prop = sets[i].required.find((k) => sets.every((o, j) => j === i || !o.props.has(k)));
+          const d = prop && describe(real[i], seen, depth + 1);
+          if (!prop || !d) return null; // one member cannot be recognised: leave the union alone (doctor reports XO160)
+          has.push([prop, d]);
+        }
+        return { t: 'union', has };
+      }
       const map = {};
       real.forEach((s, i) => {
         const d = describe(s, seen, depth + 1);
@@ -212,7 +227,7 @@ export function analyze(doc, { hints } = {}) {
       const d = describe(v);
       if (d) props[k] = d;
     }
-    if (entities[entity] && entities[entity].id !== idKeys[name]) {
+    if (entities[entity] && JSON.stringify(entities[entity].id) !== JSON.stringify(idKeys[name])) {
       problems.push({ level: 'error', code: 'XO102', where: `#/components/schemas/${name}`, message: `entity "${entity}" has conflicting id properties ("${entities[entity].id}" and "${idKeys[name]}")`, fix: 'Use the same id property for every schema mapped to one entity' });
       continue;
     }

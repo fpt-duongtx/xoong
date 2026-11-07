@@ -201,6 +201,13 @@ export function createStore(entityDefs = {}) {
   return store;
 }
 
+/** Identity of a record: one property, or several joined with "/" for a composite id. undefined when a part is missing. */
+export function idOf(idDef, value) {
+  if (!Array.isArray(idDef)) return value[idDef] ?? undefined;
+  const parts = idDef.map((k) => value[k]);
+  return parts.some((p) => p === undefined || p === null) ? undefined : parts.join('/');
+}
+
 /** Normalize a plain entity object into a record whose nested entities are refs. */
 export function normalizeRecord(store, name, value, touched) {
   const def = store.defs[name];
@@ -223,8 +230,8 @@ export function normalize(store, desc, value, touched) {
     case 'entity': {
       if (typeof value !== 'object') return value;
       const def = store.defs[desc.name];
-      const id = def ? value[def.id] : undefined;
-      if (id === undefined || id === null) return value; // no identity: keep inline
+      const id = def ? idOf(def.id, value) : undefined;
+      if (id === undefined) return value; // no identity: keep inline
       const ref = store.upsert(desc.name, id, normalizeRecord(store, desc.name, value, touched), { replace: desc.replace });
       touched?.add(ref.$ref);
       return ref;
@@ -240,6 +247,10 @@ export function normalize(store, desc, value, touched) {
     case 'union': {
       // Pick the member by its tag property; anything else (a plain id string, an unknown tag) stays as received.
       if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+      if (desc.has) { // no tag: the member is recognised by a property only it has
+        const hit = desc.has.find(([prop]) => prop in value);
+        return hit ? normalize(store, hit[1], value, touched) : value;
+      }
       const member = (value[desc.key] !== undefined ? desc.map[value[desc.key]] : undefined) ?? desc.default;
       return member ? normalize(store, member, value, touched) : value;
     }

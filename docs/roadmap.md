@@ -29,7 +29,7 @@ criteria pass.
 |---|---|
 | 0.1 Core | Done (`xoong.css` tokens ship in `@xoong/ui`) |
 | 0.2 Data basics | Done (sync, cache, mutations, errors, `xoong dev` with proxy and `.ts`, `@xoong/test`); `unwrap` hint, idempotency keys, multipart and declarative POST streaming done (data-layer.md section 12) |
-| 0.3 Shared data | Entity store, `derived`, unions done; router and composite ids open |
+| 0.3 Shared data | Entity store, `derived`, unions, composite ids and untagged unions (by a unique required property) done; router open |
 | 0.4 Live | SSE client done and tested end to end; stream gateway open |
 | 0.5 Admin | First version done in `@xoong/ui` and `examples/admin` ([admin.md](admin.md)): `xoong.css`, `xo-table` (sort, paging), `xo-form`, `xo-dialog`, layout. Custom cells, filters, selection open |
 | 0.6 AI & types | `llms.txt`, `xoong check` (HTML), `xoong doctor`, MCP server (first version) and typed client done; JS/TS template checks, benchmark open |

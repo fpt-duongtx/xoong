@@ -115,8 +115,7 @@ becomes public only when there is something finished to show (see section 10). S
    submit), streaming for POST SSE in HTML (today `client.stream()` is JS only), `unwrap` hint for
    `{code,message,data}` envelopes, multipart in `xo-submit`.
 4. **Data layer limits** (documented in `docs/data-layer.md` section 11): replace-vs-merge, entity eviction,
-   request cancellation and stream version reset are done. Open: composite identity (Kubernetes), per-union
-   hints for untagged unions (GitHub).
+   request cancellation, stream version reset, composite identity and untagged unions are done.
 5. **0.6**: typed client (`createClient<Operations>`), `check` for JS/TS templates, MCP server wrapping
    `check`/`doctor`/`scaffold`/`llms.txt`, first-attempt-correctness benchmark (`docs/ai-integration.md` section 5).
 6. **0.6.x editor and lint**: HTML custom data first (cheap), then the language server; design in
