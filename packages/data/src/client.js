@@ -6,8 +6,8 @@ import { fillPath, pathsOverlap } from './invalidate.js';
 
 /** Normalized API error. Built from application/problem+json when available. */
 export class XoongError extends Error {
-  /** @param {{status?:number,title?:string,detail?:string,code?:string,retryAfterS?:number,problem?:any,operation?:string,cause?:any}} init */
-  constructor({ status = 0, title, detail, code, retryAfterS, problem, operation, cause }) {
+  /** @param {{status?:number,title?:string,detail?:string,code?:string,retryAfterS?:number,problem?:any,operation?:string,cause?:any,fields?:Record<string,string>}} init */
+  constructor({ status = 0, title, detail, code, retryAfterS, problem, operation, cause, fields }) {
     super(detail || title || (status ? `HTTP ${status}` : 'Network error'));
     this.name = 'XoongError';
     this.status = status;
@@ -17,6 +17,8 @@ export class XoongError extends Error {
     this.retryAfterS = retryAfterS;
     this.problem = problem;
     this.operation = operation;
+    /** Per-field messages ({ email: 'is not valid' }) when the server reports them; empty otherwise. */
+    this.fields = fields ?? {};
     if (cause) this.cause = cause;
   }
 }
@@ -25,9 +27,18 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * Build an error from a failed response. Understands RFC 9457 problem+json,
- * `{ error: { code, message, retry_after_s } }` envelopes and FastAPI-style
- * `{ detail: [{ msg }] }` validation errors.
+ * `{ error: { code, message, retry_after_s, fields } }` envelopes and FastAPI-style
+ * `{ detail: [{ loc, msg }] }` validation errors. Field messages end up in `error.fields`.
  */
+function fieldErrors(body, env) {
+  const out = {};
+  const add = (name, msg) => { if (name && msg && !(name in out)) out[String(name)] = String(msg); };
+  if (env?.fields && typeof env.fields === 'object') for (const [k, v] of Object.entries(env.fields)) add(k, v);
+  if (Array.isArray(body?.detail)) for (const d of body.detail) if (Array.isArray(d?.loc)) add(d.loc.filter((x) => x !== 'body').join('.'), d.msg);
+  if (Array.isArray(body?.errors)) for (const e of body.errors) add(e?.field ?? String(e?.pointer ?? '').replace(/^#?\//, '').replace(/\//g, '.'), e?.detail ?? e?.message);
+  return out;
+}
+
 function errorFromBody(status, statusText, body, operation) {
   const env = body?.error && typeof body.error === 'object' ? body.error : undefined;
   const detail = Array.isArray(body?.detail)
@@ -39,6 +50,7 @@ function errorFromBody(status, statusText, body, operation) {
     detail,
     code: env?.code ?? (typeof body?.code === 'string' ? body.code : undefined),
     retryAfterS: env?.retry_after_s ?? undefined,
+    fields: fieldErrors(body, env),
   });
 }
 

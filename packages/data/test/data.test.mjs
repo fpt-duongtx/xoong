@@ -361,3 +361,14 @@ test('unions with a default member: the flagged member wins, everything else is 
   assert.equal(c.store.denormalize({ $ref: 'DeletedCustomer#b' }).deleted, true);
   assert.equal(c.store.denormalize({ $ref: 'Customer#c' }).name, 'Cy'); // deleted:false is not the flag
 });
+
+test('field errors are collected from FastAPI, envelope and problem+json bodies', async () => {
+  const fail = (body) => {
+    const c = createClient({ api, fetch: fakeFetch({ 'POST /users': () => json(422, body) }), retry: 0 });
+    return c.mutate('createUser', {}, {}).then(() => assert.fail('should reject'), (e) => e.fields);
+  };
+  assert.deepEqual(await fail({ detail: [{ loc: ['body', 'address', 'zip'], msg: 'too short' }] }), { 'address.zip': 'too short' });
+  assert.deepEqual(await fail({ error: { code: 'invalid', message: 'bad', fields: { email: 'taken' } } }), { email: 'taken' });
+  assert.deepEqual(await fail({ errors: [{ pointer: '#/name', detail: 'required' }, { field: 'age', message: 'too low' }] }), { name: 'required', age: 'too low' });
+  assert.deepEqual(await fail({ title: 'nope' }), {});
+});

@@ -20,6 +20,8 @@
  *   xo-submit="OP"    same, on form submit; body = the form fields.
  *   xo-body="path"    (xo-click) take the request body from the scope.
  *   xo-keep           (xo-submit) keep the field values after a successful send (default: the form is reset).
+ *   xo-param="k=v"     on click, set a view param and refetch: `k=v`, `k+=n`, `k-=n` (never below 0),
+ *                     `k~=v` (toggle between `v` and `-v`, for sorting). `{path}` in v is resolved.
  * Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
  */
 import { effect, signal, batch } from '@xoong/core/signals';
@@ -27,6 +29,11 @@ import { XoElement, define } from '@xoong/core';
 import { isRef } from './store.js';
 import { getClient, acquireStream } from './default.js';
 import { XoongError } from './client.js';
+
+/** Components that expand into plain markup before binding (used by @xoong/ui). tag -> (el, { host, client }) => Node */
+const templates = new Map();
+/** @param {string} tag @param {(el: Element, env: { host: any, client: any }) => Node} expand */
+export function defineTemplate(tag, expand) { templates.set(tag, expand); }
 
 const camel = (s) => s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
@@ -112,6 +119,13 @@ class XoView extends XoElement {
       vars: {
         $loading: () => q.value?.status.value === 'loading',
         $error: () => q.value?.error.value,
+        // Paging state for lists that take `limit` and `offset` and return `total`.
+        $hasPrev: () => Number(this.#params.value.offset) > 0,
+        $hasNext: () => {
+          const { limit, offset = 0 } = this.#params.value;
+          const total = root() && store.deref(root())?.total;
+          return limit != null && typeof total === 'number' && Number(offset) + Number(limit) < total;
+        },
       },
     };
     this.replaceChildren(...this.#tpl.map((n) => n.cloneNode(true)));
@@ -165,12 +179,31 @@ function bindNode(node, scope, ctx, disposers) {
   const el = /** @type {Element} */ (node);
   if (el.localName === 'script' || el.localName === 'style') return;
 
+  const expand = templates.get(el.localName);
+  if (expand) {
+    let out;
+    try {
+      out = expand(el, { host: ctx.host, client: ctx.client });
+    } catch (e) {
+      console.error(e); // a typo in the screen: say so, leave a marker, keep the rest of the screen alive
+      ctx.host.emit('xo-error', e);
+      el.replaceWith(document.createComment(`<${el.localName}> failed: ${e.message}`));
+      return;
+    }
+    el.replaceWith(out);
+    for (const n of out.nodeType === 11 ? [...out.childNodes] : [out]) bindNode(n, scope, ctx, disposers);
+    return;
+  }
   if (el.hasAttribute('xo-each')) return bindEach(el, scope, ctx, disposers);
   if (el.hasAttribute('xo-if')) return bindIf(el, scope, ctx, disposers);
 
   for (const attr of [...el.attributes]) {
     if (attr.name === 'xo-click' || attr.name === 'xo-submit') {
       bindAction(el, attr.name === 'xo-click' ? 'click' : 'submit', attr.value, scope, ctx, disposers);
+      continue;
+    }
+    if (attr.name === 'xo-param') {
+      bindParam(el, attr.value, scope, ctx, disposers);
       continue;
     }
     if (attr.name === 'xo-body' || attr.name === 'xo-keep') continue;
@@ -283,7 +316,8 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       for (const m of op.path.matchAll(/\{([^}]+)\}/g)) params[m[1]] = lookup(scope, m[1]);
       for (const q of op.query ?? []) { const v = lookup(scope, q); if (v !== undefined) params[q] = v; }
       let body;
-      if (eventName === 'submit' && op.body === true) body = Object.fromEntries(new FormData(/** @type {HTMLFormElement} */ (el)));
+      clearFieldErrors(el);
+      if (eventName === 'submit' && op.body === true) body = formBody(/** @type {HTMLFormElement} */ (el), op);
       else if (el.hasAttribute('xo-body')) body = client.store.denormalize(lookup(scope, el.getAttribute('xo-body')));
       const result = await client.mutate(ref, params, body);
       if (eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
@@ -291,6 +325,7 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
     } catch (e) {
       // API failures are expected flows (events + global onError). Anything else is a bug in the screen.
       if (!(e instanceof XoongError)) console.error(e);
+      else showFieldErrors(el, e.fields, e.detail ?? e.message);
       host.emit('xo-error', e);
     } finally {
       busy = false;
@@ -299,4 +334,71 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
   };
   el.addEventListener(eventName, handler);
   disposers.push(() => el.removeEventListener(eventName, handler));
+}
+
+/** The JSON body of a form. With `bodyFields` from the API document, values get their real types. */
+function formBody(form, op) {
+  const raw = new FormData(form);
+  const body = {};
+  const types = new Map((op.bodyFields ?? []).map((f) => [f.name, f.type]));
+  for (const [name, value] of raw) {
+    if (typeof value !== 'string') continue;
+    const type = types.get(name);
+    if (type === 'integer' || type === 'number') { if (value !== '') body[name] = Number(value); }
+    else if (type === 'boolean') body[name] = true; // an unchecked checkbox is not in FormData
+    else if (type && value === '' && !op.bodyFields.find((f) => f.name === name)?.required) continue; // optional and empty: omit
+    else body[name] = value;
+  }
+  for (const [name, type] of types) if (type === 'boolean' && !(name in body)) body[name] = false;
+  return body;
+}
+
+function clearFieldErrors(form) {
+  if (form.localName !== 'form') return;
+  form.querySelectorAll('[data-xo-error]').forEach((n) => n.remove());
+  form.querySelectorAll('[aria-invalid]').forEach((n) => { n.removeAttribute('aria-invalid'); n.removeAttribute('aria-describedby'); });
+}
+
+/** Mark each named field invalid and put the server's message next to it; with no field to blame, show it under the form. */
+function showFieldErrors(form, fields = {}, summary = '') {
+  if (form.localName !== 'form') return;
+  const note = (message, role) => {
+    const el = document.createElement('small');
+    el.className = 'xo-error';
+    el.dataset.xoError = '';
+    el.textContent = message;
+    if (role) el.setAttribute('role', role);
+    return el;
+  };
+  let placed = 0;
+  for (const [name, message] of Object.entries(fields)) {
+    const input = [...form.elements].find((f) => f.name === name);
+    if (!input) continue;
+    const el = note(message);
+    el.id = `xo-err-${name}-${Math.random().toString(36).slice(2, 7)}`;
+    input.after(el);
+    input.setAttribute('aria-invalid', 'true');
+    input.setAttribute('aria-describedby', el.id);
+    placed++;
+  }
+  if (!placed && summary) form.append(note(summary, 'alert'));
+}
+
+function bindParam(el, spec, scope, ctx, disposers) {
+  const m = /^\s*([\w-]+)\s*(\+=|-=|~=|=)\s*(.*?)\s*$/.exec(spec);
+  if (!m) { console.error(`xoong: xo-param="${spec}" is not "name=value", "name+=n", "name-=n" or "name~=value"`); return; }
+  const [, rawName, op, rawValue] = m;
+  const name = camel(rawName);
+  const handler = () => {
+    const value = evalParts(parseInterpolation(rawValue) ?? [rawValue], scope, ctx.lookup);
+    const params = { ...ctx.host.params };
+    const cur = params[name];
+    if (op === '=') params[name] = value;
+    else if (op === '~=') params[name] = cur === value ? `-${value}` : value; // asc, then desc, then asc ...
+    else params[name] = Math.max(0, (Number(cur) || 0) + (op === '+=' ? 1 : -1) * Number(value));
+    if (name !== 'offset' && 'offset' in params) params.offset = 0; // a new filter or sort starts at the first page
+    ctx.host.params = params;
+  };
+  el.addEventListener('click', handler);
+  disposers.push(() => el.removeEventListener('click', handler));
 }
