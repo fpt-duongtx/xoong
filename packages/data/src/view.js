@@ -42,6 +42,11 @@ export function setParamSource(fn) {
   for (const start of waitingForRouter.splice(0)) start();
 }
 
+/** The forms package registers its binder here: any `xo-submit` form whose operation has a request schema then uses the form model. */
+let formEngine = /** @type {{ attach: Function } | null} */ (null);
+/** @param {{ attach: Function }} engine */
+export function setFormEngine(engine) { formEngine = engine; }
+
 /** Components that expand into plain markup before binding (used by @xoong/ui). tag -> (el, { host, client }) => Node */
 const templates = new Map();
 /** @param {string} tag @param {(el: Element, env: { host: any, client: any }) => Node} expand */
@@ -51,10 +56,17 @@ const camel = (s) => s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
 /** @typedef {{ value: () => any, parent?: Scope, vars?: Record<string, () => any> }} Scope */
 
+/** "a.b", "a[0].b" and "$form.errors['title.vi']" as steps. */
+function splitPath(path) {
+  const steps = [];
+  for (const m of path.matchAll(/\[(?:'([^']*)'|"([^"]*)"|(\d+))\]|([^.[\]]+)/g)) steps.push(m[1] ?? m[2] ?? m[3] ?? m[4]);
+  return steps;
+}
+
 function makeResolver(store) {
   const lookup = (scope, path) => {
     if (path === '.' || path === '') return store.deref(scope.value());
-    const [head, ...rest] = path.split('.');
+    const [head, ...rest] = splitPath(path);
     if (head.startsWith('$')) {
       for (let s = scope; s; s = s.parent) if (s.vars?.[head]) return walk(s.vars[head](), rest);
       return undefined;
@@ -265,9 +277,11 @@ function bindNode(node, scope, ctx, disposers) {
   if (el.hasAttribute('xo-each')) return bindEach(el, scope, ctx, disposers);
   if (el.hasAttribute('xo-if')) return bindIf(el, scope, ctx, disposers);
 
+  let childScope = scope;
   for (const attr of [...el.attributes]) {
     if (attr.name === 'xo-click' || attr.name === 'xo-submit') {
-      bindAction(el, attr.name === 'xo-click' ? 'click' : 'submit', attr.value, scope, ctx, disposers);
+      const engine = bindAction(el, attr.name === 'xo-click' ? 'click' : 'submit', attr.value, scope, ctx, disposers);
+      if (engine) childScope = { value: scope.value, parent: scope, vars: { $form: () => engine.model } }; // `$form.dirty`, `$form.errors['title.vi']` ... inside the form
       continue;
     }
     if (attr.name === 'xo-select') {
@@ -294,7 +308,7 @@ function bindNode(node, scope, ctx, disposers) {
       }));
     }
   }
-  for (const child of [...el.childNodes]) bindNode(child, scope, ctx, disposers);
+  for (const child of [...el.childNodes]) bindNode(child, childScope, ctx, disposers);
 }
 
 /** Attributes whose value is a URL: data must not smuggle in script schemes. */
@@ -373,9 +387,27 @@ function bindEach(el, scope, ctx, disposers) {
   disposers.push(() => { for (const row of rows.values()) { row.stops.forEach((s) => s()); row.node.remove(); } rows.clear(); });
 }
 
+/** What a form's call returns when the form is invalid and nothing was sent. */
+const INVALID = { invalid: true, errors: {} };
+
 function bindAction(el, eventName, opRef, scope, ctx, disposers) {
   const { client, lookup, host } = ctx;
   let busy = false;
+  // A <form xo-submit> whose operation has a request schema gets the form model (ADR-0009): prefill, typed values, validation, dirty tracking.
+  // It is attached now, not at the first click, so fields are filled and completed before anyone touches the form.
+  let engine = null;
+  if (eventName === 'submit' && formEngine) {
+    let op0 = null;
+    try { op0 = client.op(opRef); } catch { /* reported when the form is submitted */ }
+    if (op0?.bodySchema) {
+      const bodyPath = el.getAttribute('xo-body');
+      // An edit form (the operation has path parameters, or xo-body names a record) starts from that record; a create form starts empty.
+      const edits = !!bodyPath || /\{[^}]+\}/.test(op0.path);
+      const record = edits ? () => { const plain = client.store.denormalize(lookup(scope, bodyPath ?? '.')); return plain && typeof plain === 'object' ? plain : undefined; } : undefined;
+      engine = formEngine.attach(el, { schema: op0.bodySchema, record, hadRecord: edits });
+      disposers.push(() => engine.detach());
+    }
+  }
   const handler = async (event) => {
     if (eventName === 'submit') event.preventDefault();
     if (busy) return;
@@ -384,13 +416,18 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
     try {
       const ref = opRef;
       const op = client.op(ref);
-      clearFieldErrors(el);
+      if (!engine) clearFieldErrors(el);
       /** One call, with the params and body taken from `sc` (the button's scope, or one selected row). */
       const callOnce = async (sc) => {
         const params = {};
         for (const m of op.path.matchAll(/\{([^}]+)\}/g)) params[m[1]] = lookup(sc, m[1]);
         for (const q of op.query ?? []) { const v = lookup(sc, q); if (v !== undefined) params[q] = v; }
         let body;
+        if (engine && op.body === true) { // the model validates, normalises and sends; an invalid form sends nothing
+          const out = await engine.submit((b) => client.mutate(ref, params, b, { optimistic: optimisticOf(el, sc, ctx) }));
+          if (!out.ok) { INVALID.errors = out.errors; return INVALID; }
+          return out.result;
+        }
         if (eventName === 'submit' && op.body === true) body = formBody(/** @type {HTMLFormElement} */ (el), op);
         else if (el.hasAttribute('xo-body')) body = client.store.denormalize(lookup(sc, el.getAttribute('xo-body')));
         if (op.stream) {
@@ -408,12 +445,14 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       const results = [];
       for (const sc of targets) results.push(await callOnce(sc));
       if (bulk) host.clearSelection();
+      if (results[0] === INVALID) { host.emit('xo-invalid', { errors: INVALID.errors }); return; } // nothing was sent; the form showed why
       const result = bulk ? results : results[0];
-      if (eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
+      if (!engine && eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
       host.emit('xo-done', result);
     } catch (e) {
       // API failures are expected flows (events + global onError). Anything else is a bug in the screen.
       if (!(e instanceof XoongError)) console.error(e);
+      else if (engine) { if (!Object.keys(e.fields ?? {}).length) showFieldErrors(el, {}, e.detail ?? e.message); } // field messages are on the paths; others as a summary
       else showFieldErrors(el, e.fields, e.detail ?? e.message);
       host.emit('xo-error', e);
     } finally {
@@ -423,6 +462,7 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
   };
   el.addEventListener(eventName, handler);
   disposers.push(() => el.removeEventListener(eventName, handler));
+  return engine;
 }
 
 /** The JSON body of a form. With `bodyFields` from the API document, values get their real types. */

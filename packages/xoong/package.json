@@ -42,6 +42,7 @@
     "@xoong/cli": "*",
     "@xoong/core": "*",
     "@xoong/data": "*",
+    "@xoong/forms": "*",
     "@xoong/ui": "*"
   }
 }

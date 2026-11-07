@@ -65,7 +65,7 @@ it('--link points the project (and the packages\' own cross references) at a xoo
   expect(pkg.dependencies['@xoong/data']).toBe('file:/opt/xoong/packages/data');
   expect(pkg.devDependencies['@xoong/cli']).toBe('file:/opt/xoong/packages/cli');
   expect(pkg.overrides['@xoong/core']).toBe('file:/opt/xoong/packages/core');
-  expect(Object.keys(pkg.overrides).sort()).toEqual(['@xoong/cli', '@xoong/core', '@xoong/data', '@xoong/server', '@xoong/test', '@xoong/ui']);
+  expect(Object.keys(pkg.overrides).sort()).toEqual(['@xoong/cli', '@xoong/core', '@xoong/data', '@xoong/forms', '@xoong/server', '@xoong/test', '@xoong/ui']);
   const plain = await scaffold(join(dir, 'plain'), { spec: fixture });
   expect(JSON.parse(await readFile(join(plain.dir, 'package.json'), 'utf8')).overrides).toBeUndefined();
 });

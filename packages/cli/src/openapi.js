@@ -1,5 +1,6 @@
 // @ts-check
 import { swagger2ToOpenApi3 } from './swagger2.js';
+import { bodySchemaOf } from './body-schema.js';
 /**
  * OpenAPI 3.x (JSON) -> xoong tables.
  * Produces:
@@ -48,7 +49,7 @@ function collectRefs(doc) {
 
 /**
  * @param {any} doc
- * @param {{ hints?: { idNames?: string[], schemas?: Record<string, { id?: string, entity?: string }>, unwrap?: string, idempotencyKeys?: Record<string, string> } }} [options]
+ * @param {{ hints?: { idNames?: string[], schemas?: Record<string, { id?: string, entity?: string }>, unwrap?: string, idempotencyKeys?: Record<string, string>, fields?: Record<string, any> } }} [options]
  *   `hints` lets the frontend declare identity without editing the backend's document:
  *   { "idNames": ["id", "gid"],                     // any schema with one of these properties is an entity
  *     "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } },
@@ -299,6 +300,7 @@ export function analyze(doc, { hints } = {}) {
         ...(stream ? { stream: true } : {}),
         ...(bodyFieldsOf(bodySchema, schemas) ? { bodyFields: bodyFieldsOf(bodySchema, schemas) } : {}),
         ...(bodySkippedOf(bodySchema, schemas) ? { bodySkipped: bodySkippedOf(bodySchema, schemas) } : {}),
+        ...(bodySchema && !multipart && bodySchemaOf(bodySchema, schemas, hints) ? { bodySchema: bodySchemaOf(bodySchema, schemas, hints) } : {}),
         ...(response ? { response } : {}),
       };
       operations[id]._types = { params, okSchema, bodySchema };

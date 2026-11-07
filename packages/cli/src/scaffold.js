@@ -96,7 +96,7 @@ export async function scaffold(dir, { spec, title, link }) {
       dependencies: { '@xoong/core': pkg('core'), '@xoong/data': pkg('data'), '@xoong/ui': pkg('ui') },
       devDependencies: { '@xoong/cli': pkg('cli'), '@xoong/test': pkg('test'), vitest: '*', 'happy-dom': '*' },
       // The packages depend on each other by name: point those names at the checkout too.
-      ...(link ? { overrides: Object.fromEntries(['core', 'data', 'ui', 'cli', 'test', 'server'].map((n) => [`@xoong/${n}`, pkg(n)])) } : {}),
+      ...(link ? { overrides: Object.fromEntries(['core', 'data', 'forms', 'ui', 'cli', 'test', 'server'].map((n) => [`@xoong/${n}`, pkg(n)])) } : {}),
     }, null, 2) + '\n',
     'xoong.config.json': JSON.stringify({ port: 5173, proxy: { '/api': 'http://localhost:8080' } }, null, 2) + '\n',
     'xoong.hints.json': JSON.stringify({ idNames: ['id'] }, null, 2) + '\n',
