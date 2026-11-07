@@ -59,7 +59,7 @@ function fields(node, path, depth, skip = []) {
 }
 
 /** Buttons of an array row. */
-const rowButtons = (path) => `<span class="xo-row-actions"><button type="button" xo-move="${path}:up" aria-label="Move up">↑</button><button type="button" xo-move="${path}:down" aria-label="Move down">↓</button><button type="button" xo-remove="${path}" aria-label="Remove">×</button></span>`;
+const rowButtons = (path) => `<span class="xo-row-actions"><button type="button" xo-move="${path}:up" aria-label="Move up" xo-t="aria-label:xoong.form.moveUp">↑</button><button type="button" xo-move="${path}:down" aria-label="Move down" xo-t="aria-label:xoong.form.moveDown">↓</button><button type="button" xo-remove="${path}" aria-label="Remove" xo-t="aria-label:xoong.form.remove">×</button></span>`;
 
 function field(node, path, name, depth) {
   const text = label(name);
@@ -90,7 +90,7 @@ function array(node, path, text, depth) {
     adds = Object.keys(item.map).map((v) => `<button type="button" xo-add="${esc(path)}" xo-with="${esc(item.key)}=${esc(v)}">Add ${esc(label(item.map[v].title ?? v))}</button>`).join('');
   } else {
     row = PRIMITIVE.has(item.t) ? control({ ...item, title: item.title ?? `${text} item` }, rowPath, text) : item.t === 'object' ? fields(item, rowPath, depth + 1) : '';
-    adds = `<button type="button" xo-add="${esc(path)}">Add</button>`;
+    adds = `<button type="button" xo-add="${esc(path)}" xo-t="xoong.form.add">Add</button>`;
   }
   return `<fieldset class="xo-array"><legend>${esc(node.title ?? text)}</legend>${node.description ? `<small class="xo-hint">${esc(node.description)}</small>` : ''}`
     + `<div class="xo-row" xo-each="${esc(path)}">${row}${rowButtons(rowPath)}</div><div class="xo-array-add">${adds}</div></fieldset>`;
@@ -103,7 +103,8 @@ defineTemplate('xo-form', (el, { client }) => {
   form.setAttribute('xo-submit', ref);
   form.className = 'xo-form';
   if (op.bodySchema) { // the schema-driven generator: nested objects, arrays, unions, hints
-    form.innerHTML = `${fields(op.bodySchema, '', 0)}<button>${esc(el.getAttribute('submit') || 'Save')}</button>`;
+    const submit = el.getAttribute('submit');
+    form.innerHTML = fields(op.bodySchema, '', 0) + (submit ? `<button>${esc(submit)}</button>` : '<button xo-t="xoong.form.save">Save</button>');
     return form;
   }
   const flat = op.bodyFields ?? [];

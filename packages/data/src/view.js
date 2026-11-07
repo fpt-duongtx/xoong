@@ -329,6 +329,13 @@ function bindNode(node, scope, ctx, disposers) {
   if (el.hasAttribute('xo-each')) return bindEach(el, scope, ctx, disposers);
   if (el.hasAttribute('xo-if')) return bindIf(el, scope, ctx, disposers);
 
+  // xo-t: translate this element; its `{placeholders}` come from the scope. Without @xoong/i18n the text is bound as written.
+  let translated = false;
+  if (el.hasAttribute('xo-t') && translator) {
+    const t = translator;
+    translated = t.hasText(el.getAttribute('xo-t') ?? ''); // only a translated *text* replaces the children; attribute-only translations leave them bound
+    disposers.push(effect(() => t.apply(el, (name) => ctx.lookup(scope, name))));
+  }
   let childScope = scope;
   for (const attr of [...el.attributes]) {
     if (attr.name === 'xo-click' || attr.name === 'xo-submit') {
@@ -348,7 +355,7 @@ function bindNode(node, scope, ctx, disposers) {
       bindParam(el, attr.value, scope, ctx, disposers);
       continue;
     }
-    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected' || attr.name === 'xo-with' || attr.name === 'xo-confirm' || attr.name === 'xo-notice') continue;
+    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected' || attr.name === 'xo-with' || attr.name === 'xo-confirm' || attr.name === 'xo-notice' || attr.name === 'xo-t') continue;
     const parts = parseInterpolation(attr.value);
     if (parts) {
       const name = attr.name;
@@ -364,7 +371,7 @@ function bindNode(node, scope, ctx, disposers) {
       }));
     }
   }
-  for (const child of [...el.childNodes]) bindNode(child, childScope, ctx, disposers);
+  if (!translated) for (const child of [...el.childNodes]) bindNode(child, childScope, ctx, disposers); // a translated element's text is the message, not markup
 }
 
 /** Attributes whose value is a URL: data must not smuggle in script schemes. */
@@ -448,6 +455,11 @@ function bindEach(el, scope, ctx, disposers) {
   }));
   disposers.push(() => { for (const row of rows.values()) { row.stops.forEach((s) => s()); row.node.remove(); } rows.clear(); });
 }
+
+/** `@xoong/i18n` registers how `xo-t` elements are translated (the view supplies the scope for `{placeholders}`). */
+let translator = /** @type {{ apply: (el: Element, get: (name: string) => any) => void, hasText: (spec: string) => boolean } | null} */ (null);
+/** @param {{ apply: (el: Element, get: (name: string) => any) => void, hasText: (spec: string) => boolean }} t */
+export function setTranslator(t) { translator = t; }
 
 /** Ask before a destructive action (`xo-confirm="Delete {name}?"`). The default is the browser's confirm(); @xoong/ui replaces it with a native <dialog>. */
 let confirmFn = /** @type {(message: string) => boolean | Promise<boolean>} */ ((message) => (typeof globalThis.confirm === 'function' ? globalThis.confirm(message) : true));

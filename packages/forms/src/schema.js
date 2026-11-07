@@ -12,6 +12,8 @@
  *   { t: 'any' }                                              anything we cannot describe: accepted as it is
  */
 
+import { text } from '@xoong/core';
+
 /** @typedef {{ t: string, [k: string]: any }} Node */
 
 // ---- paths ----------------------------------------------------------------------------------------------------------------
@@ -111,22 +113,29 @@ export function defaults(node) {
 
 /** The default (English) messages. Replace any of them, for any language, with `setMessages({ required: () => '...' })`. */
 const catalogue = {
-  required: () => 'Please fill in this field.',
-  type: ({ type }) => (type === 'integer' ? 'Enter a whole number.' : type === 'number' ? 'Enter a number.' : 'This value is not valid.'),
-  minimum: ({ min }) => `Must be at least ${min}.`,
-  maximum: ({ max }) => `Must be at most ${max}.`,
-  exclusiveMinimum: ({ min }) => `Must be greater than ${min}.`,
-  exclusiveMaximum: ({ max }) => `Must be less than ${max}.`,
-  multipleOf: ({ step }) => `Must be a multiple of ${step}.`,
-  minLength: ({ min }) => `Use at least ${min} characters.`,
-  maxLength: ({ max }) => `Use at most ${max} characters.`,
-  pattern: () => 'This does not match the expected format.',
-  format: ({ format }) => ({ email: 'Enter a valid email address.', uri: 'Enter a valid URL.', url: 'Enter a valid URL.', uuid: 'Enter a valid ID.', date: 'Enter a valid date.', 'date-time': 'Enter a valid date and time.' }[format] ?? 'This value is not valid.'),
-  enum: () => 'Choose one of the listed values.',
-  minItems: ({ min }) => `Add at least ${min}.`,
-  maxItems: ({ max }) => `Add at most ${max}.`,
-  uniqueItems: () => 'Items must be different from each other.',
-  variant: () => 'Choose a type.',
+  required: () => text('xoong.validation.required', 'Please fill in this field.'),
+  type: ({ type }) => (type === 'integer' ? text('xoong.validation.type.integer', 'Enter a whole number.') : type === 'number' ? text('xoong.validation.type.number', 'Enter a number.') : text('xoong.validation.type.other', 'This value is not valid.')),
+  minimum: ({ min }) => text('xoong.validation.minimum', 'Must be at least {min}.', { min }),
+  maximum: ({ max }) => text('xoong.validation.maximum', 'Must be at most {max}.', { max }),
+  exclusiveMinimum: ({ min }) => text('xoong.validation.exclusiveMinimum', 'Must be greater than {min}.', { min }),
+  exclusiveMaximum: ({ max }) => text('xoong.validation.exclusiveMaximum', 'Must be less than {max}.', { max }),
+  multipleOf: ({ step }) => text('xoong.validation.multipleOf', 'Must be a multiple of {step}.', { step }),
+  minLength: ({ min }) => text('xoong.validation.minLength', 'Use at least {min, plural, one {# character} other {# characters}}.', { min }),
+  maxLength: ({ max }) => text('xoong.validation.maxLength', 'Use at most {max, plural, one {# character} other {# characters}}.', { max }),
+  pattern: () => text('xoong.validation.pattern', 'This does not match the expected format.'),
+  format: ({ format }) => ({
+    email: text('xoong.validation.format.email', 'Enter a valid email address.'),
+    uri: text('xoong.validation.format.uri', 'Enter a valid URL.'),
+    url: text('xoong.validation.format.uri', 'Enter a valid URL.'),
+    uuid: text('xoong.validation.format.uuid', 'Enter a valid ID.'),
+    date: text('xoong.validation.format.date', 'Enter a valid date.'),
+    'date-time': text('xoong.validation.format.dateTime', 'Enter a valid date and time.'),
+  }[format] ?? text('xoong.validation.type.other', 'This value is not valid.')),
+  enum: () => text('xoong.validation.enum', 'Choose one of the listed values.'),
+  minItems: ({ min }) => text('xoong.validation.minItems', 'Add at least {min}.', { min }),
+  maxItems: ({ max }) => text('xoong.validation.maxItems', 'Add at most {max}.', { max }),
+  uniqueItems: () => text('xoong.validation.uniqueItems', 'Items must be different from each other.'),
+  variant: () => text('xoong.validation.variant', 'Choose a type.'),
 };
 /** @type {Record<string, (params: any) => string>} */
 let messages = { ...catalogue };

@@ -15,6 +15,8 @@ const HELP = `xoong <command>
   check <file|folder>... [--operations .xoong/operations.json] [--format text|json]   check HTML screens
   render <page.html> --api <url> [--url /users/7] [--operations .xoong/operations.json] [--out file]   prerender a page (a route, with --url) with its data (needs @xoong/ssr)
   build [--root .] [--out dist] [--base /admin] [--include path]...   static output for strict-CSP hosting (no import map, no inline code)
+  i18n extract <html|js files or folders>... [--out catalogs/en.json]   list xo-t keys with their source text
+  i18n check <catalog.json> --source <en.json>   missing keys, wrong placeholders, invalid messages
   dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080] [--spa]   serve the app (static, proxy, .ts)
 `;
 
@@ -56,6 +58,21 @@ try {
     const html = await renderPage(await readFile(rest[0], 'utf8'), { operations, baseUrl: flag('--api'), ...(at ? { url: new URL(at, 'http://xoong.local').href } : {}) });
     const out = flag('--out');
     if (out) { await mkdir(dirname(out), { recursive: true }); await writeFile(out, html); console.log(`rendered ${rest[0]} -> ${out}`); } else process.stdout.write(html);
+  } else if (cmd === 'i18n' && rest[0] === 'extract' && rest[1]) {
+    const { extractFrom, toCatalog } = await import('./i18n-extract.js');
+    const out = flag('--out');
+    const paths = rest.slice(1).filter((v, i, a) => !v.startsWith('--') && a[i - 1] !== '--out');
+    const { catalog, problems } = toCatalog(await extractFrom(paths));
+    const json = JSON.stringify(catalog, null, 2) + '\n';
+    if (out) { await mkdir(dirname(out), { recursive: true }); await writeFile(out, json); console.log(`${Object.keys(catalog).length} messages -> ${out}`); } else process.stdout.write(json);
+    for (const p of problems) console.error(`error: ${p}`);
+    process.exitCode = problems.length ? 1 : 0;
+  } else if (cmd === 'i18n' && rest[0] === 'check' && rest[1] && flag('--source')) {
+    const { checkCatalog } = await import('./i18n-extract.js');
+    const problems = checkCatalog(JSON.parse(await readFile(flag('--source'), 'utf8')), JSON.parse(await readFile(rest[1], 'utf8')), rest[1]);
+    for (const p of problems) console.error(p);
+    console.log(problems.length ? `${problems.length} problems` : 'ok');
+    process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'build') {
     const { build, CSP } = await import('./build.js');
     const include = rest.flatMap((v, i) => (rest[i - 1] === '--include' ? [v] : []));

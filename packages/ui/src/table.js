@@ -51,25 +51,25 @@ defineTemplate('xo-table', (el, { host }) => {
   const sizes = (el.getAttribute('page-sizes') || '').split(',').map((s) => s.trim()).filter(Boolean);
   if (pageSize && host.params.limit == null) host.params = { ...host.params, limit: pageSize };
 
-  const tickAll = selectable ? `<th scope="col"><input type="checkbox" xo-select="all:${esc(of)}" aria-label="Select all rows"></th>` : '';
-  const tickRow = selectable ? '<td><input type="checkbox" xo-select aria-label="Select row"></td>' : '';
+  const tickAll = selectable ? `<th scope="col"><input type="checkbox" xo-select="all:${esc(of)}" aria-label="Select all rows" xo-t="aria-label:xoong.table.selectAll"></th>` : '';
+  const tickRow = selectable ? '<td><input type="checkbox" xo-select aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td>' : '';
   const head = columns.map((c) => `<th scope="col">${sortable ? `<button type="button" xo-param="sort~=${esc(c.field)}">${esc(c.label)}</button>` : esc(c.label)}</th>`).join('');
   const cellText = (c) => (['date', 'datetime', 'time', 'relative'].includes(c.fmt) ? `<time datetime="{${esc(c.field)}}">{${esc(c.field)} | ${c.fmt}}</time>` : c.fmt ? `{${esc(c.field)} | ${esc(c.fmt)}}` : `{${esc(c.field)}}`);
   const cells = columns.map((c) => `<td>${cellOf.get(c.field) ?? cellText(c)}</td>`).join('');
   const box = document.createElement('div');
   box.className = 'xo-table';
   const search = filters.map((f) => `<input type="search" xo-param="${esc(f.field)}" placeholder="${esc(f.label)}" aria-label="${esc(f.label)}">`).join('');
-  const bar = bulk.length ? `<div class="xo-bulk" xo-if="$selectedCount"><span>{$selectedCount} selected</span>${bulk.join('')}</div>` : '';
+  const bar = bulk.length ? `<div class="xo-bulk" xo-if="$selectedCount"><span xo-t="xoong.table.selected">{$selectedCount} selected</span>${bulk.join('')}</div>` : '';
   box.innerHTML = `${bar}${search ? `<div class="xo-filters">${search}</div>` : ''}<table>
-  <thead><tr>${tickAll}${head}${actions ? '<th scope="col"><span class="xo-visually-hidden">Actions</span></th>' : ''}</tr></thead>
+  <thead><tr>${tickAll}${head}${actions ? '<th scope="col"><span class="xo-visually-hidden" xo-t="xoong.table.actions">Actions</span></th>' : ''}</tr></thead>
   <tbody><tr xo-each="${esc(of)}">${tickRow}${cells}${actions ?`<td class="xo-actions">${actions}</td>` : ''}</tr></tbody>
 </table>${empty ? `
 <div class="xo-empty" xo-if="!${esc(of)}"><div xo-if="!$loading">${empty}</div></div>` : ''}${pageSize ? `
-<nav class="xo-pager" aria-label="Pagination">
-  <span class="xo-range" xo-if="total">{$from}–{$to} of {total}</span>${sizes.length ? `
-  <select class="xo-page-size" xo-param="limit" aria-label="Rows per page">${sizes.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}
-  <button type="button" xo-if="$hasPrev" xo-param="offset-=${pageSize}">Previous</button>
-  <button type="button" xo-if="$hasNext" xo-param="offset+=${pageSize}">Next</button>
+<nav class="xo-pager" aria-label="Pagination" xo-t="aria-label:xoong.table.pagination">
+  <span class="xo-range" xo-if="total" xo-t="xoong.table.range">{$from}–{$to} of {total}</span>${sizes.length ? `
+  <select class="xo-page-size" xo-param="limit" aria-label="Rows per page" xo-t="aria-label:xoong.table.rowsPerPage">${sizes.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}
+  <button type="button" xo-if="$hasPrev" xo-param="offset-=${pageSize}" xo-t="xoong.table.previous">Previous</button>
+  <button type="button" xo-if="$hasNext" xo-param="offset+=${pageSize}" xo-t="xoong.table.next">Next</button>
 </nav>` : ''}`;
   return box;
 });

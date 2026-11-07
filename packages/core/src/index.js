@@ -2,3 +2,4 @@ export { signal, computed, effect, batch, untracked, disposeComputed, Signal } f
 export { html, render, TemplateResult } from './html.js';
 export { XoElement, define } from './element.js';
 export { XoControl } from './control.js';
+export { text, setTextProvider } from './text.js';

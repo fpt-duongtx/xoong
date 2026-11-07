@@ -13,7 +13,7 @@
  *   router.guard(async (to, from) => (loggedIn() ? true : '/login'));          // true | false | '/redirect'
  *   router.beforeNavigate((to, from) => !form.dirty || confirm('Leave without saving?'));   // veto leaving
  */
-import { XoElement, define } from '@xoong/core';
+import { XoElement, define, text } from '@xoong/core';
 import { setParamSource, setUrlSync, ask } from '@xoong/data/view';
 
 /** @typedef {{ path: string, params: Record<string,string>, query: URLSearchParams, url: string, route: Route | null }} Location */
@@ -133,7 +133,7 @@ class XoRouter extends XoElement {
       const dirty = this.#unsaved();
       if (!dirty.length) return true;
       const own = dirty.map((f) => f.getAttribute('xo-guard')).find((m) => m && m !== 'off');
-      return ask(own ?? 'You have unsaved changes. Leave this page?');
+      return ask(own ?? text('xoong.guard.leave', 'You have unsaved changes. Leave this page?'));
     });
     // url-params of a view: write the query string through the router, without rendering the route again
     setUrlSync({ read: () => new URLSearchParams(window.location.search), write: (params, mode) => this.#writeQuery(params, mode), subscribe: () => () => {} });

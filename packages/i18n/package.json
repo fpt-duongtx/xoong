@@ -1,0 +1,43 @@
+{
+  "name": "@xoong/i18n",
+  "version": "0.0.4",
+  "description": "xoong internationalization: ICU-subset JSON catalogs, xo-t in markup, a locale signal, Intl formats. Zero dependencies besides @xoong/core and @xoong/data.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./message": "./src/message.js",
+    "./vi": "./src/catalogs/vi.json",
+    "./builtin": "./src/builtin.js",
+    "./spec": "./src/xo-t.js"
+  },
+  "sideEffects": true,
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "i18n",
+    "l10n",
+    "icu",
+    "messageformat"
+  ],
+  "license": "MIT",
+  "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/i18n"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "dependencies": {
+    "@xoong/core": "*",
+    "@xoong/data": "*"
+  }
+}

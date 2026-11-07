@@ -9,7 +9,8 @@
       "types": "./src/index.d.ts",
       "default": "./src/index.js"
     },
-    "./view": "./src/view.js"
+    "./view": "./src/view.js",
+    "./format": "./src/format.js"
   },
   "sideEffects": false,
   "license": "MIT",

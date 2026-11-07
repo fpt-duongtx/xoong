@@ -16,19 +16,19 @@ const asDate = (v) => { const d = new Date(v); return Number.isNaN(d.getTime()) 
 
 const UNITS = /** @type {[Intl.RelativeTimeFormatUnit, number][]} */ ([['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]]);
 
-/** @type {Map<string, (value: any) => string>} */
+/** @type {Map<string, (value: any, locale?: string) => string>} */
 const formats = new Map([
-  ['date', (v) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(locale(), { dateStyle: 'medium' }).format(d) : String(v); }],
-  ['datetime', (v) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(locale(), { dateStyle: 'medium', timeStyle: 'short' }).format(d) : String(v); }],
-  ['time', (v) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(locale(), { timeStyle: 'short' }).format(d) : String(v); }],
-  ['relative', (v) => {
+  ['date', (v, loc = locale()) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(loc, { dateStyle: 'medium' }).format(d) : String(v); }],
+  ['datetime', (v, loc = locale()) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(loc, { dateStyle: 'medium', timeStyle: 'short' }).format(d) : String(v); }],
+  ['time', (v, loc = locale()) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(loc, { timeStyle: 'short' }).format(d) : String(v); }],
+  ['relative', (v, loc = locale()) => {
     const d = asDate(v);
     if (!d) return String(v);
     const seconds = Math.round((d.getTime() - Date.now()) / 1000);
     const [unit, size] = UNITS.find(([, s]) => Math.abs(seconds) >= s) ?? ['second', 1];
-    return new Intl.RelativeTimeFormat(locale(), { numeric: 'auto' }).format(Math.round(seconds / size), unit);
+    return new Intl.RelativeTimeFormat(loc, { numeric: 'auto' }).format(Math.round(seconds / size), unit);
   }],
-  ['number', (v) => (Number.isFinite(Number(v)) && v !== '' ? new Intl.NumberFormat(locale()).format(Number(v)) : String(v))],
+  ['number', (v, loc = locale()) => (Number.isFinite(Number(v)) && v !== '' ? new Intl.NumberFormat(loc).format(Number(v)) : String(v))],
   ['json', (v) => JSON.stringify(v)],
   // content in several languages: { en: 'Hello', vi: 'Xin chào' } -> the active language, then its base language, then English, then whatever is filled
   ['localized', (v) => {
@@ -40,16 +40,16 @@ const formats = new Map([
 ]);
 const warned = new Set();
 
-/** Register or replace a format. @param {string} name @param {(value: any) => string} fn */
+/** Register or replace a format. @param {string} name @param {(value: any, locale?: string) => string} fn */
 export function setFormat(name, fn) { formats.set(name, fn); }
 
 /** Format a value; nothing (null, undefined) is an empty string; an unknown format name is reported once and shows the plain value. */
-export function format(name, value) {
+export function format(name, value, loc) {
   if (value === undefined || value === null) return '';
   const fn = formats.get(name);
   if (!fn) {
     if (!warned.has(name)) { warned.add(name); console.error(`xoong: unknown format "${name}" in {path | ${name}} (known: ${[...formats.keys()].join(', ')})`); }
     return typeof value === 'object' ? JSON.stringify(value) : String(value);
   }
-  try { return fn(value); } catch { return String(value); }
+  try { return fn(value, loc); } catch { return String(value); }
 }

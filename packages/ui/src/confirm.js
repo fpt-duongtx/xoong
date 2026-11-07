@@ -8,6 +8,7 @@
  *   if (await confirm('Discard the draft?', { ok: 'Discard' })) ...
  */
 import { setConfirm } from '@xoong/data/view';
+import { text } from '@xoong/core';
 
 /** The button texts; replace them for another wording or language. */
 export const labels = { ok: 'Confirm', cancel: 'Cancel' };
@@ -27,11 +28,11 @@ export function confirm(message, options = {}) {
     text.textContent = message;
     const cancel = document.createElement('button');
     cancel.type = 'button';
-    cancel.textContent = options.cancel ?? labels.cancel;
+    cancel.textContent = options.cancel ?? (labels.cancel === 'Cancel' ? text('xoong.confirm.cancel', 'Cancel') : labels.cancel);
     const ok = document.createElement('button');
     ok.type = 'button';
     ok.className = 'xo-confirm-ok';
-    ok.textContent = options.ok ?? labels.ok;
+    ok.textContent = options.ok ?? (labels.ok === 'Confirm' ? text('xoong.confirm.ok', 'Confirm') : labels.ok);
     const row = document.createElement('div');
     row.className = 'xo-confirm-actions';
     row.append(cancel, ok);

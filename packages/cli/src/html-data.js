@@ -14,6 +14,7 @@ export const ATTRIBUTE_DOCS = {
   'xo-submit': 'On a <form>: send the form fields as the request body of the operation. The form is reset on success unless xo-keep is present. Field errors from the server appear beside the inputs.',
   'xo-body': 'With xo-click: take the request body from the item at this path.',
   'xo-keep': 'With xo-submit: keep the field values after a successful send.',
+  'xo-t': 'Translate this element with @xoong/i18n: `xo-t="key"` for its text, `xo-t="attr:key; attr2:key2"` for attributes. The text written in the HTML is the default. `{placeholders}` come from the enclosing xo-view.',
   'xo-add': 'In a form: append an item to the array at this path (`blocks`); `xo-with="type=image"` gives a union item its tag.',
   'xo-remove': 'In a form row: remove the array item at this path (`blocks[{$index}]`).',
   'xo-move': 'In a form row: move the array item at this path, `blocks[{$index}]:up` or `:down`.',

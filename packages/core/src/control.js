@@ -1,6 +1,7 @@
 // @ts-check
 import { signal, batch } from './signals.js';
 import { XoElement } from './element.js';
+import { text } from './text.js';
 
 /**
  * Base class for custom form controls (rich text, combobox, tag input, your own image field).
@@ -110,7 +111,7 @@ export class XoControl extends XoElement {
     this.#value.value; // track
     this.#hook.value;
     if (this.#custom.value) return this.#custom.value;
-    if (this.required && this.isEmpty(this.#value.value)) return 'Please fill in this field.';
+    if (this.required && this.isEmpty(this.#value.value)) return text('xoong.validation.required', 'Please fill in this field.');
     return this.#hook.value;
   }
   /** Disabled by its own attribute or by a disabled fieldset. */

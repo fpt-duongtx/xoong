@@ -16,7 +16,7 @@ const imports = (text) => [...text.matchAll(/(?:import|export)\s[^'"]*?from\s*['
 const isBare = (s) => !s.startsWith('.') && !s.startsWith('/');
 
 /** Runtime packages ship to the browser; each may only depend on the ones listed. */
-const RUNTIME = { core: [], data: ['@xoong/core'], forms: ['@xoong/core', '@xoong/data'], ui: ['@xoong/core', '@xoong/data', '@xoong/forms'] };
+const RUNTIME = { core: [], data: ['@xoong/core'], forms: ['@xoong/core', '@xoong/data'], i18n: ['@xoong/core', '@xoong/data'], ui: ['@xoong/core', '@xoong/data', '@xoong/forms'] };
 
 describe('zero runtime dependencies (ADR-0004)', () => {
   for (const [name, allowed] of Object.entries(RUNTIME)) {
@@ -76,7 +76,7 @@ describe('size budget (gzip of the source without comments; a regression guard, 
   // growing, so the budget now measures code only. The roadmap's single-digit KB target applies to the *minified* size,
   // which still has to be measured (docs/roadmap.md, size budgets, and the benchmark issue).
   // Budgets sit about 5-10% above the measured values (core 5.0, data 14.9, forms ~6, ui ~7.7 KB); raising one needs a reason in the commit.
-  const budgetKb = { core: 5.5, data: 15.5, forms: 9.5, ui: 10 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
+  const budgetKb = { core: 5.5, data: 15.5, forms: 9.5, i18n: 5, ui: 10 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
   const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {
