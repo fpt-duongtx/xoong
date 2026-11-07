@@ -21,6 +21,7 @@ criteria pass.
 
 * Swagger 2.0: built-in basic conversion is done (`packages/cli/src/swagger2.js`); `swagger2openapi` remains the answer for exotic documents.
 * WebSocket transport, optimistic updates.
+* **Documentation site for end users** (before going public, see issue "Documentation site"): install, how it works, live demo pages. Built with xoong itself (static pages through `xoong build`, prerendered with `@xoong/ssr`), so the site is the first public proof of the framework.
 
 ## Where we are
 
