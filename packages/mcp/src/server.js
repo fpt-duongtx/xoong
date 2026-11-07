@@ -35,6 +35,7 @@ export const EXPLANATIONS = {
   XO261: 'layout="x" on a route (or layout) names a layout that is not declared in the same <xo-router>. Declare <template xo-layout="x">, or use the closest name the message gives.',
   XO262: 'A layout template needs one element with xo-outlet where the route content is shown, for example <main xo-outlet>.',
   XO263: 'p-x=":name" reads a route parameter: it only works inside a <template xo-route="..."> whose path contains :name. Fix the name, or use a fixed value or p-x="?query".',
+  XO255: '<xo-form> only generates simple fields. The operation has required nested objects, arrays or unions, so the generated form can never satisfy the server. Write the <form xo-submit> by hand until nested form support exists.',
   XO251: '<xo-table> must be inside an <xo-view get="...">, which supplies its data.',
   XO252: '<xo-form op> found no simple request fields to generate. Write the <form xo-submit> by hand.',
 };

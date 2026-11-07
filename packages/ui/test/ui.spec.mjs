@@ -246,3 +246,15 @@ describe('<xo-dialog>', () => {
     expect(dialog.hasAttribute('open')).toBe(false);
   });
 });
+
+describe('<xo-form> with fields it cannot generate', () => {
+  it('warns on the console when a required field is nested or an array', async () => {
+    const t = { ...table, operations: { ...table.operations, createUser: { ...table.operations.createUser, bodySkipped: [{ name: 'title', type: 'object', required: true }, { name: 'tags', type: 'array' }] } } };
+    const seen = [];
+    const original = console.warn;
+    console.warn = (...a) => seen.push(a.join(' '));
+    try { screen = await mount('<xo-view><xo-form op="POST /users"></xo-form></xo-view>', { api: mockApi(t) }); } finally { console.warn = original; }
+    expect(seen.join('\n')).toMatch(/cannot generate the required field\(s\) title \(object\)/);
+    expect(seen.join('\n')).not.toMatch(/tags/); // optional: no noise
+  });
+});

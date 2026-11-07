@@ -298,6 +298,7 @@ export function analyze(doc, { hints } = {}) {
         ...(unwrap ? { unwrap } : {}),
         ...(stream ? { stream: true } : {}),
         ...(bodyFieldsOf(bodySchema, schemas) ? { bodyFields: bodyFieldsOf(bodySchema, schemas) } : {}),
+        ...(bodySkippedOf(bodySchema, schemas) ? { bodySkipped: bodySkippedOf(bodySchema, schemas) } : {}),
         ...(response ? { response } : {}),
       };
       operations[id]._types = { params, okSchema, bodySchema };
@@ -335,6 +336,23 @@ function bodyFieldsOf(schema, schemas) {
       ...(prop.maxLength ? { maxLength: prop.maxLength } : {}),
       ...(prop.title ? { title: prop.title } : {}),
     });
+  }
+  return out.length ? out : undefined;
+}
+/**
+ * Request body properties that `bodyFieldsOf` leaves out (nested objects, arrays, unions), so tools can warn when a *required*
+ * one is missing from a generated form: that form can never succeed.
+ * @returns {{ name: string, type: string, required?: true }[] | undefined}
+ */
+function bodySkippedOf(schema, schemas) {
+  const root = schema?.$ref ? schemas[refName(schema.$ref)] : schema;
+  if (!root || root.type !== 'object' && !root.properties && !root.allOf) return undefined;
+  const required = new Set([...(root.required ?? []), ...(root.allOf ?? []).flatMap((p) => (p.$ref ? schemas[refName(p.$ref)] : p)?.required ?? [])]);
+  const out = [];
+  for (const [name, raw] of Object.entries(collectProps(root, schemas))) {
+    const prop = raw?.$ref ? schemas[refName(raw.$ref)] : raw;
+    if (!prop || prop.readOnly || ['string', 'integer', 'number', 'boolean'].includes(prop.type)) continue;
+    out.push({ name, type: prop.type ?? (prop.oneOf || prop.anyOf ? 'union' : 'object'), ...(required.has(name) ? { required: true } : {}) });
   }
   return out.length ? out : undefined;
 }

@@ -56,16 +56,27 @@
 }
 
 @layer xoong.components {
-  /* Admin layout: <body class="xo-admin"> with <header>, <nav> and <main> as direct children. */
-  .xo-admin { display: grid; min-height: 100vh; grid-template: "header header" auto "nav main" 1fr / 14rem 1fr; }
-  .xo-admin > header { grid-area: header; padding: var(--xo-space-2) var(--xo-space-4); background: var(--xo-color-surface); border-bottom: 1px solid var(--xo-color-border); }
-  .xo-admin > nav { grid-area: nav; padding: var(--xo-space-3); background: var(--xo-color-surface); border-right: 1px solid var(--xo-color-border); }
-  .xo-admin > nav :where(a) { display: block; padding: var(--xo-space-1) var(--xo-space-2); border-radius: var(--xo-radius); text-decoration: none; color: inherit; }
-  .xo-admin > nav :where(a[aria-current="page"]) { background: var(--xo-color-bg); font-weight: 600; }
-  .xo-admin > main { grid-area: main; padding: var(--xo-space-4); min-width: 0; }
+  /*
+   * Admin shell: put class="xo-admin" on <body> (or on <xo-router> itself) and give the layout a <header>, a <nav> and a <main xo-outlet>.
+   * Both the plain page and the router form work:
+   *
+   *   <body class="xo-admin">                                  <body>
+   *     <header>..</header><nav>..</nav><main>..</main>          <xo-router class="xo-admin">
+   *   </body>                                                      <template xo-layout="shell"><header>..</header><nav>..</nav><main xo-outlet></main></template> ...
+   *
+   * The router's wrapper elements (<xo-router>, .xo-router-root, .xo-layout) do not generate boxes (display: contents), so the layout's
+   * header, nav and main are grid items of the shell. Nested layouts (a <main> inside the outlet) are not touched by these rules.
+   */
+  xo-router, .xo-router-root, .xo-layout { display: contents; }
+  .xo-admin, xo-router.xo-admin { display: grid; min-height: 100vh; grid-template: "header header" auto "nav main" 1fr / 14rem 1fr; }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > header { grid-area: header; padding: var(--xo-space-2) var(--xo-space-4); background: var(--xo-color-surface); border-bottom: 1px solid var(--xo-color-border); }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav { grid-area: nav; padding: var(--xo-space-3); background: var(--xo-color-surface); border-right: 1px solid var(--xo-color-border); }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav :where(a) { display: block; padding: var(--xo-space-1) var(--xo-space-2); border-radius: var(--xo-radius); text-decoration: none; color: inherit; }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav :where(a[aria-current="page"]) { background: var(--xo-color-bg); font-weight: 600; }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > main { grid-area: main; padding: var(--xo-space-4); min-width: 0; }
   @media (max-width: 40rem) {
-    .xo-admin { grid-template: "header" auto "nav" auto "main" 1fr / 1fr; }
-    .xo-admin > nav { border-right: 0; border-bottom: 1px solid var(--xo-color-border); }
+    .xo-admin, xo-router.xo-admin { grid-template: "header" auto "nav" auto "main" 1fr / 1fr; }
+    :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav { border-right: 0; border-bottom: 1px solid var(--xo-color-border); }
   }
 
   .xo-table { overflow-x: auto; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }

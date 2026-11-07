@@ -13,6 +13,7 @@ export function configure(options) {
   stream = null;
   current = createClient(options);
   setStreamUrl(options.streamUrl);
+  warnedNoStream = false;
   return current;
 }
 
@@ -26,6 +27,7 @@ let streamUrl = null;
 /** @type {{ close(): void } | null} */
 let stream = null;
 let streamUsers = 0;
+let warnedNoStream = false;
 
 /** Set the SSE endpoint used by `live` views. Called by configure(). */
 export function setStreamUrl(url) { streamUrl = url ?? null; }
@@ -36,7 +38,7 @@ export function setStreamUrl(url) { streamUrl = url ?? null; }
  */
 export function acquireStream() {
   streamUsers++;
-  if (!streamUrl) console.warn('xoong: <xo-view live> needs `streamUrl` in configure({ ... }); live updates are disabled');
+  if (!streamUrl && !warnedNoStream) { warnedNoStream = true; console.warn('xoong: <xo-view live> needs `streamUrl` in configure({ ... }); live updates are disabled'); } // once, not once per view
   if (!stream && streamUrl) {
     // Imported lazily so non-live apps never pay for it.
     import('./stream.js').then(({ connectStream }) => {

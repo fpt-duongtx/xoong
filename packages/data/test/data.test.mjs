@@ -564,3 +564,20 @@ test('optimistic updates show at once, survive success, and are undone on failur
   await g.mutate('disableUser', { id: 1 }, undefined, { optimistic: [{ $ref: 'User#99', patch: { x: 1 } }] }).catch(() => {});
   assert.equal(g.store.read('User#99'), undefined);
 });
+
+test('the "live without streamUrl" warning appears once, not once per view', async () => {
+  const { configure } = await import('../src/index.js');
+  const { acquireStream } = await import('../src/default.js');
+  const seen = [];
+  const original = console.warn;
+  console.warn = (...a) => seen.push(a.join(' '));
+  try {
+    configure({ api, fetch: fakeFetch({}) });
+    const releases = [acquireStream(), acquireStream(), acquireStream()];
+    releases.forEach((r) => r());
+    assert.equal(seen.filter((m) => /needs `streamUrl`/.test(m)).length, 1);
+    configure({ api, fetch: fakeFetch({}) }); // a new configuration may warn again
+    acquireStream()();
+    assert.equal(seen.filter((m) => /needs `streamUrl`/.test(m)).length, 2);
+  } finally { console.warn = original; }
+});

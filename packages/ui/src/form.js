@@ -19,6 +19,8 @@ defineTemplate('xo-form', (el, { client }) => {
   form.setAttribute('xo-submit', ref);
   form.className = 'xo-form';
   const fields = op.bodyFields ?? [];
+  const missing = (op.bodySkipped ?? []).filter((s) => s.required);
+  if (missing.length) console.warn(`xoong: <xo-form op="${ref}"> cannot generate the required field(s) ${missing.map((m) => `${m.name} (${m.type})`).join(', ')}: the server will refuse this form. Write those fields by hand or wait for nested form support.`);
   if (!fields.length) console.error(`xoong: <xo-form op="${ref}">: the request body has no simple fields to generate (see docs/admin.md)`);
   for (const f of fields) {
     const wrap = document.createElement('label');
