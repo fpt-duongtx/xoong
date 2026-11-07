@@ -17,13 +17,13 @@ export function connectStream({ client, url, EventSource = globalThis.EventSourc
   source.onopen = () => {
     onStatus?.('open');
     // After an interruption we may have missed events: refetch what is on screen.
-    if (reconnected) client.invalidateAll();
+    if (reconnected) { client.store.resetVersions(); client.invalidateAll(); }
   };
   source.onerror = () => { reconnected = true; onStatus?.('error'); };
   source.onmessage = (msg) => {
     let ev;
     try { ev = JSON.parse(msg.data); } catch (e) { onError?.(/** @type {Error} */ (e)); return; }
-    if (ev?.type === 'resync') client.invalidateAll();
+    if (ev?.type === 'resync') { client.store.resetVersions(); client.invalidateAll(); }
     else client.store.applyEvent(ev);
   };
   return { close() { source.close(); onStatus?.('closed'); } };

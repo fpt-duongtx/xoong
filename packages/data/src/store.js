@@ -47,12 +47,12 @@ export function createStore(entityDefs = {}) {
     defs: entityDefs,
 
     /** Insert or merge an entity record (already normalized: nested entities are refs). */
-    upsert(name, id, record) {
+    upsert(name, id, record, { replace = false } = {}) {
       const key = refKey(name, id);
       const sig = slot(key);
       const current = sig.peek();
       if (current !== undefined) {
-        const next = { ...current, ...record };
+        const next = replace ? { ...record } : { ...current, ...record };
         if (!shallowEqual(current, next)) sig.value = next;
       } else {
         batch(() => {
@@ -157,6 +157,39 @@ export function createStore(entityDefs = {}) {
       return applied;
     },
 
+    /** Forget stream versions (the server may have restarted its counters). Call after a resync or reconnect. */
+    resetVersions() { versions.clear(); },
+
+    /**
+     * Drop every entity that cannot be reached from `roots` (normalized query results), following nested refs.
+     * Readers of a dropped entity see it as deleted. Returns how many were dropped.
+     * @param {any[]} roots
+     */
+    sweep(roots) {
+      const keep = new Set();
+      const visit = (v) => {
+        if (isRef(v)) {
+          if (keep.has(v.$ref)) return;
+          keep.add(v.$ref);
+          visit(entities.get(v.$ref)?.peek());
+        } else if (Array.isArray(v)) v.forEach(visit);
+        else if (v && typeof v === 'object') Object.values(v).forEach(visit);
+      };
+      roots.forEach(visit);
+      let dropped = 0;
+      batch(() => {
+        const names = new Set();
+        for (const [key, sig] of entities) {
+          if (keep.has(key) || sig.peek() === undefined) continue;
+          const name = key.slice(0, key.indexOf('#'));
+          ids.get(name)?.delete(key.slice(name.length + 1));
+          sig.value = undefined; versions.delete(key); names.add(name); dropped++;
+        }
+        for (const name of names) bump(name);
+      });
+      return dropped;
+    },
+
     clear() {
       batch(() => {
         for (const sig of entities.values()) sig.value = undefined;
@@ -192,7 +225,7 @@ export function normalize(store, desc, value, touched) {
       const def = store.defs[desc.name];
       const id = def ? value[def.id] : undefined;
       if (id === undefined || id === null) return value; // no identity: keep inline
-      const ref = store.upsert(desc.name, id, normalizeRecord(store, desc.name, value, touched));
+      const ref = store.upsert(desc.name, id, normalizeRecord(store, desc.name, value, touched), { replace: desc.replace });
       touched?.add(ref.$ref);
       return ref;
     }

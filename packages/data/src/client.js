@@ -89,6 +89,7 @@ function buildQuery(names = [], params = {}) {
  * @property {RequestCredentials} [credentials]
  * @property {number} [staleTime]  ms a GET result stays fresh (default 30000)
  * @property {number} [gcTime]     ms an unobserved query is kept (default 300000)
+ * @property {boolean} [evictEntities] drop entities no cached query refers to when a query is collected (default true)
  * @property {number} [retry]      GET retries on network/502/503/504 (default 2)
  * @property {number} [retryDelay] base delay in ms, doubled per retry (default 300)
  * @property {Record<string,string[]>} [invalidate] extra rules: mutation operationId -> operationIds to invalidate
@@ -100,7 +101,7 @@ function buildQuery(names = [], params = {}) {
 /** @param {ClientOptions} options */
 export function createClient(options) {
   const {
-    api, baseUrl = '', headers, credentials, staleTime = 30_000, gcTime = 300_000,
+    api, baseUrl = '', headers, credentials, staleTime = 30_000, gcTime = 300_000, evictEntities = true,
     retry = 2, retryDelay = 300, invalidate: overrides = {}, onError, onUnauthorized,
   } = options;
   const doFetch = options.fetch ?? globalThis.fetch?.bind(globalThis);
@@ -191,6 +192,8 @@ export function createClient(options) {
       this.observers = 0;
       /** @type {Promise<any>|null} */ this.inflight = null;
       this.refetchAfter = false;
+      this.waiters = 0;
+      /** @type {AbortController|null} */ this.abort = null;
       this.gcTimer = undefined;
     }
     isFresh() { return !this.stale && Date.now() - this.updatedAt < staleTime; }
@@ -200,7 +203,10 @@ export function createClient(options) {
       clearTimeout(this.gcTimer);
       if (!Number.isFinite(gcTime)) return;
       this.gcTimer = setTimeout(() => {
-        if (this.observers === 0 && queries.get(this.key) === this) { queries.delete(this.key); disposeComputed(this.data); }
+        if (this.observers === 0 && queries.get(this.key) === this) {
+          queries.delete(this.key); disposeComputed(this.data);
+          if (evictEntities) store.sweep([...queries.values()].map((q) => q.root.peek())); // entities nothing on screen or in cache refers to
+        }
       }, gcTime);
       this.gcTimer.unref?.();
     }
@@ -209,7 +215,9 @@ export function createClient(options) {
     fetch() {
       if (this.inflight) return this.inflight;
       batch(() => { this.status.value = 'loading'; this.error.value = null; });
-      this.inflight = request(this.op, this.params, undefined)
+      const ctl = new AbortController();
+      this.abort = ctl;
+      this.inflight = request(this.op, this.params, undefined, ctl.signal)
         .then((json) => {
           batch(() => {
             this.root.value = normalize(store, this.op.response, json);
@@ -220,6 +228,11 @@ export function createClient(options) {
           return this.data.peek();
         })
         .catch((err) => {
+          if (ctl.signal.aborted) { // nobody wants this result any more: back to "not loaded", no error
+            batch(() => { this.status.value = this.root.peek() === undefined ? 'idle' : 'success'; });
+            this.stale = true;
+            throw err;
+          }
           const e = err instanceof XoongError ? err : new XoongError({ operation: this.op.id, cause: err, detail: String(err?.message ?? err) });
           batch(() => { this.status.value = 'error'; this.error.value = e; });
           fail(e);
@@ -240,6 +253,8 @@ export function createClient(options) {
     }
     release() {
       this.observers = Math.max(0, this.observers - 1);
+      // The view moved on (params changed or it was removed) while the request runs: cancel it, unless `load()` waits for it.
+      if (this.observers === 0 && this.waiters === 0 && this.inflight) this.abort?.abort();
       if (this.observers === 0) this.armGc();
     }
     /** Mark stale; refetch right away only if something is watching. */
@@ -268,7 +283,8 @@ export function createClient(options) {
     async load(ref, params = {}) {
       const q = client.query(ref, params);
       if (q.isFresh()) return q.data.peek();
-      return q.fetch();
+      q.waiters++;
+      try { return await q.fetch(); } finally { q.waiters--; }
     },
 
     /**

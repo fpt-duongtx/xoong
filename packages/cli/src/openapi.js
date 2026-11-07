@@ -156,7 +156,9 @@ export function analyze(doc, { hints } = {}) {
     if (!schema || depth > MAX_DEPTH) return null; // depth cap: YAML aliases can make a schema contain itself
     if (schema.$ref) {
       const name = refName(schema.$ref);
-      if (idKeys[name]) return { t: 'entity', name: entityOf[name] };
+      // `replace`: this schema is the entity's own full schema, so a response replaces the stored record (fields the
+      // server stopped sending disappear). Schemas that share an entity through hints, or are marked x-xoong-partial, merge.
+      if (idKeys[name]) return { t: 'entity', name: entityOf[name], ...(entityOf[name] === name && !schemas[name]['x-xoong-partial'] ? { replace: true } : {}) };
       if (seen.has(name)) return null;
       return describe(schemas[name], new Set(seen).add(name), depth + 1);
     }

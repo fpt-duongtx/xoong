@@ -15,14 +15,14 @@ const run = promisify(execFile);
 test('entities, descriptors and operations are derived from the document', async () => {
   const a = analyze(JSON.parse(await readFile(fixture, 'utf8')));
   assert.deepEqual(Object.keys(a.entities).sort(), ['Order', 'User']);
-  assert.deepEqual(a.entities.Order, { id: 'id', props: { customer: { t: 'entity', name: 'User' } } });
-  assert.deepEqual(a.operations.listUsers.response, { t: 'array', items: { t: 'entity', name: 'User' } });
+  assert.deepEqual(a.entities.Order, { id: 'id', props: { customer: { t: 'entity', name: 'User', replace: true } } });
+  assert.deepEqual(a.operations.listUsers.response, { t: 'array', items: { t: 'entity', name: 'User', replace: true } });
   assert.deepEqual(a.operations.listUsers.query, ['page']);
   assert.equal(a.operations.createUser.body, true);
   assert.equal(a.operations.getUser.method, 'GET');
   const generated = a.operations.getOrders; // operationId generated for GET /orders
   assert.ok(generated, 'generated operationId');
-  assert.deepEqual(generated.response, { t: 'object', props: { items: { t: 'array', items: { t: 'entity', name: 'Order' } } } });
+  assert.deepEqual(generated.response, { t: 'object', props: { items: { t: 'array', items: { t: 'entity', name: 'Order', replace: true } } } });
 });
 
 test('doctor reports actionable findings', async () => {
@@ -94,7 +94,7 @@ test('hints map several schemas to one entity without editing the document', () 
   const hints = { schemas: { SessionResponse: { entity: 'Session', id: 'session_id' }, ChatResponse: { entity: 'Session', id: 'session_id' }, TaskView: { id: 'task_id' } } };
   const a = analyze(doc, { hints });
   assert.deepEqual(Object.keys(a.entities).sort(), ['Session', 'TaskView']);
-  assert.deepEqual(a.entities.Session, { id: 'session_id', props: { tasks: { t: 'array', items: { t: 'entity', name: 'TaskView' } } } });
+  assert.deepEqual(a.entities.Session, { id: 'session_id', props: { tasks: { t: 'array', items: { t: 'entity', name: 'TaskView', replace: true } } } });
   assert.deepEqual(a.operations.getS.response, { t: 'entity', name: 'Session' });
   assert.throws(() => analyze({ ...doc }, { hints: { schemas: { Nope: { id: 'x' } } } }), /unknown schema "Nope"/);
 });
@@ -214,7 +214,7 @@ test('anyOf [X, null] is described as X; unions of several entities are reported
     } },
   });
   const a = analyze(doc);
-  assert.deepEqual(a.operations.verify.response, { t: 'object', props: { chat: { t: 'entity', name: 'Chat' } } });
+  assert.deepEqual(a.operations.verify.response, { t: 'object', props: { chat: { t: 'entity', name: 'Chat', replace: true } } });
   assert.equal(a.operations.items.response, undefined);
   assert.ok(a.problems.some((p) => p.code === 'XO160' && p.where === 'GET /items'));
 });
@@ -230,7 +230,7 @@ test('expandable fields (id string or object) describe the object', () => {
     Customer: { type: 'object', properties: { id: { type: 'string' }, object: { type: 'string', enum: ['customer'] } } },
     Charge: { type: 'object', properties: { id: { type: 'string' }, customer: { anyOf: [{ type: 'string' }, ref('Customer')] } } },
   }, ref('Charge')));
-  assert.deepEqual(a.entities.Charge.props, { customer: { t: 'entity', name: 'Customer' } });
+  assert.deepEqual(a.entities.Charge.props, { customer: { t: 'entity', name: 'Customer', replace: true } });
   assert.ok(!a.problems.some((p) => p.code === 'XO160'));
 });
 
@@ -240,12 +240,12 @@ test('unions are resolved by a discriminator (with mapping) or by an auto-detect
     Folder: { type: 'object', properties: { id: { type: 'string' }, type: { type: 'string', const: 'folder' } } },
   };
   const auto = analyze(unionDoc(members, { type: 'array', items: { oneOf: [ref('File'), ref('Folder')] } }));
-  assert.deepEqual(auto.operations.getX.response, { t: 'array', items: { t: 'union', key: 'type', map: { file: { t: 'entity', name: 'File' }, folder: { t: 'entity', name: 'Folder' } } } });
+  assert.deepEqual(auto.operations.getX.response, { t: 'array', items: { t: 'union', key: 'type', map: { file: { t: 'entity', name: 'File', replace: true }, folder: { t: 'entity', name: 'Folder', replace: true } } } });
   assert.ok(!auto.problems.some((p) => p.code === 'XO160'));
 
   const plain = { File: { type: 'object', properties: { id: { type: 'string' } } }, Folder: { type: 'object', properties: { id: { type: 'string' } } } };
   const mapped = analyze(unionDoc(plain, { oneOf: [ref('File'), ref('Folder')], discriminator: { propertyName: 'kind', mapping: { f: '#/components/schemas/File', d: '#/components/schemas/Folder' } } }));
-  assert.deepEqual(mapped.operations.getX.response.map, { f: { t: 'entity', name: 'File' }, d: { t: 'entity', name: 'Folder' } });
+  assert.deepEqual(mapped.operations.getX.response.map, { f: { t: 'entity', name: 'File', replace: true }, d: { t: 'entity', name: 'Folder', replace: true } });
   const implicit = analyze(unionDoc(plain, { oneOf: [ref('File'), ref('Folder')], discriminator: { propertyName: 'kind' } }));
   assert.deepEqual(Object.keys(implicit.operations.getX.response.map), ['File', 'Folder']);
 });
@@ -262,7 +262,7 @@ test('"X | deleted_X" unions (a flag fixed on one member only) resolve with a de
     customer: { type: 'object', properties: { id: { type: 'string' }, object: { enum: ['customer'] } } },
     deleted_customer: { type: 'object', properties: { id: { type: 'string' }, object: { enum: ['customer'] }, deleted: { type: 'boolean', enum: [true] } } },
   }, { anyOf: [ref('customer'), ref('deleted_customer')] }));
-  assert.deepEqual(a.operations.getX.response, { t: 'union', key: 'deleted', map: { true: { t: 'entity', name: 'deleted_customer' } }, default: { t: 'entity', name: 'customer' } });
+  assert.deepEqual(a.operations.getX.response, { t: 'union', key: 'deleted', map: { true: { t: 'entity', name: 'deleted_customer', replace: true } }, default: { t: 'entity', name: 'customer', replace: true } });
   assert.ok(!a.problems.some((p) => p.code === 'XO160'));
 });
 
@@ -337,7 +337,7 @@ test('hints: unwrap, idempotency keys; multipart and event-stream operations are
   }, components: { schemas: { Pet: { type: 'object', properties: { id: { type: 'integer' }, name: { type: 'string' } } } } } };
   const { operations, problems } = analyze(doc, { hints: { unwrap: 'data', idempotencyKeys: { chat: 'client_message_id' } } });
   assert.equal(operations.listPets.unwrap, 'data');
-  assert.deepEqual(operations.listPets.response, { t: 'array', items: { t: 'entity', name: 'Pet' } }); // the inner schema, not the envelope
+  assert.deepEqual(operations.listPets.response, { t: 'array', items: { t: 'entity', name: 'Pet', replace: true } }); // the inner schema, not the envelope
   assert.equal(operations.uploadPhoto.multipart, true);
   assert.deepEqual(operations.uploadPhoto.bodyFields, [{ name: 'file', type: 'file', required: true }, { name: 'caption', type: 'string' }]);
   assert.equal(operations.chat.stream, true);
@@ -345,4 +345,17 @@ test('hints: unwrap, idempotency keys; multipart and event-stream operations are
   assert.equal(problems.some((p) => p.code === 'XO170' || p.code === 'XO120'), false);
   const bad = analyze(doc, { hints: { idempotencyKeys: { chat: 'nope' } } });
   assert.equal(bad.problems.find((p) => p.code === 'XO170').level, 'error');
+});
+
+test('sync marks an entity\'s own schema as replace, shared and partial schemas as merge', () => {
+  const obj = (extra = {}) => ({ type: 'object', properties: { id: { type: 'integer' }, name: { type: 'string' } }, ...extra });
+  const doc = { openapi: '3.0.3', info: { title: 't', version: '1' }, paths: {
+    '/a': { get: { operationId: 'a', responses: { 200: { description: 'ok', content: { 'application/json': { schema: { $ref: '#/components/schemas/Full' } } } }, default: { description: 'e' } } } },
+    '/b': { get: { operationId: 'b', responses: { 200: { description: 'ok', content: { 'application/json': { schema: { $ref: '#/components/schemas/Summary' } } } }, default: { description: 'e' } } } },
+    '/c': { get: { operationId: 'c', responses: { 200: { description: 'ok', content: { 'application/json': { schema: { $ref: '#/components/schemas/Part' } } } }, default: { description: 'e' } } } },
+  }, components: { schemas: { Full: obj(), Summary: obj(), Part: obj({ 'x-xoong-partial': true }) } } };
+  const { operations } = analyze(doc, { hints: { schemas: { Summary: { entity: 'Full' } } } });
+  assert.deepEqual(operations.a.response, { t: 'entity', name: 'Full', replace: true });
+  assert.deepEqual(operations.b.response, { t: 'entity', name: 'Full' });
+  assert.deepEqual(operations.c.response, { t: 'entity', name: 'Part' });
 });

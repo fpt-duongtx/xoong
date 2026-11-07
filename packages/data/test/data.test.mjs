@@ -412,3 +412,70 @@ test('multipart: a FormData body is sent as it is, without a JSON content type',
   assert.equal(seen.body, form);
   assert.equal(seen.headers['content-type'], undefined);
 });
+
+test('a request nobody observes any more is cancelled; load() waiters keep theirs', async () => {
+  const signals = [];
+  const slow = (url, init) => new Promise((resolve, reject) => {
+    signals.push(init.signal);
+    init.signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })));
+    setTimeout(() => resolve(new Response(JSON.stringify([]), { status: 200 })), 60);
+  });
+  const c = createClient({ api, fetch: slow, retry: 0 });
+  const q = c.query('listUsers', { page: 1 });
+  q.retain();
+  await tick(5);
+  q.release(); // the view moved to another page
+  await tick(5);
+  assert.equal(signals[0].aborted, true);
+  assert.equal(q.status.peek(), 'idle');
+  assert.equal(q.error.peek(), null); // a cancellation is not an error
+  const kept = c.query('listUsers', { page: 2 });
+  const loading = c.load('listUsers', { page: 2 });
+  kept.retain(); kept.release();
+  await loading;
+  assert.equal(signals[1].aborted, false);
+});
+
+test('entities no cached query refers to are evicted when a query is collected', async () => {
+  const f = fakeFetch({ 'GET /users': ({ url }) => (url.searchParams.get('page') === '1' ? [{ id: 1, name: 'Ada' }] : [{ id: 2, name: 'Bob' }]) });
+  const c = createClient({ api, fetch: f, gcTime: 20 });
+  await c.load('listUsers', { page: 1 });
+  await c.load('listUsers', { page: 2 });
+  assert.equal(c.store.refs('User').length, 2);
+  const keep = c.query('listUsers', { page: 2 });
+  keep.retain(); // page 2 stays on screen; page 1 is collected
+  await tick(60);
+  assert.deepEqual(c.store.refs('User').map((r) => r.$ref), ['User#2']);
+  const off = createClient({ api, fetch: f, gcTime: 20, evictEntities: false });
+  await off.load('listUsers', { page: 1 });
+  await tick(60);
+  assert.equal(off.store.refs('User').length, 1);
+});
+
+test('stream versions are forgotten on resync, so a restarted server can start counting again', async () => {
+  const c = createClient({ api, fetch: fakeFetch({}) });
+  c.store.upsert('User', 1, { id: 1, name: 'Ada' });
+  assert.equal(c.store.applyEvent({ type: 'patch', entity: 'User', id: 1, path: '/name', value: 'A', version: 50 }), true);
+  assert.equal(c.store.applyEvent({ type: 'patch', entity: 'User', id: 1, path: '/name', value: 'B', version: 1 }), false);
+  c.store.resetVersions();
+  assert.equal(c.store.applyEvent({ type: 'patch', entity: 'User', id: 1, path: '/name', value: 'B', version: 1 }), true);
+});
+
+test('a response with the entity schema replaces the record; projections and stream upserts merge', async () => {
+  const rep = { entities: { User: { id: 'id' } }, operations: {
+    getUser: { id: 'getUser', method: 'GET', path: '/users/{id}', response: { t: 'entity', name: 'User', replace: true } },
+    listUsers: { id: 'listUsers', method: 'GET', path: '/users', response: { t: 'array', items: { t: 'entity', name: 'User' } } },
+  } };
+  let user = { id: 1, name: 'Ada', nickname: 'A' };
+  const c = createClient({ api: rep, fetch: fakeFetch({ 'GET /users/1': () => user, 'GET /users': () => [{ id: 1, name: 'Ada L' }] }) });
+  await c.load('getUser', { id: 1 });
+  assert.equal(c.store.read('User#1').nickname, 'A');
+  await c.load('listUsers'); // a projection merges: nickname survives
+  assert.deepEqual(c.store.read('User#1'), { id: 1, name: 'Ada L', nickname: 'A' });
+  user = { id: 1, name: 'Ada' }; // the server stopped sending nickname
+  c.query('getUser', { id: 1 }).invalidate();
+  await c.query('getUser', { id: 1 }).fetch();
+  assert.deepEqual(c.store.read('User#1'), { id: 1, name: 'Ada' });
+  c.store.applyEvent({ type: 'upsert', entity: 'User', id: 1, value: { id: 1, extra: true } });
+  assert.deepEqual(c.store.read('User#1'), { id: 1, name: 'Ada', extra: true });
+});
