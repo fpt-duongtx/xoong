@@ -12,15 +12,18 @@
  *   XO230 unknown xo-* attribute or element (with the closest match)
  *   XO240 button/link triggered by xo-click has no accessible name
  *   XO241 xo-click on a non-interactive element (not reachable by keyboard)
+ *   XO250 <xo-table sortable|page-size> but the view's operation lacks the query parameters (sort | limit, offset)
+ *   XO251 <xo-table> outside an <xo-view get>
+ *   XO252 <xo-form op> operation has no simple request fields to generate a form from
  */
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { parse } from 'parse5';
 import { nearest } from '@xoong/core/closest';
-import { XO_ATTRIBUTES, XO_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } from '@xoong/core/syntax';
 
-const ATTRS = new Set(XO_ATTRIBUTES);
-const TAGS = new Set(XO_ELEMENTS);
+const ATTRS = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES]);
+const TAGS = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS]);
 const INTERACTIVE = new Set(['button', 'a', 'input', 'select', 'textarea', 'summary']);
 
 /** @typedef {{ level: 'error'|'warn', code: string, file: string, line: number, column: number, message: string, fix: string }} Finding */
@@ -95,6 +98,20 @@ export function checkHtml(source, table, file = '<input>') {
             }
           }
         }
+      }
+      if (tag === 'xo-table') {
+        const op = view && attr(view, 'get') ? ops.get((v => (v.startsWith('/') ? `GET ${v}` : v.replace(/\s+/g, ' ')))(attr(view, 'get').value.trim())) : undefined;
+        if (!view || !attr(view, 'get')) report('error', 'XO251', node, undefined, '<xo-table> is not inside an <xo-view get="...">', 'Wrap it: <xo-view get="/things"><xo-table ...></xo-table></xo-view>');
+        else if (op) {
+          const need = [...(attr(node, 'sortable') ? ['sort'] : []), ...(attr(node, 'page-size') ? ['limit', 'offset'] : [])];
+          const lacking = need.filter((q) => !(op.query ?? []).includes(q));
+          if (lacking.length) report('error', 'XO250', node, attr(node, 'sortable') && lacking.includes('sort') ? 'sortable' : 'page-size', `${op.method} ${op.path} has no query parameter ${lacking.map((q) => `"${q}"`).join(', ')}, which <xo-table> needs for ${attr(node, 'sortable') ? 'sorting' : 'paging'}`, `Add ${lacking.join(', ')} to the operation's parameters, or remove ${lacking.includes('sort') ? 'sortable' : 'page-size'}`);
+        }
+      }
+      if (tag === 'xo-form') {
+        const ref = attr(node, 'op');
+        const op = ref ? lookup(node, 'op', ref.value) : undefined;
+        if (op && !(op.bodyFields ?? []).length) report('warn', 'XO252', node, 'op', `${op.method} ${op.path} has no simple request fields, so <xo-form> would be empty`, 'Write the <form xo-submit> by hand, or describe the request body as an object of strings, numbers and booleans');
       }
       for (const a of node.attrs ?? []) {
         if (a.name.startsWith('xo-') && !ATTRS.has(a.name)) {

@@ -298,3 +298,28 @@ components:
   const { text } = await doctor(spec);
   assert.match(text, /1 operations, 1 entities, 0 errors/);
 });
+
+test('sync describes the simple fields of a request body for generated forms', async () => {
+  const doc = { openapi: '3.0.3', info: { title: 't', version: '1' }, paths: { '/pets': { post: {
+    operationId: 'createPet',
+    requestBody: { content: { 'application/json': { schema: { $ref: '#/components/schemas/NewPet' } } } },
+    responses: { default: { description: 'e' } } } } },
+  components: { schemas: { NewPet: { type: 'object', required: ['name'], properties: {
+    name: { type: 'string', maxLength: 30, title: 'Pet name' },
+    age: { type: 'integer' }, vaccinated: { type: 'boolean' }, kind: { type: 'string', enum: ['cat', 'dog'] },
+    born: { type: 'string', format: 'date' }, id: { type: 'integer', readOnly: true },
+    owner: { type: 'object', properties: { x: { type: 'string' } } }, tags: { type: 'array', items: { type: 'string' } } } } } } };
+  const { operations } = analyze(doc);
+  assert.deepEqual(operations.createPet.bodyFields, [
+    { name: 'name', type: 'string', required: true, maxLength: 30, title: 'Pet name' },
+    { name: 'age', type: 'integer' }, { name: 'vaccinated', type: 'boolean' },
+    { name: 'kind', type: 'string', enum: ['cat', 'dog'] }, { name: 'born', type: 'string', format: 'date' },
+  ]); // read-only, nested objects and arrays are not form fields
+});
+
+test('operations without a plain object body have no bodyFields', () => {
+  const doc = { openapi: '3.0.3', info: { title: 't', version: '1' }, paths: { '/x': { post: {
+    operationId: 'x', requestBody: { content: { 'application/json': { schema: { type: 'array', items: { type: 'string' } } } } },
+    responses: { default: { description: 'e' } } } } } };
+  assert.equal(analyze(doc).operations.x.bodyFields, undefined);
+});

@@ -261,6 +261,7 @@ export function analyze(doc, { hints } = {}) {
         id, method: method.toUpperCase(), path,
         ...(params.some((p) => p.in === 'query') ? { query: params.filter((p) => p.in === 'query').map((p) => p.name) } : {}),
         ...(hasBody ? { body: true } : {}),
+        ...(bodyFieldsOf(o.requestBody?.content?.['application/json']?.schema, schemas) ? { bodyFields: bodyFieldsOf(o.requestBody.content['application/json'].schema, schemas) } : {}),
         ...(response ? { response } : {}),
       };
       operations[id]._types = { params, okSchema, bodySchema: o.requestBody?.content?.['application/json']?.schema };
@@ -276,6 +277,30 @@ export function analyze(doc, { hints } = {}) {
   return { operations, entities, schemas, problems };
 }
 
+/**
+ * The flat, primitive fields of a request body, for generated forms (`<xo-form>`) and typed form values.
+ * Nested objects and arrays are left out: a form for them is hand-written.
+ * @returns {{ name: string, type: string, required?: true, format?: string, enum?: any[], maxLength?: number, title?: string }[] | undefined}
+ */
+function bodyFieldsOf(schema, schemas) {
+  const root = schema?.$ref ? schemas[refName(schema.$ref)] : schema;
+  if (!root || root.type !== 'object' && !root.properties && !root.allOf) return undefined;
+  const required = new Set([...(root.required ?? []), ...(root.allOf ?? []).flatMap((p) => (p.$ref ? schemas[refName(p.$ref)] : p)?.required ?? [])]);
+  const out = [];
+  for (const [name, raw] of Object.entries(collectProps(root, schemas))) {
+    const prop = raw?.$ref ? schemas[refName(raw.$ref)] : raw;
+    if (!prop || !['string', 'integer', 'number', 'boolean'].includes(prop.type) || prop.readOnly) continue;
+    out.push({
+      name, type: prop.type,
+      ...(required.has(name) ? { required: true } : {}),
+      ...(prop.format ? { format: prop.format } : {}),
+      ...(prop.enum ? { enum: prop.enum } : {}),
+      ...(prop.maxLength ? { maxLength: prop.maxLength } : {}),
+      ...(prop.title ? { title: prop.title } : {}),
+    });
+  }
+  return out.length ? out : undefined;
+}
 function collectProps(schema, schemas, seen = new Set()) {
   if (!schema) return {};
   if (schema.$ref) {

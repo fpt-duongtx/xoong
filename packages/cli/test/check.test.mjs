@@ -105,3 +105,39 @@ describe('review fixes', () => {
     expect(c('<button xo-click="createUser"><span></span></button>')).toEqual(['XO240']);
   });
 });
+
+describe('xoong check: admin set', () => {
+  const t = { operations: {
+    listUsers: { id: 'listUsers', method: 'GET', path: '/users', query: ['sort', 'limit', 'offset'] },
+    listTags: { id: 'listTags', method: 'GET', path: '/tags', query: ['limit'] },
+    createUser: { id: 'createUser', method: 'POST', path: '/users', body: true, bodyFields: [{ name: 'name', type: 'string' }] },
+    importUsers: { id: 'importUsers', method: 'POST', path: '/users/import', body: true },
+  } };
+  const found = (html) => checkHtml(html, t).map((f) => f.code);
+
+  it('accepts a table, a form, a dialog and the new attributes', () => {
+    expect(found(`<xo-view get="/users"><xo-table columns="name" sortable page-size="10"><button xo-param="sort=name" xo-open="#d">x</button></xo-table></xo-view>
+      <xo-dialog id="d"><xo-form op="POST /users"></xo-form><button xo-close>Cancel</button></xo-dialog>`)).toEqual([]);
+  });
+
+  it('XO250: sortable or page-size needs the query parameters on the operation', () => {
+    expect(found('<xo-view get="/tags"><xo-table columns="a" sortable></xo-table></xo-view>')).toEqual(['XO250']);
+    const f = checkHtml('<xo-view get="/tags"><xo-table columns="a" page-size="5"></xo-table></xo-view>', t)[0];
+    expect(f.message).toContain('"offset"');
+    expect(found('<xo-view get="/tags"><xo-table columns="a" page-size="5"></xo-table></xo-view>')).toEqual(['XO250']);
+  });
+
+  it('XO251: a table needs an <xo-view get>', () => {
+    expect(found('<xo-table columns="a"></xo-table>')).toEqual(['XO251']);
+    expect(found('<xo-view><xo-table columns="a"></xo-table></xo-view>')).toEqual(['XO251']);
+  });
+
+  it('XO201 for an unknown form operation, XO252 when there are no simple fields', () => {
+    expect(found('<xo-form op="POST /user"></xo-form>')).toEqual(['XO201']);
+    expect(found('<xo-form op="POST /users/import"></xo-form>')).toEqual(['XO252']);
+  });
+
+  it('XO230 still catches a typo in the new names', () => {
+    expect(found('<xo-tabel></xo-tabel><button xo-opn="#d">x</button>')).toEqual(['XO230', 'XO230']);
+  });
+});
