@@ -303,15 +303,20 @@ export function createClient(options) {
     /**
      * Call a mutating operation. Upserts returned entities, then invalidates
      * affected queries (path-prefix rule + overrides from `options.invalidate`).
+     * `options.optimistic`: [{ $ref: 'User#1', patch: { status: 'disabled' } }] applies a provisional change to loaded entities
+     * until the call finishes, and undoes it if the call fails.
      */
-    async mutate(ref, params = {}, body) {
+    async mutate(ref, params = {}, body, { optimistic } = {}) {
       const o = op(ref);
       if (o.method.toUpperCase() === 'GET') throw new Error(`xoong: "${o.id}" is a GET operation; use query()/load()`);
       let json;
       mutating++;
+      // Optimistic updates: show the expected result at once; take it back if the call fails.
+      const undo = (optimistic ?? []).map((u) => store.optimistic(u.$ref, u.patch));
       try {
         json = await request(o, params, withKeys(o, body));
       } catch (err) {
+        undo.reverse().forEach((u) => u());
         const e = err instanceof XoongError ? err : new XoongError({ operation: o.id, cause: err });
         fail(e);
         throw e;

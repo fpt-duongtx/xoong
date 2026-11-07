@@ -160,3 +160,31 @@ describe('p-<name>="?query" reads the page URL', () => {
     expect(errors.join('\n')).toMatch(/id/);
   });
 });
+
+describe('xo-optimistic', () => {
+  it('shows the new value before the server answers, and takes it back on failure', async () => {
+    let release, fail = false;
+    const gate = new Promise((r) => { release = r; });
+    const api = mockApi(table, { listUsers: () => [{ id: 1, name: 'Ada' }], disableUser: async () => { await gate; return fail ? respond(500, { title: 'Boom' }) : { id: 1, name: 'Ada', status: 'disabled' }; } });
+    screen = await mount(`<xo-view get="/users"><li xo-each="."><b>{name}</b> <i>{status}</i><button xo-click="POST /users/{id}/disable" xo-optimistic="status=disabled">off</button></li></xo-view>`, { api });
+    screen.$('button').click();
+    await new Promise((r) => setTimeout(r, 10));
+    expect(screen.text('i')).toBe('disabled'); // optimistic, the request is still pending
+    fail = true;
+    release();
+    await screen.settle();
+    expect(screen.text('i')).toBe(''); // the failure took it back
+    expect(screen.errors).toHaveLength(1);
+  });
+
+  it('reports a button that is not on a stored item', async () => {
+    const seen = [];
+    const original = console.error;
+    console.error = (...a) => seen.push(a.join(' '));
+    try {
+      screen = await mount(`<xo-view p-id="1"><button xo-click="POST /users/{id}/disable" xo-optimistic="status=x">go</button></xo-view>`, { api: mockApi(table, { disableUser: () => ({ id: 1, name: 'A' }) }) });
+      await screen.click('button');
+    } finally { console.error = original; }
+    expect(seen.join('\n')).toMatch(/xo-optimistic needs a stored entity/);
+  });
+});

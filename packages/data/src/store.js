@@ -157,6 +157,28 @@ export function createStore(entityDefs = {}) {
       return applied;
     },
 
+    /**
+     * Apply a provisional change to an existing entity (an optimistic update). Returns an undo function that puts back only
+     * the fields that still hold the provisional value, so a newer change from the server or another screen is not erased.
+     * Does nothing (returns a no-op) when the entity is not loaded.
+     * @param {string} key "Name#id"
+     * @param {Record<string, any>} patch
+     */
+    optimistic(key, patch) {
+      const sig = entities.get(key);
+      const prev = sig?.peek();
+      if (prev === undefined) return () => {};
+      const next = { ...prev, ...patch };
+      if (!shallowEqual(prev, next)) sig.value = next;
+      return () => {
+        const now = sig.peek();
+        if (now === undefined) return;
+        const back = { ...now };
+        for (const k of Object.keys(patch)) if (Object.is(now[k], patch[k])) { if (k in prev) back[k] = prev[k]; else delete back[k]; }
+        if (!shallowEqual(now, back)) sig.value = back;
+      };
+    },
+
     /** Forget stream versions (the server may have restarted its counters). Call after a resync or reconnect. */
     resetVersions() { versions.clear(); },
 

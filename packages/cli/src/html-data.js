@@ -14,6 +14,7 @@ export const ATTRIBUTE_DOCS = {
   'xo-submit': 'On a <form>: send the form fields as the request body of the operation. The form is reset on success unless xo-keep is present. Field errors from the server appear beside the inputs.',
   'xo-body': 'With xo-click: take the request body from the item at this path.',
   'xo-keep': 'With xo-submit: keep the field values after a successful send.',
+  'xo-optimistic': 'On xo-click: set these fields (`field=value,field2={path}`) on the current item immediately, and undo them if the call fails.',
   'xo-param': 'On an <input> or <select>: set the view parameter of that name to its value. On other elements, on click, set a view parameter and refetch: `name=value`, `name+=n`, `name-=n`, or `name~=value` (toggle value / -value, for sorting).',
   'xo-open': 'Open the <xo-dialog> matched by this selector, for example `#add`.',
   'xo-close': 'Close the <xo-dialog> this element is in.',

@@ -50,6 +50,7 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
 - `xo-click="OP"` calls an operation; `xo-submit="OP"` on a `<form>` sends the form fields as the JSON body and
   resets the form on success (add `xo-keep` to keep values). `xo-body="path"` takes a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
+- `xo-optimistic="status=disabled"` on an xo-click button inside xo-each: show those field values on the item at once, undone if the call fails.
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles v / -v). Paging vars: `$hasPrev`, `$hasNext`.
 - Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. While a call runs the element has `aria-busy="true"`.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);

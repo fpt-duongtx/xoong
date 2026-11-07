@@ -174,6 +174,15 @@ See [test-corpus.md](test-corpus.md#unions-resolved-where-the-document-allows).
 * **Stream versions** are compared per entity and are in-memory. They are forgotten on every `resync` event and
   on every reconnect, so a restarted server can start counting from 1 again.
 
+## Optimistic updates
+
+`xo-optimistic="status=disabled"` on an `xo-click` button inside `xo-each` over entities shows those field values on the item at
+once and undoes them if the call fails (`{path}` works in values; several fields: `a=1,b={name}`). When the call succeeds the
+server's response replaces the provisional values as usual. The undo only restores fields that still hold the provisional value,
+so a newer change from the server or another screen is never erased. From JavaScript:
+`client.mutate(op, params, body, { optimistic: [{ $ref: 'User#1', patch: { status: 'disabled' } }] })`. Entities that are not loaded
+are ignored. Not covered: optimistic *creation* of new list rows.
+
 ## 12. Backend shapes handled by hints and detection
 
 Identity and unions, in addition to the table below:

@@ -535,3 +535,32 @@ test('composite ids with separators in a part do not collide', () => {
   const c = createClient({ api: { entities: { K: { id: ['a', 'b'] } }, operations: { l: { id: 'l', method: 'GET', path: '/k', response: { t: 'array', items: { t: 'entity', name: 'K' } } } } }, fetch: fakeFetch({ 'GET /k': () => [{ a: 'x/y', b: 'z' }, { a: 'x', b: 'y/z' }] }) });
   return c.load('l').then(() => assert.equal(c.store.refs('K').length, 2));
 });
+
+test('optimistic updates show at once, survive success, and are undone on failure without erasing newer changes', async () => {
+  let release;
+  const gate = new Promise((r) => { release = r; });
+  let fail = false;
+  const f = fakeFetch({
+    'GET /users': () => [{ id: 1, name: 'Ada', role: 'admin' }],
+    'POST /users/1/disable': async () => { await gate; return fail ? json(500, { title: 'Boom' }) : { id: 1, name: 'Ada', role: 'admin', status: 'disabled' }; },
+  });
+  const c = createClient({ api, fetch: f, retry: 0 });
+  await c.load('listUsers');
+  const pending = c.mutate('disableUser', { id: 1 }, undefined, { optimistic: [{ $ref: 'User#1', patch: { status: 'disabled' } }] });
+  assert.equal(c.store.read('User#1').status, 'disabled'); // before the server answered
+  release();
+  await pending;
+  assert.equal(c.store.read('User#1').status, 'disabled');
+
+  // failure: the provisional field is taken back, other fields stay, and a newer change in between is kept
+  const g = createClient({ api, fetch: fakeFetch({
+    'GET /users': () => [{ id: 1, name: 'Ada', status: 'active' }],
+    'POST /users/1/disable': async () => { g.store.applyEvent({ type: 'patch', entity: 'User', id: 1, path: '/name', value: 'Ada L' }); return json(500, { title: 'Boom' }); },
+  }), retry: 0 });
+  await g.load('listUsers');
+  await assert.rejects(() => g.mutate('disableUser', { id: 1 }, undefined, { optimistic: [{ $ref: 'User#1', patch: { status: 'disabled' } }] }));
+  assert.deepEqual(g.store.read('User#1'), { id: 1, name: 'Ada L', status: 'active' });
+  // an entity that is not loaded is ignored
+  await g.mutate('disableUser', { id: 1 }, undefined, { optimistic: [{ $ref: 'User#99', patch: { x: 1 } }] }).catch(() => {});
+  assert.equal(g.store.read('User#99'), undefined);
+});

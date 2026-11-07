@@ -5,7 +5,7 @@
  */
 
 /** Attributes understood inside <xo-view>. */
-export const XO_ATTRIBUTES = ['xo-each', 'xo-if', 'xo-click', 'xo-submit', 'xo-body', 'xo-keep', 'xo-param'];
+export const XO_ATTRIBUTES = ['xo-each', 'xo-if', 'xo-click', 'xo-submit', 'xo-body', 'xo-keep', 'xo-param', 'xo-optimistic'];
 
 /** Custom elements shipped by xoong. */
 export const XO_ELEMENTS = ['xo-view'];

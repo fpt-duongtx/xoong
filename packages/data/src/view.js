@@ -19,6 +19,7 @@
  *                     or an operationId. Params come from the current scope.
  *   xo-submit="OP"    same, on form submit; body = the form fields.
  *   xo-body="path"    (xo-click) take the request body from the scope.
+ *   xo-optimistic="f=v,g=w"  (on xo-click) set these fields on the current item right away; undone if the call fails.
  *   xo-keep           (xo-submit) keep the field values after a successful send (default: the form is reset).
  *   xo-param="name"    on an <input>/<select>: set the view param `name` to its value as it changes (empty removes it).
  *   xo-param="k=v"     on click, set a view param and refetch: `k=v`, `k+=n`, `k-=n` (never below 0),
@@ -240,7 +241,7 @@ function bindNode(node, scope, ctx, disposers) {
       bindParam(el, attr.value, scope, ctx, disposers);
       continue;
     }
-    if (attr.name === 'xo-body' || attr.name === 'xo-keep') continue;
+    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic') continue;
     const parts = parseInterpolation(attr.value);
     if (parts) {
       const name = attr.name;
@@ -358,7 +359,7 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
         const signal = host.beginStream();
         try { await host.consume(client.stream(ref, params, body, { signal })); } catch (e) { if (signal.aborted) return; throw e; } // view gone: stop quietly
         finally { if (!signal.aborted) client.invalidateAll(); } // the stream may have changed data that is on screen, even if it failed halfway
-      } else result = await client.mutate(ref, params, body);
+      } else result = await client.mutate(ref, params, body, { optimistic: optimisticOf(el, scope, ctx) });
       if (eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
       host.emit('xo-done', result);
     } catch (e) {
@@ -461,4 +462,18 @@ function bindParam(el, spec, scope, ctx, disposers) {
   };
   el.addEventListener('click', handler);
   disposers.push(() => el.removeEventListener('click', handler));
+}
+
+/** `xo-optimistic="status=disabled,note={text}"` -> [{ $ref, patch }] for the current item, or undefined. */
+function optimisticOf(el, scope, ctx) {
+  const spec = el.getAttribute('xo-optimistic');
+  if (!spec) return undefined;
+  const ref = scope.value();
+  if (!isRef(ref)) { console.error('xoong: xo-optimistic needs a stored entity as the current item (put the button inside xo-each over entities)'); return undefined; }
+  const patch = {};
+  for (const pair of spec.split(',')) {
+    const m = /^\s*([\w.-]+)\s*=\s*(.*?)\s*$/.exec(pair);
+    if (m) patch[m[1]] = evalParts(parseInterpolation(m[2]) ?? [m[2]], scope, ctx.lookup);
+  }
+  return Object.keys(patch).length ? [{ $ref: ref.$ref, patch }] : undefined;
 }
