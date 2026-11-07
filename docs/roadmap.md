@@ -21,7 +21,7 @@ criteria pass.
 
 * Swagger 2.0 input (built-in conversion). Low priority: `swagger2openapi` already works as a
   pre-step and the error message names it.
-* WebSocket transport, optimistic updates, request cancellation, entity eviction.
+* WebSocket transport, optimistic updates.
 
 ## Where we are
 

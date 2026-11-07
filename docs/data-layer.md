@@ -157,19 +157,19 @@ See [test-corpus.md](test-corpus.md#unions-resolved-where-the-document-allows).
 
 ## 11. Known limitations (0.0.x prototype)
 
-* **Merge, not replace.** Upserting an entity shallow-merges the new record over
-  the stored one, because list endpoints often return fewer fields than detail
-  endpoints. Consequence: a field the server *stops sending* (for example an
-  optional property omitted when null) is not cleared by a refetch. Planned fix:
-  replace when the response schema is the full entity schema, with an
-  `x-xoong-partial` marker for projections.
-* **No entity eviction.** Unobserved *queries* are garbage-collected after
-  `gcTime`, but entities stay in the store for the session. Planned: reference
-  counting from live queries.
-* **No request cancellation.** Requests for a view whose params changed keep
-  running; their results still land in the cache. Planned: `AbortSignal` per query.
-* **Stream versions** are compared per entity and are in-memory: if the server
-  restarts its counters, send `{ "type": "resync" }` so clients refetch.
+* **Replace or merge.** When a response uses the entity's own schema, the stored record is replaced, so a
+  field the server stops sending (an optional property omitted when null) disappears. When several schemas share
+  one entity through a hint (`"entity": "User"` on a summary schema), or a schema carries `x-xoong-partial`, the
+  record is merged field by field, because projections carry fewer fields. Stream `upsert` events always merge.
+* **Entity eviction.** When an unobserved query is collected (`gcTime`), entities that no remaining
+  cached query reaches (following nested references) are dropped; screens still reading them see them as
+  deleted. Entities returned only by a mutation are evicted the same way. Turn it off with
+  `configure({ evictEntities: false })`.
+* **Request cancellation.** When the last view observing a query goes away or changes params while the
+  request runs, the request is aborted (an `AbortSignal`) and is not an error; the query returns to
+  "not loaded". A `load()` waiting for the same query keeps it alive. Mutations are never cancelled.
+* **Stream versions** are compared per entity and are in-memory. They are forgotten on every `resync` event and
+  on every reconnect, so a restarted server can start counting from 1 again.
 
 ## 12. Backend shapes handled by hints and detection
 
