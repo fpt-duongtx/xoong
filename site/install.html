@@ -23,12 +23,12 @@
     <h1>Install</h1>
     <p class="note">xoong is not on npm yet. Each version is a GitHub Release with one tarball per package. Until it goes public the repository is private, so you need <code>gh</code> signed in to an account that can read it.</p>
     <h2>1. Download a release</h2>
-    <pre><code>gh release download v0.0.11 -R fpt-duongtx/xoong -D vendor/xoong</code></pre>
+    <pre><code>gh release download v0.0.12 -R fpt-duongtx/xoong -D vendor/xoong</code></pre>
     <h2>2. Point your <code>package.json</code> at the tarballs</h2>
     <p>Copy <code>dependencies</code> (what you import) and all <code>overrides</code> from <code>vendor/xoong/consume.json</code>, then run <code>npm install</code>.</p>
     <pre><code>{
-  "dependencies": { "xoong": "file:./vendor/xoong/xoong-0.0.11.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.11.tgz" },
-  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.11.tgz" }
+  "dependencies": { "xoong": "file:./vendor/xoong/xoong-0.0.12.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.12.tgz" },
+  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.12.tgz" }
 }</code></pre>
     <h2>3. Generate typed operations and run</h2>
     <pre><code>npx xoong sync openapi.json      # writes .xoong/operations.json and api.d.ts
