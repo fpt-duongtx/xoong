@@ -193,4 +193,23 @@ describe('a custom XoControl in a form', () => {
     host.setCustomValidity('nope'); // a validity change from outside does not make the binder write the model back either
     expect(host.value).toBe('x');
   });
+
+  it('a control the binder prefills (open, refresh, save) is pristine: its own dirty flag agrees with the form until the person edits', async () => {
+    screen = await mount('<xo-view get="getPage" p-id="3"><form xo-submit="updatePage"><xo-test-mini name="title.en"></xo-test-mini></form></xo-view>', { api: api() });
+    await settle();
+    const host = screen.$('xo-test-mini');
+    expect(host.value).toBe('Home');
+    expect(host.dirty).toBe(false); // the stored value is the baseline, not a change
+    expect(host.hasAttribute('data-dirty')).toBe(false);
+    expect(model().dirty).toBe(false);
+    await screen.click('xo-test-mini button'); // userInput('x')
+    expect(host.dirty).toBe(true);
+    expect(host.hasAttribute('data-dirty')).toBe(true);
+    expect(model().dirty).toBe(true);
+    await screen.submit('form');
+    await settle();
+    expect(model().dirty).toBe(false); // saved: the new value is the baseline
+    expect(host.dirty).toBe(false);
+    expect(host.hasAttribute('data-dirty')).toBe(false);
+  });
 });

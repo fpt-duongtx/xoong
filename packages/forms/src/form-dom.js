@@ -99,9 +99,10 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     // model -> DOM
     stops.push(effect(() => {
       const v = field.value;
+      const clean = !field.dirty; // the model has no change here: what is written is the baseline (a record on open, a refresh, a saved value)
       if (writing === el) return; // this control is where the change came from: do not rewrite what the person is typing
       const at = nodeAt(schema, parts, model.value);
-      untracked(() => write(el, v, at)); // only the model drives this effect: whatever the control reads or sets inside (its own value, its validity) must not subscribe it
+      untracked(() => { write(el, v, at); if (clean && isCustom(el)) /** @type {any} */ (el).markPristine?.(); }); // so the control's own `dirty` agrees with the form's; only the model drives this effect: whatever the control reads or sets inside (its own value, its validity) must not subscribe it
     }));
     // errors -> DOM, only once the field has been visited (or submit touched everything)
     stops.push(effect(() => { const message = field.touched ? field.error : ''; untracked(() => showError(el, message)); }));

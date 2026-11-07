@@ -5,6 +5,12 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.13 (control baseline)
+
+breaking: none.
+
+* Fixed: a custom control prefilled by the form binder (a record on open, a live refresh, a saved value) now counts the value as its baseline: `control.dirty` and `data-dirty` stay false until the person edits, in step with `$form.dirty`.
+
 ## 0.0.12 (form width token, richtext toolbar sizes)
 
 breaking: none for markup. The default `@xoong/richtext` toolbar changed (new tools and order: `undo redo style bold italic underline ul ol quote link image`); set `tools` to keep a previous set.
