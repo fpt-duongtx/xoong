@@ -59,6 +59,7 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
 @xoong/data: `configure(opts)`, `getClient()`, `derived(({ all, get }) => value)`, `createClient(opts)`, `connectStream`.
   opts: api (operations.json), baseUrl, headers (fn -> object, for auth), credentials, staleTime=30000, gcTime=300000,
   retry=2 (GET only), evictEntities=true, retryDelay=300, invalidate, onError, onUnauthorized, streamUrl, fetch.
+  With TypeScript: `createClient<Operations>(...)` (types from .xoong/api.d.ts) checks operation names, params and bodies.
   client.load(op, params) -> data | client.query(op, params) -> {data, status, error} signals | client.mutate(op, params, body)
   client.stream(op, params, body) -> async iterator of SSE events {event, data, json, id} (for POST streams such as chat)
   `derived` = computed over every loaded entity of a type (`all('Order')`); it never makes requests.

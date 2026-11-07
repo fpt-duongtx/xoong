@@ -13,6 +13,15 @@ to the zero-dependency runtime**.
   `Operations` map (`method`, `path`, `params`, `body`, `response` per `operationId`).
 * Runtime packages are plain JS with JSDoc, so editors type-check them without
   a build step.
+* `createClient<Operations>()` (**done**, `packages/data/src/index.d.ts`): `load`, `query`, `mutate` and `stream` check
+  the operation name, its parameters and its body, and return the response type. A test compiles a fixture with
+  `tsc --strict` against a client generated from `examples/admin` and requires every mistake in it to be an error.
+
+```ts
+import type { Operations } from './.xoong/api.d.ts';
+const client = createClient<Operations>({ api, baseUrl: '/api' });
+const page = await client.load('listUsers', { limit: 10 });   // page: UserPage
+```
 
 ## Plan
 
@@ -34,5 +43,5 @@ runs. This directly serves the stability goal in
 
 ## Milestone
 
-Typed client + `xoong check` land with 0.6 (see [roadmap.md](roadmap.md)); `.ts`
+The typed client is done; `xoong check` for JS/TS templates is open (0.6) (see [roadmap.md](roadmap.md)); `.ts`
 transpile in `xoong dev` is **done**.
