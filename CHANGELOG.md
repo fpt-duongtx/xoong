@@ -5,6 +5,10 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.11 (late-defined controls, reordering)
+
+breaking: none.
+
 * Array editors in forms: after Move up/down the focus stays on the moved row's button; after Remove it goes to the neighbouring row or the add button; `xo-drag="blocks[{$index}]"` on a handle drags a row onto another row of the same list (the generated form draws a handle). The `@xoong/data` size budget is raised from 15.5 to 16.5 KB for this.
 
 * Fixed: a custom control used before its element is defined (a route rendered before a lazy widget loaded). The form binder now binds it once the browser upgrades it, a `value` set before the upgrade becomes the start value instead of hiding the accessor, and `<xo-combobox>` keeps `options` and `schema` set early.
