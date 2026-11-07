@@ -5,6 +5,10 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.10 (@xoong/richtext)
+
+breaking: none. New package `@xoong/richtext` (add its tarball and override from consume.json).
+
 * New package `@xoong/richtext` (zero dependencies besides core): `<xo-richtext>`, a sanitised-HTML rich text control (accessible toolbar, bold, italic, h2, lists, quote, links limited to http, https, mailto and tel, undo and redo, sanitised paste and drop, the cancelable `xo-pick-media` hook for images) and the exported `sanitizeHtml()` for the server side. Docs: docs/richtext.md. Tested in happy-dom and in Chromium, Firefox and WebKit.
 
 ## 0.0.9 (@xoong/controls)
