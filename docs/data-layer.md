@@ -163,7 +163,7 @@ See [test-corpus.md](test-corpus.md#unions-resolved-where-the-document-allows).
   record is merged field by field, because projections carry fewer fields. Stream `upsert` events always merge.
 * **Entity eviction.** When an unobserved query is collected (`gcTime`), entities that no remaining
   cached query reaches (following nested references) are dropped; screens still reading them see them as
-  deleted. Entities returned only by a mutation are evicted the same way. Turn it off with
+  deleted. Entities that arrived only through a mutation response or a stream event are evicted the same way the next time any query is collected, so a screen should show data through a query (a created record is normally followed by a list refetch). Turn it off with
   `configure({ evictEntities: false })`.
 * **Request cancellation.** When the last view observing a query goes away or changes params while the
   request runs, the request is aborted (an `AbortSignal`) and is not an error; the query returns to
@@ -188,6 +188,8 @@ Real backends are rarely tidy. These are handled without touching the backend's 
   <form xo-submit="POST /sessions/{sid}/chat" p-sid="7"><input name="text"><button>Send</button></form>
 </xo-view>
 ```
+
+A stream is cancelled when the view is removed or the next call starts. `$stream` is copied per event, which is fine for hundreds of events, not for token-by-token output of thousands.
 
 Not covered: accumulating token deltas into one string (do it with `client.stream()` or a `derived`), upload progress.
 

@@ -113,4 +113,4 @@ the same hook; keep them plain, one way to do each thing.
 ## Not done yet
 
 Custom cells, column filters, row selection, bulk actions, inline editing, toast/notification element, form
-fields for nested objects and arrays, file inputs, tabs. They are tracked as issues for milestone 0.5.
+fields for nested objects and arrays, tabs. They are tracked as issues for milestone 0.5.
