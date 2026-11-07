@@ -76,7 +76,8 @@ export class XoControl extends XoElement {
   serialize(v) {
     if (v == null || v === '') return v === '' ? '' : null;
     if (typeof FormData !== 'undefined' && v instanceof FormData) return v;
-    return typeof v === 'object' && !(typeof File !== 'undefined' && v instanceof File) ? JSON.stringify(v) : String(v);
+    if (typeof File !== 'undefined' && v instanceof File) return v; // a file input-like control submits the file itself
+    return typeof v === 'object' ? JSON.stringify(v) : String(v);
   }
 
   /** Whether a value counts as "nothing entered" for `required`. Override for structured values. */
