@@ -5,6 +5,8 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.3 (router)
+
 ### Added
 * `@xoong/ui`: `<xo-router>`, a declarative History-API router (routes, nested layouts, `p-id=":id"`, link interception, `aria-current`, guards, leave veto, 404, base path) and the `router` object. ADR-0008. New attributes: `xo-route`, `xo-layout`, `xo-outlet`. `xoong check` rules XO260-XO263. Nothing shipped earlier changed.
 
