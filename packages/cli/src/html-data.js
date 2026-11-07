@@ -7,7 +7,7 @@
  */
 import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS } from '@xoong/core/syntax';
 
-const ATTRIBUTE_DOCS = {
+export const ATTRIBUTE_DOCS = {
   'xo-each': 'Repeat this element for each item of the list at the given path (keyed by entity id).',
   'xo-if': 'Render this element only when the path is truthy. Prefix with `!` to negate. An empty array is false.',
   'xo-click': 'Call an operation when clicked: "METHOD /path/{param}" or an operationId. Params come from the current item, then the view\'s p-* params.',
@@ -18,7 +18,7 @@ const ATTRIBUTE_DOCS = {
   'xo-open': 'Open the <xo-dialog> matched by this selector, for example `#add`.',
   'xo-close': 'Close the <xo-dialog> this element is in.',
 };
-const ELEMENT_DOCS = {
+export const ELEMENT_DOCS = {
   'xo-view': ['Declare a screen: `get` names the GET operation to read. Children are bound to the result. Add `live` to apply server-sent updates.', [['get', 'A path ("/users") or operationId.'], ['live', 'Apply live updates from the event stream.']]],
   'xo-table': ['A table for the list in the enclosing <xo-view get>. Children become the actions cell of each row.', [['of', 'List field of the response (default `items`).'], ['columns', 'Comma-separated fields, optionally `field:Label`.'], ['sortable', 'Header buttons sort on the server through the `sort` query parameter.'], ['filters', 'Comma-separated fields that get a search box above the table; typing sets the query parameter of the same name.'], ['page-size', 'Rows per page: sets `limit`, Previous/Next change `offset`. The response needs a `total`.']]],
   'xo-form': ['A form generated from the request schema of an operation.', [['op', 'The operation to submit to.'], ['submit', 'Text of the submit button.']]],

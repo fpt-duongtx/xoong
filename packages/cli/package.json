@@ -8,7 +8,8 @@
   },
   "exports": {
     ".": "./src/index.js",
-    "./check": "./src/check.js"
+    "./check": "./src/check.js",
+    "./html-data": "./src/html-data.js"
   },
   "license": "MIT",
   "dependencies": {

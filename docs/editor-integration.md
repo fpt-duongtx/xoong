@@ -1,6 +1,7 @@
 # Editor and lint integrations
 
-Status: milestone 0.6.x. **Section 1 (HTML custom data) is done**; everything else is planned.
+Status: milestone 0.6.x. **HTML custom data (1) and a first language server (2) are done**; the VS Code extension, lint presets and
+SARIF output are planned.
 
 Goal: the mistakes `xoong check` reports should appear **while typing**, with the same message
 and the same fix, in any editor and in CI. One rule engine, several front ends.
@@ -36,7 +37,17 @@ It gives completion and hover docs for every `xo-*` element and attribute, offer
 `get`), and `p-<name>` attributes for the path parameters in your API. It is regenerated on every sync, and a test
 keeps it in step with the syntax lists. Similar formats exist for other editors; add them as needed.
 
-## 2. Language server (the real integration)
+## 2. Language server (the real integration) — first version done
+
+`@xoong/lsp` (`xoong-lsp`, LSP over stdio) is implemented with: **diagnostics** (the exact findings of `xoong check`, same code,
+message and fix, for HTML and for JS/TS files), **completion** of operation names inside `xo-click`, `xo-submit`, `get` and `op`
+(mutations for the first three, reads written as paths for `get`) and of `xo-*` attribute and element names, **hover** docs, and a
+**quick fix** that replaces an unknown operation with the closest one. It finds `.xoong/operations.json` from the workspace folder
+upward and re-reads it when it changes (saving a file re-checks it). Not done: scope-aware completion of `{field}` paths, hover for
+operation types, go to definition. Any editor that can launch a language server for HTML/JS/TS files can use it, for example
+Neovim (`vim.lsp.start({ cmd = { 'node', 'packages/lsp/src/cli.js' }, ... })`).
+
+The original design follows.
 
 Reads `.xoong/operations.json` and `.xoong/api.d.ts`, and offers:
 

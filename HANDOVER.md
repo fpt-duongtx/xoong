@@ -34,6 +34,7 @@ first; optional server; OpenAPI is the data contract.
 | `packages/cli` | `sync`, `doctor`, `check`, `new`, `dev` | Done |
 | `packages/server` | `(Request) => Response` handler: static, proxy, TS stripping, import map; Node adapter | Done |
 | `packages/test` | `mount`, `mockApi`, `push`, `settle` on Vitest | Done |
+| `packages/lsp` | Language server over stdio: diagnostics from `check`, completion, hover, quick fix | First version |
 | `packages/mcp` | MCP server over stdio: `get_spec`, `list_operations`, `check`, `explain_error`, `search_docs` | First version (no `scaffold` tool yet) |
 | `packages/ui` | `xoong.css`, `xo-table`, `xo-form`, `xo-dialog` (see `docs/admin.md`, ADR-0007) | First version, screen tests + end to end |
 | `examples/admin` | Admin (table with sort/paging, generated form, dialog, SSE) through `xoong dev` in real Chromium | Done, end-to-end test |
