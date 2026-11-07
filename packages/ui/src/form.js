@@ -35,7 +35,7 @@ defineTemplate('xo-form', (el, { client }) => {
       }
     } else {
       input = document.createElement('input');
-      input.type = f.type === 'boolean' ? 'checkbox' : f.type === 'integer' || f.type === 'number' ? 'number' : TYPES[f.format] ?? 'text';
+      input.type = f.type === 'file' ? 'file' : f.type === 'boolean' ? 'checkbox' : f.type === 'integer' || f.type === 'number' ? 'number' : TYPES[f.format] ?? 'text';
       if (f.type === 'number') input.step = 'any';
       if (f.maxLength) input.maxLength = f.maxLength;
       if (input.type === 'text' || input.type === 'email') input.autocomplete = 'off';

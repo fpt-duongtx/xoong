@@ -372,3 +372,43 @@ test('field errors are collected from FastAPI, envelope and problem+json bodies'
   assert.deepEqual(await fail({ errors: [{ pointer: '#/name', detail: 'required' }, { field: 'age', message: 'too low' }] }), { name: 'required', age: 'too low' });
   assert.deepEqual(await fail({ title: 'nope' }), {});
 });
+
+test('idempotency keys: a fresh UUID per call for the fields the operation declares, never overwriting a given one', async () => {
+  const bodies = [];
+  const keyed = { operations: { send: { id: 'send', method: 'POST', path: '/m', body: true, uuid: ['client_message_id'], response: null } } };
+  const c = createClient({ api: keyed, fetch: fakeFetch({ 'POST /m': ({ body }) => { bodies.push(body); return null; } }) });
+  await c.mutate('send', {}, { text: 'a' });
+  await c.mutate('send', {}, { text: 'a' });
+  await c.mutate('send', {}, { text: 'b', client_message_id: 'mine' });
+  await c.mutate('send', {});
+  const [a, b, mine, none] = bodies;
+  assert.match(a.client_message_id, /^[0-9a-f-]{36}$/);
+  assert.notEqual(a.client_message_id, b.client_message_id);
+  assert.equal(mine.client_message_id, 'mine');
+  assert.match(none.client_message_id, /^[0-9a-f-]{36}$/);
+});
+
+test('unwrap: { code, message, data } envelopes are read as data, for queries and mutations', async () => {
+  const wrapped = { entities: { User: { id: 'id' } }, operations: {
+    list: { id: 'list', method: 'GET', path: '/u', unwrap: 'data', response: { t: 'array', items: { t: 'entity', name: 'User' } } },
+    add: { id: 'add', method: 'POST', path: '/u', body: true, unwrap: 'data', response: { t: 'entity', name: 'User' } },
+  } };
+  const c = createClient({ api: wrapped, fetch: fakeFetch({
+    'GET /u': () => ({ code: 0, message: 'ok', data: [{ id: 1, name: 'Ada' }] }),
+    'POST /u': () => ({ code: 0, message: 'ok', data: { id: 2, name: 'Bob' } }),
+  }) });
+  assert.deepEqual(await c.load('list'), [{ id: 1, name: 'Ada' }]);
+  assert.deepEqual(await c.mutate('add', {}, { name: 'Bob' }), { id: 2, name: 'Bob' });
+  assert.equal(c.store.has({ $ref: 'User#2' }), true); // entities inside the envelope are shared as usual
+});
+
+test('multipart: a FormData body is sent as it is, without a JSON content type', async () => {
+  let seen;
+  const up = { operations: { upload: { id: 'upload', method: 'POST', path: '/f', body: true, multipart: true, response: null } } };
+  const c = createClient({ api: up, fetch: async (url, init) => { seen = init; return new Response(null, { status: 204 }); } });
+  const form = new FormData();
+  form.set('title', 'x');
+  await c.mutate('upload', {}, form);
+  assert.equal(seen.body, form);
+  assert.equal(seen.headers['content-type'], undefined);
+});

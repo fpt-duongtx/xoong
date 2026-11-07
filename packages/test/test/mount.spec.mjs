@@ -83,3 +83,35 @@ describe('user list screen', () => {
     expect(api.calls.length).toBe(before);
   });
 });
+
+describe('streamed operations declared in HTML', () => {
+  const chat = { version: 1, operations: {
+    chat: { id: 'chat', method: 'POST', path: '/chat', body: true, stream: true, uuid: ['client_message_id'], response: null },
+  } };
+  const sse = (...events) => new Response(new ReadableStream({
+    start(c) { for (const e of events) c.enqueue(new TextEncoder().encode(`event: ${e.event}\ndata: ${JSON.stringify(e.data)}\n\n`)); c.close(); },
+  }), { status: 200, headers: { 'content-type': 'text/event-stream' } });
+
+  it('a submit on a streaming operation fills $stream while it runs and sends the idempotency key', async () => {
+    const api = mockApi(chat, { chat: () => sse({ event: 'token', data: { text: 'Hel' } }, { event: 'token', data: { text: 'lo' } }, { event: 'done', data: { id: 7 } }) });
+    screen = await mount(`<xo-view><ul><li xo-each="$stream"><b>{event}</b> {text}</li></ul>
+      <p xo-if="$streaming" class="busy">typing</p>
+      <form xo-submit="POST /chat"><input name="text"><button>send</button></form></xo-view>`, { api });
+    await screen.submit('form', { text: 'hi' });
+    expect(screen.texts('li')).toEqual(['token Hel', 'token lo', 'done']);
+    expect(screen.$('.busy')).toBeNull(); // finished
+    const body = api.callsOf('chat')[0].body;
+    expect(body.text).toBe('hi');
+    expect(body.client_message_id).toMatch(/^[0-9a-f-]{36}$/);
+    expect(screen.errors).toEqual([]);
+  });
+
+  it('a failing streamed call reports xo-error and keeps the form values', async () => {
+    const api = mockApi(chat, { chat: () => respond(429, { error: { code: 'rate_limited', message: 'slow down', retry_after_s: 3 } }) });
+    screen = await mount(`<xo-view><form xo-submit="POST /chat"><input name="text"><button>send</button></form></xo-view>`, { api });
+    await screen.submit('form', { text: 'hi' });
+    expect(screen.errors).toHaveLength(1);
+    expect(screen.errors[0]).toMatchObject({ status: 429, code: 'rate_limited', retryAfterS: 3 });
+    expect(screen.$('input').value).toBe('hi');
+  });
+});

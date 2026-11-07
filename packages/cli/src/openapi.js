@@ -47,10 +47,12 @@ function collectRefs(doc) {
 
 /**
  * @param {any} doc
- * @param {{ hints?: { idNames?: string[], schemas?: Record<string, { id?: string, entity?: string }> } }} [options]
+ * @param {{ hints?: { idNames?: string[], schemas?: Record<string, { id?: string, entity?: string }>, unwrap?: string, idempotencyKeys?: Record<string, string> } }} [options]
  *   `hints` lets the frontend declare identity without editing the backend's document:
  *   { "idNames": ["id", "gid"],                     // any schema with one of these properties is an entity
- *     "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } } }
+ *     "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } },
+ *     "unwrap": "data",                              // responses shaped { code, message, data } are read as `data`
+ *     "idempotencyKeys": { "sendMessage": "client_message_id" } }   // a fresh UUID is filled in per call
  */
 export function analyze(doc, { hints } = {}) {
   if (doc && typeof doc === 'object' && String(doc.swagger ?? '').startsWith('2')) {
@@ -244,10 +246,24 @@ export function analyze(doc, { hints } = {}) {
         problems.push({ level: 'warn', code: 'XO112', where: `${method.toUpperCase()} ${path}`, message: `path parameter "${name}" is not documented`, fix: 'Declare it under parameters with in: path' });
       }
       const okCode = Object.keys(o.responses ?? {}).find((c) => /^2\d\d$/.test(c));
-      const okSchema = okCode ? resolve(o.responses[okCode])?.content?.['application/json']?.schema : undefined;
+      const okContent = okCode ? resolve(o.responses[okCode])?.content : undefined;
+      const stream = !!okContent?.['text/event-stream'] && !okContent['application/json'];
+      let okSchema = okContent?.['application/json']?.schema;
+      let unwrap;
+      if (hints?.unwrap && okSchema && collectProps(resolve(okSchema), schemas)[hints.unwrap]) {
+        unwrap = hints.unwrap; // { code, message, data } envelopes: the screen sees `data`
+        okSchema = collectProps(resolve(okSchema), schemas)[unwrap];
+      }
+      const reqContent = o.requestBody?.content ?? {};
+      const multipart = !reqContent['application/json'] && !!reqContent['multipart/form-data'];
+      const bodySchema = (reqContent['application/json'] ?? (multipart ? reqContent['multipart/form-data'] : undefined))?.schema;
+      const uuid = hints?.idempotencyKeys?.[id];
+      if (uuid && !(bodySchema && collectProps(resolve(bodySchema), schemas)[uuid])) {
+        problems.push({ level: 'error', code: 'XO170', where: `${method.toUpperCase()} ${path}`, message: `hint idempotencyKeys.${id} names "${uuid}", which is not a field of the request body`, fix: 'Name an existing body property or remove the hint' });
+      }
       const hasBody = !!o.requestBody;
       const response = describe(okSchema);
-      if (method === 'get' && okCode && !okSchema && okCode !== '204') {
+      if (method === 'get' && okCode && !okSchema && okCode !== '204' && !stream) {
         problems.push({ level: 'warn', code: 'XO120', where: `GET ${path}`, message: 'success response has no application/json schema', fix: 'Describe the response schema so types and caching can be generated' });
       }
       const union = unresolvedUnion(okSchema);
@@ -261,10 +277,14 @@ export function analyze(doc, { hints } = {}) {
         id, method: method.toUpperCase(), path,
         ...(params.some((p) => p.in === 'query') ? { query: params.filter((p) => p.in === 'query').map((p) => p.name) } : {}),
         ...(hasBody ? { body: true } : {}),
-        ...(bodyFieldsOf(o.requestBody?.content?.['application/json']?.schema, schemas) ? { bodyFields: bodyFieldsOf(o.requestBody.content['application/json'].schema, schemas) } : {}),
+        ...(multipart ? { multipart: true } : {}),
+        ...(uuid ? { uuid: [uuid] } : {}),
+        ...(unwrap ? { unwrap } : {}),
+        ...(stream ? { stream: true } : {}),
+        ...(bodyFieldsOf(bodySchema, schemas) ? { bodyFields: bodyFieldsOf(bodySchema, schemas) } : {}),
         ...(response ? { response } : {}),
       };
-      operations[id]._types = { params, okSchema, bodySchema: o.requestBody?.content?.['application/json']?.schema };
+      operations[id]._types = { params, okSchema, bodySchema };
     }
   }
 
@@ -290,10 +310,11 @@ function bodyFieldsOf(schema, schemas) {
   for (const [name, raw] of Object.entries(collectProps(root, schemas))) {
     const prop = raw?.$ref ? schemas[refName(raw.$ref)] : raw;
     if (!prop || !['string', 'integer', 'number', 'boolean'].includes(prop.type) || prop.readOnly) continue;
+    const file = prop.type === 'string' && prop.format === 'binary';
     out.push({
-      name, type: prop.type,
+      name, type: file ? 'file' : prop.type,
       ...(required.has(name) ? { required: true } : {}),
-      ...(prop.format ? { format: prop.format } : {}),
+      ...(prop.format && !file ? { format: prop.format } : {}),
       ...(prop.enum ? { enum: prop.enum } : {}),
       ...(prop.maxLength ? { maxLength: prop.maxLength } : {}),
       ...(prop.title ? { title: prop.title } : {}),

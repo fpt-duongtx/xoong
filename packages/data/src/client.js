@@ -122,11 +122,30 @@ export function createClient(options) {
     return found;
   }
 
+  /** JSON by default; FormData (multipart operations) is sent as it is so the browser sets the boundary. */
+  function setBody(init, body) {
+    if (body === undefined) return;
+    if (typeof FormData !== 'undefined' && body instanceof FormData) init.body = body;
+    else { init.headers['content-type'] = 'application/json'; init.body = JSON.stringify(body); }
+  }
+
+  /** Fill the fields the hints declare as idempotency keys with a fresh UUID (one per call, kept by the caller on retry). */
+  function withKeys(o, body) {
+    if (!o.uuid?.length) return body;
+    if (typeof FormData !== 'undefined' && body instanceof FormData) {
+      for (const f of o.uuid) if (!body.has(f)) body.set(f, crypto.randomUUID());
+      return body;
+    }
+    const out = { ...(body ?? {}) };
+    for (const f of o.uuid) if (out[f] == null || out[f] === '') out[f] = crypto.randomUUID();
+    return out;
+  }
+
   async function request(o, params, body, signal) {
     const url = baseUrl + fillPath(o.path, params, o.id) + buildQuery(o.query, params);
     const extra = headers ? await headers() : {};
     const init = { method: o.method.toUpperCase(), headers: { accept: 'application/json', ...extra }, signal, credentials };
-    if (body !== undefined) { init.headers['content-type'] = 'application/json'; init.body = JSON.stringify(body); }
+    setBody(init, body);
     const attempts = o.method.toUpperCase() === 'GET' ? retry : 0;
     for (let n = 0; ; n++) {
       let res;
@@ -140,7 +159,8 @@ export function createClient(options) {
       if (res.ok) {
         if (res.status === 204) return null;
         const text = await res.text();
-        return text ? JSON.parse(text) : null;
+        const json = text ? JSON.parse(text) : null;
+        return o.unwrap && json && typeof json === 'object' ? json[o.unwrap] ?? null : json; // { code, message, data } envelopes
       }
       if ([502, 503, 504].includes(res.status) && n < attempts) { await sleep(retryDelay * 2 ** n); continue; }
       let problem;
@@ -261,7 +281,7 @@ export function createClient(options) {
       let json;
       mutating++;
       try {
-        json = await request(o, params, body);
+        json = await request(o, params, withKeys(o, body));
       } catch (err) {
         const e = err instanceof XoongError ? err : new XoongError({ operation: o.id, cause: err });
         fail(e);
@@ -303,7 +323,7 @@ export function createClient(options) {
       const url = baseUrl + fillPath(o.path, params, o.id) + buildQuery(o.query, params);
       const extra = headers ? await headers() : {};
       const init = { method: o.method.toUpperCase(), headers: { accept: 'text/event-stream', ...extra }, signal, credentials };
-      if (body !== undefined) { init.headers['content-type'] = 'application/json'; init.body = JSON.stringify(body); }
+      setBody(init, withKeys(o, body));
       let res;
       try { res = await doFetch(url, init); } catch (cause) {
         if (signal?.aborted) throw cause;

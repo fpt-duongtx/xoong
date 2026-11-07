@@ -323,3 +323,26 @@ test('operations without a plain object body have no bodyFields', () => {
     responses: { default: { description: 'e' } } } } } };
   assert.equal(analyze(doc).operations.x.bodyFields, undefined);
 });
+
+test('hints: unwrap, idempotency keys; multipart and event-stream operations are detected', () => {
+  const env = (data) => ({ type: 'object', properties: { code: { type: 'integer' }, data } });
+  const json = (schema) => ({ content: { 'application/json': { schema } } });
+  const doc = { openapi: '3.0.3', info: { title: 't', version: '1' }, paths: {
+    '/pets': { get: { operationId: 'listPets', responses: { 200: { description: 'ok', ...json(env({ type: 'array', items: { $ref: '#/components/schemas/Pet' } })) }, default: { description: 'e' } } } },
+    '/pets/{id}/photo': { post: { operationId: 'uploadPhoto', parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+      requestBody: { content: { 'multipart/form-data': { schema: { type: 'object', required: ['file'], properties: { file: { type: 'string', format: 'binary' }, caption: { type: 'string' } } } } } },
+      responses: { 204: { description: 'ok' }, default: { description: 'e' } } } },
+    '/chat': { post: { operationId: 'chat', requestBody: { content: { 'application/json': { schema: { type: 'object', properties: { client_message_id: { type: 'string' }, text: { type: 'string' } } } } } },
+      responses: { 200: { description: 'ok', content: { 'text/event-stream': { schema: { type: 'string' } } } }, default: { description: 'e' } } } },
+  }, components: { schemas: { Pet: { type: 'object', properties: { id: { type: 'integer' }, name: { type: 'string' } } } } } };
+  const { operations, problems } = analyze(doc, { hints: { unwrap: 'data', idempotencyKeys: { chat: 'client_message_id' } } });
+  assert.equal(operations.listPets.unwrap, 'data');
+  assert.deepEqual(operations.listPets.response, { t: 'array', items: { t: 'entity', name: 'Pet' } }); // the inner schema, not the envelope
+  assert.equal(operations.uploadPhoto.multipart, true);
+  assert.deepEqual(operations.uploadPhoto.bodyFields, [{ name: 'file', type: 'file', required: true }, { name: 'caption', type: 'string' }]);
+  assert.equal(operations.chat.stream, true);
+  assert.deepEqual(operations.chat.uuid, ['client_message_id']);
+  assert.equal(problems.some((p) => p.code === 'XO170' || p.code === 'XO120'), false);
+  const bad = analyze(doc, { hints: { idempotencyKeys: { chat: 'nope' } } });
+  assert.equal(bad.problems.find((p) => p.code === 'XO170').level, 'error');
+});

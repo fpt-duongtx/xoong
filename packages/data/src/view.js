@@ -71,6 +71,19 @@ class XoView extends XoElement {
   /** @type {(() => void)[]} */ #bound = [];
   #params = signal(/** @type {Record<string, any>} */ ({}));
   #release = null;
+  #stream = signal(/** @type {any[]} */ ([]));
+  #streaming = signal(false);
+
+  /** Collect the events of a streamed call into `$stream` (each: the JSON payload plus `event`, or `{ event, data }`). */
+  async consume(events) {
+    batch(() => { this.#stream.value = []; this.#streaming.value = true; });
+    try {
+      for await (const ev of events) {
+        const item = ev.json && typeof ev.json === 'object' && !Array.isArray(ev.json) ? { event: ev.event, ...ev.json } : { event: ev.event, data: ev.data };
+        this.#stream.value = [...this.#stream.peek(), item];
+      }
+    } finally { this.#streaming.value = false; }
+  }
 
   /** Runtime params for the operation (overrides `p-*` attributes). */
   get params() { return this.#params.value; }
@@ -118,6 +131,9 @@ class XoView extends XoElement {
       parent: paramsScope,
       vars: {
         $loading: () => q.value?.status.value === 'loading',
+        // Events of the latest streamed call (an operation that answers with server-sent events), and whether it still runs.
+        $stream: () => this.#stream.value,
+        $streaming: () => this.#streaming.value,
         $error: () => q.value?.error.value,
         // Paging state for lists that take `limit` and `offset` and return `total`.
         $hasPrev: () => Number(this.#params.value.offset) > 0,
@@ -319,7 +335,11 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       clearFieldErrors(el);
       if (eventName === 'submit' && op.body === true) body = formBody(/** @type {HTMLFormElement} */ (el), op);
       else if (el.hasAttribute('xo-body')) body = client.store.denormalize(lookup(scope, el.getAttribute('xo-body')));
-      const result = await client.mutate(ref, params, body);
+      let result;
+      if (op.stream) {
+        await host.consume(client.stream(ref, params, body));
+        client.invalidateAll(); // the stream may have changed data that is on screen
+      } else result = await client.mutate(ref, params, body);
       if (eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
       host.emit('xo-done', result);
     } catch (e) {
@@ -339,6 +359,7 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
 /** The JSON body of a form. With `bodyFields` from the API document, values get their real types. */
 function formBody(form, op) {
   const raw = new FormData(form);
+  if (op.multipart) return raw; // files stay files; the client sends it as multipart/form-data
   const body = {};
   const types = new Map((op.bodyFields ?? []).map((f) => [f.name, f.type]));
   for (const [name, value] of raw) {
