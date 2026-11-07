@@ -198,3 +198,15 @@ describe('xo-confirm and xo-notice', () => {
     expect(screen.$('.xo-toast-status').hidden).toBe(true);
   });
 });
+
+describe('setConfirm: replace the dialog and learn what is being asked', () => {
+  it('xo-confirm passes { kind: "action", element }; the app\'s own dialog decides', async () => {
+    const seen = [];
+    setConfirm((message, context) => { seen.push([message, context?.kind, context?.element?.localName]); return false; });
+    const a = api();
+    screen = await mount(`<xo-view get="listArticles"><xo-table columns="title"><button xo-click="deleteArticle" xo-confirm="Delete {title}?">Delete</button></xo-table></xo-view>`, { api: a });
+    await screen.click('tbody tr:nth-child(1) button');
+    expect(seen).toEqual([['Delete Article 1?', 'action', 'button']]);
+    expect(a.callsOf('deleteArticle')).toHaveLength(0);
+  });
+});

@@ -146,7 +146,15 @@ describe('<xo-router> layouts', () => {
 });
 
 describe('<xo-router> links', () => {
-  const click = (el, init = {}) => { const e = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0, ...init }); el.dispatchEvent(e); return e; };
+  // Records whether the router handled the click, then cancels it so the DOM does not really navigate (happy-dom would fetch the URL).
+  const click = (el, init = {}) => {
+    let defaultPrevented = false;
+    const last = (ev) => { defaultPrevented = ev.defaultPrevented; ev.preventDefault(); };
+    window.addEventListener('click', last, { once: true });
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0, ...init }));
+    window.removeEventListener('click', last);
+    return { defaultPrevented };
+  };
 
   it('intercepts same-origin link clicks, and marks the active link with aria-current', async () => {
     await open();

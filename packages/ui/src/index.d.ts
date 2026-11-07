@@ -13,6 +13,15 @@ export interface RouteLocation {
 /** true or undefined: continue. false: cancel. A string: redirect to that path. */
 export type GuardResult = boolean | string | void;
 
+/** What a confirmation is about: an `xo-confirm` action, or leaving a page that has unsaved changes. */
+export interface ConfirmContext { kind: 'action' | 'leave'; element?: Element; forms?: Element[] }
+/** Replace the native confirmation dialog (for `xo-confirm` and the leave guard) with your own; resolve to true to go on. */
+export function setConfirm(fn: (message: string, context?: ConfirmContext) => boolean | Promise<boolean>): void;
+/** Ask with the dialog that is installed. */
+export function confirm(message: string, options?: { ok?: string; cancel?: string }): Promise<boolean>;
+/** Show a notice in <xo-toast>. */
+export const toast: { show(notice: { message: string; kind?: string; action?: { label: string; run: () => unknown }; timeout?: number }): void };
+
 export const router: {
   /** Go to a path relative to the base. Resolves with true when the navigation happened. */
   navigate(path: string, options?: { replace?: boolean }): Promise<boolean>;

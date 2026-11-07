@@ -15,6 +15,7 @@ What that allows, and what needs a fallback:
 | `light-dark()`, `:has()`, `@scope` | freely | already used by `xoong.css` |
 | Customizable `<select>`, `field-sizing` | not yet | build the control or accept the default look |
 
-Tested today: Chromium (Playwright) only. Firefox and WebKit runs are planned for CI; until then Firefox and Safari behaviour is
-expected from the platform standards, not verified. A feature that needs a newer browser than this matrix must have a fallback
+Tested: **Chromium, Firefox and WebKit** through Playwright, in CI (`npm run test:browsers` with `XOONG_BROWSER=firefox|webkit`: router, shell, form
+controls, build under a strict CSP, prerendering and the admin example end to end). WebKit is Playwright's build, a good proxy for Safari but not Safari itself;
+Chrome and Edge share Chromium's engine. Older versions than the latest two are not tested. A feature that needs a newer browser than this matrix must have a fallback
 and an entry here.

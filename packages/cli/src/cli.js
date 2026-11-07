@@ -21,6 +21,7 @@ const HELP = `xoong <command>
 `;
 
 const [cmd, ...rest] = process.argv.slice(2);
+if (rest.includes('--help') || rest.includes('-h') || cmd === '--help' || cmd === '-h' || cmd === 'help') { console.log(HELP); process.exit(0); } // never start work on a help request
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 
 try {
@@ -74,6 +75,8 @@ try {
     console.log(problems.length ? `${problems.length} problems` : 'ok');
     process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'build') {
+    const unknown = rest.filter((v, i) => v.startsWith('-') && !['--root', '--out', '--base', '--include'].includes(v) && true);
+    if (unknown.length) throw new Error(`xoong build: unknown option ${unknown.join(', ')} (known: --root, --out, --base, --include)`);
     const { build, CSP } = await import('./build.js');
     const include = rest.flatMap((v, i) => (rest[i - 1] === '--include' ? [v] : []));
     const r = await build({ root: flag('--root', '.'), out: flag('--out', 'dist'), base: flag('--base', ''), include });

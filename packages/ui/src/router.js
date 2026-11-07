@@ -133,7 +133,7 @@ class XoRouter extends XoElement {
       const dirty = this.#unsaved();
       if (!dirty.length) return true;
       const own = dirty.map((f) => f.getAttribute('xo-guard')).find((m) => m && m !== 'off');
-      return ask(own ?? text('xoong.guard.leave', 'You have unsaved changes. Leave this page?'));
+      return ask(own ?? text('xoong.guard.leave', 'You have unsaved changes. Leave this page?'), { kind: 'leave', forms: dirty });
     });
     // url-params of a view: write the query string through the router, without rendering the route again
     setUrlSync({ read: () => new URLSearchParams(window.location.search), write: (params, mode) => this.#writeQuery(params, mode), subscribe: () => () => {} });

@@ -53,7 +53,8 @@ export async function build({ root = '.', out = 'dist', base = '', include = [] 
     for (const p of Object.values(packages)) if (file === p.dir || file.startsWith(p.dir + sep)) return `${p.prefix}${file.slice(p.dir.length).split(sep).join('/')}`;
     return `/${relative(rootDir, file).split(sep).join('/')}`;
   };
-  const exists = async (f) => stat(f).then((s) => s.isFile(), () => false);
+  const inOut = (f) => f === outDir || f.startsWith(outDir + sep); // the output folder is never an input, even when it sits inside the root
+  const exists = async (f) => !inOut(f) && stat(f).then((s) => s.isFile(), () => false);
 
   /** Rewrite one specifier or URL found in `fromUrl` (a root-absolute URL path). Returns the new text, and queues the target file. */
   async function rewrite(spec, fromUrl) {
@@ -143,6 +144,7 @@ export async function build({ root = '.', out = 'dist', base = '', include = [] 
     const outPath = toJs(urlPath);
     if (sources.has(outPath)) return;
     const file = fileFor(urlPath);
+    if (inOut(file)) { warnings.push(`${urlPath}: points into the output folder, which is not an input`); sources.set(outPath, ''); return; }
     if (!(await exists(file))) { warnings.push(`${urlPath}: referenced but not found`); sources.set(outPath, ''); return; }
     sources.set(outPath, file);
     const ext = extname(file).toLowerCase();
@@ -168,7 +170,7 @@ export async function build({ root = '.', out = 'dist', base = '', include = [] 
     const s = await stat(p).catch(() => null);
     if (!s) { warnings.push(`--include ${extra}: not found`); continue; }
     const files = [];
-    const collect = async (d) => { for (const n of await readdir(d)) { const f = join(d, n); if ((await stat(f)).isDirectory()) await collect(f); else files.push(f); } };
+    const collect = async (d) => { for (const n of await readdir(d)) { const f = join(d, n); if (inOut(f)) continue; if ((await stat(f)).isDirectory()) await collect(f); else files.push(f); } };
     if (s.isDirectory()) await collect(p); else files.push(p);
     for (const f of files) queue.push(urlOf(f));
   }

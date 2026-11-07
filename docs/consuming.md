@@ -34,7 +34,7 @@ checkout directly (no tarballs).
 
 ## Serving an app in production
 
-Use `xoong build` (it needs only your project, no bundler): `xoong build --root . --out dist [--base /admin] [--include public]`. It follows the
+Use `xoong build` (it needs only your project, no bundler): `xoong build --root . --out dist [--base /admin] [--include public]` (`--help` prints the options; unknown options are refused; an output folder inside the root is never read as input). It follows the
 HTML pages, rewrites package imports to URLs (no import map), strips TypeScript, copies what is referenced, and prints the Content-Security-Policy
 the output is tested with ([security.md](security.md)). Serve `dist` as static files, with the pages' routes answering the app's HTML if you use
 `<xo-router>`. Nothing is minified or bundled yet: the files are the ones you wrote, and `dist/build-report.json` lists sizes (also gzipped).

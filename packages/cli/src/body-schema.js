@@ -102,6 +102,11 @@ function decorate(node, s) {
   if (s.title) node.title = s.title;
   if (s.description) node.description = s.description;
   if (s['x-xoong-widget']) node.widget = s['x-xoong-widget'];
+  if (s['x-xoong-prune-empty'] !== undefined) node.pruneEmpty = !!s['x-xoong-prune-empty']; // the same as the pruneEmpty hint, written in the spec
+  if (s['x-xoong-empty-as']) node.emptyAs = s['x-xoong-empty-as'];
+  for (const [k, v] of Object.entries(s)) { // any other x-* extension reaches custom widgets untouched, in `schema.hints`
+    if (k.startsWith('x-') && !k.startsWith('x-xoong-') && !['x-nullable', 'x-xoong-id', 'x-xoong-entity'].includes(k)) (node.hints ??= {})[k] = v;
+  }
   return node;
 }
 

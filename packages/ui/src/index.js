@@ -7,3 +7,4 @@ import './toast.js';
 export { router } from './router.js';
 export { toast } from './toast.js';
 export { confirm, labels as confirmLabels } from './confirm.js';
+export { setConfirm } from '@xoong/data/view';

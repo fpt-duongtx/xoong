@@ -17,12 +17,19 @@ const PAGE = `<!doctype html><meta charset=utf-8>
  "@xoong/data/view":"/packages/data/src/view.js"}}</script><body></body>`;
 
 /**
- * Launch headless Chromium. Uses a browser that is already installed when one is provided
+ * Launch the headless browser the tests use: Chromium, or Firefox / WebKit with XOONG_BROWSER. Uses a Chromium that is already installed when one is provided
  * (XOONG_CHROMIUM, or the sandbox's /opt/pw-browsers/chromium); otherwise Playwright's own
  * download (`npx playwright install chromium`, as CI does).
  */
 export async function launchChromium() {
-  const { chromium } = createRequire(import.meta.url)('playwright');
+  const playwright = createRequire(import.meta.url)('playwright');
+  // XOONG_BROWSER=firefox|webkit runs the same browser tests in another engine (the supported matrix: docs/browser-support.md)
+  const engine = process.env.XOONG_BROWSER ?? 'chromium';
+  if (engine !== 'chromium') {
+    if (!playwright[engine]) throw new Error(`XOONG_BROWSER=${engine}: expected chromium, firefox or webkit`);
+    return playwright[engine].launch();
+  }
+  const { chromium } = playwright;
   const preinstalled = process.env.XOONG_CHROMIUM ?? (existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined);
   return chromium.launch(preinstalled ? { executablePath: preinstalled } : {});
 }

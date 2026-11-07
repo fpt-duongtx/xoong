@@ -173,8 +173,14 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
   application show the field (switch a tab) before it is focused. Server field errors (problem+json pointers, FastAPI, envelopes) land on the same paths and
   clear when the field is edited.
 * **Hints** for presentation (`xoong.hints.json`, `fields["Schema.property"]`): `label`, `hint`, `placeholder`, `widget` (a built-in name or the tag of an `XoControl`),
-  `order`, `readOnly`, `hidden`, `group`, `emptyAs`, `pruneEmpty`; any other key is passed through to the widget. `x-xoong-widget` in the OpenAPI document does the same.
+  `order`, `readOnly`, `hidden`, `group`, `emptyAs`, `pruneEmpty`; any other key is passed through to the widget (`schema.hints`). The same can be written **in the OpenAPI document**
+  on any node, inline objects included: `x-xoong-widget`, `x-xoong-prune-empty: true`, `x-xoong-empty-as: "null"`; every other `x-*` extension (for example `x-rainlet-localized`)
+  reaches custom widgets untouched in `schema.hints`.
 * **Leaving.** A dirty form makes the router ask first (`xo-guard="off"` disables, other text is the question); closing the tab uses `beforeunload`.
+  What the person sees: importing `@xoong/ui` installs a native modal `<dialog class="xo-confirm">` (message, Cancel, Confirm; Escape answers no; focus starts on Cancel;
+  texts in `confirmLabels` or the `xoong.confirm.*` catalog keys; style `.xo-confirm`). Without `@xoong/ui` (only the router module) the browser's own `confirm()` is used,
+  which headless browsers dismiss silently. To use **your own dialog**, for this question and for `xo-confirm`: `setConfirm(async (message, context) => ...)` (from `@xoong/ui`
+  or `@xoong/data/view`); resolve to `true` to go on. `context` is `{ kind: 'leave', forms }` for the leave question and `{ kind: 'action', element }` for `xo-confirm`.
 * **Arrays, objects and unions in a hand-written form** (the form's scope is its draft): `<div xo-each="blocks">` over the array with `name="blocks[{$index}].title.en"` (inside a nested
   array use `{$i0}` for the outer row, `{$i1}` for the next), `xo-add="blocks" xo-with="type=image"` (a union item needs its tag), `xo-remove="blocks[{$index}]"`,
   `xo-move="blocks[{$index}]:up"` (or `:down`), and `xo-if="type=image"` to show the fields of one variant (`path=value` and `path!=value` compare with a literal).

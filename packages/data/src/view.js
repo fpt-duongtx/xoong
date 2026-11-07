@@ -462,11 +462,15 @@ let translator = /** @type {{ apply: (el: Element, get: (name: string) => any) =
 export function setTranslator(t) { translator = t; }
 
 /** Ask before a destructive action (`xo-confirm="Delete {name}?"`). The default is the browser's confirm(); @xoong/ui replaces it with a native <dialog>. */
-let confirmFn = /** @type {(message: string) => boolean | Promise<boolean>} */ ((message) => (typeof globalThis.confirm === 'function' ? globalThis.confirm(message) : true));
-/** @param {(message: string) => boolean | Promise<boolean>} fn */
+let confirmFn = /** @type {(message: string, context?: { kind: 'action' | 'leave', element?: Element, forms?: Element[] }) => boolean | Promise<boolean>} */ ((message) => (typeof globalThis.confirm === 'function' ? globalThis.confirm(message) : true));
+/**
+ * Replace the confirmation dialog (for `xo-confirm` and for leaving a page with unsaved changes) with your own: return, or resolve to, true to go on.
+ * The second argument says what is being asked: `{ kind: 'action', element }` or `{ kind: 'leave', forms }`.
+ * @param {(message: string, context?: { kind: 'action' | 'leave', element?: Element, forms?: Element[] }) => boolean | Promise<boolean>} fn
+ */
 export function setConfirm(fn) { confirmFn = fn; }
 /** Ask the person a yes/no question with whatever confirm is installed. */
-export const ask = (message) => Promise.resolve(confirmFn(message));
+export const ask = (message, context) => Promise.resolve(confirmFn(message, context));
 
 /** What a form's call returns when the form is invalid and nothing was sent. */
 const INVALID = { invalid: true, errors: {} };
@@ -493,7 +497,7 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
     if (eventName === 'submit') event.preventDefault();
     if (busy) return;
     const confirmText = el.getAttribute('xo-confirm'); // ask first; {path} names the item ("Delete {title}?")
-    if (confirmText !== null && !(await ask(evalParts(parseInterpolation(confirmText) ?? [confirmText], scope, lookup)))) return;
+    if (confirmText !== null && !(await ask(evalParts(parseInterpolation(confirmText) ?? [confirmText], scope, lookup), { kind: 'action', element: el }))) return;
     busy = true;
     el.setAttribute('aria-busy', 'true');
     try {

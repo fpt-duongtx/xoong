@@ -126,7 +126,7 @@ describe('admin example in a real browser (declarations only, no application Jav
   it('produced no browser errors, and the dev server stripped the TypeScript on the way', async () => {
     // The browser logs every failed response; the only one this run causes on purpose is the 422 validation error.
     expect(errors.filter((e) => !/status of 422/.test(e))).toEqual([]);
-    expect(errors.filter((e) => /status of 422/.test(e))).toHaveLength(1);
+    if ((process.env.XOONG_BROWSER ?? 'chromium') === 'chromium') expect(errors.filter((e) => /status of 422/.test(e))).toHaveLength(1); // Chromium logs failed responses, Firefox and WebKit do not
     const main = await (await fetch(dev.url + '/src/main.ts')).text();
     expect(main).not.toMatch(/Parameters<typeof configure>/);
   });
