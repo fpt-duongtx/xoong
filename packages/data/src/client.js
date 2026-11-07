@@ -161,7 +161,11 @@ export function createClient(options) {
         if (res.status === 204) return null;
         const text = await res.text();
         const json = text ? JSON.parse(text) : null;
-        return o.unwrap && json && typeof json === 'object' ? json[o.unwrap] ?? null : json; // { code, message, data } envelopes
+        if (o.unwrap && json && typeof json === 'object') { // { code, message, data } envelopes
+          if (!(o.unwrap in json)) throw new XoongError({ status: res.status, operation: o.id, detail: `the response has no "${o.unwrap}" field (hint "unwrap" expects an envelope)` });
+          return json[o.unwrap] ?? null;
+        }
+        return json;
       }
       if ([502, 503, 504].includes(res.status) && n < attempts) { await sleep(retryDelay * 2 ** n); continue; }
       let problem;
@@ -217,7 +221,8 @@ export function createClient(options) {
       batch(() => { this.status.value = 'loading'; this.error.value = null; });
       const ctl = new AbortController();
       this.abort = ctl;
-      this.inflight = request(this.op, this.params, undefined, ctl.signal)
+      /** @type {Promise<any>} */ let self;
+      self = request(this.op, this.params, undefined, ctl.signal)
         .then((json) => {
           batch(() => {
             this.root.value = normalize(store, this.op.response, json);
@@ -229,8 +234,10 @@ export function createClient(options) {
         })
         .catch((err) => {
           if (ctl.signal.aborted) { // nobody wants this result any more: back to "not loaded", no error
-            batch(() => { this.status.value = this.root.peek() === undefined ? 'idle' : 'success'; });
-            this.stale = true;
+            if (!this.inflight || this.inflight === self) { // unless a newer fetch of this query already took over
+              batch(() => { this.status.value = this.root.peek() === undefined ? 'idle' : 'success'; });
+              this.stale = true;
+            }
             throw err;
           }
           const e = err instanceof XoongError ? err : new XoongError({ operation: this.op.id, cause: err, detail: String(err?.message ?? err) });
@@ -239,10 +246,12 @@ export function createClient(options) {
           throw e;
         })
         .finally(() => {
+          if (this.inflight && this.inflight !== self) return; // a newer fetch owns the query now
           this.inflight = null;
           if (this.refetchAfter) { this.refetchAfter = false; this.fetch().catch(() => {}); }
         });
-      return this.inflight;
+      this.inflight = self;
+      return self;
     }
 
     /** Start observing (a view is showing this query). Fetches if stale. */
@@ -254,7 +263,11 @@ export function createClient(options) {
     release() {
       this.observers = Math.max(0, this.observers - 1);
       // The view moved on (params changed or it was removed) while the request runs: cancel it, unless `load()` waits for it.
-      if (this.observers === 0 && this.waiters === 0 && this.inflight) this.abort?.abort();
+      if (this.observers === 0 && this.waiters === 0 && this.inflight) {
+        this.abort?.abort();
+        this.inflight = null; // a retain() right after (same params selected again) must start a fresh request
+        this.abort = null;
+      }
       if (this.observers === 0) this.armGc();
     }
     /** Mark stale; refetch right away only if something is watching. */
@@ -351,6 +364,7 @@ export function createClient(options) {
       }
       if (!res.body) return;
       const reader = res.body.getReader();
+      signal?.addEventListener('abort', () => reader.cancel().catch(() => {}), { once: true }); // stop reading even if fetch ignores the signal
       const decoder = new TextDecoder();
       let buffer = '';
       try {

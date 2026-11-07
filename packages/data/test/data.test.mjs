@@ -479,3 +479,28 @@ test('a response with the entity schema replaces the record; projections and str
   c.store.applyEvent({ type: 'upsert', entity: 'User', id: 1, value: { id: 1, extra: true } });
   assert.deepEqual(c.store.read('User#1'), { id: 1, name: 'Ada', extra: true });
 });
+
+test('selecting the same params again while a request runs starts a fresh request instead of sticking idle', async () => {
+  let calls = 0;
+  const slow = (url, init) => new Promise((resolve, reject) => {
+    calls++;
+    init.signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' })));
+    setTimeout(() => resolve(new Response(JSON.stringify([{ id: 1, name: 'Ada' }]), { status: 200 })), 30);
+  });
+  const c = createClient({ api, fetch: slow, retry: 0 });
+  const q = c.query('listUsers', { page: 1 });
+  q.retain();
+  await tick(5);
+  q.release(); // a view re-selects the same params: release, then retain in the same turn
+  q.retain();
+  await tick(80);
+  assert.equal(calls, 2);
+  assert.equal(q.status.peek(), 'success');
+  assert.deepEqual(q.data.peek(), [{ id: 1, name: 'Ada' }]);
+});
+
+test('unwrap: a success body without the envelope field is an error, not silent null', async () => {
+  const wrapped = { operations: { list: { id: 'list', method: 'GET', path: '/u', unwrap: 'data', response: null } } };
+  const c = createClient({ api: wrapped, fetch: fakeFetch({ 'GET /u': () => ({ other: 1 }) }), retry: 0 });
+  await assert.rejects(() => c.load('list'), (e) => e instanceof XoongError && /no "data" field/.test(e.detail));
+});

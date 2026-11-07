@@ -80,6 +80,10 @@ describe('<xo-table>', () => {
     await screen.click('.xo-pager button:last-child');
     expect(screen.texts('tbody tr td:first-child')).toEqual(['User 5']);
     expect(screen.texts('.xo-pager button')).toEqual(['Previous']);
+    await screen.click('.xo-pager button'); // Previous really goes back (regression: "offset-=2" was parsed as a param named "offset-")
+    expect(api.calls.every((c) => !('offset-' in c.query))).toBe(true);
+    expect(screen.texts('tbody tr td:first-child')).toEqual(['User 3', 'User 4']);
+    await screen.click('.xo-pager button:last-child');
     await screen.click('thead th:first-child button');
     expect(api.calls.at(-1).query).toEqual({ limit: '2', offset: '0', sort: 'name' });
     expect(screen.errors).toEqual([]);
@@ -135,6 +139,13 @@ describe('<xo-form>', () => {
     expect(screen.$('[aria-invalid]')).toBeNull();
   });
 
+  it('shows messages for server fields that have no input, even when other fields matched', async () => {
+    const api = mockApi(table, { createUser: () => respond(422, { error: { code: 'bad', message: 'bad', fields: { email: 'taken', 'address.zip': 'too short' } } }) });
+    screen = await mount(html, { api });
+    await screen.submit('form', { name: 'A', email: 'a@x.test', role: 'admin' });
+    expect(screen.texts('.xo-error')).toEqual(['taken', 'address.zip: too short']);
+  });
+
   it('reports an unknown operation with the closest valid one', async () => {
     const seen = [];
     const original = console.error;
@@ -151,6 +162,18 @@ describe('<xo-form>', () => {
 });
 
 describe('<xo-dialog>', () => {
+  it('a mistyped xo-open selector is reported, not thrown from the page-wide click handler', async () => {
+    const seen = [];
+    const original = console.error;
+    console.error = (...a) => seen.push(a.join(' '));
+    try {
+      screen = await mount('<button id="bad" xo-open="##">x</button><button id="none" xo-open="#nothing">y</button>', { api: mockApi(table) });
+      await screen.click('#bad');
+      await screen.click('#none');
+    } finally { console.error = original; }
+    expect(seen.join('\n')).toMatch(/not a valid selector[\s\S]*matches no <xo-dialog>/);
+  });
+
   it('wraps its content in a native dialog, opens from xo-open, closes from xo-close', async () => {
     screen = await mount(`<button id="o" xo-open="#d">Open</button><xo-dialog id="d"><p>Hello</p><button id="c" xo-close>Cancel</button></xo-dialog>`, { api: mockApi(table) });
     const dialog = screen.$('xo-dialog > dialog');

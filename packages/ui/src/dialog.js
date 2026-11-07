@@ -47,8 +47,14 @@ define('xo-dialog', XoDialog);
     const target = /** @type {Element} */ (event.target);
     const opener = target.closest?.('[xo-open]');
     if (opener) {
-      const dialog = document.querySelector(opener.getAttribute('xo-open') ?? '');
-      if (dialog instanceof XoDialog) dialog.show();
+      const selector = opener.getAttribute('xo-open') ?? '';
+      try {
+        const dialog = document.querySelector(selector);
+        if (dialog instanceof XoDialog) dialog.show();
+        else console.error(`xoong: xo-open="${selector}" matches no <xo-dialog>`);
+      } catch {
+        console.error(`xoong: xo-open="${selector}" is not a valid selector (use an id such as #add)`);
+      }
     }
     if (target.closest?.('[xo-close]')) target.closest('xo-dialog')?.close();
   });

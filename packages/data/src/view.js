@@ -71,8 +71,16 @@ class XoView extends XoElement {
   /** @type {(() => void)[]} */ #bound = [];
   #params = signal(/** @type {Record<string, any>} */ ({}));
   #release = null;
+  /** @type {AbortController | null} */ #streamCtl = null;
   #stream = signal(/** @type {any[]} */ ([]));
   #streaming = signal(false);
+
+  /** Start a streamed call: cancels the previous one, and everything is cancelled when the view goes away. */
+  beginStream() {
+    this.#streamCtl?.abort();
+    this.#streamCtl = new AbortController();
+    return this.#streamCtl.signal;
+  }
 
   /** Collect the events of a streamed call into `$stream` (each: the JSON payload plus `event`, or `{ event, data }`). */
   async consume(events) {
@@ -104,6 +112,8 @@ class XoView extends XoElement {
   }
 
   #stop() {
+    this.#streamCtl?.abort();
+    this.#streamCtl = null;
     this.#bound.splice(0).forEach((d) => d());
     this.#release?.();
     this.#release = null;
@@ -337,8 +347,9 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       else if (el.hasAttribute('xo-body')) body = client.store.denormalize(lookup(scope, el.getAttribute('xo-body')));
       let result;
       if (op.stream) {
-        await host.consume(client.stream(ref, params, body));
-        client.invalidateAll(); // the stream may have changed data that is on screen
+        const signal = host.beginStream();
+        try { await host.consume(client.stream(ref, params, body, { signal })); } catch (e) { if (signal.aborted) return; throw e; } // view gone: stop quietly
+        finally { if (!signal.aborted) client.invalidateAll(); } // the stream may have changed data that is on screen, even if it failed halfway
       } else result = await client.mutate(ref, params, body);
       if (eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
       host.emit('xo-done', result);
@@ -359,7 +370,10 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
 /** The JSON body of a form. With `bodyFields` from the API document, values get their real types. */
 function formBody(form, op) {
   const raw = new FormData(form);
-  if (op.multipart) return raw; // files stay files; the client sends it as multipart/form-data
+  if (op.multipart) { // files stay files; the client sends it as multipart/form-data
+    for (const [name, value] of [...raw]) if (typeof value !== 'string' && !value.name && !value.size) raw.delete(name); // no file chosen
+    return raw;
+  }
   const body = {};
   const types = new Map((op.bodyFields ?? []).map((f) => [f.name, f.type]));
   for (const [name, value] of raw) {
@@ -402,11 +416,13 @@ function showFieldErrors(form, fields = {}, summary = '') {
     input.setAttribute('aria-describedby', el.id);
     placed++;
   }
+  const unplaced = Object.entries(fields).filter(([name]) => ![...form.elements].some((f) => f.name === name));
   if (!placed && summary) form.append(note(summary, 'alert'));
+  else if (unplaced.length) form.append(note(unplaced.map(([name, message]) => `${name}: ${message}`).join('; '), 'alert')); // no input for these
 }
 
 function bindParam(el, spec, scope, ctx, disposers) {
-  const m = /^\s*([\w-]+)\s*(\+=|-=|~=|=)\s*(.*?)\s*$/.exec(spec);
+  const m = /^\s*([\w-]*\w)\s*(\+=|-=|~=|=)\s*(.*?)\s*$/.exec(spec);
   if (!m) { console.error(`xoong: xo-param="${spec}" is not "name=value", "name+=n", "name-=n" or "name~=value"`); return; }
   const [, rawName, op, rawValue] = m;
   const name = camel(rawName);

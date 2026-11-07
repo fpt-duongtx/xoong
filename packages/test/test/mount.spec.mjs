@@ -115,3 +115,30 @@ describe('streamed operations declared in HTML', () => {
     expect(screen.$('input').value).toBe('hi');
   });
 });
+
+describe('streams and multipart in screens', () => {
+  it('removing the view cancels a running stream', async () => {
+    let aborted = false;
+    const chat = { version: 1, operations: { chat: { id: 'chat', method: 'POST', path: '/chat', body: true, stream: true, response: null } } };
+    const api = mockApi(chat, { chat: () => new Response(new ReadableStream({ start() { /* never ends */ }, cancel() { aborted = true; } }), { status: 200, headers: { 'content-type': 'text/event-stream' } }) });
+    screen = await mount(`<xo-view><form xo-submit="POST /chat"><input name="text"><button>go</button></form></xo-view>`, { api });
+    const form = screen.$('form');
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await new Promise((r) => setTimeout(r, 20));
+    screen.$('xo-view').remove(); // navigate away
+    await new Promise((r) => setTimeout(r, 20));
+    expect(aborted).toBe(true);
+  });
+
+  it('a multipart form drops file inputs where no file was chosen', async () => {
+    const up = { version: 1, operations: { upload: { id: 'upload', method: 'POST', path: '/f', body: true, multipart: true, response: null } } };
+    let seen;
+    const api = mockApi(up, { upload: () => respond(204, null) });
+    const original = api.fetch;
+    api.fetch = async (url, init) => { seen = init.body; return original(url, init); };
+    screen = await mount(`<xo-view><form xo-submit="POST /f"><input name="title"><input type="file" name="photo"><button>go</button></form></xo-view>`, { api });
+    await screen.submit('form', { title: 'x' });
+    expect(seen instanceof FormData).toBe(true);
+    expect([...seen.keys()]).toEqual(['title']);
+  });
+});

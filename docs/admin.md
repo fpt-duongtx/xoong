@@ -55,7 +55,7 @@ Cells show text. Custom cell content (badges, links) is not supported yet: write
 
 ## `<xo-form>`
 
-`op` is any operation with a JSON request body made of simple fields. Generated from `bodyFields`, which
+`op` is any operation with a JSON or multipart request body made of simple fields. Generated from `bodyFields`, which
 `xoong sync` writes into `operations.json`:
 
 | Schema | Control |
@@ -63,6 +63,7 @@ Cells show text. Custom cell content (badges, links) is not supported yet: write
 | `string` | `text`; `format: email`, `password`, `date`, `date-time`, `uri` choose the input type; `maxLength` sets `maxlength` |
 | `integer`, `number` | `number` |
 | `boolean` | checkbox |
+| `string` + `format: binary` | file input (multipart operations; an empty file input is left out) |
 | `enum` | `<select>` (with a blank choice when optional) |
 | `required` | `required` attribute |
 
