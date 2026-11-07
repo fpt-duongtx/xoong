@@ -42,13 +42,24 @@ export class XoControl extends XoElement {
     super();
     try { this.#internals = this.attachInternals?.() ?? null; } catch { this.#internals = null; }
     this.addEventListener('focusout', (e) => { if (!this.contains(/** @type {Node | null} */ (e.relatedTarget))) this.markTouched(); });
+    // A value set on the element before it was upgraded (the tag was used before `define`) is an own property that would hide the accessor.
+    // It is kept aside and becomes the start value at the first use: a subclass is not ready to run setValue while this constructor runs.
+    if (Object.prototype.hasOwnProperty.call(this, 'value')) { this.#early = { value: /** @type {any} */ (this).value }; delete (/** @type {any} */ (this)).value; }
+  }
+
+  /** @type {{ value: any } | null} */ #early = null;
+  #applyEarly() {
+    if (!this.#early) return;
+    const { value } = this.#early;
+    this.#early = null;
+    this.setValue(value);
   }
 
   // ---- value ----------------------------------------------------------------------------------------------------------
 
   /** The value. Strings by default; a subclass may hold anything and override `serialize`. */
-  get value() { return this.#value.value; }
-  set value(v) { this.setValue(v); }
+  get value() { this.#applyEarly(); return this.#value.value; }
+  set value(v) { this.#applyEarly(); this.setValue(v); }
 
   /**
    * Set the value programmatically (like `input.value = x`: no events). The first value set while the control is not yet
@@ -171,6 +182,7 @@ export class XoControl extends XoElement {
   // ---- lifecycle ----------------------------------------------------------------------------------------------------------
 
   connectedCallback() {
+    this.#applyEarly();
     super.connectedCallback();
     if (!this.#started) {
       this.#started = true;

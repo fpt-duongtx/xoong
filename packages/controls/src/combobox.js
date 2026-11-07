@@ -49,6 +49,14 @@ class XoCombobox extends XoControl {
   #id = `xo-combobox-${++counter}`;
   #onDocument = (/** @type {Event} */ event) => { if (!this.contains(/** @type {Node} */ (event.target))) this.#close(); };
 
+  constructor() {
+    super();
+    // `options` or `schema` assigned before the element was upgraded (used before `define`) are own properties that hide the accessors: re-assign them
+    for (const key of /** @type {const} */ (['options', 'schema'])) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) { const early = /** @type {any} */ (this)[key]; delete (/** @type {any} */ (this))[key]; /** @type {any} */ (this)[key] = early; }
+    }
+  }
+
   // ---- options ---------------------------------------------------------------------------------------------------------
 
   get options() { return this.#options; }

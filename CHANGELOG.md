@@ -5,6 +5,8 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+* Fixed: a custom control used before its element is defined (a route rendered before a lazy widget loaded). The form binder now binds it once the browser upgrades it, a `value` set before the upgrade becomes the start value instead of hiding the accessor, and `<xo-combobox>` keeps `options` and `schema` set early.
+
 ## 0.0.10 (@xoong/richtext)
 
 breaking: none. New package `@xoong/richtext` (add its tarball and override from consume.json).

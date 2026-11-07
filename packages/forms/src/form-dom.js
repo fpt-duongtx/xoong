@@ -184,9 +184,17 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
   form.addEventListener('focusout', onBlur);
 
   // Controls that appear later (xo-each rows, a revealed tab) and controls whose name changes (reordered rows).
+  const waiting = new Set();
   const scan = (root) => {
-    for (const el of root.querySelectorAll?.('[name]') ?? []) if (isControl(el)) bind(el);
-    if (root.matches?.('[name]') && isControl(root)) bind(root);
+    for (const el of root.querySelectorAll?.('[name]') ?? []) { if (isControl(el)) bind(el); else waitFor(el); }
+    if (root.matches?.('[name]')) { if (isControl(root)) bind(root); else waitFor(root); }
+  };
+  /** A custom element used before its class is defined is a plain element for now: look again when the browser has upgraded it. */
+  const waitFor = (/** @type {Element} */ el) => {
+    const tag = el.localName;
+    if (!tag.includes('-') || waiting.has(tag) || typeof customElements === 'undefined' || customElements.get(tag)) return;
+    waiting.add(tag);
+    customElements.whenDefined(tag).then(() => { waiting.delete(tag); if (form.isConnected) scan(form); });
   };
   scan(form);
   const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver((records) => {

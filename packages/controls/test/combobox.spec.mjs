@@ -208,4 +208,17 @@ describe('<xo-combobox multiple> and <xo-tags>', () => {
     expect(own.options.map((o) => o.label)).toContain('Ada Lovelace');
     expect(own.options.map((o) => o.label)).not.toContain('x');
   });
+
+  it('options and a value set before the element is defined survive the upgrade', async () => {
+    const el = document.createElement('xo-combobox-late'); // the tag is not defined yet: a plain element
+    el.setAttribute('name', 'f');
+    el.options = ['a', 'b'];
+    el.value = 'b';
+    document.body.append(el);
+    customElements.define('xo-combobox-late', class extends customElements.get('xo-combobox') {}); // the upgrade runs now
+    await wait();
+    expect(el.options.map((o) => o.value)).toEqual(['a', 'b']);
+    expect(el.value).toBe('b');
+    expect(el.querySelector('.xo-combobox-input').value).toBe('b');
+  });
 });
