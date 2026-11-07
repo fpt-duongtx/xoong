@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p .tmp && node packages/cli/src/cli.js sync examples/chat/openapi.json --hints examples/chat/xoong.hints.json --out .tmp
           npx tsc --noEmit --strict --target es2022 .tmp/api.d.ts
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage-node-${{ matrix.node }}
