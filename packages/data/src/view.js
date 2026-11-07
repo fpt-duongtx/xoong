@@ -34,8 +34,13 @@ import { XoongError } from './client.js';
 
 /** Where `p-id=":id"` finds route parameters (set by the router in @xoong/ui). */
 let paramSource = /** @type {((name: string) => string | undefined) | null} */ (null);
+/** Views that use `p-x=":param"` and started before the router did (element definition order): they start when it is ready. */
+const waitingForRouter = /** @type {(() => void)[]} */ ([]);
 /** @param {(name: string) => string | undefined} fn */
-export function setParamSource(fn) { paramSource = fn; }
+export function setParamSource(fn) {
+  paramSource = fn;
+  for (const start of waitingForRouter.splice(0)) start();
+}
 
 /** Components that expand into plain markup before binding (used by @xoong/ui). tag -> (el, { host, client }) => Node */
 const templates = new Map();
@@ -143,6 +148,10 @@ class XoView extends XoElement {
   }
 
   #start() {
+    if (!paramSource && [...this.attributes].some((a) => a.name.startsWith('p-') && a.value.startsWith(':'))) {
+      waitingForRouter.push(() => { if (this.isConnected) this.#start(); }); // a route view whose router is not running yet: wait for it
+      return;
+    }
     this.#stop();
     const client = getClient();
     const store = client.store;

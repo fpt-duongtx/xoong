@@ -65,6 +65,7 @@ import { renderPage } from '@xoong/ssr';
 const html = await renderPage(pageHtml, { operations, baseUrl: 'http://backend', headers: () => ({}) });
 ```
 
+* **Routers and SEO:** `--url` / `url` renders the route of that URL when the page has an `<xo-router>`; see docs/admin.md ("SEO and prerendering").
 * Scope: public, cacheable pages. Personalised pages stay client-rendered until a later ADR (the server would need the
   visitor's credentials; use `headers` only for service credentials).
 * The first render installs `window`, `document` and friends on `globalThis` for the rest of the process: prerender in a build

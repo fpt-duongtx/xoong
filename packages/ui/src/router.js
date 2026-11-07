@@ -4,7 +4,7 @@
  *
  *   <xo-router base="/admin">
  *     <template xo-layout="shell"><nav>...<a href="/users">Users</a></nav><main xo-outlet></main></template>
- *     <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
+ *     <template xo-route="/users/:id" layout="shell" title="User" description="The user page"><xo-view get="getUser" p-id=":id">...</xo-view></template>
  *     <template xo-route="*">Not found</template>
  *   </xo-router>
  *
@@ -17,7 +17,7 @@ import { XoElement, define } from '@xoong/core';
 import { setParamSource } from '@xoong/data/view';
 
 /** @typedef {{ path: string, params: Record<string,string>, query: URLSearchParams, url: string, route: Route | null }} Location */
-/** @typedef {{ pattern: string, regex: RegExp, names: string[], layout: string | null, title: string, template: HTMLTemplateElement, score: number }} Route */
+/** @typedef {{ pattern: string, regex: RegExp, names: string[], layout: string | null, title: string, description: string | undefined, template: HTMLTemplateElement, score: number }} Route */
 
 const trim = (s) => (s.length > 1 ? s.replace(/\/+$/, '') : s) || '/';
 
@@ -60,7 +60,7 @@ class XoRouter extends XoElement {
 
   disconnected() {
     document.removeEventListener('click', this.#onClick);
-    removeEventListener('popstate', this.#onPop);
+    window.removeEventListener('popstate', this.#onPop);
     this.#started = false;
     if (active === this) active = null;
   }
@@ -91,16 +91,17 @@ class XoRouter extends XoElement {
       if (t.hasAttribute('xo-layout')) this.#layouts.set(t.getAttribute('xo-layout') ?? '', { template: t, layout: t.getAttribute('layout') });
       else if (t.hasAttribute('xo-route')) {
         const pattern = t.getAttribute('xo-route') ?? '';
-        this.#routes.push({ pattern, ...compile(pattern), layout: t.getAttribute('layout'), title: t.getAttribute('title') ?? '', template: t });
+        this.#routes.push({ pattern, ...compile(pattern), layout: t.getAttribute('layout'), title: t.getAttribute('title') ?? '', description: t.getAttribute('description') ?? undefined, template: t });
       }
     }
     this.#routes.sort((a, b) => b.score - a.score);
+    for (const old of this.querySelectorAll(':scope > .xo-router-root')) old.remove(); // content prerendered by @xoong/ssr: the router renders it again
     this.#root = document.createElement('div');
     this.#root.className = 'xo-router-root';
     this.append(this.#root);
     setParamSource((name) => this.#current?.params[name]); // p-id=":id" on a view
     document.addEventListener('click', this.#onClick);
-    addEventListener('popstate', this.#onPop);
+    window.addEventListener('popstate', this.#onPop);
     this.#go(this.#read(), 'replace', 'start').catch((e) => this.#report(e));
   }
 
@@ -114,12 +115,12 @@ class XoRouter extends XoElement {
 
   /** The browser location as a router location (path without the base). */
   #read() {
-    return this.#parse(location.pathname + location.search + location.hash, true);
+    return this.#parse(window.location.pathname + window.location.search + window.location.hash, true);
   }
 
   /** @param {string} target a path (with optional query) relative to the base, or a full path when `absolute` */
   #parse(target, absolute = false) {
-    const url = new URL(target, `${location.origin}${absolute ? '' : this.#base === '/' ? '/' : this.#base + '/'}`);
+    const url = new URL(target, `${window.location.origin}${absolute ? '' : this.#base === '/' ? '/' : this.#base + '/'}`);
     let path = trim(decodeURI(url.pathname));
     const base = this.#base;
     if (base !== '/' && (path === base || path.startsWith(base + '/'))) path = trim(path.slice(base.length) || '/');
@@ -145,11 +146,11 @@ class XoRouter extends XoElement {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const a = /** @type {Element} */ (e.target)?.closest?.('a[href]');
     if (!a || (a.getAttribute('target') && a.getAttribute('target') !== '_self') || a.hasAttribute('download') || a.getAttribute('rel')?.includes('external')) return;
-    const url = new URL(/** @type {string} */ (a.getAttribute('href')), location.href);
-    if (url.origin !== location.origin) return;
+    const url = new URL(/** @type {string} */ (a.getAttribute('href')), window.location.href);
+    if (url.origin !== window.location.origin) return;
     const base = this.#base;
     if (base !== '/' && !(url.pathname === base || url.pathname.startsWith(base + '/'))) return; // not ours: let the browser navigate
-    if (url.pathname === location.pathname && url.search === location.search && url.hash) return; // in-page anchor
+    if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return; // in-page anchor
     e.preventDefault();
     this.#go(this.#parse(url.pathname + url.search + url.hash, true), 'push', 'link').catch((err) => this.#report(err));
   }
@@ -186,12 +187,12 @@ class XoRouter extends XoElement {
 
   /** A vetoed or cancelled back/forward already moved the address bar: put the previous URL back. */
   #restore(type) {
-    if (type === 'popstate' && this.#current) history.pushState(null, '', this.#current.url);
+    if (type === 'popstate' && this.#current) window.history.pushState(null, '', this.#current.url);
   }
 
   #writeUrl(to, mode) {
-    if (mode === 'replace') history.replaceState(null, '', to.url);
-    else if (to.url !== location.pathname + location.search + location.hash) history.pushState(null, '', to.url);
+    if (mode === 'replace') window.history.replaceState(null, '', to.url);
+    else if (to.url !== window.location.pathname + window.location.search + window.location.hash) window.history.pushState(null, '', to.url);
   }
 
   /** The layout chain of a route, outermost first, e.g. ['root', 'shell']. */
@@ -233,9 +234,14 @@ class XoRouter extends XoElement {
 
   #afterNavigate(to, from) {
     if (to.route?.title) document.title = to.route.title;
+    if (to.route?.description !== undefined) { // per-route description for search engines (kept by prerendering)
+      let meta = document.head.querySelector('meta[name="description"]');
+      if (!meta) { meta = document.createElement('meta'); meta.setAttribute('name', 'description'); document.head.append(meta); }
+      meta.setAttribute('content', to.route.description);
+    }
     for (const a of document.querySelectorAll('a[href]')) {
       let path;
-      try { path = trim(new URL(a.getAttribute('href') ?? '', location.href).pathname); } catch { continue; }
+      try { path = trim(new URL(a.getAttribute('href') ?? '', window.location.href).pathname); } catch { continue; }
       const base = this.#base;
       if (base !== '/' && path.startsWith(base)) path = trim(path.slice(base.length) || '/');
       if (path === to.path) a.setAttribute('aria-current', 'page');
@@ -246,7 +252,7 @@ class XoRouter extends XoElement {
     if (from) { // not on the first render: move focus to the new content and start at the top, like a page load
       outlet?.setAttribute('tabindex', '-1');
       /** @type {HTMLElement} */ (outlet)?.focus?.({ preventScroll: true });
-      scrollTo?.(0, 0);
+      window.scrollTo?.(0, 0);
     }
     this.emit('xo-navigate', { to, from });
   }

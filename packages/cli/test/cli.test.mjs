@@ -438,3 +438,21 @@ test('Swagger 2: csv and multi arrays keep their wire format, file responses bec
   assert.deepEqual([by('c').style, by('c').explode], ['pipeDelimited', false]);
   assert.deepEqual(out.responses['200'].content['application/octet-stream'].schema, { type: 'string', format: 'binary' });
 });
+
+test('xoong render --url prerenders the route of that URL into a nested output path', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'xoong-render-url-'));
+  const { createServer } = await import('node:http');
+  const api = createServer((req, res) => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify({ id: 1, name: 'Ada' })); });
+  await new Promise((r) => api.listen(0, '127.0.0.1', r));
+  try {
+    await sync(fixture, { out: dir });
+    const page = join(dir, 'page.html');
+    await (await import('node:fs/promises')).writeFile(page, '<!doctype html><html><head><title>T</title></head><body><xo-router><template xo-route="/"><p>home</p></template><template xo-route="/users/:id" title="User"><xo-view get="getUser" p-id=":id"><b>{name}</b></xo-view></template></xo-router></body></html>');
+    const out = join(dir, 'dist', 'users', '1', 'index.html');
+    await run(process.execPath, [new URL('../src/cli.js', import.meta.url).pathname, 'render', page, '--api', `http://127.0.0.1:${api.address().port}`, '--url', '/users/1', '--operations', join(dir, 'operations.json'), '--out', out]);
+    const html = await readFile(out, 'utf8');
+    assert.match(html, /<title>User<\/title>/);
+    assert.match(html, /<b[^>]*>Ada<\/b>/);
+    assert.doesNotMatch(html, /<p>home<\/p>\s*<\/div>/); // the home route is not the rendered one
+  } finally { api.close(); }
+}, 30000);

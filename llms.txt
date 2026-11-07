@@ -111,4 +111,4 @@ and FastAPI `{ detail: [{ msg }] }`. Unknown operations throw with the closest v
 Mock the network, never the data layer. Every behaviour you add needs a test.
 
 ## Limits today (do not work around them silently; tell the user)
-Swagger 2.0 is converted by `sync` (basic: paths, params, bodies, responses, definitions; use `npx swagger2openapi` for anything exotic). No request-time SSR (prerender with `xoong render`), no WebSocket, unions without a tag property are not shared.
+Swagger 2.0 is converted by `sync` (basic: paths, params, bodies, responses, definitions; use `npx swagger2openapi` for anything exotic). No request-time SSR (prerender per URL with `xoong render --url /path`), no WebSocket, unions without a tag property are not shared.

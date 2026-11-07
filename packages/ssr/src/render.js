@@ -81,6 +81,14 @@ async function render(html, { operations, baseUrl = '', fetch: fetchImpl, header
       tpl.innerHTML = markup;
       view.prepend(tpl);
     });
+    const live = /** @type {any} */ (globalThis).document; // a router (or anything else) may have set the title and description
+    if (live.title && live.title !== parsed.title) parsed.title = live.title;
+    const description = live.head.querySelector('meta[name="description"]')?.getAttribute('content');
+    if (description !== undefined && description !== null) {
+      let meta = parsed.head.querySelector('meta[name="description"]');
+      if (!meta) { meta = parsed.createElement('meta'); meta.setAttribute('name', 'description'); parsed.head.append(meta); }
+      meta.setAttribute('content', description);
+    }
     const root = parsed.documentElement;
     const attrs = (el) => [...el.attributes].map((a) => ` ${a.name}="${a.value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`).join('');
     return `<!doctype html>\n<html${attrs(root)}>\n<head>${parsed.head.innerHTML}</head>\n<body${attrs(parsed.body)}>${body.innerHTML}</body>\n</html>\n`;

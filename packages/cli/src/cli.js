@@ -4,7 +4,8 @@ import { sync, doctor } from './commands.js';
 import { startDev, parseProxyFlags } from './dev.js';
 import { checkFiles, formatFindings } from './check.js';
 import { scaffold } from './scaffold.js';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { dirname } from 'node:path';
 
 const HELP = `xoong <command>
 
@@ -12,7 +13,7 @@ const HELP = `xoong <command>
   doctor <openapi.json|yaml|url> [--hints hints.json] [--all]   audit the OpenAPI document for xoong
   new <folder> --spec <openapi.json|yaml|url> [--title "My app"] [--link <xoong checkout>]   create a project with a first screen
   check <file|folder>... [--operations .xoong/operations.json] [--format text|json]   check HTML screens
-  render <page.html> --api <url> [--operations .xoong/operations.json] [--out file]   prerender a page with its data (needs @xoong/ssr)
+  render <page.html> --api <url> [--url /users/7] [--operations .xoong/operations.json] [--out file]   prerender a page (a route, with --url) with its data (needs @xoong/ssr)
   dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080] [--spa]   serve the app (static, proxy, .ts)
 `;
 
@@ -50,9 +51,10 @@ try {
     const opsFile = flag('--operations', '.xoong/operations.json');
     let operations;
     try { operations = JSON.parse(await readFile(opsFile, 'utf8')); } catch { throw new Error(`xoong: cannot read ${opsFile}. Run \`xoong sync <openapi>\` first, or pass --operations <file>`); }
-    const html = await renderPage(await readFile(rest[0], 'utf8'), { operations, baseUrl: flag('--api') });
+    const at = flag('--url');
+    const html = await renderPage(await readFile(rest[0], 'utf8'), { operations, baseUrl: flag('--api'), ...(at ? { url: new URL(at, 'http://xoong.local').href } : {}) });
     const out = flag('--out');
-    if (out) { await writeFile(out, html); console.log(`rendered ${rest[0]} -> ${out}`); } else process.stdout.write(html);
+    if (out) { await mkdir(dirname(out), { recursive: true }); await writeFile(out, html); console.log(`rendered ${rest[0]} -> ${out}`); } else process.stdout.write(html);
   } else if (cmd === 'dev') {
     const proxies = rest.flatMap((v, i) => (rest[i - 1] === '--proxy' ? [v] : []));
     const port = flag('--port');

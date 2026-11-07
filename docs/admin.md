@@ -68,7 +68,14 @@ content changes:
   cancelled by the browser: the router puts the previous URL back with `pushState`, which drops the forward entry. Closing the tab is
   `beforeunload`, which is yours to handle.
 * **Hosting.** The server must answer every path under `base` with the app's HTML (`xoong dev --spa`, `"spa": true`).
-* **Prerender.** `xoong render` takes the URL, so a route can be prerendered (`renderPage(html, { url })`).
+* **SEO and prerendering.** Yes, a site that needs search engines can use the router: prerender every public URL to a static file, and the
+  router takes over in the browser. `xoong render index.html --api http://backend --url /users/7 --out dist/users/7/index.html` renders the
+  route of that URL with its data (JavaScript: `renderPage(html, { url })`); the output has the route's content, `<title>` (route
+  `title`) and `<meta name="description">` (route `description`). With JavaScript on, the router replaces the prerendered content with
+  the same page, so there is no flicker and no hydration mismatch. Limits, stated plainly: this is **prerendering at build time**, not
+  request-time SSR, so the data is as fresh as the last render; you list the URLs yourself (no sitemap generation); only title and
+  description are managed per route; the server must serve the right file per path. For a public site with few, mostly static pages,
+  one HTML file per page (no router) is simpler and equally indexable.
 * **Checks.** `xoong check`: XO260 (route path), XO261 (undeclared layout), XO262 (layout without `xo-outlet`), XO263 (route parameter).
 * Not done: nested routers, route-level data loading hooks, per-route code splitting, scroll restoration on Back.
 
