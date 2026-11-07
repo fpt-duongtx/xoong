@@ -1,0 +1,87 @@
+# xoong
+
+xoong is a small web framework built on the browser platform. You declare screens in HTML, the data
+layer is generated from an OpenAPI document, styling is plain CSS. Status: 0.0.x prototype; the HTML
+syntax is Draft. Light DOM only (no Shadow DOM). No virtual DOM, no JSX, no hooks, no build required.
+
+## Rules (follow all of them)
+1. One way to do each thing. Reads: `<xo-view get>`. Writes: `xo-click` / `xo-submit`. Never call fetch/axios yourself.
+2. Never write a cache key, an HTTP client, a response type or an error handler. They come from the OpenAPI document.
+3. Style with plain CSS/SCSS (custom properties, `@layer`, `@scope`). No utility classes, no CSS-in-JS.
+4. Use native elements: `<button>`, `<form>`, `<dialog>`, `<details>`. Buttons need text or `aria-label`.
+5. Run `xoong check <html files>` and fix every error it prints; its messages contain the fix.
+6. Never invent attributes or operations. Allowed `xo-*` attributes are listed below.
+
+## Project setup
+    xoong new my-app --spec openapi.json      # scaffold + first list screen
+    xoong sync openapi.json --hints xoong.hints.json   # writes .xoong/operations.json and .xoong/api.d.ts
+    xoong dev                                 # static server + API proxy + TypeScript stripping (xoong.config.json)
+    xoong check index.html                    # lint screens against the API
+    xoong doctor openapi.json                 # what in the OpenAPI document limits xoong (JSON or YAML, OpenAPI 3.x)
+
+xoong.config.json: `{ "port": 5173, "proxy": { "/api": "http://localhost:8080" } }`
+xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } } }`
+(hints declare identity without editing the backend's spec; `entity` makes several schemas share one record).
+
+## Start-up (src/main.ts, the only JavaScript most apps need)
+    import { configure } from '@xoong/data';
+    import '@xoong/data/view';
+    import operations from '/.xoong/operations.json' with { type: 'json' };
+    configure({ api: operations, baseUrl: '/api', streamUrl: '/api/events' });
+    document.addEventListener('xo-error', (e) => show(e.detail.detail));   // mutation errors
+
+## Screens: HTML syntax (inside <xo-view>)
+    <xo-view get="/users" live>                        read GET /users; `live` applies stream events
+      <p xo-if="$loading">Loading…</p>
+      <p xo-if="$error">{$error.code}: {$error.detail}</p>
+      <tr xo-each="items"> <td>{name}</td> <td><a href="/u/{id}">{email}</a></td>
+        <td><button xo-click="POST /users/{id}/disable">Disable</button></td> </tr>
+    </xo-view>
+    <xo-view><form xo-submit="POST /users"> <input name="name"> <button>Add</button> </form></xo-view>
+
+- `get`: "/path" (means GET /path), "GET /path", or an operationId. Path params come from `p-<name>` attributes:
+  `<xo-view get="/users/{id}" p-id="42">`. From JS: `view.params = { id: 7 }`.
+- `{path}` reads a field of the current item (`.` = the item, `a.b` nested). Fields fall back to the view's `p-*` params.
+  Variables: `$loading`, `$error` (has `status`, `code`, `detail`, `retryAfterS`), `$index`. Text is always escaped;
+  `href/src/action` values with `javascript:` become about:blank; `on*` and `srcdoc` cannot be interpolated.
+- `xo-each="path"` repeats the element per item (keyed by entity id). `xo-if="path"` / `xo-if="!path"` (empty array = false).
+- `xo-click="OP"` calls an operation; `xo-submit="OP"` on a `<form>` sends the form fields as the JSON body and
+  resets the form on success (add `xo-keep` to keep values). `xo-body="path"` takes a click's body from the scope.
+  OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
+- Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. While a call runs the element has `aria-busy="true"`.
+- After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
+  a detail query is not refetched if the response already returned that entity. Override: `configure({ invalidate: { shipOrder: ['getDashboard'] } })`.
+
+## JavaScript API (use only when HTML is not enough)
+@xoong/data: `configure(opts)`, `getClient()`, `derived(({ all, get }) => value)`, `createClient(opts)`, `connectStream`.
+  opts: api (operations.json), baseUrl, headers (fn -> object, for auth), credentials, staleTime=30000, gcTime=300000,
+  retry=2 (GET only), retryDelay=300, invalidate, onError, onUnauthorized, streamUrl, fetch.
+  client.load(op, params) -> data | client.query(op, params) -> {data, status, error} signals | client.mutate(op, params, body)
+  client.stream(op, params, body) -> async iterator of SSE events {event, data, json, id} (for POST streams such as chat)
+  `derived` = computed over every loaded entity of a type (`all('Order')`); it never makes requests.
+@xoong/core: `signal(v)` (.value, .peek()), `computed(fn)`, `effect(fn)` (side effects only, never fetch in it), `batch`,
+  `untracked`, `html` + `render(result, el)`, `XoElement` + `define(tag, class)`.
+  html`<p class=${() => c.value} ?hidden=${() => h.value} .value=${v} @click=${fn}>${() => text.value}</p>`
+  (functions are reactive; an attribute value must be exactly one expression).
+  class X extends XoElement { static props = { name: String, n: Number, on: Boolean }; render() { return html`...` } }
+  define('x-card', X)   // tag needs a hyphen; implement render() only if the element owns its content
+
+## Live updates (server-sent events)
+One JSON object per message: {type:"patch", entity:"User", id:42, path:"/status", value:"disabled", version:7} |
+{type:"upsert", entity, id, value, version} | {type:"delete", entity, id, version} | {type:"resync"} (clients refetch).
+Field changes use patch/upsert; membership changes (create/delete) use resync. `version` must increase per entity.
+
+## Errors
+Mutation and query failures become XoongError: understands problem+json, `{ error: { code, message, retry_after_s } }`
+and FastAPI `{ detail: [{ msg }] }`. Unknown operations throw with the closest valid name.
+
+## Testing (Vitest)
+    const api = mockApi(operations, { listUsers: () => [{ id: 1, name: 'Ada' }] });
+    const screen = await mount('<xo-view get="/users">...</xo-view>', { api });
+    await screen.click('button'); await screen.submit('form', { name: 'Cy' }); await screen.push(event);
+    expect(screen.texts('li')).toEqual([...]); expect(api.unhandled).toEqual([]); expect(screen.errors).toEqual([]);
+Mock the network, never the data layer. Every behaviour you add needs a test.
+
+## Limits today (do not work around them silently; tell the user)
+Swagger 2.0 must be converted first (`npx swagger2openapi`). No SSR, no xo-table/xo-form yet, no WebSocket, no multipart upload
+in xo-submit, no declarative streaming for POST (use client.stream), unions without a tag property are not shared.

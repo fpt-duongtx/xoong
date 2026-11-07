@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>xoong architecture</title>
+<style>
+  :root {
+    --bg: #fafaf8; --fg: #1c1c1a; --muted: #6b6b66; --line: #c9c9c2;
+    --browser: #e6efff; --runtime: #dbe8ff; --tool: #fdf0d9; --ext: #ececea; --gen: #e4f4e6;
+    --accent: #0b5fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161615; --fg:#ecece8; --muted:#9a9a93; --line:#4a4a46;
+      --browser:#1d2a44; --runtime:#22365a; --tool:#463a22; --ext:#2a2a28; --gen:#1f3a26; --accent:#6ea0ff; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  p.sub { color: var(--muted); margin: 0 0 20px; }
+  svg { width: 100%; height: auto; display:block; }
+  svg text { fill: var(--fg); font: 13px system-ui, sans-serif; }
+  svg .t { font-weight: 600; }
+  svg .m { fill: var(--muted); font-size: 11.5px; }
+  svg .box { stroke: var(--line); stroke-width: 1.2; }
+  svg .arrow { stroke: var(--fg); stroke-width: 1.4; fill: none; marker-end: url(#a); }
+  svg .dash { stroke-dasharray: 5 4; }
+  svg .zone { fill: none; stroke: var(--line); stroke-width: 1.2; stroke-dasharray: 6 4; }
+  svg .zl { fill: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .04em; }
+  .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; color:var(--muted); font-size:13px; }
+  .legend i { display:inline-block; width:12px; height:12px; border:1px solid var(--line); margin-right:6px; vertical-align:-1px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>xoong architecture</h1>
+  <p class="sub">Runtime packages run in the browser with zero dependencies. Tooling and the optional server never ship to the browser.</p>
+
+  <svg viewBox="0 0 960 600" role="img" aria-label="xoong architecture diagram">
+    <defs>
+      <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="currentColor" style="color:var(--fg)"/>
+      </marker>
+    </defs>
+
+    <!-- Browser zone -->
+    <rect class="zone" x="10" y="10" width="520" height="430" rx="12"/>
+    <text class="zl" x="26" y="34">BROWSER (runtime, zero dependencies)</text>
+
+    <rect class="box" x="30" y="50" width="480" height="70" rx="8" fill="var(--browser)"/>
+    <text class="t" x="46" y="76">Your app</text>
+    <text class="m" x="46" y="96">HTML screens · &lt;xo-view&gt; &lt;xo-table&gt; &lt;xo-form&gt; · plain CSS/SCSS · derived views</text>
+
+    <rect class="box" x="30" y="140" width="480" height="76" rx="8" fill="var(--runtime)"/>
+    <text class="t" x="46" y="166">@xoong/ui</text>
+    <text class="m" x="46" y="186">xoong.css tokens · xo-table · xo-form · xo-dialog · admin layout</text>
+
+    <rect class="box" x="30" y="236" width="480" height="92" rx="8" fill="var(--runtime)"/>
+    <text class="t" x="46" y="262">@xoong/data</text>
+    <text class="m" x="46" y="282">typed client (from OpenAPI) · auto cache · mutations + invalidation</text>
+    <text class="m" x="46" y="300">entity store · derived · stream subscriber · error normalization</text>
+
+    <rect class="box" x="30" y="348" width="480" height="76" rx="8" fill="var(--runtime)"/>
+    <text class="t" x="46" y="374">@xoong/core</text>
+    <text class="m" x="46" y="394">signals · custom element base (Light DOM) · declarative attributes · router</text>
+
+    <path class="arrow" d="M270 140 L270 122"/>
+    <path class="arrow" d="M270 236 L270 218"/>
+    <path class="arrow" d="M270 348 L270 330"/>
+
+    <!-- Server zone -->
+    <rect class="zone" x="560" y="10" width="390" height="250" rx="12"/>
+    <text class="zl" x="576" y="34">@xoong/server (optional · Fetch API)</text>
+    <rect class="box" x="580" y="50" width="350" height="44" rx="8" fill="var(--tool)"/>
+    <text class="t" x="596" y="77">Static / dev server</text>
+    <rect class="box" x="580" y="104" width="350" height="44" rx="8" fill="var(--tool)"/>
+    <text class="t" x="596" y="131">API proxy · auth · retry</text>
+    <rect class="box" x="580" y="158" width="350" height="44" rx="8" fill="var(--tool)"/>
+    <text class="t" x="596" y="185">SSR (no hydration)</text>
+    <rect class="box" x="580" y="212" width="350" height="36" rx="8" fill="var(--tool)"/>
+    <text class="t" x="596" y="235">Stream gateway (SSE)</text>
+
+    <!-- Backend -->
+    <rect class="box" x="580" y="290" width="350" height="70" rx="8" fill="var(--ext)"/>
+    <text class="t" x="596" y="316">Your backend</text>
+    <text class="m" x="596" y="336">any language · publishes openapi.json · owns business logic</text>
+
+    <path class="arrow" d="M510 150 L560 150"/>
+    <text class="m" x="512" y="142">HTTP/SSE</text>
+    <path class="arrow" d="M755 260 L755 288"/>
+    <path class="arrow dash" d="M510 280 C 545 280, 545 325, 578 325"/>
+    <text class="m" x="518" y="272">direct (no server)</text>
+
+    <!-- Tooling -->
+    <rect class="zone" x="10" y="460" width="940" height="130" rx="12"/>
+    <text class="zl" x="26" y="484">TOOLING (dev only, may have dependencies)</text>
+
+    <rect class="box" x="30" y="498" width="290" height="76" rx="8" fill="var(--tool)"/>
+    <text class="t" x="46" y="524">@xoong/cli</text>
+    <text class="m" x="46" y="544">new · dev · build · sync · check · doctor · codemod</text>
+
+    <rect class="box" x="360" y="498" width="290" height="76" rx="8" fill="var(--gen)"/>
+    <text class="t" x="376" y="524">Generated by xoong sync</text>
+    <text class="m" x="376" y="544">.xoong/api.d.ts · .xoong/operations.json</text>
+    <text class="m" x="376" y="562">read by @xoong/data at runtime</text>
+
+    <rect class="box" x="690" y="498" width="240" height="76" rx="8" fill="var(--tool)"/>
+    <text class="t" x="706" y="524">@xoong/mcp</text>
+    <text class="m" x="706" y="544">get_spec · search_docs · scaffold</text>
+    <text class="m" x="706" y="562">calls the CLI for check</text>
+
+    <path class="arrow" d="M320 536 L358 536"/>
+  </svg>
+
+  <div class="legend">
+    <span><i style="background:var(--runtime)"></i>Runtime package</span>
+    <span><i style="background:var(--tool)"></i>Tooling / server</span>
+    <span><i style="background:var(--gen)"></i>Generated</span>
+    <span><i style="background:var(--ext)"></i>External</span>
+  </div>
+</main>
+</body>
+</html>
