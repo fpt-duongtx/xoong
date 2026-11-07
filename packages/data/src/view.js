@@ -126,7 +126,10 @@ class XoView extends XoElement {
     const store = client.store;
     const lookup = makeResolver(store);
     if (!this.#tpl) {
-      this.#tpl = [...this.childNodes].map((n) => n.cloneNode(true));
+      // Prerendered pages (@xoong/ssr) keep the original markup in a <template data-xo-template>; the rendered rows around
+      // it are only there for the first paint and are replaced when the view starts.
+      const saved = this.firstElementChild?.localName === 'template' && this.firstElementChild.hasAttribute('data-xo-template') ? /** @type {HTMLTemplateElement} */ (this.firstElementChild) : null;
+      this.#tpl = [...(saved ? saved.content.childNodes : this.childNodes)].map((n) => n.cloneNode(true));
       const initial = {};
       for (const a of this.attributes) if (a.name.startsWith('p-')) initial[camel(a.name.slice(2))] = a.value;
       this.#params.value = { ...initial, ...this.#params.peek() };

@@ -1,7 +1,7 @@
 # Server (optional)
 
 Status: **static, proxy, TypeScript stripping, import map and `xoong dev` are implemented** (tested,
-including a real-browser end-to-end test). **SSR and the stream gateway are planned.** Package: `@xoong/server`.
+including a real-browser end-to-end test). **Prerendering (`@xoong/ssr`) is done in a first version; the stream gateway is planned.** Package: `@xoong/server`.
 
 A xoong app can run with **no server at all** (static files, direct calls to
 your backend). The server package adds four opt-in capabilities.
@@ -49,12 +49,31 @@ Not done yet: live reload and SCSS compilation.
 * Drops hop-by-hop headers and adds `x-forwarded-host/proto`; an unreachable upstream answers 502 with the reason.
 * Planned: credential injection and refresh, retry and timeout policy.
 
-## 3. SSR (planned after 0.6)
+## 3. SSR: prerendering (first version done)
 
-Renders the same Light DOM markup on the server. Because the browser upgrades
-elements in place, there is **no hydration step** and no mismatch class of
-bugs. Initial scope: public, cacheable pages. Highly personalized pages stay
-client-rendered until a later ADR.
+`@xoong/ssr` renders a page with its data by running **the same `<xo-view>` runtime** on a DOM from happy-dom, so the syntax has
+one implementation. Because the output is Light DOM, there is **no hydration step** and no mismatch class of bugs: every
+top-level `<xo-view>` keeps its original markup in a `<template data-xo-template>`, and when the browser starts the view it
+renders again from that template. The prerendered rows are only the first paint (and what crawlers and no-JavaScript visitors see).
+
+```bash
+xoong render index.html --api http://localhost:8080 --out dist/index.html     # needs @xoong/ssr
+```
+
+```js
+import { renderPage } from '@xoong/ssr';
+const html = await renderPage(pageHtml, { operations, baseUrl: 'http://backend', headers: () => ({}) });
+```
+
+* Scope: public, cacheable pages. Personalised pages stay client-rendered until a later ADR (the server would need the
+  visitor's credentials; use `headers` only for service credentials).
+* Pages render one after another (DOM globals are process-wide). A page whose data does not load within `timeoutMs`
+  (default 10 s) fails with a clear error instead of rendering half.
+* Scripts and stylesheets of the page are neither run nor fetched during rendering.
+* Not done: a request-time middleware in `xoong dev` / `@xoong/server`, caching and revalidation policy, per-route
+  rendering of `p-*` params from the URL, rendering `live` views' first stream state.
+* Verified in real Chromium: the prerendered admin page shows its rows with JavaScript disabled, and with JavaScript the view takes
+  over without duplicated rows, with working actions and no errors.
 
 ## 4. Stream gateway
 

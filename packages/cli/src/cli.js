@@ -4,7 +4,7 @@ import { sync, doctor } from './commands.js';
 import { startDev, parseProxyFlags } from './dev.js';
 import { checkFiles, formatFindings } from './check.js';
 import { scaffold } from './scaffold.js';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 
 const HELP = `xoong <command>
 
@@ -12,6 +12,7 @@ const HELP = `xoong <command>
   doctor <openapi.json|yaml|url> [--hints hints.json] [--all]   audit the OpenAPI document for xoong
   new <folder> --spec <openapi.json|yaml|url> [--title "My app"] [--link <xoong checkout>]   create a project with a first screen
   check <file|folder>... [--operations .xoong/operations.json] [--format text|json]   check HTML screens
+  render <page.html> --api <url> [--operations .xoong/operations.json] [--out file]   prerender a page with its data (needs @xoong/ssr)
   dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080] [--spa]   serve the app (static, proxy, .ts)
 `;
 
@@ -43,6 +44,15 @@ try {
     const { findings, files } = await checkFiles(targets, table);
     console.log(format === 'json' ? JSON.stringify(findings, null, 2) : formatFindings(findings, { files }));
     process.exitCode = findings.some((f) => f.level === 'error') ? 1 : 0;
+  } else if (cmd === 'render' && rest[0] && flag('--api')) {
+    let renderPage;
+    try { ({ renderPage } = await import('@xoong/ssr')); } catch { throw new Error('xoong: `render` needs the @xoong/ssr package: npm install @xoong/ssr'); }
+    const opsFile = flag('--operations', '.xoong/operations.json');
+    let operations;
+    try { operations = JSON.parse(await readFile(opsFile, 'utf8')); } catch { throw new Error(`xoong: cannot read ${opsFile}. Run \`xoong sync <openapi>\` first, or pass --operations <file>`); }
+    const html = await renderPage(await readFile(rest[0], 'utf8'), { operations, baseUrl: flag('--api') });
+    const out = flag('--out');
+    if (out) { await writeFile(out, html); console.log(`rendered ${rest[0]} -> ${out}`); } else process.stdout.write(html);
   } else if (cmd === 'dev') {
     const proxies = rest.flatMap((v, i) => (rest[i - 1] === '--proxy' ? [v] : []));
     const port = flag('--port');

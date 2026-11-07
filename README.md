@@ -6,7 +6,7 @@
 **Status: working prototype (0.0.x), not published.** The core, data layer, CLI, dev server and test
 helpers exist and are tested (150+ tests, including a real-browser end-to-end run of
 [`examples/admin`](examples/admin)). The HTML syntax is still **Draft** and may change before 0.1.
-Planned parts (admin components, SSR, MCP server, editor extension) are marked as such in
+Parts that are still planned (stream gateway, VS Code extension, lint presets) are marked as such in
 [`docs/`](docs). Picking this project up? Read [HANDOVER.md](HANDOVER.md) first. Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash

@@ -379,3 +379,20 @@ test('composite ids from hints, and untagged unions resolved by a unique require
   const bad = analyze(doc, { hints: { schemas: { Pod: { id: ['namespace', 'nope'] } } } });
   assert.equal(bad.problems.find((p) => p.code === 'XO101').level, 'error');
 });
+
+test('xoong render prerenders a page through @xoong/ssr', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'xoong-render-'));
+  const { createServer } = await import('node:http');
+  const api = createServer((req, res) => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify([{ id: 1, name: 'Ada' }])); });
+  await new Promise((r) => api.listen(0, '127.0.0.1', r));
+  try {
+    const ops = join(dir, 'operations.json');
+    await sync(fixture, { out: dir });
+    const page = join(dir, 'page.html');
+    await (await import('node:fs/promises')).writeFile(page, '<!doctype html><html><body><xo-view get="/users"><b xo-each=".">{name}</b></xo-view></body></html>');
+    const out = join(dir, 'out.html');
+    const { stdout } = await run(process.execPath, [new URL('../src/cli.js', import.meta.url).pathname, 'render', page, '--api', `http://127.0.0.1:${api.address().port}`, '--operations', ops, '--out', out]);
+    assert.match(stdout, /rendered/);
+    assert.match(await readFile(out, 'utf8'), /<b[^>]*>Ada<\/b>/);
+  } finally { api.close(); }
+}, 30000);
