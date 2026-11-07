@@ -36,6 +36,8 @@ criteria pass.
 | 0.7 SSR & perf | Prerendering done in `@xoong/ssr` (docs/server.md section 3); per-tag lazy loading and benchmarks open |
 | 0.8+ | Not started |
 
+The router (`<xo-router>`) shipped with the 0.5 Admin work (ADR-0008), together with `XoControl`; form validation, nested forms and rich text follow.
+
 ## Dogfooding
 
 Each milestone is exercised first on the author's own projects. Public
