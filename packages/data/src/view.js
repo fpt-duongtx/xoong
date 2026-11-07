@@ -76,6 +76,22 @@ class XoView extends XoElement {
   /** @type {AbortController | null} */ #streamCtl = null;
   #stream = signal(/** @type {any[]} */ ([]));
   #streaming = signal(false);
+  /** Keys ("User#1") of the rows ticked by xo-select checkboxes. */
+  #selected = signal(/** @type {Set<string>} */ (new Set()));
+
+  /** Refs of the selected rows that still exist. */
+  selectedRefs() {
+    const store = getClient().store;
+    return [...this.#selected.value].map((k) => ({ $ref: k })).filter((r) => store.has(r));
+  }
+  isSelected(key) { return this.#selected.value.has(key); }
+  /** Select or deselect row keys. */
+  select(keys, on) {
+    const next = new Set(this.#selected.peek());
+    for (const k of keys) { if (on) next.add(k); else next.delete(k); }
+    this.#selected.value = next;
+  }
+  clearSelection() { if (this.#selected.peek().size) this.#selected.value = new Set(); }
 
   /** Start a streamed call: cancels the previous one, and everything is cancelled when the view goes away. */
   beginStream() {
@@ -153,6 +169,7 @@ class XoView extends XoElement {
         // Events of the latest streamed call (an operation that answers with server-sent events), and whether it still runs.
         $stream: () => this.#stream.value,
         $streaming: () => this.#streaming.value,
+        $selectedCount: () => this.selectedRefs().length,
         $error: () => q.value?.error.value,
         // Paging state for lists that take `limit` and `offset` and return `total`.
         $hasPrev: () => Number(this.#params.value.offset) > 0,
@@ -175,6 +192,7 @@ class XoView extends XoElement {
       current?.release();
       current = null;
       q.value = null;
+      this.clearSelection(); // other rows are on screen now
       if (!ref) return;
       try {
         current = client.query(ref.startsWith('/') ? `GET ${ref}` : ref, params); // "/users" or an operationId
@@ -237,11 +255,15 @@ function bindNode(node, scope, ctx, disposers) {
       bindAction(el, attr.name === 'xo-click' ? 'click' : 'submit', attr.value, scope, ctx, disposers);
       continue;
     }
+    if (attr.name === 'xo-select') {
+      bindSelect(el, attr.value, scope, ctx, disposers);
+      continue;
+    }
     if (attr.name === 'xo-param') {
       bindParam(el, attr.value, scope, ctx, disposers);
       continue;
     }
-    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic') continue;
+    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected') continue;
     const parts = parseInterpolation(attr.value);
     if (parts) {
       const name = attr.name;
@@ -347,19 +369,31 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
     try {
       const ref = opRef;
       const op = client.op(ref);
-      const params = {};
-      for (const m of op.path.matchAll(/\{([^}]+)\}/g)) params[m[1]] = lookup(scope, m[1]);
-      for (const q of op.query ?? []) { const v = lookup(scope, q); if (v !== undefined) params[q] = v; }
-      let body;
       clearFieldErrors(el);
-      if (eventName === 'submit' && op.body === true) body = formBody(/** @type {HTMLFormElement} */ (el), op);
-      else if (el.hasAttribute('xo-body')) body = client.store.denormalize(lookup(scope, el.getAttribute('xo-body')));
-      let result;
-      if (op.stream) {
-        const signal = host.beginStream();
-        try { await host.consume(client.stream(ref, params, body, { signal })); } catch (e) { if (signal.aborted) return; throw e; } // view gone: stop quietly
-        finally { if (!signal.aborted) client.invalidateAll(); } // the stream may have changed data that is on screen, even if it failed halfway
-      } else result = await client.mutate(ref, params, body, { optimistic: optimisticOf(el, scope, ctx) });
+      /** One call, with the params and body taken from `sc` (the button's scope, or one selected row). */
+      const callOnce = async (sc) => {
+        const params = {};
+        for (const m of op.path.matchAll(/\{([^}]+)\}/g)) params[m[1]] = lookup(sc, m[1]);
+        for (const q of op.query ?? []) { const v = lookup(sc, q); if (v !== undefined) params[q] = v; }
+        let body;
+        if (eventName === 'submit' && op.body === true) body = formBody(/** @type {HTMLFormElement} */ (el), op);
+        else if (el.hasAttribute('xo-body')) body = client.store.denormalize(lookup(sc, el.getAttribute('xo-body')));
+        if (op.stream) {
+          const signal = host.beginStream();
+          try { await host.consume(client.stream(ref, params, body, { signal })); } catch (e) { if (signal.aborted) return undefined; throw e; } // view gone: stop quietly
+          finally { if (!signal.aborted) client.invalidateAll(); } // the stream may have changed data that is on screen, even if it failed halfway
+          return undefined;
+        }
+        return client.mutate(ref, params, body, { optimistic: optimisticOf(el, sc, ctx) });
+      };
+      // xo-selected: the same operation once for every ticked row (sequentially; the first failure stops the rest).
+      const bulk = el.hasAttribute('xo-selected');
+      const targets = bulk ? host.selectedRefs().map((r) => ({ value: () => r, parent: scope })) : [scope];
+      if (!targets.length) return;
+      const results = [];
+      for (const sc of targets) results.push(await callOnce(sc));
+      if (bulk) host.clearSelection();
+      const result = bulk ? results : results[0];
       if (eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
       host.emit('xo-done', result);
     } catch (e) {
@@ -476,4 +510,20 @@ function optimisticOf(el, scope, ctx) {
     if (m) patch[m[1]] = evalParts(parseInterpolation(m[2]) ?? [m[2]], scope, ctx.lookup);
   }
   return Object.keys(patch).length ? [{ $ref: ref.$ref, patch }] : undefined;
+}
+
+/** `xo-select` on a checkbox in a row ticks that row; `xo-select="all:items"` in the header ticks every row of the list. */
+function bindSelect(el, spec, scope, ctx, disposers) {
+  const { host, lookup } = ctx;
+  const all = /^all:(.+)$/.exec(spec.trim())?.[1];
+  const keyOf = (item) => (isRef(item) ? item.$ref : undefined);
+  const keys = () => (all ? (lookup(scope, all) ?? []).map(keyOf).filter(Boolean) : [keyOf(scope.value())].filter(Boolean));
+  if (!all && !keys().length) console.error('xoong: xo-select needs a stored entity as the current row (put the checkbox inside xo-each over entities)');
+  disposers.push(effect(() => {
+    const list = keys();
+    el.checked = list.length > 0 && list.every((k) => host.isSelected(k));
+  }));
+  const onChange = () => host.select(keys(), el.checked);
+  el.addEventListener('change', onChange);
+  disposers.push(() => el.removeEventListener('change', onChange));
 }

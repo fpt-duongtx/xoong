@@ -25,7 +25,7 @@
     "@xoong/cli": "*",
     "@xoong/core": "*"
   },
-  "author": "Duong Tran Xuan",
+  "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fpt-duongtx/xoong.git",

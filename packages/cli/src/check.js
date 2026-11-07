@@ -14,6 +14,7 @@
  *   XO241 xo-click on a non-interactive element (not reachable by keyboard)
  *   XO250 <xo-table sortable|page-size> but the view's operation lacks the query parameters (sort | limit, offset)
  *   XO204 client.load/query on a non-GET operation, or client.mutate/stream on a GET (JavaScript and TypeScript files)
+ *   XO254 xo-selected not on an xo-click element, or xo-select not on a checkbox
  *   XO253 <xo-table filters="f"> but the view's operation has no query parameter "f"
  *   XO251 <xo-table> outside an <xo-view get>
  *   XO252 <xo-form op> operation has no simple request fields to generate a form from
@@ -123,6 +124,8 @@ export function checkHtml(source, table, file = '<input>') {
           const hint = nearest(a.name, [...ATTRS]);
           report('error', 'XO230', node, a.name, `unknown attribute ${a.name}${hint ? ` (closest: ${hint})` : ''}`, hint ? `Use ${hint}` : 'Remove it; xoong has no such attribute');
         }
+        if (a.name === 'xo-selected' && !attr(node, 'xo-click')) report('error', 'XO254', node, a.name, 'xo-selected needs xo-click on the same element', 'Add xo-click="METHOD /path/{id}" to run once per ticked row');
+        if (a.name === 'xo-select' && (tag !== 'input' || attr(node, 'type')?.value !== 'checkbox')) report('error', 'XO254', node, a.name, `xo-select must be on <input type="checkbox">, found <${tag}>`, 'Use a checkbox, or <xo-table selectable>');
         if ((a.name === 'xo-each' || a.name === 'xo-if' || a.name === 'xo-body') && !a.value.trim()) {
           report('error', 'XO221', node, a.name, `${a.name} is empty`, `Give ${a.name} a path, for example ${a.name}="items"`);
         }

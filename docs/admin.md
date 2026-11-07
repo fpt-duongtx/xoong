@@ -46,6 +46,12 @@ tests see plain markup).
 * Children become the last cell of every row (usually `xo-click` buttons).
 * `filters="name,status"`: a search box per field above the table. Typing (after a short pause) sets the query parameter of the same name; clearing it removes the parameter; the table returns to page one.
 * A child with `slot="field"` replaces that column's cell with the child itself, bound to the row: `<span slot="status" class="badge" data-status="{status}">{status}</span>`.
+* `selectable`: a checkbox per row and a select-all checkbox in the header (both are plain `<input type="checkbox" xo-select>`).
+  While rows are ticked, children with `slot="bulk"` appear above the table with a count (`$selectedCount`). Give a bulk button
+  `xo-selected` and it runs its operation **once per ticked row**, one after another, with the params taken from each row:
+  `<button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>`. The first failure stops the rest and keeps the
+  selection (the error arrives as `xo-error`); success clears it. The selection is dropped whenever sort, page or filter changes.
+  This needs no bulk endpoint on the backend. Rows must be entities (an `id` in the OpenAPI schema).
 * `sortable`: header buttons set the query parameter `sort` to `field`, then `-field`, then `field` again. The
   server sorts.
 * `page-size="25"`: sets `limit`, and Previous/Next change `offset`. Next is shown only while
@@ -120,5 +126,5 @@ the same hook; keep them plain, one way to do each thing.
 
 ## Not done yet
 
-Row selection and bulk actions, inline editing, form fields for nested objects and arrays (write that form by hand),
+Inline editing, a single bulk request for many ids, form fields for nested objects and arrays (write that form by hand),
 column filters other than text, tabs. They are tracked as issues for milestone 0.5.

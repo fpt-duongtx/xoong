@@ -51,6 +51,7 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
   resets the form on success (add `xo-keep` to keep values). `xo-body="path"` takes a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click button inside xo-each: show those field values on the item at once, undone if the call fails.
+- `xo-select` on a checkbox in a row ticks that row (`all:items` in the header ticks all); `xo-selected` on an xo-click button runs it once per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts ticked rows.
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles v / -v). Paging vars: `$hasPrev`, `$hasNext`.
 - Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. While a call runs the element has `aria-busy="true"`.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
@@ -73,9 +74,10 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
 
 ## Admin set (@xoong/ui; `import '@xoong/ui'`, `<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">`)
     <xo-view get="/users" live>
-      <xo-table of="items" columns="name,email:E-mail,status" sortable filters="name" page-size="25">   (query params sort, limit, offset, <filter field>; `total` in the response)
+      <xo-table of="items" columns="name,email:E-mail,status" sortable filters="name" selectable page-size="25">   (query params sort, limit, offset, <filter field>; `total` in the response)
         <span slot="status" class="badge">{status}</span>   (slot="column" replaces that cell)
         <button xo-click="DELETE /users/{id}">Delete</button>   (other children = last cell of each row)
+        <button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>   (once per ticked row; needs selectable)
       </xo-table>
     </xo-view>
     <xo-form op="POST /users" submit="Add"></xo-form>   (fields from the request schema; server field errors shown beside inputs)

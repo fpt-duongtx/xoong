@@ -180,7 +180,7 @@ Do these, in order, when the owner decides to flip the repository to public. Tic
    owner likes to work) and instructions for a specific agent. Move the useful parts (state, backlog,
    lessons learned) into `CONTRIBUTING.md` and `docs/`, then delete this file. Also drop the "owner" wording
    from other docs if you find any.
-3. **Scan the working tree and the whole git history** for secrets, e-mail addresses, customer or project
+3. **Scan the working tree and the whole git history** for secrets, e-mail addresses (the owner chose to publish `duongtx1505@icloud.com` as package author and in commits; no other address should appear), customer or project
    names, machine paths and unanonymised data. At handover time a text scan of the tree found only the one
    personal reference in this file; history did not exist yet. Re-check `examples/chat` once more: it was
    anonymised on purpose (names, tags, locale) and must stay that way. If history contains anything
@@ -194,7 +194,10 @@ Do these, in order, when the owner decides to flip the repository to public. Tic
    issue and pull-request templates, a `CHANGELOG.md`.
 7. **Make CI green and visible** on Node 20 and 22, with coverage thresholds enforced. Restore the full matrix if it
    was reduced for private-repository minutes.
-8. **Prove it on a real project.** At least one of the owner's own projects should run on xoong, so the README can
+8. **Prove it on real projects, then go public.** The owner's decision: the repository stays private until xoong has been tested
+   on the owner's current projects, or on a few new projects built for the purpose (`xoong new --link <checkout>` creates one that
+   runs from the unpublished packages); only when that goes well is it made public and users invited. Write down what hurt.
+   Original wording follows. At least one of the owner's own projects should run on xoong, so the README can
    say where it works today instead of only "prototype". Record what hurt in `docs/` or issues.
 9. **Make `xoong new` installable** or state plainly in the README how to try the packages before they are
    published.

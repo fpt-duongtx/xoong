@@ -14,6 +14,8 @@ export const ATTRIBUTE_DOCS = {
   'xo-submit': 'On a <form>: send the form fields as the request body of the operation. The form is reset on success unless xo-keep is present. Field errors from the server appear beside the inputs.',
   'xo-body': 'With xo-click: take the request body from the item at this path.',
   'xo-keep': 'With xo-submit: keep the field values after a successful send.',
+  'xo-select': 'On a checkbox in a row (inside xo-each): tick that row. `all:items` in the header ticks every row of the list. <xo-table selectable> does this for you.',
+  'xo-selected': 'On an xo-click button: run the operation once for every ticked row, one after another; the first failure stops the rest.',
   'xo-optimistic': 'On xo-click: set these fields (`field=value,field2={path}`) on the current item immediately, and undo them if the call fails.',
   'xo-param': 'On an <input> or <select>: set the view parameter of that name to its value. On other elements, on click, set a view parameter and refetch: `name=value`, `name+=n`, `name-=n`, or `name~=value` (toggle value / -value, for sorting).',
   'xo-open': 'Open the <xo-dialog> matched by this selector, for example `#add`.',
@@ -21,7 +23,7 @@ export const ATTRIBUTE_DOCS = {
 };
 export const ELEMENT_DOCS = {
   'xo-view': ['Declare a screen: `get` names the GET operation to read. Children are bound to the result. Add `live` to apply server-sent updates.', [['get', 'A path ("/users") or operationId.'], ['live', 'Apply live updates from the event stream.']]],
-  'xo-table': ['A table for the list in the enclosing <xo-view get>. Children become the actions cell of each row.', [['of', 'List field of the response (default `items`).'], ['columns', 'Comma-separated fields, optionally `field:Label`.'], ['sortable', 'Header buttons sort on the server through the `sort` query parameter.'], ['filters', 'Comma-separated fields that get a search box above the table; typing sets the query parameter of the same name.'], ['page-size', 'Rows per page: sets `limit`, Previous/Next change `offset`. The response needs a `total`.']]],
+  'xo-table': ['A table for the list in the enclosing <xo-view get>. Children become the actions cell of each row.', [['of', 'List field of the response (default `items`).'], ['columns', 'Comma-separated fields, optionally `field:Label`.'], ['sortable', 'Header buttons sort on the server through the `sort` query parameter.'], ['selectable', 'A checkbox per row and a select-all box; slot="bulk" children act on the ticked rows.'], ['filters', 'Comma-separated fields that get a search box above the table; typing sets the query parameter of the same name.'], ['page-size', 'Rows per page: sets `limit`, Previous/Next change `offset`. The response needs a `total`.']]],
   'xo-form': ['A form generated from the request schema of an operation.', [['op', 'The operation to submit to.'], ['submit', 'Text of the submit button.']]],
   'xo-toast': ['Shows the message of the latest xo-error event on the page; hides on the next xo-done or after `timeout` seconds.', [['timeout', 'Seconds before it hides (default 6, 0 = until the next success).']]],
   'xo-dialog': ['A modal on the native <dialog>. Open it with xo-open, close it with xo-close or by submitting a form inside.', []],

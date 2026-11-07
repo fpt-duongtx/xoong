@@ -30,6 +30,7 @@ export const EXPLANATIONS = {
   XO250: '<xo-table sortable> needs a `sort` query parameter on the view\'s operation, and page-size needs `limit` and `offset`. Add them to the API or remove the attribute.',
   XO253: 'A filter box of <xo-table filters="..."> sets a query parameter of the same name, and the view\'s operation does not declare it. Add the parameter to the API or remove the filter.',
   XO204: 'client.load()/query() were given a write operation, or client.mutate()/stream() a GET. Reads: load/query. Writes: mutate.',
+  XO254: 'xo-selected only makes sense on an xo-click button, and xo-select on a checkbox. Move the attribute.',
   XO251: '<xo-table> must be inside an <xo-view get="...">, which supplies its data.',
   XO252: '<xo-form op> found no simple request fields to generate. Write the <form xo-submit> by hand.',
 };

@@ -4,19 +4,39 @@
   "description": "xoong: a small, standards-first web framework. One install for the runtime (signals, templates, OpenAPI data layer), the admin set and the `xoong` command.",
   "type": "module",
   "main": "src/index.js",
-  "bin": { "xoong": "src/cli.js" },
+  "bin": {
+    "xoong": "src/cli.js"
+  },
   "exports": {
-    ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
     "./view": "./src/view.js",
     "./ui": "./src/ui.js"
   },
-  "files": ["src"],
-  "keywords": ["xoong", "web-framework", "openapi", "custom-elements"],
-  "engines": { "node": ">=22.12" },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "web-framework",
+    "openapi",
+    "custom-elements"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
   "license": "MIT",
-  "author": "Duong Tran Xuan",
-  "repository": { "type": "git", "url": "git+https://github.com/fpt-duongtx/xoong.git", "directory": "packages/xoong" },
-  "bugs": { "url": "https://github.com/fpt-duongtx/xoong/issues" },
+  "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/xoong"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
   "homepage": "https://github.com/fpt-duongtx/xoong#readme",
   "dependencies": {
     "@xoong/cli": "*",
