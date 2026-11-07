@@ -13,6 +13,7 @@
  *   XO240 button/link triggered by xo-click has no accessible name
  *   XO241 xo-click on a non-interactive element (not reachable by keyboard)
  *   XO250 <xo-table sortable|page-size> but the view's operation lacks the query parameters (sort | limit, offset)
+ *   XO204 client.load/query on a non-GET operation, or client.mutate/stream on a GET (JavaScript and TypeScript files)
  *   XO253 <xo-table filters="f"> but the view's operation has no query parameter "f"
  *   XO251 <xo-table> outside an <xo-view get>
  *   XO252 <xo-form op> operation has no simple request fields to generate a form from
@@ -148,6 +149,79 @@ export function checkHtml(source, table, file = '<input>') {
   return findings;
 }
 
+/**
+ * Template literals tagged `html` in a script: [{ text, line, column }] where `${...}` holes are replaced by "x"
+ * (an attribute value or a text), and line/column point at the first character of the template.
+ */
+export function htmlTemplates(source) {
+  const out = [];
+  const re = /\bhtml\s*`/g;
+  let m;
+  while ((m = re.exec(source))) {
+    let i = re.lastIndex;
+    let text = '';
+    let depth = 0; // inside ${ ... }
+    for (; i < source.length; i++) {
+      const c = source[i];
+      if (depth === 0) {
+        if (c === '\\') { text += source.slice(i, i + 2); i++; continue; }
+        if (c === '`') break;
+        if (c === '$' && source[i + 1] === '{') { depth = 1; text += 'x'; i++; continue; }
+        text += c;
+      } else {
+        if (c === '{') depth++;
+        else if (c === '}') depth--;
+        else if (c === '`') { // nested template inside a hole: skip it whole
+          for (i++; i < source.length && source[i] !== '`'; i++) if (source[i] === '\\') i++;
+        }
+        if (depth === 0) continue;
+      }
+    }
+    const start = re.lastIndex;
+    const before = source.slice(0, start).split('\n');
+    out.push({ text, line: before.length, column: before[before.length - 1].length + 1 });
+    re.lastIndex = i + 1;
+  }
+  return out;
+}
+
+/**
+ * Check a JavaScript or TypeScript file: HTML inside html`...` templates, and the first argument of
+ * client.load / query / mutate / stream when it is a string literal.
+ * @param {string} source
+ * @param {{ operations: Record<string, any> }} table
+ * @param {string} [file]
+ * @returns {Finding[]}
+ */
+export function checkScript(source, table, file = '<input>') {
+  /** @type {Finding[]} */
+  const findings = [];
+  for (const t of htmlTemplates(source)) {
+    for (const f of checkHtml(t.text, table, file)) {
+      findings.push({ ...f, line: t.line + f.line - 1, column: f.line === 1 ? t.column + f.column - 1 : f.column });
+    }
+  }
+  const ops = operationIndex(table);
+  const known = [...ops.keys()];
+  const lineCol = (index) => { const lines = source.slice(0, index).split('\n'); return { line: lines.length, column: lines[lines.length - 1].length + 1 }; };
+  for (const m of source.matchAll(/\.(load|query|mutate|stream)\(\s*(['"])([^'"\n]+)\2/g)) {
+    const [, method, , ref] = m;
+    const key = ref.startsWith('/') ? `GET ${ref}` : ref.replace(/\s+/g, ' ').trim();
+    const at = lineCol(m.index + m[0].indexOf(ref));
+    const op = ops.get(key);
+    if (!op) {
+      const hint = nearest(key, known);
+      findings.push({ level: 'error', code: 'XO201', file, ...at, message: `unknown operation "${ref}"${hint ? ` (closest: "${hint}")` : ''}`, fix: hint ? `Use "${hint}"` : 'Run `xoong sync` if the API changed, or fix the operation' });
+    } else if ((method === 'load' || method === 'query') && op.method !== 'GET') {
+      findings.push({ level: 'error', code: 'XO204', file, ...at, message: `client.${method}() reads, but ${op.method} ${op.path} is not a GET operation`, fix: 'Use client.mutate() for writes' });
+    } else if (method === 'mutate' && op.method === 'GET') {
+      findings.push({ level: 'error', code: 'XO204', file, ...at, message: `client.mutate() writes, but ${op.path} is a GET operation`, fix: 'Use client.load() or client.query() for reads' });
+    }
+  }
+  findings.sort((a, b) => a.line - b.line || a.column - b.column);
+  return findings;
+}
+
 /** Collect .html files from files and folders (skips node_modules and dot folders). */
 export async function collectHtml(paths) {
   const out = [];
@@ -155,7 +229,7 @@ export async function collectHtml(paths) {
     const s = await stat(p);
     if (s.isDirectory()) {
       for (const name of await readdir(p)) if (name !== 'node_modules' && !name.startsWith('.')) await visit(join(p, name));
-    } else if (['.html', '.htm'].includes(extname(p).toLowerCase())) out.push(p);
+    } else if (['.html', '.htm', '.js', '.mjs', '.ts', '.mts'].includes(extname(p).toLowerCase()) && !p.endsWith('.d.ts')) out.push(p);
   };
   for (const p of paths) await visit(p);
   return out.sort();
@@ -165,7 +239,10 @@ export async function collectHtml(paths) {
 export async function checkFiles(paths, table) {
   const files = await collectHtml(paths);
   const findings = [];
-  for (const file of files) findings.push(...checkHtml(await readFile(file, 'utf8'), table, file));
+  for (const file of files) {
+    const source = await readFile(file, 'utf8');
+    findings.push(...(/\.html?$/i.test(file) ? checkHtml(source, table, file) : checkScript(source, table, file)));
+  }
   return { findings, files: files.length };
 }
 

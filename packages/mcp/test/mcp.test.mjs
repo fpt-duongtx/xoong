@@ -37,6 +37,8 @@ test('check returns structured findings with the fix, and "No findings." for a c
   assert.equal(bad[0].code, 'XO201');
   assert.match(bad[0].fix, /POST \/users/);
   assert.equal((await call('check', { html: '<xo-view get="/users"><p>ok</p></xo-view>' })).content[0].text, 'No findings.');
+  const script = JSON.parse((await call('check', { script: 'await client.load("listUser");' })).content[0].text);
+  assert.equal(script[0].code, 'XO201');
   assert.equal((await call('check', {})).isError, true);
 });
 

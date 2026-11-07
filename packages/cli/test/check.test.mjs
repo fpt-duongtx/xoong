@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { checkHtml, checkFiles, formatFindings } from '../src/check.js';
+import { checkHtml, checkScript, htmlTemplates, checkFiles, formatFindings } from '../src/check.js';
 
 const table = { operations: {
   listUsers: { id: 'listUsers', method: 'GET', path: '/users' },
@@ -139,5 +139,38 @@ describe('xoong check: admin set', () => {
 
   it('XO230 still catches a typo in the new names', () => {
     expect(found('<xo-tabel></xo-tabel><button xo-opn="#d">x</button>')).toEqual(['XO230', 'XO230']);
+  });
+});
+
+describe('xoong check: JavaScript and TypeScript', () => {
+  const src = (code) => checkScript(code, table, 'app.ts');
+
+  it('finds html`...` templates, ignoring ${} holes, nested templates and escapes', () => {
+    const code = 'const a = html`<p class=${c}>${() => html`<i>${x}</i>`}</p>`;\nconst b = html`<b>\\`</b>`; const c = 1;';
+    expect(htmlTemplates(code).map((t) => t.text)).toEqual(['<p class=x>x</p>', '<b>\\`</b>']);
+    expect(htmlTemplates(code)[1]).toMatchObject({ line: 2 });
+  });
+
+  it('checks HTML inside templates and maps findings to the right line and column of the file', () => {
+    const f = src('import { html } from "@xoong/core";\nexport const view = () => html`\n  <xo-view get="/users">\n    <button xo-click="POST /user/{id}/disable">Off</button>\n  </xo-view>`;')[0];
+    expect(f).toMatchObject({ code: 'XO201', level: 'error', file: 'app.ts', line: 4 });
+    expect(f.message).toContain('closest: "POST /users/{id}/disable"');
+  });
+
+  it('checks the operation named in client.load / query / mutate / stream', () => {
+    const f = src('await client.load("listUser");\nawait client.mutate("createUser", {}, body);\nawait client.load("createUser");\nawait client.mutate("GET /users");\nclient.query(`x`);');
+    expect(f.map((x) => [x.code, x.line])).toEqual([['XO201', 1], ['XO204', 3], ['XO204', 4]]);
+    expect(f[0].message).toContain('closest: "listUsers"');
+    expect(src('client.load("/users"); client.stream("createUser");')).toEqual([]);
+  });
+
+  it('checkFiles covers .ts, .js and .html together, and skips .d.ts', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'xoong-check-'));
+    await writeFile(join(dir, 'a.ts'), 'client.load("nope");');
+    await writeFile(join(dir, 'b.html'), '<xo-view get="/nope"></xo-view>');
+    await writeFile(join(dir, 'c.d.ts'), 'client.load("nope");');
+    const { findings, files } = await checkFiles([dir], table);
+    expect(files).toBe(2);
+    expect(findings.map((f) => f.code)).toEqual(['XO201', 'XO201']);
   });
 });

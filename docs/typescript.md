@@ -43,5 +43,5 @@ runs. This directly serves the stability goal in
 
 ## Milestone
 
-The typed client is done; `xoong check` for JS/TS templates is open (0.6) (see [roadmap.md](roadmap.md)); `.ts`
+The typed client and `xoong check` for JS/TS are done (0.6) (see [roadmap.md](roadmap.md)); `.ts`
 transpile in `xoong dev` is **done**.

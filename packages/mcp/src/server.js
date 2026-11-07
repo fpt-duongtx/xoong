@@ -12,7 +12,7 @@
  */
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { checkHtml } from '@xoong/cli/check';
+import { checkHtml, checkScript } from '@xoong/cli/check';
 
 export const PROTOCOL_VERSION = '2024-11-05';
 
@@ -29,6 +29,7 @@ export const EXPLANATIONS = {
   XO241: 'xo-click is on an element that keyboards cannot reach. Use a <button>, or add role="button" and tabindex="0".',
   XO250: '<xo-table sortable> needs a `sort` query parameter on the view\'s operation, and page-size needs `limit` and `offset`. Add them to the API or remove the attribute.',
   XO253: 'A filter box of <xo-table filters="..."> sets a query parameter of the same name, and the view\'s operation does not declare it. Add the parameter to the API or remove the filter.',
+  XO204: 'client.load()/query() were given a write operation, or client.mutate()/stream() a GET. Reads: load/query. Writes: mutate.',
   XO251: '<xo-table> must be inside an <xo-view get="...">, which supplies its data.',
   XO252: '<xo-form op> found no simple request fields to generate. Write the <form xo-submit> by hand.',
 };
@@ -36,7 +37,7 @@ export const EXPLANATIONS = {
 const TOOLS = [
   { name: 'get_spec', description: 'Return xoong\'s whole public API as one short document (llms.txt). Read it before writing xoong code.', inputSchema: { type: 'object', properties: {} } },
   { name: 'list_operations', description: 'List the operations of the synced API: id, method, path, query parameters and request body fields. Use these exact names in xo-click, xo-submit and <xo-view get>.', inputSchema: { type: 'object', properties: { filter: { type: 'string', description: 'Only operations whose id or path contains this text.' } } } },
-  { name: 'check', description: 'Run `xoong check` on HTML source text and return findings with line, column, message and fix. Fix every error before showing code to the user.', inputSchema: { type: 'object', properties: { html: { type: 'string', description: 'The HTML source of a screen.' } }, required: ['html'] } },
+  { name: 'check', description: 'Run `xoong check` on HTML source text and return findings with line, column, message and fix. Fix every error before showing code to the user.', inputSchema: { type: 'object', properties: { html: { type: 'string', description: 'The HTML source of a screen.' }, script: { type: 'string', description: 'JavaScript or TypeScript source instead of html: checks html`...` templates and client.load/query/mutate/stream calls.' } } } },
   { name: 'explain_error', description: 'Explain an XO error code (for example XO201) and how to fix it.', inputSchema: { type: 'object', properties: { code: { type: 'string' } }, required: ['code'] } },
   { name: 'search_docs', description: 'Search the xoong documentation for a term and return matching lines with file names.', inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] } },
 ];
@@ -59,8 +60,9 @@ export function createServer(ctx) {
         return text(JSON.stringify(rows, null, 2));
       }
       case 'check': {
-        if (typeof args.html !== 'string') return text('check needs an "html" string', true);
-        const findings = checkHtml(args.html, await ctx.operations(), 'screen.html');
+        if (typeof args.html !== 'string' && typeof args.script !== 'string') return text('check needs an "html" or a "script" string', true);
+        const table = await ctx.operations();
+        const findings = typeof args.script === 'string' ? checkScript(args.script, table, 'screen.ts') : checkHtml(args.html, table, 'screen.html');
         return text(findings.length ? JSON.stringify(findings, null, 2) : 'No findings.');
       }
       case 'explain_error': {
