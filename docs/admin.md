@@ -188,6 +188,9 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
   array use `{$i0}` for the outer row, `{$i1}` for the next), `xo-add="blocks" xo-with="type=image"` (a union item needs its tag), `xo-remove="blocks[{$index}]"`,
   `xo-move="blocks[{$index}]:up"` (or `:down`), and `xo-if="type=image"` to show the fields of one variant (`path=value` and `path!=value` compare with a literal).
   Rows are plain buttons, so everything is keyboard accessible. Touched state follows an item that moves; errors, server errors and rules recompute for the new positions.
+  The focus does not get lost: after Move up or Move down it stays on the same button of the row that now holds the item; after Remove it goes to the same button of the row now at that
+  position, else the previous row, else the list's add button. For the pointer, a handle with `xo-drag="blocks[{$index}]"` inside the row (the generated form draws one, `.xo-handle`) drags the row onto another
+  row of the same list (`.xo-dragging` and `.xo-drop` mark the source and the target); the buttons stay for keyboards and touch.
 * **`<xo-form op="...">`** writes that markup for you from the request schema (`bodySchema`): labelled controls, enums as selects, booleans as checkboxes, formats choosing the input type, nested objects as
   fieldsets, arrays as rows with add/remove/up/down buttons, unions as one "Add <variant>" button each with the fields of the row's variant. Hints change it: `order`, `group` (a fieldset with
   a legend), `widget` (textarea, password, url, email, color, date, datetime, select, or the tag of any `XoControl`), `hidden` (kept in the model and sent, not drawn), `readOnly` (not drawn, not sent), `label`/`hint`.

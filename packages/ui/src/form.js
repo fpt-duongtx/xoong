@@ -62,7 +62,7 @@ function fields(node, path, depth, skip = []) {
 const rowTitle = (text) => `<span class="xo-row-title"><span class="xo-row-no">{$n}.</span>${text ? ` <strong>${esc(text)}</strong>` : ''}</span>`;
 
 /** Buttons of an array row. */
-const rowButtons = (path) => `<span class="xo-row-actions"><button type="button" xo-move="${path}:up" aria-label="Move up" xo-t="aria-label:xoong.form.moveUp">↑</button><button type="button" xo-move="${path}:down" aria-label="Move down" xo-t="aria-label:xoong.form.moveDown">↓</button><button type="button" xo-remove="${path}" aria-label="Remove" xo-t="aria-label:xoong.form.remove">×</button></span>`;
+const rowButtons = (path) => `<span class="xo-row-actions"><span class="xo-handle" xo-drag="${path}" aria-hidden="true">⋮⋮</span><button type="button" xo-move="${path}:up" aria-label="Move up" xo-t="aria-label:xoong.form.moveUp">↑</button><button type="button" xo-move="${path}:down" aria-label="Move down" xo-t="aria-label:xoong.form.moveDown">↓</button><button type="button" xo-remove="${path}" aria-label="Remove" xo-t="aria-label:xoong.form.remove">×</button></span>`;
 
 function field(node, path, name, depth) {
   const text = label(name);

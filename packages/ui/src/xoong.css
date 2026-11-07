@@ -99,6 +99,9 @@
   .xo-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }
   .xo-row-actions, .xo-array-add { display: flex; gap: var(--xo-space-2); flex-wrap: wrap; }
   .xo-row-title { font-weight: 600; }
+  .xo-handle { cursor: grab; user-select: none; padding: 0 var(--xo-space-1); opacity: .6; align-self: center; }
+  .xo-row.xo-dragging { opacity: .5; }
+  .xo-row.xo-drop { outline: 2px dashed var(--xo-color-accent, currentColor); outline-offset: 2px; }
   .xo-hint { color: var(--xo-color-muted); font-size: var(--xo-text-small); }
   .xo-object, .xo-array { margin: 0; padding: var(--xo-space-3); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); display: grid; gap: var(--xo-space-3); }
   .xo-group { margin: 0; padding: 0; border: 0; display: grid; gap: var(--xo-space-3); }

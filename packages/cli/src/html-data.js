@@ -18,6 +18,7 @@ export const ATTRIBUTE_DOCS = {
   'xo-add': 'In a form: append an item to the array at this path (`blocks`); `xo-with="type=image"` gives a union item its tag.',
   'xo-remove': 'In a form row: remove the array item at this path (`blocks[{$index}]`).',
   'xo-move': 'In a form row: move the array item at this path, `blocks[{$index}]:up` or `:down`.',
+  'xo-drag': 'On a handle inside an array row of a form: drag the row onto another row of the same list to move it (`blocks[{$index}]`). The xo-move buttons stay for keyboards.',
   'xo-select': 'On a checkbox in a row (inside xo-each): tick that row. `all:items` in the header ticks every row of the list. <xo-table selectable> does this for you.',
   'xo-selected': 'On an xo-click button: run the operation once for every ticked row, one after another; the first failure stops the rest. With a value (`xo-selected="ids"`): ONE request whose body has the ticked ids in that field.',
   'xo-with': 'On xo-click/xo-submit: fixed fields added to the request body, `field=value,other={path}` (typed from the request schema).',
