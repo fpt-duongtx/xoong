@@ -1,6 +1,6 @@
 {
   "name": "xoong",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "xoong: a small, standards-first web framework. One install for the runtime (signals, templates, OpenAPI data layer), the admin set and the `xoong` command.",
   "type": "module",
   "main": "src/index.js",

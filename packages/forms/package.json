@@ -1,21 +1,37 @@
 {
   "name": "@xoong/forms",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "xoong forms: a typed draft model with per-path state, validation rules taken from the OpenAPI request schema, custom rules, payload normalisation and dirty tracking. Zero dependencies besides @xoong/core and @xoong/data.",
   "type": "module",
   "main": "src/index.js",
   "exports": {
-    ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
     "./model": "./src/form-model.js",
     "./schema": "./src/schema.js"
   },
   "sideEffects": true,
-  "files": ["src"],
-  "keywords": ["xoong", "forms", "validation", "openapi"],
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "forms",
+    "validation",
+    "openapi"
+  ],
   "license": "MIT",
   "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
-  "repository": { "type": "git", "url": "git+https://github.com/fpt-duongtx/xoong.git", "directory": "packages/forms" },
-  "bugs": { "url": "https://github.com/fpt-duongtx/xoong/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/forms"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
   "homepage": "https://github.com/fpt-duongtx/xoong#readme",
   "dependencies": {
     "@xoong/core": "*",

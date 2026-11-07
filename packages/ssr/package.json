@@ -1,6 +1,6 @@
 {
   "name": "@xoong/ssr",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Prerender xoong pages: run the real <xo-view> runtime in Node (happy-dom), wait for the data, write HTML. No hydration step: the browser re-renders from the saved template.",
   "type": "module",
   "exports": {
