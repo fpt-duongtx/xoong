@@ -13,6 +13,10 @@
  * - selectable: a checkbox per row and a select-all checkbox. Children with slot="bulk" appear above the table while rows are
  *   ticked; give them xo-selected to run their operation once per ticked row:
  *     <button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>
+ * - filters="q:Search,status": a search box per field, with an optional label (the label is the placeholder and the accessible name).
+ * - columns="publishedAt:Published:datetime": a third part formats the cell (date, datetime, time, relative, number, localized).
+ * - empty="No results" (or a child `<template slot="empty">`): shown when the list is empty and not loading.
+ * - page-sizes="10,25,50": a rows-per-page choice next to the "1–3 of 5" range text.
  * - page-size: sets `limit` and shows Previous/Next, which change `offset`. Needs a `total` field in the response.
  * The operation must declare those query parameters; `xoong check` reports it when it does not (XO250).
  */
@@ -25,41 +29,45 @@ defineTemplate('xo-table', (el, { host }) => {
   const sortable = el.hasAttribute('sortable');
   const pageSize = Number(el.getAttribute('page-size')) || 0;
   const columns = (el.getAttribute('columns') || '').split(',').map((c) => c.trim()).filter(Boolean).map((c) => {
-    const [field, ...label] = c.split(':');
-    return { field, label: label.join(':') || field };
+    const [field, label, fmt] = c.split(':'); // field, optional label, optional display format (date, datetime, time, relative, number, localized)
+    return { field, label: label || field, fmt };
   });
   const cellOf = new Map();
   const rest = [];
   const bulk = [];
+  let empty = el.getAttribute('empty') ? esc(el.getAttribute('empty') ?? '') : '';
   const selectable = el.hasAttribute('selectable');
   /** The child as markup, without its slot attribute. */
   const unslotted = (child) => { const copy = /** @type {Element} */ (child.cloneNode(true)); copy.toggleAttribute('slot', false); return copy.outerHTML; };
   for (const child of [...el.childNodes]) {
     const slot = child.nodeType === 1 ? /** @type {Element} */ (child).getAttribute('slot') : null;
     if (slot === 'bulk') bulk.push(unslotted(child));
+    else if (slot === 'empty') empty = /** @type {Element} */ (child).localName === 'template' ? /** @type {HTMLTemplateElement} */ (child).innerHTML : unslotted(child);
     else if (slot && columns.some((c) => c.field === slot)) cellOf.set(slot, unslotted(child));
     else rest.push(child);
   }
   const actions = rest.map((n) => (n.nodeType === 1 ? n.outerHTML : n.textContent)).join('').trim();
-  const filters = (el.getAttribute('filters') || '').split(',').map((f) => f.trim()).filter(Boolean);
+  const filters = (el.getAttribute('filters') || '').split(',').map((f) => f.trim()).filter(Boolean).map((f) => { const [field, label] = f.split(':'); return { field, label: label || columns.find((c) => c.field === field)?.label || field }; });
+  const sizes = (el.getAttribute('page-sizes') || '').split(',').map((s) => s.trim()).filter(Boolean);
   if (pageSize && host.params.limit == null) host.params = { ...host.params, limit: pageSize };
 
   const tickAll = selectable ? `<th scope="col"><input type="checkbox" xo-select="all:${esc(of)}" aria-label="Select all rows"></th>` : '';
   const tickRow = selectable ? '<td><input type="checkbox" xo-select aria-label="Select row"></td>' : '';
   const head = columns.map((c) => `<th scope="col">${sortable ? `<button type="button" xo-param="sort~=${esc(c.field)}">${esc(c.label)}</button>` : esc(c.label)}</th>`).join('');
-  const cells = columns.map((c) => `<td>${cellOf.get(c.field) ?? `{${esc(c.field)}}`}</td>`).join('');
+  const cellText = (c) => (['date', 'datetime', 'time', 'relative'].includes(c.fmt) ? `<time datetime="{${esc(c.field)}}">{${esc(c.field)} | ${c.fmt}}</time>` : c.fmt ? `{${esc(c.field)} | ${esc(c.fmt)}}` : `{${esc(c.field)}}`);
+  const cells = columns.map((c) => `<td>${cellOf.get(c.field) ?? cellText(c)}</td>`).join('');
   const box = document.createElement('div');
   box.className = 'xo-table';
-  const search = filters.map((f) => {
-    const label = columns.find((c) => c.field === f)?.label ?? f;
-    return `<input type="search" xo-param="${esc(f)}" placeholder="${esc(label)}" aria-label="Filter by ${esc(label)}">`;
-  }).join('');
+  const search = filters.map((f) => `<input type="search" xo-param="${esc(f.field)}" placeholder="${esc(f.label)}" aria-label="${esc(f.label)}">`).join('');
   const bar = bulk.length ? `<div class="xo-bulk" xo-if="$selectedCount"><span>{$selectedCount} selected</span>${bulk.join('')}</div>` : '';
   box.innerHTML = `${bar}${search ? `<div class="xo-filters">${search}</div>` : ''}<table>
   <thead><tr>${tickAll}${head}${actions ? '<th scope="col"><span class="xo-visually-hidden">Actions</span></th>' : ''}</tr></thead>
   <tbody><tr xo-each="${esc(of)}">${tickRow}${cells}${actions ?`<td class="xo-actions">${actions}</td>` : ''}</tr></tbody>
-</table>${pageSize ? `
+</table>${empty ? `
+<div class="xo-empty" xo-if="!${esc(of)}"><div xo-if="!$loading">${empty}</div></div>` : ''}${pageSize ? `
 <nav class="xo-pager" aria-label="Pagination">
+  <span class="xo-range" xo-if="total">{$from}–{$to} of {total}</span>${sizes.length ? `
+  <select class="xo-page-size" xo-param="limit" aria-label="Rows per page">${sizes.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}
   <button type="button" xo-if="$hasPrev" xo-param="offset-=${pageSize}">Previous</button>
   <button type="button" xo-if="$hasNext" xo-param="offset+=${pageSize}">Next</button>
 </nav>` : ''}`;

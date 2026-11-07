@@ -31,6 +31,9 @@ import { XoElement, define } from '@xoong/core';
 import { isRef } from './store.js';
 import { getClient, acquireStream } from './default.js';
 import { XoongError } from './client.js';
+import { idOf } from './store.js';
+import { format } from './format.js';
+import { urlSync } from './url-state.js';
 
 /** Where `p-id=":id"` finds route parameters (set by the router in @xoong/ui). */
 let paramSource = /** @type {((name: string) => string | undefined) | null} */ (null);
@@ -133,6 +136,11 @@ class XoView extends XoElement {
     } finally { this.#streaming.value = false; }
   }
 
+  /** Names listed in `url-params`: those params live in the page's query string (shareable, survive reload and Back). */
+  #urlNames() { return (this.getAttribute('url-params') ?? '').split(',').map((s) => s.trim()).filter(Boolean); }
+  /** How the next change of a url-param is written: 'push' for a click, 'replace' for typing (set by the control, reset after use). */
+  urlMode = 'replace';
+
   /** Runtime params for the operation (overrides `p-*` attributes). */
   get params() { return this.#params.value; }
   set params(v) { this.#params.value = { ...v }; }
@@ -180,6 +188,8 @@ class XoView extends XoElement {
         if (a.value.startsWith(':')) { const v = paramSource?.(a.value.slice(1)); if (v) initial[camel(a.name.slice(2))] = v; continue; } // p-id=":id": a route parameter
         if (a.value.startsWith('?')) { const v = new URLSearchParams(globalThis.location?.search).get(a.value.slice(1)); if (v) initial[camel(a.name.slice(2))] = v; } else initial[camel(a.name.slice(2))] = a.value;
       }
+      const q = this.#urlNames().length ? urlSync().read() : null; // url-params: the page URL wins over fixed p-* values
+      for (const n of this.#urlNames()) if (q?.get(n)) initial[n] = q.get(n);
       this.#params.value = { ...initial, ...this.#params.peek() };
     }
     const q = signal(/** @type {any} */ (null));
@@ -197,9 +207,16 @@ class XoView extends XoElement {
         $stream: () => this.#stream.value,
         $streaming: () => this.#streaming.value,
         $selectedCount: () => this.selectedRefs().length,
+        $selected: () => this.selectedRefs().map((r) => store.denormalize(r)), // the ticked rows, for xo-body="$selected"
         $error: () => q.value?.error.value,
         // Paging state for lists that take `limit` and `offset` and return `total`.
         $hasPrev: () => Number(this.#params.value.offset) > 0,
+        $from: () => Number(this.#params.value.offset ?? 0) + 1,
+        $to: () => {
+          const { limit, offset = 0 } = this.#params.value;
+          const total = root() && store.deref(root())?.total;
+          return limit == null ? undefined : typeof total === 'number' ? Math.min(Number(offset) + Number(limit), total) : Number(offset) + Number(limit);
+        },
         $hasNext: () => {
           const { limit, offset = 0 } = this.#params.value;
           const total = root() && store.deref(root())?.total;
@@ -232,21 +249,56 @@ class XoView extends XoElement {
       current.retain();
     }));
     this.#bound.push(() => current?.release());
+    const urlNames = this.#urlNames();
+    if (urlNames.length) {
+      const sync = urlSync();
+      let first = true;
+      this.#bound.push(effect(() => {
+        const params = this.#params.value;
+        const next = new URLSearchParams(sync.read());
+        for (const n of urlNames) { const v = params[n]; if (v == null || v === '') next.delete(n); else next.set(n, String(v)); }
+        const mode = first ? 'replace' : this.urlMode;
+        first = false;
+        this.urlMode = 'replace';
+        sync.write(next, mode);
+      }));
+      // Back/Forward (or anything else that changes the query): read it into the params
+      this.#bound.push(sync.subscribe(() => {
+        const q = sync.read();
+        const next = { ...this.#params.peek() };
+        let changed = false;
+        for (const n of urlNames) {
+          const v = q.get(n) ?? '';
+          if (String(next[n] ?? '') !== v) { changed = true; if (v === '') delete next[n]; else next[n] = v; }
+        }
+        if (changed) this.#params.value = next;
+      }));
+    }
     if (this.hasAttribute('live')) this.#release = acquireStream();
   }
 }
 define('xo-view', XoView);
 export { XoView };
+export { setFormat } from './format.js';
+export { setUrlSync } from './url-state.js';
 
 /** Interpolate `{path}` in a string. Returns null if there is nothing to interpolate. */
 function parseInterpolation(text) {
   if (!text.includes('{')) return null;
   const parts = text.split(/(\{[^{}]+\})/).filter((p) => p !== '');
   if (!parts.some((p) => /^\{[^{}]+\}$/.test(p))) return null;
-  return parts.map((p) => (/^\{[^{}]+\}$/.test(p) ? { path: p.slice(1, -1).trim() } : p));
+  return parts.map((p) => {
+    if (!/^\{[^{}]+\}$/.test(p)) return p;
+    const [path, fmt] = p.slice(1, -1).split('|').map((s) => s.trim()); // {path} or {path | format}
+    return fmt ? { path, fmt } : { path };
+  });
 }
 const evalParts = (parts, scope, lookup) =>
-  parts.map((p) => (typeof p === 'string' ? p : (v => (v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v)))(lookup(scope, p.path)))).join('');
+  parts.map((p) => {
+    if (typeof p === 'string') return p;
+    const v = lookup(scope, p.path);
+    return p.fmt ? format(p.fmt, v) : v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
+  }).join('');
 
 function bindNode(node, scope, ctx, disposers) {
   const { lookup } = ctx;
@@ -292,7 +344,7 @@ function bindNode(node, scope, ctx, disposers) {
       bindParam(el, attr.value, scope, ctx, disposers);
       continue;
     }
-    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected') continue;
+    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected' || attr.name === 'xo-with' || attr.name === 'xo-confirm' || attr.name === 'xo-notice') continue;
     const parts = parseInterpolation(attr.value);
     if (parts) {
       const name = attr.name;
@@ -387,6 +439,13 @@ function bindEach(el, scope, ctx, disposers) {
   disposers.push(() => { for (const row of rows.values()) { row.stops.forEach((s) => s()); row.node.remove(); } rows.clear(); });
 }
 
+/** Ask before a destructive action (`xo-confirm="Delete {name}?"`). The default is the browser's confirm(); @xoong/ui replaces it with a native <dialog>. */
+let confirmFn = /** @type {(message: string) => boolean | Promise<boolean>} */ ((message) => (typeof globalThis.confirm === 'function' ? globalThis.confirm(message) : true));
+/** @param {(message: string) => boolean | Promise<boolean>} fn */
+export function setConfirm(fn) { confirmFn = fn; }
+/** Ask the person a yes/no question with whatever confirm is installed. */
+export const ask = (message) => Promise.resolve(confirmFn(message));
+
 /** What a form's call returns when the form is invalid and nothing was sent. */
 const INVALID = { invalid: true, errors: {} };
 
@@ -411,6 +470,8 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
   const handler = async (event) => {
     if (eventName === 'submit') event.preventDefault();
     if (busy) return;
+    const confirmText = el.getAttribute('xo-confirm'); // ask first; {path} names the item ("Delete {title}?")
+    if (confirmText !== null && !(await ask(evalParts(parseInterpolation(confirmText) ?? [confirmText], scope, lookup)))) return;
     busy = true;
     el.setAttribute('aria-busy', 'true');
     try {
@@ -430,6 +491,10 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
         }
         if (eventName === 'submit' && op.body === true) body = formBody(/** @type {HTMLFormElement} */ (el), op);
         else if (el.hasAttribute('xo-body')) body = client.store.denormalize(lookup(sc, el.getAttribute('xo-body')));
+        const extra = withOf(el, sc, ctx, op);
+        const idsField = el.getAttribute('xo-selected'); // "ids": one request carrying the ticked ids, instead of one request per row
+        if (idsField) body = { ...(body ?? {}), ...extra, [idsField]: host.selectedRefs().map((r) => selectedId(client, r)) };
+        else if (extra) body = { ...(body ?? {}), ...extra };
         if (op.stream) {
           const signal = host.beginStream();
           try { await host.consume(client.stream(ref, params, body, { signal })); } catch (e) { if (signal.aborted) return undefined; throw e; } // view gone: stop quietly
@@ -440,15 +505,19 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       };
       // xo-selected: the same operation once for every ticked row (sequentially; the first failure stops the rest).
       const bulk = el.hasAttribute('xo-selected');
-      const targets = bulk ? host.selectedRefs().map((r) => ({ value: () => r, parent: scope })) : [scope];
-      if (!targets.length) return;
+      const oneRequest = !!el.getAttribute('xo-selected');
+      const targets = bulk && !oneRequest ? host.selectedRefs().map((r) => ({ value: () => r, parent: scope })) : [scope];
+      if (!targets.length || (oneRequest && !host.selectedRefs().length)) return;
       const results = [];
       for (const sc of targets) results.push(await callOnce(sc));
+      const notice = el.getAttribute('xo-notice'); // evaluated before the selection is cleared, so {$selectedCount} still counts
+      const noticeText = notice === null ? null : evalParts(parseInterpolation(notice) ?? [notice], scope, lookup);
       if (bulk) host.clearSelection();
       if (results[0] === INVALID) { host.emit('xo-invalid', { errors: INVALID.errors }); return; } // nothing was sent; the form showed why
       const result = bulk ? results : results[0];
       if (!engine && eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
       host.emit('xo-done', result);
+      if (noticeText) host.emit('xo-notice', { message: noticeText, kind: 'success' }); // shown by <xo-toast>
     } catch (e) {
       // API failures are expected flows (events + global onError). Anything else is a bug in the screen.
       if (!(e instanceof XoongError)) console.error(e);
@@ -527,11 +596,18 @@ function bindParam(el, spec, scope, ctx, disposers) {
       const params = { ...ctx.host.params };
       if (el.value === '') delete params[name]; else params[name] = el.value;
       if ('offset' in params) params.offset = 0;
+      ctx.host.urlMode = el.localName === 'select' ? 'push' : 'replace'; // typing replaces the history entry, a choice adds one
       ctx.host.params = params;
     };
     const onInput = () => { clearTimeout(timer); timer = setTimeout(apply, el.localName === 'select' ? 0 : 250); }; // wait for the typing to pause
     const type = el.localName === 'select' ? 'change' : 'input';
     el.addEventListener(type, onInput);
+    // the control shows the current param (after a reload or Back with url-params), unless the person is typing in it
+    disposers.push(effect(() => {
+      const v = ctx.host.params[name];
+      const text = v == null ? '' : String(v);
+      if (el.value !== text && globalThis.document?.activeElement !== el) el.value = text;
+    }));
     disposers.push(() => { clearTimeout(timer); el.removeEventListener(type, onInput); });
     return;
   }
@@ -543,13 +619,22 @@ function bindParam(el, spec, scope, ctx, disposers) {
     const value = evalParts(parseInterpolation(rawValue) ?? [rawValue], scope, ctx.lookup);
     const params = { ...ctx.host.params };
     const cur = params[name];
-    if (op === '=') params[name] = value;
+    if (op === '=') { if (value === '') delete params[name]; else params[name] = value; } // "k=" clears the param
     else if (op === '~=') params[name] = cur === value ? `-${value}` : value; // asc, then desc, then asc ...
     else params[name] = Math.max(0, (Number(cur) || 0) + (op === '+=' ? 1 : -1) * Number(value));
     if (name !== 'offset' && 'offset' in params) params.offset = 0; // a new filter or sort starts at the first page
+    ctx.host.urlMode = 'push';
     ctx.host.params = params;
   };
   el.addEventListener('click', handler);
+  // Tabs and segmented filters: the button whose value is the current one is marked (aria-current), "k=" matches "param unset".
+  disposers.push(effect(() => {
+    const cur = ctx.host.params[name];
+    const want = evalParts(parseInterpolation(rawValue) ?? [rawValue], scope, ctx.lookup);
+    const active = op === '=' ? String(cur ?? '') === want : op === '~=' ? String(cur ?? '').replace(/^-/, '') === want : false;
+    if (active) { el.setAttribute('aria-current', 'true'); if (op === '~=') el.setAttribute('data-direction', String(cur).startsWith('-') ? 'desc' : 'asc'); }
+    else { el.toggleAttribute('aria-current', false); el.toggleAttribute('data-direction', false); }
+  }));
   disposers.push(() => el.removeEventListener('click', handler));
 }
 
@@ -581,4 +666,28 @@ function bindSelect(el, spec, scope, ctx, disposers) {
   const onChange = () => host.select(keys(), el.checked);
   el.addEventListener('change', onChange);
   disposers.push(() => el.removeEventListener('change', onChange));
+}
+
+/** The id of a ticked row as the API knows it (a number stays a number; a composite id is joined), not the "User#5" store key. */
+function selectedId(client, ref) {
+  const key = ref.$ref;
+  const def = client.store.defs[key.slice(0, key.indexOf('#'))];
+  const record = client.store.read(key);
+  return def && record ? idOf(def.id, record) ?? key.slice(key.indexOf('#') + 1) : key.slice(key.indexOf('#') + 1);
+}
+
+/** `xo-with="status=published,reason={why}"` -> { status: 'published', reason: ... }: fixed fields added to the request body. */
+function withOf(el, scope, ctx, op) {
+  const spec = el.getAttribute('xo-with');
+  if (!spec) return undefined;
+  const types = new Map((op.bodyFields ?? []).map((f) => [f.name, f.type]));
+  const out = {};
+  for (const pair of spec.split(',')) {
+    const m = /^\s*([\w.-]+)\s*=\s*(.*?)\s*$/.exec(pair);
+    if (!m) continue;
+    const text = evalParts(parseInterpolation(m[2]) ?? [m[2]], scope, ctx.lookup);
+    const type = types.get(m[1]);
+    out[m[1]] = type === 'integer' || type === 'number' ? Number(text) : type === 'boolean' ? text === 'true' : text;
+  }
+  return out;
 }

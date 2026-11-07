@@ -52,6 +52,10 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
   OP = "METHOD /path/{param}" or an operationId; `{param}` is resolved from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click button inside xo-each: show those field values on the item at once, undone if the call fails.
 - `xo-select` on a checkbox in a row ticks that row (`all:items` in the header ticks all); `xo-selected` on an xo-click button runs it once per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts ticked rows.
+- `xo-confirm="Delete {title}?"` asks first (native dialog). `xo-notice="Saved"` shows a toast after success. `xo-with="status=published"` adds fixed body fields.
+  `xo-selected="ids"` (instead of bare `xo-selected`) sends ONE request with the ticked ids; `$selected` is the list of ticked rows.
+- `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button with `xo-param="status=draft"` gets `aria-current` while it is the current value (`status=` matches "unset").
+- Formats: `{publishedAt | datetime}` (also date, time, relative, number, json; `setFormat(name, fn)` adds one).
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles v / -v). Paging vars: `$hasPrev`, `$hasNext`.
 - Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. While a call runs the element has `aria-busy="true"`.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
@@ -92,6 +96,7 @@ idempotencyKeys get a fresh UUID per call). multipart bodies and text/event-stre
     </xo-router>
   Links are intercepted; the active link gets aria-current. `p-id=":id"` reads a path parameter. In JS: `router.navigate('/users/3')`,
   `router.guard((to, from) => ok ? true : '/login')` (true | false | redirect path), `router.beforeNavigate((to, from) => !dirty)` vetoes leaving.
+  A dirty `<form xo-submit>` makes the router ask before leaving (`xo-guard="off"` disables, other text is the question).
   401 -> login: `configure({ onUnauthorized: () => router.navigate('/login') })`.
 
 ## Live updates (server-sent events)

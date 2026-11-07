@@ -15,7 +15,11 @@ export const ATTRIBUTE_DOCS = {
   'xo-body': 'With xo-click: take the request body from the item at this path.',
   'xo-keep': 'With xo-submit: keep the field values after a successful send.',
   'xo-select': 'On a checkbox in a row (inside xo-each): tick that row. `all:items` in the header ticks every row of the list. <xo-table selectable> does this for you.',
-  'xo-selected': 'On an xo-click button: run the operation once for every ticked row, one after another; the first failure stops the rest.',
+  'xo-selected': 'On an xo-click button: run the operation once for every ticked row, one after another; the first failure stops the rest. With a value (`xo-selected="ids"`): ONE request whose body has the ticked ids in that field.',
+  'xo-with': 'On xo-click/xo-submit: fixed fields added to the request body, `field=value,other={path}` (typed from the request schema).',
+  'xo-confirm': 'On xo-click/xo-submit: ask before running, with a native dialog. `{path}` names the item: `xo-confirm="Delete {title}?"`.',
+  'xo-notice': 'On xo-click/xo-submit: after success, show this message in <xo-toast> (`{path}` and `{$selectedCount}` work).',
+  'xo-guard': 'On a <form xo-submit>: with unsaved changes the router asks before the page is left. `xo-guard="off"` disables it; any other text is the question to ask.',
   'xo-route': 'On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route. The content is inert until the route matches.',
   'xo-layout': 'On a <template> inside <xo-router>: a layout (shell) that routes use with `layout="name"`. It must contain one element with xo-outlet.',
   'xo-outlet': 'In a layout: the element where the matched route content is shown. The layout stays while only this content changes.',
@@ -25,7 +29,7 @@ export const ATTRIBUTE_DOCS = {
   'xo-close': 'Close the <xo-dialog> this element is in.',
 };
 export const ELEMENT_DOCS = {
-  'xo-view': ['Declare a screen: `get` names the GET operation to read. Children are bound to the result. Add `live` to apply server-sent updates.', [['get', 'A path ("/users") or operationId.'], ['live', 'Apply live updates from the event stream.']]],
+  'xo-view': ['Declare a screen: `get` names the GET operation to read. Children are bound to the result. Add `live` to apply server-sent updates.', [['get', 'A path ("/users") or operationId.'], ['live', 'Apply live updates from the event stream.'], ['url-params', 'Comma-separated param names kept in the page URL (shareable, survive reload and Back): `status,q,sort,offset`.']]],
   'xo-table': ['A table for the list in the enclosing <xo-view get>. Children become the actions cell of each row.', [['of', 'List field of the response (default `items`).'], ['columns', 'Comma-separated fields, optionally `field:Label`.'], ['sortable', 'Header buttons sort on the server through the `sort` query parameter.'], ['selectable', 'A checkbox per row and a select-all box; slot="bulk" children act on the ticked rows.'], ['filters', 'Comma-separated fields that get a search box above the table; typing sets the query parameter of the same name.'], ['page-size', 'Rows per page: sets `limit`, Previous/Next change `offset`. The response needs a `total`.']]],
   'xo-form': ['A form generated from the request schema of an operation.', [['op', 'The operation to submit to.'], ['submit', 'Text of the submit button.']]],
   'xo-toast': ['Shows the message of the latest xo-error event on the page; hides on the next xo-done or after `timeout` seconds.', [['timeout', 'Seconds before it hides (default 6, 0 = until the next success).']]],

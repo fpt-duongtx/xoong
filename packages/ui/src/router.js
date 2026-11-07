@@ -14,7 +14,7 @@
  *   router.beforeNavigate((to, from) => !form.dirty || confirm('Leave without saving?'));   // veto leaving
  */
 import { XoElement, define } from '@xoong/core';
-import { setParamSource } from '@xoong/data/view';
+import { setParamSource, setUrlSync, ask } from '@xoong/data/view';
 
 /** @typedef {{ path: string, params: Record<string,string>, query: URLSearchParams, url: string, route: Route | null }} Location */
 /** @typedef {{ pattern: string, regex: RegExp, names: string[], layout: string | null, title: string, description: string | undefined, template: HTMLTemplateElement, score: number }} Route */
@@ -57,6 +57,14 @@ class XoRouter extends XoElement {
   #reverting = false;
   /** @type {Map<number, { x: number, y: number }>} scroll position per history entry, restored on Back/Forward */
   #scrolls = new Map();
+  /** Forms with unsaved changes (they announce it with `xo-dirty`); leaving the page asks first, unless the form says `xo-guard="off"`. */
+  #dirtyForms = new Set();
+  #onDirty = (/** @type {Event} */ e) => {
+    const form = /** @type {Element} */ (e.target);
+    if (/** @type {any} */ (e).detail?.dirty && form.getAttribute('xo-guard') !== 'off') this.#dirtyForms.add(form); else this.#dirtyForms.delete(form);
+  };
+  #unsaved = () => { for (const f of this.#dirtyForms) if (!f.isConnected) this.#dirtyForms.delete(f); return [...this.#dirtyForms]; };
+  #onUnload = (/** @type {BeforeUnloadEvent} */ e) => { if (this.#unsaved().length) { e.preventDefault(); e.returnValue = ''; } };
   #onClick = (/** @type {MouseEvent} */ e) => this.#click(e);
   #onPop = () => {
     if (this.#reverting) { this.#reverting = false; return; } // our own history.go(-delta) after a vetoed Back/Forward
@@ -72,7 +80,10 @@ class XoRouter extends XoElement {
 
   disconnected() {
     document.removeEventListener('click', this.#onClick);
+    document.removeEventListener('xo-dirty', this.#onDirty);
     window.removeEventListener('popstate', this.#onPop);
+    window.removeEventListener('beforeunload', this.#onUnload);
+    setUrlSync(null);
     this.#started = false;
     if (active === this) active = null;
   }
@@ -115,7 +126,17 @@ class XoRouter extends XoElement {
     try { window.history.scrollRestoration = 'manual'; } catch { /* a DOM without it */ } // we restore scroll ourselves, per entry
     this.#pos = window.history.state?.xoPos ?? 0;
     document.addEventListener('click', this.#onClick);
+    document.addEventListener('xo-dirty', this.#onDirty);
     window.addEventListener('popstate', this.#onPop);
+    window.addEventListener('beforeunload', this.#onUnload);
+    this.#vetoes.push(async () => { // a dirty form asks before the page is left (links, Back, navigate)
+      const dirty = this.#unsaved();
+      if (!dirty.length) return true;
+      const own = dirty.map((f) => f.getAttribute('xo-guard')).find((m) => m && m !== 'off');
+      return ask(own ?? 'You have unsaved changes. Leave this page?');
+    });
+    // url-params of a view: write the query string through the router, without rendering the route again
+    setUrlSync({ read: () => new URLSearchParams(window.location.search), write: (params, mode) => this.#writeQuery(params, mode), subscribe: () => () => {} });
     this.#go(this.#read(), 'replace', 'start').catch((e) => this.#report(e));
   }
 
@@ -221,6 +242,16 @@ class XoRouter extends XoElement {
     if (type !== 'popstate' || !this.#current) return;
     if (delta && typeof window.history.go === 'function') { this.#reverting = true; window.history.go(-delta); return; }
     window.history.pushState({ xoPos: this.#pos }, '', this.#current.url);
+  }
+
+  /** A view changed its url-params: update the query string of the current location (a new entry for a click, replace for typing). */
+  #writeQuery(params, mode) {
+    const query = params.toString();
+    const url = window.location.pathname + (query ? `?${query}` : '') + window.location.hash;
+    if (url === window.location.pathname + window.location.search + window.location.hash) return;
+    if (mode === 'push') { this.#scrolls.set(this.#pos, { x: window.scrollX, y: window.scrollY }); this.#pos += 1; window.history.pushState({ xoPos: this.#pos }, '', url); }
+    else window.history.replaceState({ xoPos: this.#pos }, '', url);
+    if (this.#current) this.#current = { ...this.#current, query: new URLSearchParams(query), url: url.slice(0) };
   }
 
   #writeUrl(to, mode) {

@@ -99,6 +99,12 @@
   .xo-error { color: var(--xo-color-danger); font-size: var(--xo-text-small); }
   .xo-form > button:last-child { justify-self: start; color: var(--xo-color-accent-text); background: var(--xo-color-accent); border-color: transparent; }
 
+  .xo-confirm { max-width: 26rem; padding: var(--xo-space-4); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
+  .xo-confirm::backdrop { background: rgb(0 0 0 / 0.45); }
+  .xo-confirm-actions { display: flex; gap: var(--xo-space-2); justify-content: flex-end; margin-top: var(--xo-space-3); }
+  .xo-confirm-ok { color: var(--xo-color-accent-text); background: var(--xo-color-danger); border-color: transparent; }
+  .xo-toast-action { margin-inline-start: var(--xo-space-2); }
+  .xo-toast-status { color: var(--xo-color-text); border-color: var(--xo-color-border); }
   xo-dialog > dialog { padding: var(--xo-space-4); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
   xo-dialog > dialog::backdrop { background: rgb(0 0 0 / 0.45); }
 }

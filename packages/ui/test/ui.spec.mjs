@@ -105,7 +105,7 @@ describe('<xo-table> filters and custom cells', () => {
     const api = mockApi(ft, { listUsers: byName });
     screen = await mount('<xo-view get="/users"><xo-table columns="name,email" filters="name"></xo-table></xo-view>', { api });
     const input = screen.$('.xo-filters input');
-    expect(input.getAttribute('aria-label')).toBe('Filter by name');
+    expect(input.getAttribute('aria-label')).toBe('name'); // the label (default: the field name) is the accessible name
     input.value = 'User 3';
     input.dispatchEvent(new Event('input', { bubbles: true }));
     await new Promise((r) => setTimeout(r, 300));

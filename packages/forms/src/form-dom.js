@@ -196,6 +196,9 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
   }) : null;
   observer?.observe(form, { childList: true, subtree: true, attributes: true, attributeFilter: ['name'] });
 
+  // A dirty form announces itself (a router asks before the page is left), and says when it is clean again.
+  const stopDirty = effect(() => form.dispatchEvent(new CustomEvent('xo-dirty', { bubbles: true, detail: { dirty: model.dirty } })));
+
   // ---- the record underneath: a live update refreshes a pristine form, a dirty one keeps its draft ----------------------------
   const stopRecord = record ? effect(() => { const r = record(); if (r !== undefined) model.refresh(r); }) : () => {};
 
@@ -232,6 +235,8 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     form.removeEventListener('focusout', onBlur);
     observer?.disconnect();
     stopRecord();
+    stopDirty();
+    form.dispatchEvent(new CustomEvent('xo-dirty', { bubbles: true, detail: { dirty: false } }));
     for (const el of [...bound.keys()]) unbind(el);
   }
 
