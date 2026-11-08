@@ -1,6 +1,6 @@
 {
   "name": "@xoong/test",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "Test helpers for xoong UI: mount screens, mock the API from operations.json, push live events. Runs on Vitest (happy-dom or browser mode).",
   "type": "module",
   "exports": {
@@ -10,8 +10,8 @@
     "vitest": ">=2"
   },
   "dependencies": {
-    "@xoong/core": "0.0.41",
-    "@xoong/data": "0.0.41"
+    "@xoong/core": "0.0.42",
+    "@xoong/data": "0.0.42"
   },
   "license": "MIT",
   "files": [
@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "homepage": "https://fpt-duongtx.github.io/xoong/",
   "publishConfig": {
     "access": "public"
   },

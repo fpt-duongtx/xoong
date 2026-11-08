@@ -588,6 +588,29 @@ test('optimistic updates show at once, survive success, and are undone on failur
   assert.equal(g.store.read('User#99'), undefined);
 });
 
+test('mutate: a failed request is a XoongError ("Network error" without a response); a mistake in the caller code is not disguised', async () => {
+  const seen = [];
+  // fetch itself fails: a network error
+  const down = createClient({ api, fetch: async () => { throw new TypeError('Failed to fetch'); }, onError: (e) => seen.push(e) });
+  await assert.rejects(() => down.mutate('createUser', {}, { name: 'x' }), (e) => e instanceof XoongError && e.status === 0 && e.message === 'Network error' && e.cause instanceof TypeError);
+  assert.equal(seen.length, 1);
+  // a response that is not JSON is a XoongError, not a raw SyntaxError
+  const html = createClient({ api, fetch: async () => new Response('<html>', { status: 200 }), onError: (e) => seen.push(e) });
+  await assert.rejects(() => html.mutate('createUser', {}, { name: 'x' }), (e) => e instanceof XoongError && e.status === 200 && /not valid JSON/.test(e.detail));
+  // a user callback that throws a TypeError: rethrown as it is, not a XoongError, not reported to onError, optimistic change taken back
+  const f = fakeFetch({ 'GET /users': () => [{ id: 1, name: 'Ada', status: 'active' }], 'POST /users/1/disable': () => ({ id: 1 }) });
+  const boom = new TypeError('headers is broken');
+  let broken = false;
+  const c = createClient({ api, fetch: f, headers: () => { if (broken) throw boom; return {}; }, onError: (e) => seen.push(e), retry: 0 });
+  await c.load('listUsers');
+  broken = true;
+  const before = seen.length;
+  await assert.rejects(() => c.mutate('disableUser', { id: 1 }, undefined, { optimistic: [{ $ref: 'User#1', patch: { status: 'disabled' } }] }), (e) => e === boom && !(e instanceof XoongError));
+  assert.equal(seen.length, before);
+  assert.equal(c.store.read('User#1').status, 'active');
+  assert.equal(c.pending, 0);
+});
+
 test('the "live without streamUrl" warning appears once, not once per view', async () => {
   const { configure } = await import('../src/index.js');
   const { acquireStream } = await import('../src/default.js');

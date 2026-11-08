@@ -3,6 +3,16 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.42 (the rest of the Mist controls, types, docs)
+
+breaking: none.
+
+* Fixed: `<xo-stepper>` and `<xo-slider>` read an absent `min`/`max` as 0: a stepper without limits clamped everything to 0 and a slider without `max` stopped at 0. An absent limit is now no limit (slider: 0 to 100), and a `value` attribute becomes a number. `<xo-date>` puts `aria-expanded` on its button (a text input may not carry it).
+* Added in `@xoong/controls` (one entry point each): `<xo-range-slider>`, `<xo-segmented>`, `<xo-split-button>`, `<xo-textarea>` (counter), `<xo-stat>`, `<xo-otp>`, `<xo-avatar>` and `<xo-avatars>`, `<xo-progress>`, `<xo-spinner>`, `<xo-steps>`, `<xo-inline-edit>`; `<xo-switch>` shows its text. Reference in `docs/controls.md`; a live page "More controls" on the site, covered by the axe, focus and 390px gates.
+* Added: type declarations for `@xoong/core`, `@xoong/controls` and `@xoong/richtext` (every element and event typed, tag map for `querySelector`).
+* Fixed: `client.mutate` no longer disguises a programming error (a thrown TypeError) as a network error; a 2xx response with invalid JSON is a `XoongError`; the MCP server reports the real package version.
+* Docs: `docs/data-layer.md`, `docs/architecture.md` and ADR-0009 now describe what the code does; the Install page and README use `npm install @xoong/xoong@next`; packages link to the site as homepage.
+
 ## 0.0.41 (exclude, viewport fit, switch text)
 
 breaking: none.

@@ -42,8 +42,8 @@ OpenAPI request schema ──sync──▶ bodySchema (in operations.json)
 1. **`schema.js` (pure, no DOM)**: the schema node model; `nodeAt(schema, path)`; `coerce(node, raw)` (strings from controls to typed
    values); `validate(node, value)` returning `{ 'items[2].title': 'message' }`; `defaults(node)`; the message catalogue.
 2. **`form-model.js` (pure signals, no DOM)**: `createForm({ schema, value, rules })` returns the draft signal, the baseline, `field(path)`,
-   `errors`, `dirty`, `touched`, `valid`, `submitting`, `setValue`, `validate`, `reset`, `markPristine`. This is xoong's `form(model, schema)`
-   and is testable without a browser.
+   `errors`, `dirty`, `touched`, `valid`, `submitting`, `setValue`, `validate`, `reset`, `markPristine`. This is xoong's counterpart of Angular's
+   `form(model, schema)` and is testable without a browser.
 3. **`form-dom.js` (the binder)**: attaches a model to a `<form>`: finds controls by `name` path, completes their attributes from the
    schema, writes values in, listens for input/change/blur, renders errors, focuses the first invalid control, exposes `$form`.
 4. **`xo-submit` uses it**: any `<form xo-submit>` whose operation has a `bodySchema` gets all of this automatically, hand-written or generated.
@@ -121,7 +121,7 @@ These came from a real admin with localized fields (five locales, one visible at
    an edit converts local time to UTC ISO.
 6. **Widgets are an open registry.** `widget` is a built-in name (textarea, select, datetime, date, password, url, email, color, richtext
    when it exists) or the tag of any custom element that extends `XoControl`. The binder treats any `XoControl` with a `name` as the field
-   of that path and gives it properties `schema` (its node), `hints` (every hint key of the field, unknown ones included) and `form` (the
+   of that path and gives it properties `schema` (its node), `hints` (every hint key of the field, unknown ones included) and `xoForm` (the
    model, to read other paths). The same registry serves array items and union variants. Media libraries and crop tools are such widgets,
    written by the application.
 Hint keys xoong acts on: `label`, `hint`, `placeholder`, `widget`, `order`, `readOnly`, `hidden`, `group`, `emptyAs`, `pruneEmpty`. Any other
@@ -141,3 +141,8 @@ extension, and a `fields` map in `xoong.hints.json` keyed `Schema.property` for 
 - `operations.json` grows by the request schemas (response schemas are not included).
 - A new concept to learn (`$form`, `rules`), but one that maps to a familiar model (Angular Signal Forms, Vue/React form libraries).
 - The first implementation covers objects with primitives and nested objects; arrays and unions follow in steps (P0-3).
+
+## Update
+Names as implemented: the model factory is `createForm` (exported by `@xoong/forms`), and a custom widget (an `XoControl`) receives the form
+model as the property `xoForm`, not `form` (a form-associated element already has a read-only `form` property: its owner `<form>`). The
+`<form>` element carries `rules`, `serialize` and `model`.

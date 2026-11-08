@@ -1,34 +1,135 @@
 {
   "name": "@xoong/controls",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "xoong form and page controls: tabs, popover, tooltip, menu, combobox, chips, tag input, carousel. Light DOM, accessible, zero dependencies besides @xoong/core.",
   "type": "module",
   "main": "src/index.js",
   "exports": {
     ".": {
+      "types": "./src/index.d.ts",
       "default": "./src/index.js"
     },
-    "./accordion": "./src/accordion.js",
-    "./carousel": "./src/carousel.js",
-    "./chart": "./src/chart.js",
-    "./command": "./src/command.js",
-    "./consent": "./src/consent.js",
-    "./file": "./src/file.js",
-    "./popover": "./src/popover.js",
-    "./combobox": "./src/combobox.js",
-    "./copy": "./src/copy.js",
-    "./date": "./src/date.js",
-    "./image": "./src/image.js",
-    "./password": "./src/password.js",
-    "./slider": "./src/slider.js",
-    "./stepper": "./src/stepper.js",
+    "./accordion": {
+      "types": "./src/index.d.ts",
+      "default": "./src/accordion.js"
+    },
+    "./avatar": {
+      "types": "./src/index.d.ts",
+      "default": "./src/avatar.js"
+    },
+    "./carousel": {
+      "types": "./src/index.d.ts",
+      "default": "./src/carousel.js"
+    },
+    "./chart": {
+      "types": "./src/index.d.ts",
+      "default": "./src/chart.js"
+    },
+    "./combobox": {
+      "types": "./src/index.d.ts",
+      "default": "./src/combobox.js"
+    },
+    "./command": {
+      "types": "./src/index.d.ts",
+      "default": "./src/command.js"
+    },
+    "./consent": {
+      "types": "./src/index.d.ts",
+      "default": "./src/consent.js"
+    },
     "./controls.css": "./src/controls.css",
-    "./menu": "./src/menu.js",
-    "./switch": "./src/switch.js",
-    "./tabs": "./src/tabs.js",
-    "./theme-toggle": "./src/theme-toggle.js",
-    "./time": "./src/time.js",
-    "./tooltip": "./src/tooltip.js"
+    "./copy": {
+      "types": "./src/index.d.ts",
+      "default": "./src/copy.js"
+    },
+    "./date": {
+      "types": "./src/index.d.ts",
+      "default": "./src/date.js"
+    },
+    "./file": {
+      "types": "./src/index.d.ts",
+      "default": "./src/file.js"
+    },
+    "./image": {
+      "types": "./src/index.d.ts",
+      "default": "./src/image.js"
+    },
+    "./inline-edit": {
+      "types": "./src/index.d.ts",
+      "default": "./src/inline-edit.js"
+    },
+    "./menu": {
+      "types": "./src/index.d.ts",
+      "default": "./src/menu.js"
+    },
+    "./otp": {
+      "types": "./src/index.d.ts",
+      "default": "./src/otp.js"
+    },
+    "./password": {
+      "types": "./src/index.d.ts",
+      "default": "./src/password.js"
+    },
+    "./popover": {
+      "types": "./src/index.d.ts",
+      "default": "./src/popover.js"
+    },
+    "./progress": {
+      "types": "./src/index.d.ts",
+      "default": "./src/progress.js"
+    },
+    "./range-slider": {
+      "types": "./src/index.d.ts",
+      "default": "./src/range-slider.js"
+    },
+    "./segmented": {
+      "types": "./src/index.d.ts",
+      "default": "./src/segmented.js"
+    },
+    "./slider": {
+      "types": "./src/index.d.ts",
+      "default": "./src/slider.js"
+    },
+    "./split-button": {
+      "types": "./src/index.d.ts",
+      "default": "./src/split-button.js"
+    },
+    "./stat": {
+      "types": "./src/index.d.ts",
+      "default": "./src/stat.js"
+    },
+    "./stepper": {
+      "types": "./src/index.d.ts",
+      "default": "./src/stepper.js"
+    },
+    "./steps": {
+      "types": "./src/index.d.ts",
+      "default": "./src/steps.js"
+    },
+    "./switch": {
+      "types": "./src/index.d.ts",
+      "default": "./src/switch.js"
+    },
+    "./tabs": {
+      "types": "./src/index.d.ts",
+      "default": "./src/tabs.js"
+    },
+    "./textarea": {
+      "types": "./src/index.d.ts",
+      "default": "./src/textarea.js"
+    },
+    "./theme-toggle": {
+      "types": "./src/index.d.ts",
+      "default": "./src/theme-toggle.js"
+    },
+    "./time": {
+      "types": "./src/index.d.ts",
+      "default": "./src/time.js"
+    },
+    "./tooltip": {
+      "types": "./src/index.d.ts",
+      "default": "./src/tooltip.js"
+    }
   },
   "sideEffects": true,
   "files": [
@@ -53,9 +154,9 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "homepage": "https://fpt-duongtx.github.io/xoong/",
   "dependencies": {
-    "@xoong/core": "0.0.41"
+    "@xoong/core": "0.0.42"
   },
   "publishConfig": {
     "access": "public"

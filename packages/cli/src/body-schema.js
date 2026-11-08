@@ -1,7 +1,7 @@
 // @ts-check
 /**
  * OpenAPI request schema -> the compact node tree that forms use at runtime (`bodySchema` in operations.json; see
- * packages/data/src/schema.js for the node shapes and docs/decisions/0009-forms-from-the-api-schema.md).
+ * packages/forms/src/schema.js for the node shapes and docs/decisions/0009-forms-from-the-api-schema.md).
  */
 
 const refName = (r) => r.slice(r.lastIndexOf('/') + 1);

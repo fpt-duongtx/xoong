@@ -20,7 +20,7 @@ describe('<xo-date>', () => {
     expect(panel.getAttribute('aria-label')).toBe('Choose date');
     expect(day('2026-11-12').getAttribute('aria-pressed')).toBe('true');
     expect(panel.querySelectorAll('.xo-calendar button').length).toBe(42);
-    expect(input.getAttribute('aria-expanded')).toBe('true');
+    expect(el.querySelector('.xo-date-open').getAttribute('aria-expanded')).toBe('true');
   });
   it('a click on a day chooses it, fires input and change, and closes', async () => {
     const el = await mount('value="2026-11-12"');
@@ -31,7 +31,7 @@ describe('<xo-date>', () => {
     day('2026-11-20').click();
     expect(el.value).toBe('2026-11-20');
     expect(seen).toEqual(['input', 'change']);
-    expect(el.querySelector('input').getAttribute('aria-expanded')).toBe('false');
+    expect(el.querySelector('.xo-date-open').getAttribute('aria-expanded')).toBe('false');
     expect(el.dirty).toBe(true);
   });
   it('keys move the focus: arrows by day and week, PageDown by month, Home/End within the week, Escape closes', async () => {
@@ -44,7 +44,7 @@ describe('<xo-date>', () => {
     press('Home'); expect(document.activeElement.dataset.date).toBe('2026-12-14'); // Monday
     press('End'); expect(document.activeElement.dataset.date).toBe('2026-12-20'); // Sunday
     press('Escape');
-    expect(el.querySelector('input').getAttribute('aria-expanded')).toBe('false');
+    expect(el.querySelector('.xo-date-open').getAttribute('aria-expanded')).toBe('false');
   });
   it('typing ISO or a locale date sets the value; nonsense keeps the old one', async () => {
     const el = await mount('value="2026-11-12"');

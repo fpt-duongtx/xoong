@@ -334,6 +334,24 @@ describe('<xo-router> guards and leaving', () => {
     expect(screen.text('h1')).toBe('Login');
   });
 
+  it('Back after a url-params change: the router shows the previous query in the view', async () => {
+    const api = { ...table, operations: { ...table.operations, listUsers: { id: 'listUsers', method: 'GET', path: '/users', query: ['status'], response: { t: 'array', items: { t: 'entity', name: 'User' } } } } };
+    const extra = `<template xo-route="/people" title="People"><xo-view get="listUsers" url-params="status"><button id="act" xo-param="status=active">Active</button><p xo-each=".">{name}</p></xo-view></template>`;
+    await open(APP(extra), mockApi(api, { listUsers: ({ query }) => [{ id: query.status === 'active' ? 2 : 1, name: query.status ?? 'all' }] }));
+    await go('/people');
+    expect(screen.text('p')).toBe('all');
+    await screen.click('#act');
+    await until(() => location.search === '?status=active');
+    await screen.settle();
+    expect(screen.text('p')).toBe('active');
+    history.replaceState(null, '', '/people'); // what Back does to the address
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    await until(() => router.current.url === '/people');
+    await screen.settle();
+    expect(screen.text('p')).toBe('all');
+    expect(location.search).toBe('');
+  });
+
   it('moves focus to the new content after a navigation (not on the first render)', async () => {
     await open();
     expect(document.activeElement?.classList?.contains('xo-layout') ?? false).toBe(false);

@@ -185,20 +185,22 @@ ${example({
   // ------------------------------------------------------------------------------------------------------------------------------
   {
     file: 'install.html', section: 'docs', group: 'Start', nav: 'Install', title: 'Install',
-    description: 'Install xoong from release files, generate typed operations from OpenAPI and run a project.',
+    description: 'Install xoong from npm, generate typed operations from OpenAPI and run a project.',
     body: `
 <h1>Install</h1>
-${callout('note', 'xoong is not on npm yet. Each version is a GitHub Release with one tarball per package; the repository is public, so downloading needs no sign-in.')}
+${callout('note', 'xoong is on npm under the tag next while it is 0.0.x: the API can still change between versions. The repository is public; every version is also a GitHub Release.')}
 <p>You need Node 22.12 or newer. The libraries themselves have no runtime dependencies; Node is only for the tools (<code>xoong sync</code>, <code>dev</code>, <code>build</code>).</p>
 
-<h2>1. Download a release</h2>
-${tabs('Download', [['Terminal', 'bash', `
-gh release download v${VERSION} -R fpt-duongtx/xoong -D vendor/xoong`]])}
-<p>The folder holds one <code>.tgz</code> per package and a <code>consume.json</code> that says what to copy into your project.</p>
+<h2>1. Install</h2>
+<p><code>@xoong/xoong</code> is one install for the runtime, the admin set and the <code>xoong</code> command. Or take single packages: <code>@xoong/core</code>, <code>@xoong/data</code>, <code>@xoong/forms</code>, <code>@xoong/ui</code>, <code>@xoong/controls</code>, <code>@xoong/richtext</code>, <code>@xoong/i18n</code>, <code>@xoong/cli</code>.</p>
+${tabs('Install', [['Terminal', 'bash', `
+npm install @xoong/xoong@next`], ['Single packages', 'bash', `
+npm install @xoong/core@next @xoong/data@next @xoong/ui@next @xoong/controls@next`]])}
 
-<h2>2. Point your <code>package.json</code> at the tarballs</h2>
-<p>Copy <code>dependencies</code> (what you import) and every entry of <code>overrides</code> from <code>consume.json</code>, then run <code>npm install</code>.</p>
-${tabs('package.json', [['package.json', 'json', `
+<h2>2. Or use a release file</h2>
+<p>Each GitHub Release has one tarball per package and a <code>consume.json</code> that says what to copy into your <code>package.json</code>. Use it to try an unreleased tag or to work without the registry.</p>
+${tabs('Release files', [['Terminal', 'bash', `
+gh release download v${VERSION} -R fpt-duongtx/xoong -D vendor/xoong`], ['package.json', 'json', `
 {
   "dependencies": {
     "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-${VERSION}.tgz",
@@ -207,8 +209,7 @@ ${tabs('package.json', [['package.json', 'json', `
   "overrides": {
     "@xoong/core": "file:./vendor/xoong/xoong-core-${VERSION}.tgz"
   }
-}`], ['Terminal', 'bash', `
-npm install`]])}
+}`]])}
 
 <h2>3. Generate typed operations and run</h2>
 <p>Give <code>xoong sync</code> your OpenAPI document (a file or a URL). It writes <code>.xoong/operations.json</code>, which the data layer reads, and <code>api.d.ts</code> for TypeScript.</p>
@@ -313,7 +314,7 @@ await setLocale('vi');`]])}
 <tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>17.4 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
 <tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialog, toast, router</td><td>10 KB</td></tr>
-<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>22.5 KB</td></tr>
+<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>30 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
 <tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5.6 KB</td></tr>
 <tr><td><code>@xoong/cli</code></td><td><code>sync</code>, <code>check</code>, <code>dev</code>, <code>build</code>, <code>render</code>, <code>i18n</code></td><td>tools</td></tr>
@@ -753,6 +754,130 @@ ${tabs('Widgets', [['xoong.hints.json', 'json', `
 }`], ['OpenAPI', 'json', `
 "keywords": { "type": "array", "items": { "type": "string" }, "x-xoong-widget": "xo-tags" }`]])}
 `,
+  },
+  // ------------------------------------------------------------------------------------------------------------------------------
+  {
+    file: 'more-controls.html', section: 'docs', group: 'Controls', nav: 'More controls', title: 'More controls', demo: true,
+    description: 'Switch, date, time, slider, stepper, password, copy, file, textarea, segmented, split button, accordion, popover, chart, stat, image and more: each a form control or an element with the keyboard and ARIA done.',
+    body: `
+<h1>More controls</h1>
+<p>Each is one custom element from <code>@xoong/controls</code> (also its own entry point, for example <code>@xoong/controls/date</code>). The form controls are <code>XoControl</code>s: they have a <code>name</code> and a <code>value</code>, take part in validation, reset with the form and tell you when they are <code>dirty</code>. They look like the rest of the theme because the markup they draw uses the theme's classes. Every one has a keyboard path and an accessible name.</p>
+
+<h2 id="choose">Choose: switch, segmented, split button</h2>
+${example({
+  label: 'xo-switch, xo-segmented, xo-split-button',
+  preview: `
+<div class="stack">
+  <xo-switch name="notify" checked>Email me about new comments</xo-switch>
+  <xo-switch name="menu" size="sm" label="Show in the menu"></xo-switch>
+  <xo-segmented name="period" label="Billing period" value="month"><button value="month">Monthly</button><button value="year">Yearly</button></xo-segmented>
+  <xo-split-button more="More publish options"><button class="primary">Publish</button><button>Schedule</button><button>Save as draft</button></xo-split-button>
+</div>`,
+})}
+<p>Text inside <code>&lt;xo-switch&gt;</code> is its visible label; without text, give it <code>label</code>. <code>&lt;xo-segmented&gt;</code> takes <code>&lt;button value&gt;</code> children; with <code>multiple</code> each segment toggles. The first child of <code>&lt;xo-split-button&gt;</code> is the main action; the others are the items of its menu.</p>
+
+<h2 id="numbers">Numbers: slider, range slider, stepper</h2>
+${example({
+  label: 'xo-slider, xo-range-slider, xo-stepper',
+  preview: `
+<div class="stack">
+  <xo-slider name="quality" label="Image quality" min="0" max="100" step="5" value="80"></xo-slider>
+  <xo-slider name="blur" label="Blur" min="0" max="2" step="1" value="1" labels="Low,Medium,High"></xo-slider>
+  <xo-range-slider name="price" label="Price" min="0" max="100" value="20,70" min-label="Minimum price" max-label="Maximum price"></xo-range-slider>
+  <xo-stepper name="perPage" label="Items per page" min="1" max="100" step="5" value="25"></xo-stepper>
+</div>`,
+})}
+<p><code>labels</code> gives screen readers a word for each stop. The stepper clamps to <code>min</code> and <code>max</code>, goes by <code>step</code> with the arrow keys and by ten steps with Page Up and Page Down. Without <code>min</code> or <code>max</code> there is no limit.</p>
+
+<h2 id="dates">Date and time</h2>
+${example({
+  label: 'xo-date, xo-time',
+  preview: `
+<div class="stack">
+  <xo-date name="publishedAt" label="Publish on" value="2026-11-25"></xo-date>
+  <xo-date name="stay" label="Stay" range></xo-date>
+  <xo-time name="at" label="Time" step="15" value="09:30"></xo-time>
+</div>`,
+})}
+<p>The value is ISO <code>YYYY-MM-DD</code> (a range: <code>{ start, end }</code>) and <code>HH:mm</code>; the field shows the date in the visitor's locale and also accepts typing. In the calendar: arrows move by day and week, Page Up and Page Down by month, Home and End to the start and end of the week, Escape closes.</p>
+
+<h2 id="text">Text: password, copy, textarea with a counter</h2>
+${example({
+  label: 'xo-password, xo-copy, xo-textarea',
+  preview: `
+<div class="stack">
+  <xo-password name="password" label="Password" autocomplete="new-password"></xo-password>
+  <xo-copy label="API key" value="xo_live_4f9a7f3a"></xo-copy>
+  <xo-textarea name="excerpt" label="Excerpt" maxlength="160" rows="3"></xo-textarea>
+</div>`,
+})}
+<p>The eye button of <code>&lt;xo-password&gt;</code> is <code>aria-pressed</code>. <code>&lt;xo-copy&gt;</code> says "Copied" for a moment and fires <code>copied</code>. <code>&lt;xo-textarea&gt;</code> keeps text pasted over the limit and marks it invalid instead of cutting it.</p>
+
+<h2 id="file">File</h2>
+${example({
+  label: 'xo-file',
+  preview: `<xo-file name="logo" label="Logo" accept="image/*" max-size="2MB" hint="PNG or SVG, up to 2 MB"></xo-file>`,
+})}
+<p>Drag a file onto the zone or press Enter to browse. The value is a <code>File</code> (an array with <code>multiple</code>); a refused file shows why and fires <code>xo-file-reject</code>. Images get a thumbnail; set <code>el.progress = 0.4</code> to show an upload.</p>
+
+<h2 id="structure">Structure: accordion, popover, chart, stat</h2>
+${example({
+  label: 'xo-accordion, xo-popover, xo-chart, xo-stat',
+  preview: `
+<div class="stack">
+  <xo-accordion single>
+    <details><summary>Does it need a build?</summary><div class="xo-accordion__body">No. The browser loads the files you installed.</div></details>
+    <details><summary>Can I use my own styles?</summary><div class="xo-accordion__body">Yes: tokens and plain CSS, in layers you control.</div></details>
+  </xo-accordion>
+  <div class="xo-notify"><button class="icon-only ghost" aria-label="Notifications"><span class="ic" data-ic="bell" aria-hidden="true"></span></button>
+    <xo-popover label="Notifications"><p>Nothing new.</p><button class="ghost sm">Mark all read</button></xo-popover></div>
+  <xo-stat label="Visits" value="48,210" delta="12.4" delta-label="vs last week" series="20,22,18,26,24,32,29"></xo-stat>
+  <xo-chart type="bar" label="Visits per day" unit="k" data='[{"label":"Mon","value":12},{"label":"Tue","value":18},{"label":"Wed","value":9},{"label":"Thu","value":22},{"label":"Fri","value":16}]'></xo-chart>
+</div>`,
+})}
+<p><code>&lt;xo-chart&gt;</code> draws bars or a line from data and always offers the same numbers as a table ("View as table"); the bars can be focused. <code>&lt;xo-popover&gt;</code> opens from the button before it and closes with Escape or a click outside; it stays inside the viewport.</p>
+
+<h2 id="feedback">Feedback: progress, spinner, steps, avatars, one-time code, rename in place</h2>
+${example({
+  label: 'xo-progress, xo-spinner, xo-steps, xo-avatar, xo-otp, xo-inline-edit',
+  preview: `
+<div class="stack">
+  <xo-progress value="62" label="Upload"></xo-progress>
+  <xo-progress label="Working"></xo-progress>
+  <div class="row-inline"><xo-spinner label="Loading"></xo-spinner><xo-spinner label="Loading" size="lg"></xo-spinner></div>
+  <xo-steps current="1" label="Checkout"><span>Account</span><span>Plan</span><span>Payment</span></xo-steps>
+  <div class="row-inline"><xo-avatar name="Mai Trần"></xo-avatar><xo-avatar name="Linh Phạm" status="ok"></xo-avatar>
+    <xo-avatars max="2" label="Reviewers"><xo-avatar name="An Lê"></xo-avatar><xo-avatar name="Binh Vo"></xo-avatar><xo-avatar name="Chi Do"></xo-avatar></xo-avatars></div>
+  <xo-otp name="code" length="6" label="Verification code"></xo-otp>
+  <xo-inline-edit name="title" value="Greece Golden Visa" label="Title"></xo-inline-edit>
+</div>`,
+})}
+<p>Without a <code>value</code>, <code>&lt;xo-progress&gt;</code> is indeterminate. <code>&lt;xo-steps&gt;</code> marks the current step with <code>aria-current="step"</code> and shows a check on done steps, so the state is not only a colour. In <code>&lt;xo-otp&gt;</code> typing moves forward, Backspace back and a paste is split across the boxes; <code>complete</code> fires when every box is filled. In <code>&lt;xo-inline-edit&gt;</code> Enter saves and Escape cancels.</p>
+
+<h2 id="page">Page: image, theme toggle, command palette, cookie consent</h2>
+${example({
+  label: 'xo-image, xo-theme-toggle',
+  preview: `
+<div class="stack">
+  <xo-image src="img/does-not-exist.png" alt="A picture that is not there" ratio="16/9" fallback="img/also-missing.png"></xo-image>
+  <xo-theme-toggle></xo-theme-toggle>
+</div>`,
+})}
+<p><code>&lt;xo-image&gt;</code> loads lazily, keeps its space and shows the alt text when the picture fails (here it does, on purpose). <code>&lt;xo-theme-toggle&gt;</code> sets <code>data-theme</code> on the page and remembers the choice; it is the same button as in this site's header.</p>
+${tabs('Command palette and cookie consent', [['HTML', 'html', `
+<xo-command shortcut="k" label="Search commands">
+  <a href="/articles" data-group="Go to">Articles</a>
+  <button data-group="Actions" data-value="new-article">New article</button>
+</xo-command>
+
+<xo-consent categories="analytics,marketing">
+  <b>We use two cookies.</b> One keeps you signed in, one measures anonymous visits. You choose.
+</xo-consent>
+<button xo-consent-open>Cookie settings</button>`]])}
+<p><code>&lt;xo-command&gt;</code> opens with Ctrl or Cmd plus K; its children are the commands, filtered as you type. <code>&lt;xo-consent&gt;</code> shows a bar until the visitor chooses, saves the choice and fires <code>xo-consent</code>. They are not run on this page because they cover it.</p>
+
+<h2>Reference</h2>
+<p>Every attribute, property and event is in <a href="https://github.com/fpt-duongtx/xoong/blob/main/docs/controls.md">docs/controls.md</a> and in the editor hints of <code>xoong.html-data.json</code>.</p>`,
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {

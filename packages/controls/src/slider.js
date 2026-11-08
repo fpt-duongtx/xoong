@@ -26,6 +26,7 @@ class XoSlider extends XoControl {
     input.addEventListener('change', (e) => { e.stopPropagation(); this.userChange(); });
     this.#input = input;
     this.replaceChildren(input);
+    if (this.hasAttribute('value')) this.setValue(this.getAttribute('value')); // the base class would keep the attribute text: a number control holds a number
     queueMicrotask(() => this.#paint());
   }
   attributeChangedCallback(attr, old, value) { super.attributeChangedCallback(attr, old, value); this.#paint(); }
@@ -33,7 +34,7 @@ class XoSlider extends XoControl {
   #paint() {
     const i = this.#input;
     if (!i) return;
-    const min = this.min ?? 0, max = this.max ?? 100;
+    const min = this.hasAttribute('min') ? this.min : 0, max = this.hasAttribute('max') ? this.max : 100; // an absent Number prop reads as 0
     i.min = String(min); i.max = String(max); i.step = String(this.step || 1);
     i.disabled = this.isDisabled || this.readonly;
     i.setAttribute('aria-label', this.label || this.name || 'Value');

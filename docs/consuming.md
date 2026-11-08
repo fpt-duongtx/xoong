@@ -1,13 +1,13 @@
-# Using xoong from another project (before it is published)
+# Using xoong from another project
 
-Nothing is published to npm. Each drop is a git tag (`v0.0.N`) with a GitHub Release in the public repository (https://github.com/fpt-duongtx/xoong/releases) that carries one
+The packages are on npm under the tag `next`: `npm install @xoong/xoong@next` (or single `@xoong/*` packages). This page is for working from a release file instead: to try a tag that is not on npm yet, or without the registry. Each drop is a git tag (`v0.0.N`) with a GitHub Release in the public repository (https://github.com/fpt-duongtx/xoong/releases) that carries one
 tarball per package and a `consume.json`. All packages share the version number.
 
 ## Install a drop
 
 ```bash
 # in your project (the repository is public: `gh` needs no sign-in for it)
-gh release download v0.0.41 -R fpt-duongtx/xoong -D vendor/xoong
+gh release download v0.0.42 -R fpt-duongtx/xoong -D vendor/xoong
 ```
 
 Then copy `dependencies` (only what you import) and the whole `overrides` from `vendor/xoong/consume.json` into your `package.json`
@@ -15,8 +15,8 @@ Then copy `dependencies` (only what you import) and the whole `overrides` from `
 
 ```json
 {
-  "dependencies": { "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-0.0.41.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.41.tgz" },
-  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.41.tgz", "...": "every package listed in consume.json" }
+  "dependencies": { "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-0.0.42.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.42.tgz" },
+  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.42.tgz", "...": "every package listed in consume.json" }
 }
 ```
 

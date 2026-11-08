@@ -18,7 +18,9 @@ class XoStepper extends XoControl {
 
   setValue(v) { const n = Number(v); super.setValue(v === '' || v == null || Number.isNaN(n) ? '' : this.#clamp(n)); this.#paint(); }
   get focusTarget() { return this.#input; }
-  #clamp(/** @type {number} */ n) { return Math.min(this.max ?? Infinity, Math.max(this.min ?? -Infinity, n)); }
+  get #min() { return this.hasAttribute('min') ? /** @type {number} */ (this.min) : -Infinity; } // an absent Number prop reads as 0, so the attribute decides
+  get #max() { return this.hasAttribute('max') ? /** @type {number} */ (this.max) : Infinity; }
+  #clamp(/** @type {number} */ n) { return Math.min(this.#max, Math.max(this.#min, n)); }
   get #step() { return this.step || 1; }
 
   connected() {
@@ -42,19 +44,20 @@ class XoStepper extends XoControl {
       if (k === 'Enter') { this.#commit(); return; }
       const by = { ArrowUp: 1, ArrowDown: -1, PageUp: 10, PageDown: -10 }[k];
       if (by) { e.preventDefault(); this.#move(by); }
-      else if ((k === 'Home' && this.min != null) || (k === 'End' && this.max != null)) { e.preventDefault(); this.#set(k === 'Home' ? /** @type {number} */ (this.min) : /** @type {number} */ (this.max)); }
+      else if ((k === 'Home' && this.hasAttribute('min')) || (k === 'End' && this.hasAttribute('max'))) { e.preventDefault(); this.#set(k === 'Home' ? /** @type {number} */ (this.min) : /** @type {number} */ (this.max)); }
     });
     this.#input = input;
     this.#buttons = [button(-1, text('xoong.controls.decrease', 'Decrease'), 'minus'), button(1, text('xoong.controls.increase', 'Increase'), 'plus')];
     wrap.append(this.#buttons[0], input, this.#buttons[1]);
     this.replaceChildren(wrap);
+    if (this.hasAttribute('value')) this.setValue(this.getAttribute('value')); // the base class would keep the attribute text: a number control holds a number
     queueMicrotask(() => this.#paint());
   }
   attributeChangedCallback(attr, old, value) { super.attributeChangedCallback(attr, old, value); this.#paint(); }
 
   #move(/** @type {number} */ steps) {
     if (this.isDisabled || this.readonly) return;
-    const now = super.value === '' ? (this.min ?? 0) - (steps > 0 ? this.#step : 0) : super.value;
+    const now = super.value === '' ? (this.hasAttribute('min') ? /** @type {number} */ (this.min) : 0) - (steps > 0 ? this.#step : 0) : super.value;
     this.#set(now + steps * this.#step);
   }
   #set(/** @type {number} */ n) {
@@ -75,11 +78,11 @@ class XoStepper extends XoControl {
     const v = super.value;
     i.value = v === '' ? '' : String(v);
     i.setAttribute('aria-label', this.label || this.name || 'Number');
-    for (const [a, val] of [['aria-valuemin', this.min], ['aria-valuemax', this.max], ['aria-valuenow', v === '' ? undefined : v]]) { if (val == null) i.removeAttribute(/** @type {string} */ (a)); else i.setAttribute(/** @type {string} */ (a), String(val)); }
+    for (const [a, val] of [['aria-valuemin', this.hasAttribute('min') ? this.min : undefined], ['aria-valuemax', this.hasAttribute('max') ? this.max : undefined], ['aria-valuenow', v === '' ? undefined : v]]) { if (val == null) i.removeAttribute(/** @type {string} */ (a)); else i.setAttribute(/** @type {string} */ (a), String(val)); }
     const off = this.isDisabled || this.readonly;
     i.disabled = off;
-    this.#buttons[0].disabled = off || (v !== '' && this.min != null && v <= this.min);
-    this.#buttons[1].disabled = off || (v !== '' && this.max != null && v >= this.max);
+    this.#buttons[0].disabled = off || (v !== '' && this.hasAttribute('min') && v <= /** @type {number} */ (this.min));
+    this.#buttons[1].disabled = off || (v !== '' && this.hasAttribute('max') && v >= /** @type {number} */ (this.max));
   }
 }
 define('xo-stepper', XoStepper);

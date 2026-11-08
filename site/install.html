@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Install · xoong</title>
-  <meta name="description" content="Install xoong from release files, generate typed operations from OpenAPI and run a project.">
+  <meta name="description" content="Install xoong from npm, generate typed operations from OpenAPI and run a project.">
   <meta property="og:title" content="Install · xoong">
-  <meta property="og:description" content="Install xoong from release files, generate typed operations from OpenAPI and run a project.">
+  <meta property="og:description" content="Install xoong from npm, generate typed operations from OpenAPI and run a project.">
   <meta property="og:image" content="brand/mist/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
@@ -77,6 +77,7 @@
     <a href="tabs.html">Tabs</a>
     <a href="menu.html">Menu and tooltip</a>
     <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
     <a href="carousel.html">Carousel</a>
     <a href="own-control.html">Your own control</a>
     <a href="components.html">Standard</a>
@@ -113,6 +114,7 @@
       <a href="tabs.html">Tabs</a>
       <a href="menu.html">Menu and tooltip</a>
       <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
       <a href="carousel.html">Carousel</a>
       <a href="own-control.html">Your own control</a>
       <a href="components.html">Standard</a>
@@ -127,28 +129,29 @@
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Start</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Install</span></div>
 
 <h1>Install</h1>
-<aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p>xoong is not on npm yet. Each version is a GitHub Release with one tarball per package; the repository is public, so downloading needs no sign-in.</p></aside>
+<aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p>xoong is on npm under the tag next while it is 0.0.x: the API can still change between versions. The repository is public; every version is also a GitHub Release.</p></aside>
 <p>You need Node 22.12 or newer. The libraries themselves have no runtime dependencies; Node is only for the tools (<code>xoong sync</code>, <code>dev</code>, <code>build</code>).</p>
 
-<h2 id="1-download-a-release">1. Download a release</h2>
-<xo-tabs label="Download" class="example">
-  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>gh release download v0.0.41 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
+<h2 id="1-install">1. Install</h2>
+<p><code>@xoong/xoong</code> is one install for the runtime, the admin set and the <code>xoong</code> command. Or take single packages: <code>@xoong/core</code>, <code>@xoong/data</code>, <code>@xoong/forms</code>, <code>@xoong/ui</code>, <code>@xoong/controls</code>, <code>@xoong/richtext</code>, <code>@xoong/i18n</code>, <code>@xoong/cli</code>.</p>
+<xo-tabs label="Install" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npm install @xoong/xoong@next</code></pre></section>
+  <section xo-tab="Single packages"><pre data-lang="bash" tabindex="0"><code>npm install @xoong/core@next @xoong/data@next @xoong/ui@next @xoong/controls@next</code></pre></section>
 </xo-tabs>
-<p>The folder holds one <code>.tgz</code> per package and a <code>consume.json</code> that says what to copy into your project.</p>
 
-<h2 id="2-point-your-package-json-at-the-tarballs">2. Point your <code>package.json</code> at the tarballs</h2>
-<p>Copy <code>dependencies</code> (what you import) and every entry of <code>overrides</code> from <code>consume.json</code>, then run <code>npm install</code>.</p>
-<xo-tabs label="package.json" class="example">
+<h2 id="2-or-use-a-release-file">2. Or use a release file</h2>
+<p>Each GitHub Release has one tarball per package and a <code>consume.json</code> that says what to copy into your <code>package.json</code>. Use it to try an unreleased tag or to work without the registry.</p>
+<xo-tabs label="Release files" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>gh release download v0.0.42 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
   <section xo-tab="package.json"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"dependencies"</span>: {
-    <span class="tok-a">"@xoong/xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-xoong-0.0.41.tgz"</span>,
-    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.41.tgz"</span>
+    <span class="tok-a">"@xoong/xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-xoong-0.0.42.tgz"</span>,
+    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.42.tgz"</span>
   },
   <span class="tok-a">"overrides"</span>: {
-    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.41.tgz"</span>
+    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.42.tgz"</span>
   }
 }</code></pre></section>
-  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npm install</code></pre></section>
 </xo-tabs>
 
 <h2 id="3-generate-typed-operations-and-run">3. Generate typed operations and run</h2>
@@ -186,7 +189,7 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
     </main>
     <aside class="rail" aria-label="On this page">
       <h2>On this page</h2>
-      <ol><li><a href="#1-download-a-release" aria-current="true">1. Download a release</a></li><li><a href="#2-point-your-package-json-at-the-tarballs">2. Point your package.json at the tarballs</a></li><li><a href="#3-generate-typed-operations-and-run">3. Generate typed operations and run</a></li><li><a href="#4-a-first-screen">4. A first screen</a></li></ol>
+      <ol><li><a href="#1-install" aria-current="true">1. Install</a></li><li><a href="#2-or-use-a-release-file">2. Or use a release file</a></li><li><a href="#3-generate-typed-operations-and-run">3. Generate typed operations and run</a></li><li><a href="#4-a-first-screen">4. A first screen</a></li></ol>
     </aside>
   </div>
   <footer class="foot">

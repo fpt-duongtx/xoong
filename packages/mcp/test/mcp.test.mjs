@@ -18,6 +18,8 @@ test('initialize announces tools; notifications get no reply; unknown methods ar
   const init = await server.handle({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
   assert.equal(init.result.protocolVersion, '2024-11-05');
   assert.deepEqual(init.result.capabilities, { tools: {} });
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.deepEqual(init.result.serverInfo, { name: 'xoong', version: pkg.version });
   assert.equal(await server.handle({ jsonrpc: '2.0', method: 'notifications/initialized' }), null);
   assert.equal((await server.handle({ jsonrpc: '2.0', id: 2, method: 'nope' })).error.code, -32601);
   assert.equal((await server.handle({ nonsense: true })).error.code, -32600);

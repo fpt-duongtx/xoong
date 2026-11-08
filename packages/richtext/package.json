@@ -1,14 +1,18 @@
 {
   "name": "@xoong/richtext",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "A small rich text editor for xoong forms: contenteditable, no dependencies besides @xoong/core, sanitised HTML in and out. Toolbar, headings, bold, italic, lists, quote, links (http, https, mailto, tel only), media hook.",
   "type": "module",
   "main": "src/index.js",
   "exports": {
     ".": {
+      "types": "./src/index.d.ts",
       "default": "./src/index.js"
     },
-    "./sanitize": "./src/sanitize.js",
+    "./sanitize": {
+      "types": "./src/sanitize.d.ts",
+      "default": "./src/sanitize.js"
+    },
     "./richtext.css": "./src/richtext.css"
   },
   "sideEffects": true,
@@ -32,9 +36,9 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "homepage": "https://fpt-duongtx.github.io/xoong/",
   "dependencies": {
-    "@xoong/core": "0.0.41"
+    "@xoong/core": "0.0.42"
   },
   "publishConfig": {
     "access": "public"

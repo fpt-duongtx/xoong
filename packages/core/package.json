@@ -1,14 +1,26 @@
 {
   "name": "@xoong/core",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "xoong core: signals, Light DOM custom elements, html templates. Zero dependencies.",
   "type": "module",
   "main": "src/index.js",
   "exports": {
-    ".": "./src/index.js",
-    "./signals": "./src/signals.js",
-    "./closest": "./src/closest.js",
-    "./syntax": "./src/syntax.js"
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./signals": {
+      "types": "./src/signals.d.ts",
+      "default": "./src/signals.js"
+    },
+    "./closest": {
+      "types": "./src/closest.d.ts",
+      "default": "./src/closest.js"
+    },
+    "./syntax": {
+      "types": "./src/syntax.d.ts",
+      "default": "./src/syntax.js"
+    }
   },
   "sideEffects": false,
   "license": "MIT",
@@ -30,7 +42,7 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "homepage": "https://fpt-duongtx.github.io/xoong/",
   "publishConfig": {
     "access": "public"
   },

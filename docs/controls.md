@@ -110,6 +110,16 @@ Each is its own entry point (`@xoong/controls/accordion`, ...) and is registered
 | `<xo-command shortcut label>` | Command palette (Ctrl/Cmd+K): children are the commands (`data-group`, `data-value`) | `xo-command-run` `{ value, label }` |
 | `<xo-chart type="bar\|line" label unit data>` | Bar or line chart from data, plus a table of the same numbers; bars are focusable | `el.rows = [...]` |
 | `<xo-consent categories storage>` | Cookie consent bar that remembers the choice; `xo-consent-open` on any element shows it again | `el.choices`; `xo-consent` |
+| `<xo-range-slider name label min max step value="20,70">` | Two native range inputs on one track; thumbs cannot cross | `[min, max]`; `change` |
+| `<xo-segmented name label multiple clearable>` | Buttons where one (or several) is chosen: `<button value>` children, `aria-pressed` | string or array; `change` |
+| `<xo-split-button more>` | Main button (first child) and a menu of the other children | the children's own clicks |
+| `<xo-textarea name label maxlength rows>` | Textarea with a counter and a thin progress bar; over the limit it is invalid, text is kept | string |
+| `<xo-stat label value delta delta-label series trend>` | KPI tile: value, change with arrow and sign, sparkline | none |
+| `<xo-otp name label length>` | One box per digit; paste splits; Backspace goes back | digit string; `complete` |
+| `<xo-inline-edit name value label>` | Text renamed in place: Enter saves, Escape cancels | string; `save`, `cancel` |
+| `<xo-avatar name src size status>`, `<xo-avatars max>` | Initials or a picture; a stack with a "+N" badge | none |
+| `<xo-progress value max label thin>`, `<xo-spinner label size>` | Progress bar (indeterminate without `value`), loading spinner | none |
+| `<xo-steps current label>` | Progress through a flow; the children are the titles; `aria-current=step`, a check on done steps | none |
 | `<xo-theme-toggle storage>` | Light/dark switch: sets `data-theme` on `<html>`, saved, follows the system until chosen | `xo-theme-change` `{ theme }` |
 
 Put this in the `<head>` before the first paint so the saved theme does not flash: `try { const t = localStorage.getItem('xoong-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch {}`

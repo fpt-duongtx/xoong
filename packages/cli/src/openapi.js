@@ -293,7 +293,7 @@ export function analyze(doc, { hints } = {}) {
       const lost = [];
       const builtBodyNode = bodySchema && !multipart ? bodySchemaOf(bodySchema, schemas, hints, lost) : undefined;
       const builtBody = () => builtBodyNode;
-      for (const where of new Set(lost)) problems.push({ level: 'warn', code: 'XO161', where: `${method.toUpperCase()} ${path}`, message: `a union in ${where} cannot be told apart, so a generated form draws it as free-form`, fix: 'Add a discriminator (propertyName) or give each member a property with one fixed value (const or a one-value enum)' });
+      for (const where of new Set(lost)) problems.push({ level: 'warn', code: 'XO161', where: `${method.toUpperCase()} ${path}`, message: `a union in ${where} cannot be told apart, so a generated form draws it as free-form`, fix: 'Add a discriminator (propertyName; inline members also need the fixed value of that property) or give each member a property with a different fixed value (const or a one-value enum)' });
       operations[id] = {
         id, method: method.toUpperCase(), path,
         ...(params.some((p) => p.in === 'query') ? { query: params.filter((p) => p.in === 'query').map((p) => p.name) } : {}),

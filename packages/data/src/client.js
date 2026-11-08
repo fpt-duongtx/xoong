@@ -160,7 +160,8 @@ export function createClient(options) {
       if (res.ok) {
         if (res.status === 204) return null;
         const text = await res.text();
-        const json = text ? JSON.parse(text) : null;
+        let json;
+        try { json = text ? JSON.parse(text) : null; } catch (cause) { throw new XoongError({ status: res.status, operation: o.id, cause, detail: 'the response is not valid JSON' }); }
         if (o.unwrap && json && typeof json === 'object') { // { code, message, data } envelopes
           if (!(o.unwrap in json)) throw new XoongError({ status: res.status, operation: o.id, detail: `the response has no "${o.unwrap}" field (hint "unwrap" expects an envelope)` });
           return json[o.unwrap] ?? null;
@@ -333,9 +334,11 @@ export function createClient(options) {
         json = await request(o, params, withKeys(o, body));
       } catch (err) {
         undo.reverse().forEach((u) => u());
-        const e = err instanceof XoongError ? err : new XoongError({ operation: o.id, cause: err });
-        fail(e);
-        throw e;
+        // A failed request is already a XoongError (a fetch failure is "Network error", a bad status carries the server's answer). Anything
+        // else is a mistake in the caller's code (a `headers()` callback that throws, a body that cannot be serialised): pass it on as it is.
+        if (!(err instanceof XoongError)) throw err;
+        fail(err);
+        throw err;
       } finally {
         mutating--;
       }

@@ -1,6 +1,6 @@
 {
   "name": "@xoong/data",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "xoong data layer: OpenAPI-driven client, auto cache, entity store, derived views, live updates. Depends only on @xoong/core.",
   "type": "module",
   "main": "src/index.js",
@@ -15,7 +15,7 @@
   "sideEffects": false,
   "license": "MIT",
   "dependencies": {
-    "@xoong/core": "0.0.41"
+    "@xoong/core": "0.0.42"
   },
   "files": [
     "src"
@@ -35,7 +35,7 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "homepage": "https://fpt-duongtx.github.io/xoong/",
   "publishConfig": {
     "access": "public"
   },

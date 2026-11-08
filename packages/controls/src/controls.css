@@ -9,6 +9,13 @@
 }
 
 @layer xoong-controls {
+  /* the hosts of the field and feedback elements: a custom element is inline until told otherwise */
+  :is(xo-date, xo-slider, xo-range-slider, xo-password, xo-copy, xo-file, xo-textarea, xo-otp, xo-progress, xo-steps, xo-stat, xo-chart, xo-accordion, xo-consent) { display: block; }
+  :is(xo-switch, xo-stepper, xo-time, xo-segmented, xo-split-button, xo-spinner, xo-avatar, xo-avatars, xo-inline-edit, xo-theme-toggle, xo-popover-anchor) { display: inline-block; }
+  xo-popover[hidden] { display: none; }
+}
+
+@layer xoong-controls {
   xo-image { display: block; position: relative; overflow: hidden; max-width: 100%; }
   xo-image > img { display: block; width: 100%; height: 100%; object-fit: var(--xo-image-fit, cover); object-position: var(--xo-image-position, center); }
   xo-image[data-state="loading"] { background: var(--xo-color-subtle, #eef0f3); }

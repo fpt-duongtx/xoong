@@ -143,7 +143,9 @@ class XoRouter extends XoElement {
       const own = dirty.map((f) => f.getAttribute('xo-guard')).find((m) => m && m !== 'off');
       return ask(own ?? text('xoong.guard.leave', 'You have unsaved changes. Leave this page?'), { kind: 'leave', forms: dirty });
     });
-    // url-params of a view: write the query string through the router, without rendering the route again
+    // url-params of a view: write the query string through the router, without rendering the route again.
+    // Nothing to subscribe to: Back/Forward is the router's (vetoes, guards): it sees the new query, renders the route again and the
+    // new view reads the URL. A view listening to popstate itself would change before a vetoed Back is undone.
     setUrlSync({ read: () => new URLSearchParams(window.location.search), write: (params, mode) => this.#writeQuery(params, mode), subscribe: () => () => {} });
     this.#go(this.#read(), 'replace', 'start').catch((e) => this.#report(e));
   }

@@ -14,7 +14,7 @@ flowchart LR
     APP["xoong app<br/>(HTML + custom elements)"]
   end
   subgraph Optional["xoong server (optional)"]
-    SRV["static · proxy · SSR · stream gateway"]
+    SRV["static · proxy · TypeScript stripping<br/>(stream gateway planned)"]
   end
   BE["Your backend<br/>(any language)"]
   OAS[("openapi.json")]
@@ -24,7 +24,7 @@ flowchart LR
 
   APP -- "HTTP / SSE" --> SRV
   APP -. "direct, when no server" .-> BE
-  SRV -- "HTTP / SSE / WS" --> BE
+  SRV -- "HTTP / SSE" --> BE
   BE --- OAS
   OAS -- "xoong sync" --> CLI
   CLI -- "generated types + operation table" --> APP
@@ -36,48 +36,84 @@ flowchart LR
 
 | Layer | Package | Runs in | Responsibility |
 |---|---|---|---|
-| Reactivity & elements | `@xoong/core` | Browser (+ server for SSR) | Signals, base element, declarative attributes, template, router |
-| Data | `@xoong/data` | Browser | Typed client from OpenAPI, cache, mutations, entity store, derived views, stream subscriber, error normalization |
-| UI | `@xoong/ui` | Browser | `xoong.css` tokens, `xo-table`, `xo-form`, `xo-dialog`, admin layout |
-| Tooling | `@xoong/cli` | Node/Deno/Bun (dev only) | `new`, `dev`, `build`, `sync`, `check`, `doctor`, `codemod` |
-| Server | `@xoong/server` | Any Fetch-API runtime | Static files, API proxy, SSR, stream gateway |
-| AI | `@xoong/mcp` | Node (dev only) | MCP tools backed by the CLI and docs |
+| Reactivity & elements | `@xoong/core` | Browser (+ Node for prerendering) | Signals, `XoElement` base, `html` templates, `XoControl` (form-associated base). No dependencies |
+| Data | `@xoong/data` | Browser | Typed client from OpenAPI, cache, mutations, entity store, derived views, `<xo-view>` and its call syntax, stream subscriber, error normalization |
+| Forms | `@xoong/forms` | Browser | Draft model with per-path state, validation from the OpenAPI request schema, custom rules, payload normalization, dirty tracking |
+| UI | `@xoong/ui` | Browser | `xoong.css` tokens, `xo-table`, schema-driven `xo-form`, `xo-dialog`, toast, confirm, `<xo-router>` |
+| Controls | `@xoong/controls` | Browser | Tabs, popover, tooltip, menu, combobox, chips, tag input, carousel |
+| Rich text | `@xoong/richtext` | Browser | A small `contenteditable` editor with sanitized HTML in and out, for forms |
+| i18n | `@xoong/i18n` | Browser (+ CLI for extraction) | ICU-subset JSON catalogs, `xo-t` in markup, locale signal, `Intl` formats |
+| Tooling | `@xoong/cli` | Node (dev only) | `new`, `dev`, `build`, `sync`, `check`, `doctor`, `render`, `i18n extract|check` |
+| Server | `@xoong/server` | Any Fetch-API runtime | Static files, API proxy, TypeScript type stripping, Node adapter. The stream gateway is planned |
+| Prerendering | `@xoong/ssr` | Node | Runs the real `<xo-view>` runtime in happy-dom and writes HTML (used by `xoong render`) |
+| Testing | `@xoong/test` | Vitest | Mount screens, mock the API from `operations.json`, push live events |
+| AI | `@xoong/mcp` | Node (dev only) | MCP server over stdio: spec, operations, `xoong check`, error explanations |
+| Editors | `@xoong/lsp` | Node (dev only) | Language server: the `xoong check` diagnostics, completion, hover |
+| Umbrella | `@xoong/xoong` | Browser + Node | One install: re-exports core and data, adds `/ui` and `/view` subpaths (ui, forms through it) and the `xoong` command from cli |
 
 ### Dependency rule
 
-Arrows mean "may import". Nothing may import against the arrow.
+Arrows mean "depends on" (checked against each package's `package.json`).
+Nothing may import against the arrow.
 
 ```mermaid
 flowchart TD
-  ui["@xoong/ui"] --> data["@xoong/data"]
+  xoong["@xoong/xoong"] --> ui
+  xoong --> forms
+  xoong --> cli
+  ui["@xoong/ui"] --> forms["@xoong/forms"]
+  ui --> data["@xoong/data"]
+  forms --> data
+  i18n["@xoong/i18n"] --> data
+  ssr["@xoong/ssr"] --> ui
+  ssr --> data
+  test["@xoong/test"] --> data
   data --> core["@xoong/core"]
-  server["@xoong/server"] --> core
-  server --> data
-  cli["@xoong/cli"] --> core
+  controls["@xoong/controls"] --> core
+  richtext["@xoong/richtext"] --> core
+  cli["@xoong/cli"] --> server["@xoong/server"]
+  cli --> i18n
+  cli --> core
   mcp["@xoong/mcp"] --> cli
+  lsp["@xoong/lsp"] --> cli
 ```
 
-* `core`, `data`, `ui` are the **runtime**: zero dependencies, ESM only, no
-  build step required.
-* `cli`, `server`, `mcp` are **tooling**: they may have dependencies, but never
-  ship to the browser.
+The umbrella also depends on `core` and `data`, and every package above that
+reaches `core` depends on it directly too; those arrows are left out of the
+picture. `server` has no xoong dependency. `ssr` is loaded by `xoong render`
+when it is installed, not required by `cli`.
+
+* `core`, `data`, `forms`, `ui`, `controls`, `richtext`, `i18n` are the
+  **runtime**: ESM only, no build step required, no dependency besides other
+  xoong runtime packages.
+* `cli`, `server`, `mcp`, `lsp`, `ssr`, `test` are **tooling**: they may have
+  dependencies (`parse5`, `yaml`, `amaro`, `happy-dom`), but never ship to the
+  browser.
 * `server` uses only web-standard `Request`/`Response`, so it is not tied to a
   Node version.
 
-## 3. Planned repository layout
+## 3. Repository layout
 
 ```
 xoong/
 ├─ packages/
-│  ├─ core/      # signals, element base, directives, router
-│  ├─ data/      # openapi client, cache, store, derived, stream
-│  ├─ ui/        # xoong.css, xo-table, xo-form, xo-dialog, admin layout
-│  ├─ cli/       # xoong new|dev|build|sync|check|doctor|codemod
-│  ├─ server/    # fetch-handler: static, proxy, ssr, stream gateway
-│  └─ mcp/       # MCP server for AI assistants
+│  ├─ core/      # signals, element base, XoControl, html templates
+│  ├─ data/      # openapi client, cache, store, derived, stream, <xo-view>
+│  ├─ forms/     # draft model, validation, payload normalization
+│  ├─ ui/        # xoong.css, xo-table, xo-form, xo-dialog, toast, router
+│  ├─ controls/  # tabs, popover, tooltip, menu, combobox, chips, carousel
+│  ├─ richtext/  # small contenteditable editor
+│  ├─ i18n/      # catalogs, xo-t, locale signal
+│  ├─ cli/       # xoong new|dev|build|sync|check|doctor|render|i18n
+│  ├─ server/    # fetch-handler: static, proxy, TypeScript stripping
+│  ├─ ssr/       # prerendering in Node
+│  ├─ test/      # Vitest helpers
+│  ├─ mcp/       # MCP server for AI assistants
+│  ├─ lsp/       # language server
+│  └─ xoong/     # umbrella package (@xoong/xoong)
 ├─ examples/     # small-site, admin, large-site (each doubles as a benchmark)
 ├─ docs/
-├─ llms.txt      # whole public API in < 3k tokens
+├─ llms.txt      # the public API in a few thousand tokens
 └─ LICENSE
 ```
 
@@ -131,7 +167,7 @@ sequenceDiagram
   D->>S: request (typed body)
   S-->>D: 200 + updated User
   D->>C: upsert entity User#id
-  D->>C: invalidate GET /users*, GET /users/{id}
+  D->>C: invalidate queries whose path overlaps (GET /users, GET /users/{id})
   C-->>B: dependent views re-render
 ```
 
@@ -165,9 +201,10 @@ sequenceDiagram
   Note over U2: every screen bound to that field updates instantly
 ```
 
-Streaming is opt-in per screen. The backend may emit events itself if it
-follows the event format in [data-layer.md](data-layer.md#streaming); the
-gateway exists for backends that cannot.
+Streaming is opt-in per screen (`live`) and needs `streamUrl` in `configure()`.
+The backend may emit events itself if it follows the event format in
+[data-layer.md](data-layer.md#6-streaming); the gateway (planned) is for
+backends that cannot.
 
 ## 9. Cross-cutting concerns
 
@@ -177,10 +214,10 @@ gateway exists for backends that cannot.
 | Accessibility | Native elements first (`<dialog>`, `<details>`, Popover); `xoong check` lints common a11y issues |
 | Errors | Normalized from OpenAPI error schemas (RFC 9457 `problem+json` recommended); one global handler plus per-view override |
 | Auth | Token injection and refresh live in the proxy/data client config, not in screens |
-| i18n | Out of scope for 0.x; text lives in the HTML. Revisit after 0.5 |
-| Routing | History-API router in `core`; one declaration per route |
-| SSR | Server renders the same Light DOM markup; no hydration. Public pages first (post-0.6) |
-| Observability | `xoong debug` mode explains every cache hit, invalidation and patch |
+| i18n | `@xoong/i18n`: JSON catalogs, `xo-t` in markup, locale signal. See [ADR-0010](decisions/0010-internationalization.md) |
+| Routing | `<xo-router>` in `@xoong/ui` (History API); one declaration per route |
+| SSR | `@xoong/ssr` prerenders the same Light DOM markup (`xoong render`); no hydration. Public pages first; no request-time SSR |
+| Observability | Planned: a debug mode that explains every cache hit, invalidation and patch |
 
 ## 10. Known risks
 

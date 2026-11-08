@@ -16,7 +16,7 @@ Generates (into `.xoong/`, git-ignored or committed, your choice):
 | File | Purpose |
 |---|---|
 | `api.d.ts` | TypeScript types for every operation, request and response |
-| `operations.json` | Runtime table: operationId, method, path template, schemas, invalidation hints |
+| `operations.json` | Runtime table: operationId, method, path template, query names, response descriptor and entity definitions |
 
 You never write an HTTP client, a base URL constant or a response type.
 
@@ -26,24 +26,38 @@ You never write an HTTP client, a base URL constant or a response type.
   absent; `xoong doctor` recommends adding ids).
 * **Cache key** = `operationId` + canonicalized parameters (sorted keys,
   normalized values). Developers never declare keys.
-* GET results use stale-while-revalidate. Defaults can be overridden per
-  operation in `xoong.config` or per view with `stale="30s"`.
+* GET results use stale-while-revalidate. Freshness is one client-wide setting,
+  `staleTime` (default 30 s) in `configure()`; there is no per-operation or
+  per-view override. `gcTime` and `retry` are client-wide as well.
 
 ## 3. Mutations and invalidation
 
-Rules are derived from REST structure and can be overridden:
+One rule, derived from the REST path: after a mutation succeeds, every cached
+query whose concrete path and the mutation's concrete path share a segment
+prefix (one is a prefix of the other) is marked stale, and refetched at once if
+a view is showing it. The HTTP method does not matter.
 
-| Mutation | Default invalidation |
+| Mutation | Invalidated |
 |---|---|
-| `POST /users` | `GET /users*` |
-| `PUT/PATCH /users/{id}` | `GET /users/{id}`, `GET /users*` |
-| `DELETE /users/{id}` | `GET /users/{id}`, `GET /users*`, entity `User#id` removed |
+| `POST /users` | `GET /users`, `GET /users/42` (the path is a prefix of it) |
+| `PUT/PATCH /users/{id}` | `GET /users/{id}`, `GET /users` |
+| `DELETE /users/{id}` | `GET /users/{id}`, `GET /users` |
+| `POST /users/42/disable` | `GET /users`, `GET /users/42`; not `GET /users/42/posts` or `GET /users/43` |
 | Any, if the response returns an entity | That entity is upserted into the store |
 
-Override (rare, explicit):
+A detail query whose entity the response just rewrote is already fresh and is
+not refetched. A delete does not remove the entity from the store: the list
+refetch no longer returns it, so it drops out of the list, and a detail query
+for it refetches and reports the server's error (typically 404). Entities no
+cached query reaches are evicted later (see Known limitations). Only a stream
+`delete` event removes an entity at once.
 
-```json
-{ "invalidate": { "POST /orders/{id}/ship": ["GET /orders*", "GET /dashboard"] } }
+Override (rare, explicit) with `configure({ invalidate })`: a mutation
+operation id maps to the operation ids of the queries to refresh as well
+(exact names, no wildcards):
+
+```js
+configure({ api, invalidate: { shipOrder: ['getDashboard', 'listOrders'] } })
 ```
 
 ## 4. Entity store
@@ -92,26 +106,37 @@ Opt-in per view:
 <xo-view get="/users" live>
 ```
 
-Transport: Server-Sent Events by default; WebSocket supported. Event format
-(JSON, one per message):
+Set the endpoint once: `configure({ api, streamUrl: '/api/events' })`. All
+`live` views share one connection, opened with the first one and closed when
+the last goes away. Transport: Server-Sent Events (`EventSource`, with
+credentials); there is no WebSocket transport. Without `streamUrl` a `live`
+view logs a warning and gets no updates. Event format (JSON, one per message):
 
 ```json
 { "type": "patch",  "entity": "User", "id": "42", "path": "/email", "value": "a@b.c", "version": 17 }
 { "type": "upsert", "entity": "User", "id": "42", "value": { "...": "..." }, "version": 18 }
 { "type": "delete", "entity": "User", "id": "42", "version": 19 }
+{ "type": "resync" }
 ```
 
 Rules:
 
-* `version` is monotonic per entity. A patch with a lower version than the
-  stored one is dropped.
-* On reconnect the client sends the last seen event id (`Last-Event-ID`) and,
-  if the server cannot replay, refetches the visible operations.
+* `version` is optional and per entity. An event whose version is not higher
+  than the last one applied to that entity is dropped (deletes keep theirs, so a
+  late event cannot bring the entity back).
+* `patch` changes one field of an entity that is already loaded; for an unknown
+  entity it is dropped. `upsert` merges into the stored record (or creates it).
+  `delete` removes the entity, and references to it drop out of lists.
 * `path` is a JSON Pointer. Only the addressed field changes; other fields and
   other screens are untouched.
-* Advertise streams in OpenAPI with `x-xoong-stream` on an operation or at the
-  document root. The [stream gateway](server.md#stream-gateway) can translate a
-  backend that cannot emit this format.
+* `resync` forgets the stored versions and refetches every cached query.
+* Reconnection and `Last-Event-ID` replay are done by the browser's
+  `EventSource`. After an interruption the client cannot know what was missed,
+  so once the connection is open again it forgets the versions and refetches
+  every cached query, whether or not the server replays.
+* The [stream gateway](server.md#stream-gateway) (planned) can translate a
+  backend that cannot emit this format. `connectStream()` from `@xoong/data`
+  does the same wiring without a view.
 
 Conflict policy (editing the same field concurrently) is last-writer-wins by
 `version` in 0.x; richer policies are a later ADR.

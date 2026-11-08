@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>More controls · xoong</title>
+  <meta name="description" content="Switch, date, time, slider, stepper, password, copy, file, textarea, segmented, split button, accordion, popover, chart, stat, image and more: each a form control or an element with the keyboard and ARIA done.">
+  <meta property="og:title" content="More controls · xoong">
+  <meta property="og:description" content="Switch, date, time, slider, stepper, password, copy, file, textarea, segmented, split button, accordion, popover, chart, stat, image and more: each a form control or an element with the keyboard and ARIA done.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/demo.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">More controls</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html" aria-current="page">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell no-rail">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html" aria-current="page">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>More controls</span></div>
+
+<h1>More controls</h1>
+<p>Each is one custom element from <code>@xoong/controls</code> (also its own entry point, for example <code>@xoong/controls/date</code>). The form controls are <code>XoControl</code>s: they have a <code>name</code> and a <code>value</code>, take part in validation, reset with the form and tell you when they are <code>dirty</code>. They look like the rest of the theme because the markup they draw uses the theme's classes. Every one has a keyboard path and an accessible name.</p>
+
+<h2 id="choose">Choose: switch, segmented, split button</h2>
+<xo-tabs label="xo-switch, xo-segmented, xo-split-button" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-switch name="notify" checked>Email me about new comments</xo-switch>
+      <xo-switch name="menu" size="sm" label="Show in the menu"></xo-switch>
+      <xo-segmented name="period" label="Billing period" value="month"><button value="month">Monthly</button><button value="year">Yearly</button></xo-segmented>
+      <xo-split-button more="More publish options"><button class="primary">Publish</button><button>Schedule</button><button>Save as draft</button></xo-split-button>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-switch</span> <span class="tok-a">name</span>=<span class="tok-s">"notify"</span> <span class="tok-a">checked</span>&gt;Email me about new comments&lt;/<span class="tok-t">xo-switch</span>&gt;
+  &lt;<span class="tok-t">xo-switch</span> <span class="tok-a">name</span>=<span class="tok-s">"menu"</span> <span class="tok-a">size</span>=<span class="tok-s">"sm"</span> <span class="tok-a">label</span>=<span class="tok-s">"Show in the menu"</span>&gt;&lt;/<span class="tok-t">xo-switch</span>&gt;
+  &lt;<span class="tok-t">xo-segmented</span> <span class="tok-a">name</span>=<span class="tok-s">"period"</span> <span class="tok-a">label</span>=<span class="tok-s">"Billing period"</span> <span class="tok-a">value</span>=<span class="tok-s">"month"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">value</span>=<span class="tok-s">"month"</span>&gt;Monthly&lt;/<span class="tok-t">button</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">value</span>=<span class="tok-s">"year"</span>&gt;Yearly&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">xo-segmented</span>&gt;
+  &lt;<span class="tok-t">xo-split-button</span> <span class="tok-a">more</span>=<span class="tok-s">"More publish options"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">class</span>=<span class="tok-s">"primary"</span>&gt;Publish&lt;/<span class="tok-t">button</span>&gt;&lt;<span class="tok-t">button</span>&gt;Schedule&lt;/<span class="tok-t">button</span>&gt;&lt;<span class="tok-t">button</span>&gt;Save as draft&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">xo-split-button</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p>Text inside <code>&lt;xo-switch&gt;</code> is its visible label; without text, give it <code>label</code>. <code>&lt;xo-segmented&gt;</code> takes <code>&lt;button value&gt;</code> children; with <code>multiple</code> each segment toggles. The first child of <code>&lt;xo-split-button&gt;</code> is the main action; the others are the items of its menu.</p>
+
+<h2 id="numbers">Numbers: slider, range slider, stepper</h2>
+<xo-tabs label="xo-slider, xo-range-slider, xo-stepper" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-slider name="quality" label="Image quality" min="0" max="100" step="5" value="80"></xo-slider>
+      <xo-slider name="blur" label="Blur" min="0" max="2" step="1" value="1" labels="Low,Medium,High"></xo-slider>
+      <xo-range-slider name="price" label="Price" min="0" max="100" value="20,70" min-label="Minimum price" max-label="Maximum price"></xo-range-slider>
+      <xo-stepper name="perPage" label="Items per page" min="1" max="100" step="5" value="25"></xo-stepper>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-slider</span> <span class="tok-a">name</span>=<span class="tok-s">"quality"</span> <span class="tok-a">label</span>=<span class="tok-s">"Image quality"</span> <span class="tok-a">min</span>=<span class="tok-s">"0"</span> <span class="tok-a">max</span>=<span class="tok-s">"100"</span> <span class="tok-a">step</span>=<span class="tok-s">"5"</span> <span class="tok-a">value</span>=<span class="tok-s">"80"</span>&gt;&lt;/<span class="tok-t">xo-slider</span>&gt;
+  &lt;<span class="tok-t">xo-slider</span> <span class="tok-a">name</span>=<span class="tok-s">"blur"</span> <span class="tok-a">label</span>=<span class="tok-s">"Blur"</span> <span class="tok-a">min</span>=<span class="tok-s">"0"</span> <span class="tok-a">max</span>=<span class="tok-s">"2"</span> <span class="tok-a">step</span>=<span class="tok-s">"1"</span> <span class="tok-a">value</span>=<span class="tok-s">"1"</span> <span class="tok-a">labels</span>=<span class="tok-s">"Low,Medium,High"</span>&gt;&lt;/<span class="tok-t">xo-slider</span>&gt;
+  &lt;<span class="tok-t">xo-range-slider</span> <span class="tok-a">name</span>=<span class="tok-s">"price"</span> <span class="tok-a">label</span>=<span class="tok-s">"Price"</span> <span class="tok-a">min</span>=<span class="tok-s">"0"</span> <span class="tok-a">max</span>=<span class="tok-s">"100"</span> <span class="tok-a">value</span>=<span class="tok-s">"20,70"</span> <span class="tok-a">min-label</span>=<span class="tok-s">"Minimum price"</span> <span class="tok-a">max-label</span>=<span class="tok-s">"Maximum price"</span>&gt;&lt;/<span class="tok-t">xo-range-slider</span>&gt;
+  &lt;<span class="tok-t">xo-stepper</span> <span class="tok-a">name</span>=<span class="tok-s">"perPage"</span> <span class="tok-a">label</span>=<span class="tok-s">"Items per page"</span> <span class="tok-a">min</span>=<span class="tok-s">"1"</span> <span class="tok-a">max</span>=<span class="tok-s">"100"</span> <span class="tok-a">step</span>=<span class="tok-s">"5"</span> <span class="tok-a">value</span>=<span class="tok-s">"25"</span>&gt;&lt;/<span class="tok-t">xo-stepper</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p><code>labels</code> gives screen readers a word for each stop. The stepper clamps to <code>min</code> and <code>max</code>, goes by <code>step</code> with the arrow keys and by ten steps with Page Up and Page Down. Without <code>min</code> or <code>max</code> there is no limit.</p>
+
+<h2 id="dates">Date and time</h2>
+<xo-tabs label="xo-date, xo-time" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-date name="publishedAt" label="Publish on" value="2026-11-25"></xo-date>
+      <xo-date name="stay" label="Stay" range></xo-date>
+      <xo-time name="at" label="Time" step="15" value="09:30"></xo-time>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-date</span> <span class="tok-a">name</span>=<span class="tok-s">"publishedAt"</span> <span class="tok-a">label</span>=<span class="tok-s">"Publish on"</span> <span class="tok-a">value</span>=<span class="tok-s">"2026-11-25"</span>&gt;&lt;/<span class="tok-t">xo-date</span>&gt;
+  &lt;<span class="tok-t">xo-date</span> <span class="tok-a">name</span>=<span class="tok-s">"stay"</span> <span class="tok-a">label</span>=<span class="tok-s">"Stay"</span> <span class="tok-a">range</span>&gt;&lt;/<span class="tok-t">xo-date</span>&gt;
+  &lt;<span class="tok-t">xo-time</span> <span class="tok-a">name</span>=<span class="tok-s">"at"</span> <span class="tok-a">label</span>=<span class="tok-s">"Time"</span> <span class="tok-a">step</span>=<span class="tok-s">"15"</span> <span class="tok-a">value</span>=<span class="tok-s">"09:30"</span>&gt;&lt;/<span class="tok-t">xo-time</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p>The value is ISO <code>YYYY-MM-DD</code> (a range: <code>{ start, end }</code>) and <code>HH:mm</code>; the field shows the date in the visitor's locale and also accepts typing. In the calendar: arrows move by day and week, Page Up and Page Down by month, Home and End to the start and end of the week, Escape closes.</p>
+
+<h2 id="text">Text: password, copy, textarea with a counter</h2>
+<xo-tabs label="xo-password, xo-copy, xo-textarea" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-password name="password" label="Password" autocomplete="new-password"></xo-password>
+      <xo-copy label="API key" value="xo_live_4f9a7f3a"></xo-copy>
+      <xo-textarea name="excerpt" label="Excerpt" maxlength="160" rows="3"></xo-textarea>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-password</span> <span class="tok-a">name</span>=<span class="tok-s">"password"</span> <span class="tok-a">label</span>=<span class="tok-s">"Password"</span> <span class="tok-a">autocomplete</span>=<span class="tok-s">"new-password"</span>&gt;&lt;/<span class="tok-t">xo-password</span>&gt;
+  &lt;<span class="tok-t">xo-copy</span> <span class="tok-a">label</span>=<span class="tok-s">"API key"</span> <span class="tok-a">value</span>=<span class="tok-s">"xo_live_4f9a7f3a"</span>&gt;&lt;/<span class="tok-t">xo-copy</span>&gt;
+  &lt;<span class="tok-t">xo-textarea</span> <span class="tok-a">name</span>=<span class="tok-s">"excerpt"</span> <span class="tok-a">label</span>=<span class="tok-s">"Excerpt"</span> <span class="tok-a">maxlength</span>=<span class="tok-s">"160"</span> <span class="tok-a">rows</span>=<span class="tok-s">"3"</span>&gt;&lt;/<span class="tok-t">xo-textarea</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p>The eye button of <code>&lt;xo-password&gt;</code> is <code>aria-pressed</code>. <code>&lt;xo-copy&gt;</code> says "Copied" for a moment and fires <code>copied</code>. <code>&lt;xo-textarea&gt;</code> keeps text pasted over the limit and marks it invalid instead of cutting it.</p>
+
+<h2 id="file">File</h2>
+<xo-tabs label="xo-file" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-file name="logo" label="Logo" accept="image/*" max-size="2MB" hint="PNG or SVG, up to 2 MB"></xo-file>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-file</span> <span class="tok-a">name</span>=<span class="tok-s">"logo"</span> <span class="tok-a">label</span>=<span class="tok-s">"Logo"</span> <span class="tok-a">accept</span>=<span class="tok-s">"image/*"</span> <span class="tok-a">max-size</span>=<span class="tok-s">"2MB"</span> <span class="tok-a">hint</span>=<span class="tok-s">"PNG or SVG, up to 2 MB"</span>&gt;&lt;/<span class="tok-t">xo-file</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p>Drag a file onto the zone or press Enter to browse. The value is a <code>File</code> (an array with <code>multiple</code>); a refused file shows why and fires <code>xo-file-reject</code>. Images get a thumbnail; set <code>el.progress = 0.4</code> to show an upload.</p>
+
+<h2 id="structure">Structure: accordion, popover, chart, stat</h2>
+<xo-tabs label="xo-accordion, xo-popover, xo-chart, xo-stat" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-accordion single>
+        <details><summary>Does it need a build?</summary><div class="xo-accordion__body">No. The browser loads the files you installed.</div></details>
+        <details><summary>Can I use my own styles?</summary><div class="xo-accordion__body">Yes: tokens and plain CSS, in layers you control.</div></details>
+      </xo-accordion>
+      <div class="xo-notify"><button class="icon-only ghost" aria-label="Notifications"><span class="ic" data-ic="bell" aria-hidden="true"></span></button>
+        <xo-popover label="Notifications"><p>Nothing new.</p><button class="ghost sm">Mark all read</button></xo-popover></div>
+      <xo-stat label="Visits" value="48,210" delta="12.4" delta-label="vs last week" series="20,22,18,26,24,32,29"></xo-stat>
+      <xo-chart type="bar" label="Visits per day" unit="k" data='[{"label":"Mon","value":12},{"label":"Tue","value":18},{"label":"Wed","value":9},{"label":"Thu","value":22},{"label":"Fri","value":16}]'></xo-chart>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-accordion</span> <span class="tok-a">single</span>&gt;
+    &lt;<span class="tok-t">details</span>&gt;&lt;<span class="tok-t">summary</span>&gt;Does it need a build?&lt;/<span class="tok-t">summary</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"xo-accordion__body"</span>&gt;No. The browser loads the files you installed.&lt;/<span class="tok-t">div</span>&gt;&lt;/<span class="tok-t">details</span>&gt;
+    &lt;<span class="tok-t">details</span>&gt;&lt;<span class="tok-t">summary</span>&gt;Can I use my own styles?&lt;/<span class="tok-t">summary</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"xo-accordion__body"</span>&gt;Yes: tokens and plain CSS, in layers you control.&lt;/<span class="tok-t">div</span>&gt;&lt;/<span class="tok-t">details</span>&gt;
+  &lt;/<span class="tok-t">xo-accordion</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"xo-notify"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">class</span>=<span class="tok-s">"icon-only ghost"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Notifications"</span>&gt;&lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"ic"</span> <span class="tok-a">data-ic</span>=<span class="tok-s">"bell"</span> <span class="tok-a">aria-hidden</span>=<span class="tok-s">"true"</span>&gt;&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">button</span>&gt;
+    &lt;<span class="tok-t">xo-popover</span> <span class="tok-a">label</span>=<span class="tok-s">"Notifications"</span>&gt;&lt;<span class="tok-t">p</span>&gt;Nothing new.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">class</span>=<span class="tok-s">"ghost sm"</span>&gt;Mark all read&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">xo-popover</span>&gt;&lt;/<span class="tok-t">div</span>&gt;
+  &lt;<span class="tok-t">xo-stat</span> <span class="tok-a">label</span>=<span class="tok-s">"Visits"</span> <span class="tok-a">value</span>=<span class="tok-s">"48,210"</span> <span class="tok-a">delta</span>=<span class="tok-s">"12.4"</span> <span class="tok-a">delta-label</span>=<span class="tok-s">"vs last week"</span> <span class="tok-a">series</span>=<span class="tok-s">"20,22,18,26,24,32,29"</span>&gt;&lt;/<span class="tok-t">xo-stat</span>&gt;
+  &lt;<span class="tok-t">xo-chart</span> <span class="tok-a">type</span>=<span class="tok-s">"bar"</span> <span class="tok-a">label</span>=<span class="tok-s">"Visits per day"</span> <span class="tok-a">unit</span>=<span class="tok-s">"k"</span> <span class="tok-a">data</span>=<span class="tok-s">'[<span class="tok-i">{"label":"Mon","value":12}</span>,<span class="tok-i">{"label":"Tue","value":18}</span>,<span class="tok-i">{"label":"Wed","value":9}</span>,<span class="tok-i">{"label":"Thu","value":22}</span>,<span class="tok-i">{"label":"Fri","value":16}</span>]'</span>&gt;&lt;/<span class="tok-t">xo-chart</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p><code>&lt;xo-chart&gt;</code> draws bars or a line from data and always offers the same numbers as a table ("View as table"); the bars can be focused. <code>&lt;xo-popover&gt;</code> opens from the button before it and closes with Escape or a click outside; it stays inside the viewport.</p>
+
+<h2 id="feedback">Feedback: progress, spinner, steps, avatars, one-time code, rename in place</h2>
+<xo-tabs label="xo-progress, xo-spinner, xo-steps, xo-avatar, xo-otp, xo-inline-edit" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-progress value="62" label="Upload"></xo-progress>
+      <xo-progress label="Working"></xo-progress>
+      <div class="row-inline"><xo-spinner label="Loading"></xo-spinner><xo-spinner label="Loading" size="lg"></xo-spinner></div>
+      <xo-steps current="1" label="Checkout"><span>Account</span><span>Plan</span><span>Payment</span></xo-steps>
+      <div class="row-inline"><xo-avatar name="Mai Trần"></xo-avatar><xo-avatar name="Linh Phạm" status="ok"></xo-avatar>
+        <xo-avatars max="2" label="Reviewers"><xo-avatar name="An Lê"></xo-avatar><xo-avatar name="Binh Vo"></xo-avatar><xo-avatar name="Chi Do"></xo-avatar></xo-avatars></div>
+      <xo-otp name="code" length="6" label="Verification code"></xo-otp>
+      <xo-inline-edit name="title" value="Greece Golden Visa" label="Title"></xo-inline-edit>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-progress</span> <span class="tok-a">value</span>=<span class="tok-s">"62"</span> <span class="tok-a">label</span>=<span class="tok-s">"Upload"</span>&gt;&lt;/<span class="tok-t">xo-progress</span>&gt;
+  &lt;<span class="tok-t">xo-progress</span> <span class="tok-a">label</span>=<span class="tok-s">"Working"</span>&gt;&lt;/<span class="tok-t">xo-progress</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"row-inline"</span>&gt;&lt;<span class="tok-t">xo-spinner</span> <span class="tok-a">label</span>=<span class="tok-s">"Loading"</span>&gt;&lt;/<span class="tok-t">xo-spinner</span>&gt;&lt;<span class="tok-t">xo-spinner</span> <span class="tok-a">label</span>=<span class="tok-s">"Loading"</span> <span class="tok-a">size</span>=<span class="tok-s">"lg"</span>&gt;&lt;/<span class="tok-t">xo-spinner</span>&gt;&lt;/<span class="tok-t">div</span>&gt;
+  &lt;<span class="tok-t">xo-steps</span> <span class="tok-a">current</span>=<span class="tok-s">"1"</span> <span class="tok-a">label</span>=<span class="tok-s">"Checkout"</span>&gt;&lt;<span class="tok-t">span</span>&gt;Account&lt;/<span class="tok-t">span</span>&gt;&lt;<span class="tok-t">span</span>&gt;Plan&lt;/<span class="tok-t">span</span>&gt;&lt;<span class="tok-t">span</span>&gt;Payment&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">xo-steps</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"row-inline"</span>&gt;&lt;<span class="tok-t">xo-avatar</span> <span class="tok-a">name</span>=<span class="tok-s">"Mai Trần"</span>&gt;&lt;/<span class="tok-t">xo-avatar</span>&gt;&lt;<span class="tok-t">xo-avatar</span> <span class="tok-a">name</span>=<span class="tok-s">"Linh Phạm"</span> <span class="tok-a">status</span>=<span class="tok-s">"ok"</span>&gt;&lt;/<span class="tok-t">xo-avatar</span>&gt;
+    &lt;<span class="tok-t">xo-avatars</span> <span class="tok-a">max</span>=<span class="tok-s">"2"</span> <span class="tok-a">label</span>=<span class="tok-s">"Reviewers"</span>&gt;&lt;<span class="tok-t">xo-avatar</span> <span class="tok-a">name</span>=<span class="tok-s">"An Lê"</span>&gt;&lt;/<span class="tok-t">xo-avatar</span>&gt;&lt;<span class="tok-t">xo-avatar</span> <span class="tok-a">name</span>=<span class="tok-s">"Binh Vo"</span>&gt;&lt;/<span class="tok-t">xo-avatar</span>&gt;&lt;<span class="tok-t">xo-avatar</span> <span class="tok-a">name</span>=<span class="tok-s">"Chi Do"</span>&gt;&lt;/<span class="tok-t">xo-avatar</span>&gt;&lt;/<span class="tok-t">xo-avatars</span>&gt;&lt;/<span class="tok-t">div</span>&gt;
+  &lt;<span class="tok-t">xo-otp</span> <span class="tok-a">name</span>=<span class="tok-s">"code"</span> <span class="tok-a">length</span>=<span class="tok-s">"6"</span> <span class="tok-a">label</span>=<span class="tok-s">"Verification code"</span>&gt;&lt;/<span class="tok-t">xo-otp</span>&gt;
+  &lt;<span class="tok-t">xo-inline-edit</span> <span class="tok-a">name</span>=<span class="tok-s">"title"</span> <span class="tok-a">value</span>=<span class="tok-s">"Greece Golden Visa"</span> <span class="tok-a">label</span>=<span class="tok-s">"Title"</span>&gt;&lt;/<span class="tok-t">xo-inline-edit</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p>Without a <code>value</code>, <code>&lt;xo-progress&gt;</code> is indeterminate. <code>&lt;xo-steps&gt;</code> marks the current step with <code>aria-current="step"</code> and shows a check on done steps, so the state is not only a colour. In <code>&lt;xo-otp&gt;</code> typing moves forward, Backspace back and a paste is split across the boxes; <code>complete</code> fires when every box is filled. In <code>&lt;xo-inline-edit&gt;</code> Enter saves and Escape cancels.</p>
+
+<h2 id="page">Page: image, theme toggle, command palette, cookie consent</h2>
+<xo-tabs label="xo-image, xo-theme-toggle" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-image src="img/does-not-exist.png" alt="A picture that is not there" ratio="16/9" fallback="img/also-missing.png"></xo-image>
+      <xo-theme-toggle></xo-theme-toggle>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-image</span> <span class="tok-a">src</span>=<span class="tok-s">"img/does-not-exist.png"</span> <span class="tok-a">alt</span>=<span class="tok-s">"A picture that is not there"</span> <span class="tok-a">ratio</span>=<span class="tok-s">"16/9"</span> <span class="tok-a">fallback</span>=<span class="tok-s">"img/also-missing.png"</span>&gt;&lt;/<span class="tok-t">xo-image</span>&gt;
+  &lt;<span class="tok-t">xo-theme-toggle</span>&gt;&lt;/<span class="tok-t">xo-theme-toggle</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p><code>&lt;xo-image&gt;</code> loads lazily, keeps its space and shows the alt text when the picture fails (here it does, on purpose). <code>&lt;xo-theme-toggle&gt;</code> sets <code>data-theme</code> on the page and remembers the choice; it is the same button as in this site's header.</p>
+<xo-tabs label="Command palette and cookie consent" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-command</span> <span class="tok-a">shortcut</span>=<span class="tok-s">"k"</span> <span class="tok-a">label</span>=<span class="tok-s">"Search commands"</span>&gt;
+  &lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/articles"</span> <span class="tok-a">data-group</span>=<span class="tok-s">"Go to"</span>&gt;Articles&lt;/<span class="tok-t">a</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-group</span>=<span class="tok-s">"Actions"</span> <span class="tok-a">data-value</span>=<span class="tok-s">"new-article"</span>&gt;New article&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-command</span>&gt;
+
+&lt;<span class="tok-t">xo-consent</span> <span class="tok-a">categories</span>=<span class="tok-s">"analytics,marketing"</span>&gt;
+  &lt;<span class="tok-t">b</span>&gt;We use two cookies.&lt;/<span class="tok-t">b</span>&gt; One keeps you signed in, one measures anonymous visits. You choose.
+&lt;/<span class="tok-t">xo-consent</span>&gt;
+&lt;<span class="tok-t">button</span> <span class="tok-a">xo-consent-open</span>&gt;Cookie settings&lt;/<span class="tok-t">button</span>&gt;</code></pre></section>
+</xo-tabs>
+<p><code>&lt;xo-command&gt;</code> opens with Ctrl or Cmd plus K; its children are the commands, filtered as you type. <code>&lt;xo-consent&gt;</code> shows a bar until the visitor chooses, saves the choice and fires <code>xo-consent</code>. They are not run on this page because they cover it.</p>
+
+<h2 id="reference">Reference</h2>
+<p>Every attribute, property and event is in <a href="https://github.com/fpt-duongtx/xoong/blob/main/docs/controls.md">docs/controls.md</a> and in the editor hints of <code>xoong.html-data.json</code>.</p>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="combobox.html"><small>Previous</small><span>Combobox and tags</span></a><a rel="next" href="carousel.html"><small>Next</small><span>Carousel</span></a></nav>
+    </main>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+  <xo-toast></xo-toast>
+</body>
+</html>

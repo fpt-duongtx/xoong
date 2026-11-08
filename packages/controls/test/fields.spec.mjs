@@ -22,6 +22,22 @@ describe('<xo-slider>', () => {
   });
 });
 
+describe('<xo-stepper> and <xo-slider> without min and max', () => {
+  it('an absent limit is no limit (absent Number props read as 0, the attribute decides)', async () => {
+    const st = await mount('<xo-stepper step="5" value="-3"></xo-stepper>');
+    expect(st.value).toBe(-3);
+    st.querySelectorAll('button')[1].click();
+    expect(st.value).toBe(2);
+    const input = st.querySelector('input');
+    input.value = '5000'; input.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(st.value).toBe(5000);
+    expect(input.hasAttribute('aria-valuemax')).toBe(false);
+    const sl = await mount('<xo-slider value="80"></xo-slider>');
+    expect(sl.querySelector('input').max).toBe('100');
+    expect(sl.querySelector('input').value).toBe('80');
+  });
+});
+
 describe('<xo-stepper>', () => {
   it('buttons and keys change by step, clamp, and disable at the limits', async () => {
     const el = await mount('<xo-stepper name="n" label="Per page" min="1" max="30" step="5" value="25"></xo-stepper>');

@@ -59,13 +59,13 @@ class XoDate extends XoControl {
     input.type = 'text';
     input.autocomplete = 'off';
     input.setAttribute('aria-label', this.label || this.name || text('xoong.controls.date', 'Date'));
-    input.setAttribute('aria-haspopup', 'dialog');
-    input.setAttribute('aria-expanded', 'false');
     input.placeholder = this.placeholder || (this.range ? text('xoong.controls.dateRangeHint', 'Start - end') : this.#sample());
     const opener = document.createElement('button');
     opener.type = 'button';
     opener.className = 'xo-date-open';
     opener.setAttribute('aria-label', text('xoong.controls.chooseDate', 'Choose date'));
+    opener.setAttribute('aria-haspopup', 'dialog'); // on the button: a text input may not carry aria-expanded (axe aria-allowed-attr)
+    opener.setAttribute('aria-expanded', 'false');
     opener.innerHTML = '<span class="ic" data-ic="calendar" aria-hidden="true"></span>';
     opener.addEventListener('click', () => (this.#open ? this.#close(true) : this.#openCalendar()));
     wrap.append(input, opener);
@@ -141,7 +141,7 @@ class XoDate extends XoControl {
     this.#open = true;
     this.#draw();
     this.#stop = showLayer(/** @type {HTMLElement} */ (this.#panel), /** @type {HTMLElement} */ (this.#input).parentElement ?? this);
-    this.#input?.setAttribute('aria-expanded', 'true');
+    this.#opener?.setAttribute('aria-expanded', 'true');
     document.addEventListener('pointerdown', this.#onDocument);
     this.#focusDay();
   }
@@ -150,7 +150,7 @@ class XoDate extends XoControl {
     this.#open = false;
     this.#stop();
     hideLayer(/** @type {HTMLElement} */ (this.#panel));
-    this.#input?.setAttribute('aria-expanded', 'false');
+    this.#opener?.setAttribute('aria-expanded', 'false');
     document.removeEventListener('pointerdown', this.#onDocument);
     if (refocus) this.#input?.focus();
   }

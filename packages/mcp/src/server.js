@@ -10,11 +10,15 @@
  *   explain_error     what an XO code means and how to fix it
  *   search_docs       find a term in the docs folder (when one is configured)
  */
+import { readFileSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { checkHtml, checkScript } from '@xoong/cli/check';
 
 export const PROTOCOL_VERSION = '2024-11-05';
+
+/** The version of this package, read from its own package.json (it ships with every npm package). */
+export const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 
 /** Meaning and fix for every code `xoong check` and `xoong doctor` can print. Kept in step with check.js by a test. */
 export const EXPLANATIONS = {
@@ -102,7 +106,7 @@ export function createServer(ctx) {
     const fail = (code, message) => ({ jsonrpc: '2.0', id: msg.id, error: { code, message } });
     try {
       switch (msg.method) {
-        case 'initialize': return reply({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {} }, serverInfo: { name: 'xoong', version: '0.0.1' }, instructions: 'Call get_spec first. Write xoong screens, then call check on the HTML and fix every error from its message.' });
+        case 'initialize': return reply({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {} }, serverInfo: { name: 'xoong', version: VERSION }, instructions: 'Call get_spec first. Write xoong screens, then call check on the HTML and fix every error from its message.' });
         case 'ping': return reply({});
         case 'tools/list': return reply({ tools: TOOLS });
         case 'tools/call': return reply(await callTool(msg.params?.name, msg.params?.arguments));
