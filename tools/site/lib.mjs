@@ -79,7 +79,8 @@ ${dedent(preview).replace(/^/gm, '    ')}
 ${extra.map(([name, lang, src]) => `  <section xo-tab="${esc(name)}">${code(lang, typeof src === 'object' ? readFileSync(join(root, src.file), 'utf8') : src)}</section>`).join('\n')}
 </xo-tabs>`;
 
-export const callout = (kind, body) => `<aside class="callout ${kind}">${body}</aside>`;
+/** A notice with an icon and its semantic colour (the kit's .notice): `note` is a warning-coloured one, `info` the accent. */
+export const callout = (kind, body) => `<aside class="notice ${kind === 'info' ? 'info' : 'warn'}"><span class="ic" data-ic="${kind === 'info' ? 'info' : 'warning'}" aria-hidden="true"></span><p>${body}</p></aside>`;
 export const lang = LANG_LABEL;
 
 // ---- layout ---------------------------------------------------------------------------------------------------------------------

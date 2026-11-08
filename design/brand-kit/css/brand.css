@@ -222,8 +222,7 @@ section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
 .prose { max-width: 46rem; padding: 2.5rem 0 1rem; }
 .prose h2 { margin-top: 2.6rem; }
 .prose h2:first-child { margin-top: 0; }
-.note { border: 2px solid var(--soot); border-radius: var(--radius); background: light-dark(#fff1c9, #3a2d0e); padding: .9rem 1.2rem; box-shadow: 5px 5px 0 -1px var(--sesame); margin: 0 0 1.6rem; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .note { border-color: #5a4a22; } }
+.note { padding: .8rem 1.1rem; margin: 0 0 1.6rem; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--sesame); border-radius: var(--radius); }
 .demo { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem; margin: 1.2rem 0; box-shadow: var(--shadow); overflow-x: auto; }
 
 /* ---------- brand page ---------- */
@@ -244,7 +243,7 @@ section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
 .sizes img { display: block; }
 .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 0; margin: 0; list-style: none; }
 .swatches li { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
-.swatches .chip { height: 6.5rem; display: block; }
+.swatches .swatch-chip { height: 6.5rem; display: block; }
 .swatches .info { padding: .8rem 1rem 1rem; font-size: .9rem; line-height: 1.45; }
 .swatches b { display: block; font-size: 1.05rem; }
 .swatches code { font-size: .8rem; background: none; padding: 0; color: var(--muted); }

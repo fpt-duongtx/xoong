@@ -158,7 +158,7 @@ document.querySelector(<span class="tok-s">'#reset'</span>).addEventListener(<sp
 <tr><td><code>a</code> with <code>href</code></td><td>Only <code>http</code>, <code>https</code>, <code>mailto</code>, <code>tel</code>; <code>rel="noopener noreferrer"</code> is added</td></tr>
 <tr><td><code>img</code> with <code>src</code>, <code>alt</code></td><td><code>src</code> must be http(s) or a relative URL; no <code>data:</code>, no <code>javascript:</code></td></tr>
 </tbody></table>
-<aside class="callout note">The client is never a trust boundary. The same function is exported as <code>@xoong/richtext/sanitize</code> so your <strong>server</strong> can sanitise on save as well.</aside>
+<aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p>The client is never a trust boundary. The same function is exported as <code>@xoong/richtext/sanitize</code> so your <strong>server</strong> can sanitise on save as well.</p></aside>
 
 <h2 id="media">Media</h2>
 <p>The image tool fires a cancelable <code>xo-pick-media</code> event. Open your own library, then call <code>detail.insert({ src, alt })</code> now or later. With the caret in a heading the image goes in a paragraph after it, and nothing is written inline, so it works under a strict CSP.</p>

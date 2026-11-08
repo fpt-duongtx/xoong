@@ -105,9 +105,9 @@
 <h2 id="tokens">Tokens</h2>
 <p>Everything in <code>xoong.css</code> is read from <code>--xo-*</code> properties. Change them on <code>:root</code> for the whole app, or on any element for a region. Move the controls to try it on the sample panel (they set the properties on that panel only).</p>
 <div class="playground-controls">
-  <label>Accent <input id="p-accent" type="color" value="#2457d6"></label>
-  <label>Radius <input id="p-radius" type="range" min="0" max="16" value="6"> <output id="p-radius-out">6px</output></label>
-  <label>Scheme <select id="p-scheme"><option value="light dark">Follow the system</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+  <span class="setting"><label for="p-accent">Accent</label> <input id="p-accent" type="color" value="#9a4d33"></span>
+  <span class="setting"><label for="p-radius">Radius</label> <input id="p-radius" type="range" min="0" max="16" value="6"> <output id="p-radius-out" for="p-radius">6px</output></span>
+  <span class="setting"><label for="p-scheme">Scheme</label> <select id="p-scheme"><option value="light dark">Follow the system</option><option value="light">Light</option><option value="dark">Dark</option></select></span>
 </div>
 <div class="playground" id="playground">
   <div class="toolbar"><button>Default</button><button class="primary">Primary</button><input aria-label="Search" placeholder="Search"><span class="badge">badge</span></div>

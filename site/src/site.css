@@ -108,3 +108,9 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
   xo-menu.palette > button { min-height: 2.25rem; }
   header.top nav > a { padding-block: 0.3rem; }
 }
+
+/* notices made by the generator (the kit's .notice, with an icon drawn by CSS) */
+.notice { max-width: var(--measure); margin: 1.2rem 0; }
+.notice .ic { --xo-icon: 1.25rem; margin-top: 0.15rem; }
+.notice.info .ic { color: var(--xo-color-accent); }
+.notice.warn .ic { color: color-mix(in srgb, var(--xo-color-warning) 35%, var(--xo-color-text)); }

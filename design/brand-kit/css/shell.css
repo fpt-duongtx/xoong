@@ -89,3 +89,16 @@ body.shell-page footer.foot .wrap { max-width: none; padding-inline: var(--gutte
 .xo-carousel-nav button:disabled { box-shadow: none; border-color: var(--line-strong); }
 button.primary { box-shadow: 0 2px 0 color-mix(in srgb, var(--text) 85%, transparent); }
 button.primary:active { box-shadow: none; }
+
+/* a code frame with a single tab: the tab reads as a label (a file name), not as something to click */
+[role="tablist"]:has(> [role="tab"]:only-child) [role="tab"] { cursor: default; border-bottom-color: transparent; color: var(--text); }
+[role="tablist"]:has(> [role="tab"]:only-child) [role="tab"]:hover { background: none; }
+[role="tablist"]:has(> [role="tab"]:only-child) [role="tab"]::before { content: ""; width: 1rem; height: 1rem; background: var(--muted); -webkit-mask: var(--ic-code) center / contain no-repeat; mask: var(--ic-code) center / contain no-repeat; }
+
+/* ---- controls overview: one card per control ---- */
+.control-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1rem; padding: 0; margin: 1.5rem 0; list-style: none; max-width: none !important; }
+.control-cards .card { display: grid; align-content: start; gap: .35rem; height: 100%; padding: 1.25rem; }
+.control-cards .card h3 { margin: .5rem 0 0; font-size: 1.1rem; } .control-cards .card p { margin: 0; color: var(--muted); font-size: .95rem; }
+.control-cards .card code { margin-top: .6rem; justify-self: start; font-size: .78rem; color: var(--muted); }
+.ctl-icon { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 12px; background: var(--ember-soft); color: var(--ember-deep); }
+.shell.no-rail { grid-template-columns: var(--nav-w) minmax(0, 1fr); }

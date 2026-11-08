@@ -151,3 +151,11 @@ table.std .primary-cell { font-weight: 600; } table.std .muted { color: var(--xo
 .xo-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .table-frame, .xo-table { position: relative; }   /* contains the absolutely positioned visually-hidden labels, so they cannot widen the page */
+
+/* ---- range and colour inputs ---- */
+input[type="range"] { width: 100%; min-height: var(--xo-control-height); margin: 0; accent-color: var(--xo-color-accent); cursor: pointer; background: transparent; }
+input[type="range"]:focus-visible { outline: var(--xo-focus); outline-offset: 2px; border-radius: var(--xo-radius); }
+input[type="color"] { width: 3.25rem; height: var(--xo-control-height); padding: 3px; background: var(--xo-color-surface); border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); cursor: pointer; }
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; } input[type="color"]::-webkit-color-swatch { border: 0; border-radius: calc(var(--xo-radius) - 3px); } input[type="color"]::-moz-color-swatch { border: 0; border-radius: calc(var(--xo-radius) - 3px); }
+input[type="color"]:hover { border-color: var(--xo-color-text); } input[type="color"]:focus-visible { outline: var(--xo-focus); outline-offset: 2px; }
+.setting { display: inline-flex; align-items: center; gap: .6rem; } .setting output { min-width: 3ch; font: 600 .85rem var(--xo-font-mono); color: var(--xo-color-muted); }

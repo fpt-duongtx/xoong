@@ -14,6 +14,15 @@ const kit = (file) => {
   return sprite + named.replace(/<div class="crumbs">[\s\S]*?<\/div>/, '').replace(/^\n+/, '');
 };
 
+/** The card grid of the design kit's controls overview, each card linked to its page. */
+const controlCards = () => {
+  const html = readFileSync(new URL('../../design/brand-kit/controls-overview.html', import.meta.url), 'utf8');
+  const sprite = html.match(/<svg[^>]*class="sprite"[\s\S]*?<\/svg>/)?.[0] ?? '';
+  const pages = { 'Tabs': 'tabs.html', 'Menu and tooltip': 'menu.html', 'Combobox and tags': 'combobox.html', 'Carousel': 'carousel.html', 'Rich text': 'richtext.html', 'Your own control': 'own-control.html', 'Standard': 'components.html', 'All controls': 'controls-demo.html' };
+  const grid = (html.match(/<ul class="control-cards">[\s\S]*?<\/ul>/)?.[0] ?? '').replace(/<li><a class="card" href="[^"]*">([\s\S]*?<h3>(.*?)<\/h3>[\s\S]*?)<\/a><\/li>/g, (_, inner, title) => `<li><a class="card" href="${pages[title] ?? 'controls.html'}">${inner}</a></li>`);
+  return sprite + grid;
+};
+
 const VERSION = JSON.parse(readFileSync(new URL('../../packages/xoong/package.json', import.meta.url), 'utf8')).version; // the release the install page names
 
 const TABLE = `
@@ -559,9 +568,9 @@ ${callout('note', 'The client is never a trust boundary. The same function is ex
 <h2>Tokens</h2>
 <p>Everything in <code>xoong.css</code> is read from <code>--xo-*</code> properties. Change them on <code>:root</code> for the whole app, or on any element for a region. Move the controls to try it on the sample panel (they set the properties on that panel only).</p>
 <div class="playground-controls">
-  <label>Accent <input id="p-accent" type="color" value="#2457d6"></label>
-  <label>Radius <input id="p-radius" type="range" min="0" max="16" value="6"> <output id="p-radius-out">6px</output></label>
-  <label>Scheme <select id="p-scheme"><option value="light dark">Follow the system</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+  <span class="setting"><label for="p-accent">Accent</label> <input id="p-accent" type="color" value="#9a4d33"></span>
+  <span class="setting"><label for="p-radius">Radius</label> <input id="p-radius" type="range" min="0" max="16" value="6"> <output id="p-radius-out" for="p-radius">6px</output></span>
+  <span class="setting"><label for="p-scheme">Scheme</label> <select id="p-scheme"><option value="light dark">Follow the system</option><option value="light">Light</option><option value="dark">Dark</option></select></span>
 </div>
 <div class="playground" id="playground">
   <div class="toolbar"><button>Default</button><button class="primary">Primary</button><input aria-label="Search" placeholder="Search"><span class="badge">badge</span></div>
@@ -620,13 +629,7 @@ import '@xoong/controls';   // registers every element; or import one: '@xoong/c
 <link rel="stylesheet" href="/@xoong/controls/controls.css">  <!-- optional; one @layer, uses the --xo-* tokens -->`]])}
 
 <h2>The controls</h2>
-<ul>
-  <li><a href="tabs.html">Tabs</a>: the WAI-ARIA tabs pattern, panels that stay in the form.</li>
-  <li><a href="menu.html">Menu and tooltip</a>: a menu button in the top layer, choice menus, descriptions on hover and focus.</li>
-  <li><a href="combobox.html">Combobox and tags</a>: pick from a list you can filter, or type free tags; both are form controls.</li>
-  <li><a href="carousel.html">Carousel</a>: cards, banners, testimonials, galleries, with the platform's scroll snap.</li>
-  <li><a href="own-control.html">Your own control</a>: a form control built on <code>XoControl</code>.</li>
-</ul>
+${controlCards()}
 `,
   },
   // ------------------------------------------------------------------------------------------------------------------------------
@@ -906,14 +909,14 @@ ${example({
   <section>
     <div class="head"><span class="eyebrow">Colour</span><h2>Two palettes, one structure.</h2><p><b>Calm</b> (clay and sage on warm paper) is the default. <b>Ember</b> turns the heat up. A palette is only a set of custom-property values, so a third is easy: see the tabs below.</p></div>
     <ul class="swatches">
-      <li><span class="chip c-clay"></span><div class="info"><b>Clay</b><code>#DF8A6A</code><p>Calm: the pot, fills.</p></div></li>
-      <li><span class="chip c-deep"></span><div class="info"><b>Clay Deep</b><code>#9A4D33</code><p>Calm: links, primary actions.</p></div></li>
-      <li><span class="chip c-soot"></span><div class="info"><b>Ink</b><code>#2B2623</code><p>Text, outlines, dark surfaces.</p></div></li>
-      <li><span class="chip c-paper"></span><div class="info"><b>Paper</b><code>#F7F4EC</code><p>Page background.</p></div></li>
-      <li><span class="chip c-ember"></span><div class="info"><b>Ember</b><code>#FF5B22</code><p>Ember palette: the pot.</p></div></li>
-      <li><span class="chip c-embdeep"></span><div class="info"><b>Ember Deep</b><code>#B93A0A</code><p>Ember: links on light.</p></div></li>
-      <li><span class="chip c-sesame"></span><div class="info"><b>Sesame</b><code>#E6C783</code><p>Notes, highlights.</p></div></li>
-      <li><span class="chip c-herb"></span><div class="info"><b>Sage</b><code>#5B8A6B</code><p>Success.</p></div></li>
+      <li><span class="swatch-chip c-clay"></span><div class="info"><b>Clay</b><code>#DF8A6A</code><p>Calm: the pot, fills.</p></div></li>
+      <li><span class="swatch-chip c-deep"></span><div class="info"><b>Clay Deep</b><code>#9A4D33</code><p>Calm: links, primary actions.</p></div></li>
+      <li><span class="swatch-chip c-soot"></span><div class="info"><b>Ink</b><code>#2B2623</code><p>Text, outlines, dark surfaces.</p></div></li>
+      <li><span class="swatch-chip c-paper"></span><div class="info"><b>Paper</b><code>#F7F4EC</code><p>Page background.</p></div></li>
+      <li><span class="swatch-chip c-ember"></span><div class="info"><b>Ember</b><code>#FF5B22</code><p>Ember palette: the pot.</p></div></li>
+      <li><span class="swatch-chip c-embdeep"></span><div class="info"><b>Ember Deep</b><code>#B93A0A</code><p>Ember: links on light.</p></div></li>
+      <li><span class="swatch-chip c-sesame"></span><div class="info"><b>Sesame</b><code>#E6C783</code><p>Notes, highlights.</p></div></li>
+      <li><span class="swatch-chip c-herb"></span><div class="info"><b>Sage</b><code>#5B8A6B</code><p>Success.</p></div></li>
     </ul>
     ${tabs('Palette as tokens', [['CSS', 'css', `
 /* a palette is values for the brand tokens; the site maps them onto the --xo-* tokens */
