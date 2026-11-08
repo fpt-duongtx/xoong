@@ -8,6 +8,11 @@ on:
     branches: [main]
   pull_request:
 
+# One run per branch at a time: a newer push cancels the older run (the home server is shared with other projects' runners).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: [self-hosted, xoong-home]
@@ -41,6 +46,7 @@ jobs:
   # The same real-browser tests (router, shell, form controls, build under a strict CSP, prerendering, the admin example) in the other engines of the
   # supported matrix (docs/browser-support.md). Chromium runs in the job above.
   browsers:
+    needs: test # after the main tests: running everything at once starved the browsers on a shared machine
     runs-on: [self-hosted, xoong-home]
     strategy:
       fail-fast: false

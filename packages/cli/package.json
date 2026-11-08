@@ -1,6 +1,6 @@
 {
   "name": "@xoong/cli",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "description": "The xoong command line: sync (OpenAPI to typed operations), doctor, check (lint screens), dev, build (strict-CSP static output), render and i18n.",
   "type": "module",
   "bin": {
@@ -17,9 +17,9 @@
   "dependencies": {
     "parse5": "^8.1.0",
     "yaml": "^2.8.0",
-    "@xoong/server": "0.0.40",
-    "@xoong/core": "0.0.40",
-    "@xoong/i18n": "0.0.40"
+    "@xoong/server": "0.0.41",
+    "@xoong/core": "0.0.41",
+    "@xoong/i18n": "0.0.41"
   },
   "files": [
     "src"

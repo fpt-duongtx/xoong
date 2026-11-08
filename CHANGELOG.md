@@ -3,8 +3,11 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
-## Unreleased
+## 0.0.41 (exclude, viewport fit, switch text)
 
+breaking: none.
+
+* CI and Pages run on the maintainer's home server runners; the CI jobs run one run per branch at a time.
 * `<xo-switch>`: text inside the element is the visible label (`label.xo-switch-row > button + span.xo-switch-text`, a click on the text toggles it and it names the switch).
 * `xoong build --exclude <glob>` (repeatable) and `"build": { "exclude": [...] }` in `xoong.config.json` keep HTML that is not a page (partials, fixtures, drafts) out of the start list; `xoong check` has `--exclude` and `"check": { "exclude": [...] }` too. Popups (menu, combobox, date, popover) stay inside the viewport; carousel `<article>` slides no longer carry `role="group"`; styles of the six new controls (kit ux/polish).
 

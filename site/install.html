@@ -132,7 +132,7 @@
 
 <h2 id="1-download-a-release">1. Download a release</h2>
 <xo-tabs label="Download" class="example">
-  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>gh release download v0.0.40 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>gh release download v0.0.41 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
 </xo-tabs>
 <p>The folder holds one <code>.tgz</code> per package and a <code>consume.json</code> that says what to copy into your project.</p>
 
@@ -141,11 +141,11 @@
 <xo-tabs label="package.json" class="example">
   <section xo-tab="package.json"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"dependencies"</span>: {
-    <span class="tok-a">"@xoong/xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-xoong-0.0.40.tgz"</span>,
-    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.40.tgz"</span>
+    <span class="tok-a">"@xoong/xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-xoong-0.0.41.tgz"</span>,
+    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.41.tgz"</span>
   },
   <span class="tok-a">"overrides"</span>: {
-    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.40.tgz"</span>
+    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.41.tgz"</span>
   }
 }</code></pre></section>
   <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npm install</code></pre></section>
