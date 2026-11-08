@@ -229,7 +229,7 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
    * @param {(body: any) => Promise<any>} send
    */
   async function submit(send) {
-    const outcome = await model.submit(send, { after: hadRecord ? undefined : (form.hasAttribute('xo-keep') ? () => model.markPristine() : () => model.markPristine(defaults(schema) ?? {})) });
+    const outcome = await model.submit(send, { after: hadRecord ? undefined : (form.hasAttribute('xo-keep') ? () => model.markPristine() : () => { model.markPristine(defaults(schema) ?? {}); model.reset(); }) }); // a sent form starts empty again: untouched, with no old errors
     if (outcome.ok) return outcome;
     const path = firstInvalid(outcome.errors);
     const ev = new CustomEvent('xo-reveal', { detail: { path }, bubbles: true, cancelable: true });

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Styling · xoong</title>
+  <meta name="description" content="Change the look of xoong with CSS custom properties and cascade layers.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="src/site.css">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/page-styling.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html">xoong</a>
+    <span class="tag">standards-first web framework</span>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="index.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="controls.html">Controls</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html" aria-current="page">Styling</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main id="main">
+
+<h1>Styling</h1>
+<p class="lead">xoong ships design tokens as custom properties and the default look of its parts as plain CSS in cascade layers. There is nothing to build and nothing to eject: your own CSS wins without specificity fights.</p>
+
+<h2>Tokens</h2>
+<p>Everything in <code>xoong.css</code> is read from <code>--xo-*</code> properties. Change them on <code>:root</code> for the whole app, or on any element for a region. Move the controls to try it on the sample panel (they set the properties on that panel only).</p>
+<div class="playground-controls">
+  <label>Accent <input id="p-accent" type="color" value="#2457d6"></label>
+  <label>Radius <input id="p-radius" type="range" min="0" max="16" value="6"> <output id="p-radius-out">6px</output></label>
+  <label>Scheme <select id="p-scheme"><option value="light dark">Follow the system</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+</div>
+<div class="playground" id="playground">
+  <div class="toolbar"><button>Default</button><button class="primary">Primary</button><input aria-label="Search" placeholder="Search"><span class="badge">badge</span></div>
+  <div class="xo-table"><table>
+    <thead><tr><th scope="col">Name</th><th scope="col">Role</th></tr></thead>
+    <tbody><tr><td>Ada Lovelace</td><td>admin</td></tr><tr><td>Grace Hopper</td><td>editor</td></tr></tbody>
+  </table></div>
+  <p class="xo-hint">A hint in the muted colour, and <a href="#playground">a link</a> in the accent colour.</p>
+</div>
+<xo-tabs label="Tokens" class="code-tabs">
+  <section xo-tab="CSS"><pre data-lang="css"><code>:root {
+  <span class="tok-a">--xo-color-accent</span>: <span class="tok-n">#0a7</span>;   <span class="tok-c">/* links, focus ring, primary actions */</span>
+  <span class="tok-a">--xo-radius</span>: <span class="tok-n">0</span>;            <span class="tok-c">/* corners of buttons, fields, panels */</span>
+  <span class="tok-a">--xo-font</span>: <span class="tok-s">"Inter"</span>, system-ui, sans-serif;
+}
+
+.sidebar {                   <span class="tok-c">/* or a region: its children follow */</span>
+  <span class="tok-a">--xo-color-surface</span>: <span class="tok-n">#fafafa</span>;
+  <span class="tok-a">--xo-space-3</span>: <span class="tok-n">0.75rem</span>;
+}</code></pre></section>
+  <section xo-tab="Tokens"><pre data-lang="css"><code><span class="tok-a">--xo-font</span>, <span class="tok-a">--xo-font-mono</span>, <span class="tok-a">--xo-text</span>, <span class="tok-a">--xo-text-small</span>
+<span class="tok-a">--xo-space-1</span> … <span class="tok-a">--xo-space-4</span>, <span class="tok-a">--xo-radius</span>, <span class="tok-a">--xo-form-max-width</span>
+<span class="tok-a">--xo-color-bg</span>, <span class="tok-a">--xo-color-surface</span>, <span class="tok-a">--xo-color-text</span>, <span class="tok-a">--xo-color-muted</span>
+<span class="tok-a">--xo-color-border</span>, <span class="tok-a">--xo-color-accent</span>, <span class="tok-a">--xo-color-accent-text</span>, <span class="tok-a">--xo-color-danger</span>
+<span class="tok-a">--xo-focus</span></code></pre></section>
+</xo-tabs>
+
+<h2>Layers</h2>
+<p>The default styles live in three layers, <code>xoong.tokens</code>, <code>xoong.base</code> and <code>xoong.components</code>. Unlayered CSS beats any layered CSS, so a plain rule in your stylesheet overrides the default without <code>!important</code> and without matching its specificity. Light and dark come from <code>light-dark()</code> and <code>color-scheme</code>.</p>
+<xo-tabs label="Layers" class="code-tabs">
+  <section xo-tab="CSS"><pre data-lang="css"><code><span class="tok-c">/* your stylesheet: no layer, so it wins */</span>
+.xo-table th { text-transform: uppercase; letter-spacing: <span class="tok-n">0.04em</span>; }
+xo-dialog &gt; dialog { max-width: <span class="tok-n">40rem</span>; }
+
+<span class="tok-c">/* or order the layers yourself */</span>
+<span class="tok-k">@layer</span> reset, xoong.tokens, xoong.base, xoong.components, app;</code></pre></section>
+</xo-tabs>
+
+<h2>The admin shell</h2>
+<p>Put <code>class="xo-admin"</code> on the body (or on <code>&lt;xo-router&gt;</code>) with a <code>&lt;header&gt;</code>, a <code>&lt;nav&gt;</code> and a <code>&lt;main&gt;</code>, and you have a header, a sidebar and a content area that folds into one column on a phone.</p>
+<xo-tabs label="Shell" class="code-tabs">
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">body</span> <span class="tok-a">class</span>=<span class="tok-s">"xo-admin"</span>&gt;
+  &lt;<span class="tok-t">header</span>&gt;My admin&lt;/<span class="tok-t">header</span>&gt;
+  &lt;<span class="tok-t">nav</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/people"</span> <span class="tok-a">aria-current</span>=<span class="tok-s">"page"</span>&gt;People&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">nav</span>&gt;
+  &lt;<span class="tok-t">main</span>&gt;...&lt;/<span class="tok-t">main</span>&gt;
+&lt;/<span class="tok-t">body</span>&gt;</code></pre></section>
+</xo-tabs>
+      <nav class="pager" aria-label="Pages"><a rel="prev" href="richtext.html"><small>Previous</small><span>Rich text</span></a><a rel="next" href="demo.html"><small>Next</small><span>Live demo</span></a></nav>
+    </main>
+  </div>
+  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+</body>
+</html>

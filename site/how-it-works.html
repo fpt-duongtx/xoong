@@ -4,34 +4,110 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How it works · xoong</title>
-  <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta name="description" content="How xoong turns an OpenAPI document into data, forms and screens.">
   <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="src/site.css">
-  
+  <script type="module" src="src/site.js"></script>
 </head>
 <body>
   <header class="top">
-    <strong>xoong</strong>
-    <nav aria-label="Main">
-      <a href="index.html">Home</a>
+    <a class="brand" href="index.html">xoong</a>
+    <span class="tag">standards-first web framework</span>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="index.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html" aria-current="page">How it works</a>
-      <a href="demo.html">Demo</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="controls.html">Controls</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
     </nav>
-  </header>
-  <main>
-    <h1>How it works</h1>
-    <h2>Data</h2>
-    <p><code>xoong sync</code> turns your OpenAPI document into <code>operations.json</code>. A <code>&lt;xo-view get="listPeople"&gt;</code> calls the operation, caches the answer in a shared store (entities with the same id are shared between screens) and exposes <code>$loading</code>, <code>$error</code> and the data to the markup inside it.</p>
-    <h2>Actions and forms</h2>
-    <p>Buttons use <code>xo-click="POST /users/{id}/disable"</code>. A form with <code>&lt;xo-form op="createUser"&gt;</code> is drawn from the request schema: nested objects, arrays and unions included. Validation comes from the same schema, with your own rules by path.</p>
-    <h2>Pages</h2>
-    <p><code>&lt;xo-router&gt;</code> is a declarative History-API router with nested layouts, guards and a leave question for unsaved forms. Public pages can be prerendered with <code>@xoong/ssr</code>.</p>
-    <h2>Language</h2>
-    <p><code>@xoong/i18n</code> uses plain JSON catalogs and ICU-style messages; <code>xo-t</code> translates markup.</p>
-    <h2>Safety</h2>
-    <p><code>xoong build</code> rewrites imports to files and removes the need for inline code, so the output runs under <code>default-src 'none'; script-src 'self'</code>.</p>
-  </main>
+    <main id="main">
+
+<h1>How it works</h1>
+<p>xoong has three layers, and you can stop at any of them: a reactive core and base element, a data layer generated from OpenAPI, and ready-made admin parts on top.</p>
+
+<h2>Data</h2>
+<p><code>xoong sync</code> turns your OpenAPI document into <code>operations.json</code>. A <code>&lt;xo-view get="listPeople"&gt;</code> calls the operation, caches the answer in a shared store (records with the same id are shared between screens) and exposes <code>$loading</code>, <code>$error</code> and the data to the markup inside it. You never write a cache key, an HTTP client or an error handler.</p>
+<xo-tabs label="Data" class="code-tabs">
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+  &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$loading"</span>&gt;Loading…&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$error"</span> <span class="tok-a">role</span>=<span class="tok-s">"alert"</span>&gt;<span class="tok-i">{$error.code}</span>: <span class="tok-i">{$error.detail}</span>&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">ul</span>&gt;
+    &lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;<span class="tok-i">{name}</span> &lt;<span class="tok-t">small</span>&gt;<span class="tok-i">{email}</span>&lt;/<span class="tok-t">small</span>&gt;&lt;/<span class="tok-t">li</span>&gt;
+  &lt;/<span class="tok-t">ul</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash"><code>npx xoong sync openapi.json</code></pre></section>
+</xo-tabs>
+
+<h2>Actions and forms</h2>
+<p>Writes are attributes too. A button runs an operation; after it succeeds, every cached query whose path overlaps it is refetched, so lists stay current without extra code. A form with <code>&lt;xo-form op="createPerson"&gt;</code> is drawn from the request schema: nested objects, arrays and unions included. Validation comes from the same schema, with your own rules by path.</p>
+<xo-tabs label="Actions" class="code-tabs">
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"POST /api/people/<span class="tok-i">{id}</span>/disable"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Disable <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Disabled"</span>&gt;Disable&lt;/<span class="tok-t">button</span>&gt;
+
+&lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add person"</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// Only when HTML is not enough: the same client, typed from api.d.ts</span>
+<span class="tok-k">import</span> { getClient } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+
+<span class="tok-k">const</span> created = <span class="tok-k">await</span> getClient().mutate(<span class="tok-s">'createPerson'</span>, {}, { name: <span class="tok-s">'Ada'</span>, email: <span class="tok-s">'ada@example.org'</span> });</code></pre></section>
+</xo-tabs>
+
+<h2>Pages</h2>
+<p><code>&lt;xo-router&gt;</code> is a declarative History-API router with nested layouts, guards and a "leave this page?" question for unsaved forms. Public pages stay one HTML file each and can be prerendered with <code>@xoong/ssr</code>.</p>
+<xo-tabs label="Router" class="code-tabs">
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-router</span> <span class="tok-a">base</span>=<span class="tok-s">"/admin"</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-layout</span>=<span class="tok-s">"shell"</span>&gt;
+    &lt;<span class="tok-t">nav</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/people"</span>&gt;People&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">nav</span>&gt;
+    &lt;<span class="tok-t">main</span> <span class="tok-a">xo-outlet</span>&gt;&lt;/<span class="tok-t">main</span>&gt;
+  &lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-route</span>=<span class="tok-s">"/people/:id"</span> <span class="tok-a">layout</span>=<span class="tok-s">"shell"</span> <span class="tok-a">title</span>=<span class="tok-s">"Person"</span>&gt;
+    &lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getPerson"</span> <span class="tok-a">p-id</span>=<span class="tok-s">":id"</span>&gt;...&lt;/<span class="tok-t">xo-view</span>&gt;
+  &lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-route</span>=<span class="tok-s">"*"</span>&gt;Not found&lt;/<span class="tok-t">template</span>&gt;
+&lt;/<span class="tok-t">xo-router</span>&gt;</code></pre></section>
+</xo-tabs>
+
+<h2>Language</h2>
+<p><code>@xoong/i18n</code> uses plain JSON catalogs and ICU-style messages. <code>xo-t</code> translates markup, and every built-in string (table, forms, controls) is a catalog key, Vietnamese included.</p>
+<xo-tabs label="i18n" class="code-tabs">
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">h1</span> <span class="tok-a">xo-t</span>=<span class="tok-s">"home.title"</span>&gt;Welcome&lt;/<span class="tok-t">h1</span>&gt;
+&lt;<span class="tok-t">input</span> <span class="tok-a">xo-t</span>=<span class="tok-s">"placeholder:search.placeholder"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Search"</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-k">import</span> { configureI18n, setLocale } <span class="tok-k">from</span> <span class="tok-s">'@xoong/i18n'</span>;
+
+configureI18n({ locale: <span class="tok-s">'en'</span>, load: (locale) =&gt; fetch(<span class="tok-s">`/i18n/${locale}.json`</span>).then((r) =&gt; r.json()) });
+<span class="tok-k">await</span> setLocale(<span class="tok-s">'vi'</span>);</code></pre></section>
+</xo-tabs>
+
+<h2>Safety</h2>
+<p><code>xoong build</code> rewrites imports to files and removes the need for inline code, so the output runs under <code>default-src 'none'; script-src 'self'; style-src 'self'</code>. This site is built that way, and its tests fail on any CSP violation. Interpolated text is escaped, <code>javascript:</code> URLs become <code>about:blank</code>, and rich text is sanitised on every input.</p>
+
+<h2>Packages</h2>
+<p>Install only what you use. Sizes are gzip budgets that the tests enforce.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Package</th><th>What it is</th><th>Budget</th></tr></thead>
+<tbody>
+<tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.5 KB</td></tr>
+<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>16.5 KB</td></tr>
+<tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
+<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialog, toast, router</td><td>10 KB</td></tr>
+<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags</td><td>7 KB</td></tr>
+<tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
+<tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5 KB</td></tr>
+<tr><td><code>@xoong/cli</code></td><td><code>sync</code>, <code>check</code>, <code>dev</code>, <code>build</code>, <code>render</code>, <code>i18n</code></td><td>tools</td></tr>
+<tr><td><code>@xoong/test</code>, <code>mcp</code>, <code>lsp</code>, <code>ssr</code>, <code>server</code></td><td>Mock API and screens for Vitest, an MCP server, editor support, prerendering, the dev and build server</td><td>tools</td></tr>
+</tbody></table></div>
+      <nav class="pager" aria-label="Pages"><a rel="prev" href="install.html"><small>Previous</small><span>Install</span></a><a rel="next" href="data.html"><small>Next</small><span>Data and tables</span></a></nav>
+    </main>
+  </div>
   <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
 </body>
 </html>

@@ -94,4 +94,16 @@ describe('<xo-tabs>', () => {
     await new Promise((r) => setTimeout(r, 0));
     expect(tabs().some((t) => t.hasAttribute('data-invalid'))).toBe(false);
   });
+
+  it('a copy of tabs that were already built (a view clones its content) gets one tablist and keys by position again', async () => {
+    const built = await mountTabs();
+    const copy = built.cloneNode(true);
+    document.body.innerHTML = '';
+    document.body.append(copy);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(document.querySelectorAll('[role=tablist]').length).toBe(1);
+    expect(tabs().map((t) => t.textContent)).toEqual(['General', 'SEO', 'Extra']);
+    expect(tabs().map((t) => t.dataset.tab)).toEqual(['0', 'seo', '2']); // not the ids an earlier build made
+    expect(tabs().map((t) => t.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false']);
+  });
 });

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forms · xoong</title>
+  <meta name="description" content="Generated and hand-written forms: schema validation, dirty state, arrays with reordering, server errors.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/site.css">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/demo.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html">xoong</a>
+    <span class="tag">standards-first web framework</span>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="index.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html" aria-current="page">Forms</a>
+      <a href="controls.html">Controls</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main id="main">
+
+<h1>Forms</h1>
+<p class="lead">A form is a <code>&lt;form xo-submit&gt;</code> inside an <code>xo-view</code>. The request schema of the operation gives each field its type, its limits and its errors, and the record fills the fields.</p>
+
+<h2>Generated from the schema</h2>
+<p><code>&lt;xo-form op="createPerson"&gt;</code> (inside an <code>&lt;xo-view&gt;</code>) draws every field of the request body: text, e-mail, a select for the enum, and the rich widgets chosen by the schema (<code>x-xoong-widget</code> in OpenAPI, or a hint). Submit it empty to see the validation messages, then add a person with an address that is already used (<code>ada@example.org</code>) to see a server error. The list refreshes by itself after a successful save.</p>
+<xo-tabs label="xo-form" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <div class="split">
+      <xo-view><xo-form op="createPerson" submit="Add person"></xo-form></xo-view>
+      <xo-view get="listPeople" p-sort="-id" p-limit="5">
+        <h3>Newest people</h3>
+        <ul class="people"><li xo-each="items"><strong>{name}</strong><br><small>{email}</small></li></ul>
+      </xo-view>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"split"</span>&gt;
+  &lt;<span class="tok-t">xo-view</span>&gt;&lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add person"</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;
+  &lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span> <span class="tok-a">p-sort</span>=<span class="tok-s">"-id"</span> <span class="tok-a">p-limit</span>=<span class="tok-s">"5"</span>&gt;
+    &lt;<span class="tok-t">h3</span>&gt;Newest people&lt;/<span class="tok-t">h3</span>&gt;
+    &lt;<span class="tok-t">ul</span> <span class="tok-a">class</span>=<span class="tok-s">"people"</span>&gt;&lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;&lt;<span class="tok-t">strong</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">strong</span>&gt;&lt;<span class="tok-t">br</span>&gt;&lt;<span class="tok-t">small</span>&gt;<span class="tok-i">{email}</span>&lt;/<span class="tok-t">small</span>&gt;&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;
+  &lt;/<span class="tok-t">xo-view</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+  <section xo-tab="OpenAPI"><pre data-lang="json"><code><span class="tok-a">"PersonInput"</span>: {
+  <span class="tok-a">"type"</span>: <span class="tok-s">"object"</span>,
+  <span class="tok-a">"required"</span>: [<span class="tok-s">"name"</span>, <span class="tok-s">"email"</span>],
+  <span class="tok-a">"properties"</span>: {
+    <span class="tok-a">"name"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"minLength"</span>: <span class="tok-n">2</span>, <span class="tok-a">"maxLength"</span>: <span class="tok-n">40</span> },
+    <span class="tok-a">"email"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"format"</span>: <span class="tok-s">"email"</span> },
+    <span class="tok-a">"role"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"enum"</span>: [<span class="tok-s">"admin"</span>, <span class="tok-s">"editor"</span>, <span class="tok-s">"viewer"</span>] },
+    <span class="tok-a">"topics"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"array"</span>, <span class="tok-a">"items"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"enum"</span>: [<span class="tok-s">"web"</span>, <span class="tok-s">"data"</span>, <span class="tok-s">"design"</span>, <span class="tok-s">"ops"</span>] }, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-combobox"</span> },
+    <span class="tok-a">"keywords"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"array"</span>, <span class="tok-a">"items"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span> }, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-tags"</span> },
+    <span class="tok-a">"bio"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-richtext"</span> }
+  }
+}</code></pre></section>
+  <section xo-tab="Hints"><pre data-lang="json"><code>{
+  <span class="tok-a">"fields"</span>: {
+    <span class="tok-a">"PersonInput.name"</span>: { <span class="tok-a">"label"</span>: <span class="tok-s">"Full name"</span>, <span class="tok-a">"hint"</span>: <span class="tok-s">"2 to 40 characters"</span>, <span class="tok-a">"order"</span>: <span class="tok-n">1</span> },
+    <span class="tok-a">"PersonInput.bio"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-richtext"</span> }
+  }
+}</code></pre></section>
+</xo-tabs>
+
+<h2>Written by hand</h2>
+<p>For a layout of your own, write the form. <code>name</code> is a path (<code>title.en</code>, <code>items[0].x</code>). The record fills the fields, errors appear after blur or submit, and <code>$form</code> tells the markup what is going on: <code>dirty</code>, <code>valid</code>, <code>submitting</code>, <code>errors['email']</code>. Put sections in <code>&lt;xo-tabs&gt;</code>: when a field on another tab is invalid, that tab opens before the focus moves there.</p>
+<xo-tabs label="A hand-written form" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <xo-view get="getPerson" p-id="1">
+      <form xo-submit="updatePerson" xo-notice="Saved">
+        <xo-tabs label="Person">
+          <section xo-tab="General">
+            <label class="field">Name <input name="name" autocomplete="off"></label>
+            <span class="error" xo-if="$form.errors['name']">{$form.errors['name']}</span>
+            <label class="field">E-mail <input name="email" type="email"></label>
+            <span class="error" xo-if="$form.errors['email']">{$form.errors['email']}</span>
+            <label class="field">Role
+              <select name="role"><option>admin</option><option>editor</option><option>viewer</option></select>
+            </label>
+          </section>
+          <section xo-tab="Topics">
+            <xo-combobox name="topics" label="Topics" multiple>
+              <option value="web">Web</option><option value="data">Data</option>
+              <option value="design">Design</option><option value="ops">Operations</option>
+            </xo-combobox>
+            <xo-tags name="keywords" label="Keywords" placeholder="Add a keyword"></xo-tags>
+          </section>
+          <section xo-tab="Bio">
+            <xo-richtext name="bio" label="Bio" toolbar="compact"></xo-richtext>
+          </section>
+        </xo-tabs>
+        <p class="toolbar">
+          <button>Save</button>
+          <span class="hint" xo-if="$form.dirty">Unsaved changes</span>
+          <span class="hint" xo-if="$form.submitting" aria-busy="true">Saving…</span>
+        </p>
+      </form>
+    </xo-view>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getPerson"</span> <span class="tok-a">p-id</span>=<span class="tok-s">"1"</span>&gt;
+  &lt;<span class="tok-t">form</span> <span class="tok-a">xo-submit</span>=<span class="tok-s">"updatePerson"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Saved"</span>&gt;
+    &lt;<span class="tok-t">xo-tabs</span> <span class="tok-a">label</span>=<span class="tok-s">"Person"</span>&gt;
+      &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"General"</span>&gt;
+        &lt;<span class="tok-t">label</span> <span class="tok-a">class</span>=<span class="tok-s">"field"</span>&gt;Name &lt;<span class="tok-t">input</span> <span class="tok-a">name</span>=<span class="tok-s">"name"</span> <span class="tok-a">autocomplete</span>=<span class="tok-s">"off"</span>&gt;&lt;/<span class="tok-t">label</span>&gt;
+        &lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"error"</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$form.errors['name']"</span>&gt;<span class="tok-i">{$form.errors['name']}</span>&lt;/<span class="tok-t">span</span>&gt;
+        &lt;<span class="tok-t">label</span> <span class="tok-a">class</span>=<span class="tok-s">"field"</span>&gt;E-mail &lt;<span class="tok-t">input</span> <span class="tok-a">name</span>=<span class="tok-s">"email"</span> <span class="tok-a">type</span>=<span class="tok-s">"email"</span>&gt;&lt;/<span class="tok-t">label</span>&gt;
+        &lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"error"</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$form.errors['email']"</span>&gt;<span class="tok-i">{$form.errors['email']}</span>&lt;/<span class="tok-t">span</span>&gt;
+        &lt;<span class="tok-t">label</span> <span class="tok-a">class</span>=<span class="tok-s">"field"</span>&gt;Role
+          &lt;<span class="tok-t">select</span> <span class="tok-a">name</span>=<span class="tok-s">"role"</span>&gt;&lt;<span class="tok-t">option</span>&gt;admin&lt;/<span class="tok-t">option</span>&gt;&lt;<span class="tok-t">option</span>&gt;editor&lt;/<span class="tok-t">option</span>&gt;&lt;<span class="tok-t">option</span>&gt;viewer&lt;/<span class="tok-t">option</span>&gt;&lt;/<span class="tok-t">select</span>&gt;
+        &lt;/<span class="tok-t">label</span>&gt;
+      &lt;/<span class="tok-t">section</span>&gt;
+      &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"Topics"</span>&gt;
+        &lt;<span class="tok-t">xo-combobox</span> <span class="tok-a">name</span>=<span class="tok-s">"topics"</span> <span class="tok-a">label</span>=<span class="tok-s">"Topics"</span> <span class="tok-a">multiple</span>&gt;
+          &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"web"</span>&gt;Web&lt;/<span class="tok-t">option</span>&gt;&lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"data"</span>&gt;Data&lt;/<span class="tok-t">option</span>&gt;
+          &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"design"</span>&gt;Design&lt;/<span class="tok-t">option</span>&gt;&lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"ops"</span>&gt;Operations&lt;/<span class="tok-t">option</span>&gt;
+        &lt;/<span class="tok-t">xo-combobox</span>&gt;
+        &lt;<span class="tok-t">xo-tags</span> <span class="tok-a">name</span>=<span class="tok-s">"keywords"</span> <span class="tok-a">label</span>=<span class="tok-s">"Keywords"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Add a keyword"</span>&gt;&lt;/<span class="tok-t">xo-tags</span>&gt;
+      &lt;/<span class="tok-t">section</span>&gt;
+      &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"Bio"</span>&gt;
+        &lt;<span class="tok-t">xo-richtext</span> <span class="tok-a">name</span>=<span class="tok-s">"bio"</span> <span class="tok-a">label</span>=<span class="tok-s">"Bio"</span> <span class="tok-a">toolbar</span>=<span class="tok-s">"compact"</span>&gt;&lt;/<span class="tok-t">xo-richtext</span>&gt;
+      &lt;/<span class="tok-t">section</span>&gt;
+    &lt;/<span class="tok-t">xo-tabs</span>&gt;
+    &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
+      &lt;<span class="tok-t">button</span>&gt;Save&lt;/<span class="tok-t">button</span>&gt;
+      &lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$form.dirty"</span>&gt;Unsaved changes&lt;/<span class="tok-t">span</span>&gt;
+      &lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$form.submitting"</span> <span class="tok-a">aria-busy</span>=<span class="tok-s">"true"</span>&gt;Saving…&lt;/<span class="tok-t">span</span>&gt;
+    &lt;/<span class="tok-t">p</span>&gt;
+  &lt;/<span class="tok-t">form</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p>Clear the name or type a single letter, go to another tab and press Save: the first invalid field is revealed, and nothing is sent until the form is valid. The leave guard of <code>&lt;xo-router&gt;</code> uses the same <code>dirty</code> state.</p>
+
+<h2>Rows you can add, move and remove</h2>
+<p>An array of values or objects is edited with <code>xo-each</code> over the draft. <code>xo-add</code> appends a row, <code>xo-remove</code> removes one, <code>xo-move</code> moves it (the focus follows the row), and <code>xo-drag</code> on a handle lets a pointer drag it onto another row of the same list.</p>
+<xo-tabs label="Array rows" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <xo-view get="getPerson" p-id="2">
+      <form xo-submit="updatePerson" xo-notice="Saved">
+        <fieldset>
+          <legend>Keywords</legend>
+          <div class="row" xo-each="keywords">
+            <span class="handle" xo-drag="keywords[{$index}]" title="Drag to reorder">⠿</span>
+            <input name="keywords[{$index}]" aria-label="Keyword">
+            <button type="button" xo-move="keywords[{$index}]:up" aria-label="Move up">↑</button>
+            <button type="button" xo-move="keywords[{$index}]:down" aria-label="Move down">↓</button>
+            <button type="button" xo-remove="keywords[{$index}]" aria-label="Remove">✕</button>
+          </div>
+          <button type="button" xo-add="keywords">Add keyword</button>
+        </fieldset>
+        <p class="toolbar"><button>Save</button> <span class="hint" xo-if="$form.dirty">Unsaved changes</span></p>
+      </form>
+    </xo-view>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getPerson"</span> <span class="tok-a">p-id</span>=<span class="tok-s">"2"</span>&gt;
+  &lt;<span class="tok-t">form</span> <span class="tok-a">xo-submit</span>=<span class="tok-s">"updatePerson"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Saved"</span>&gt;
+    &lt;<span class="tok-t">fieldset</span>&gt;
+      &lt;<span class="tok-t">legend</span>&gt;Keywords&lt;/<span class="tok-t">legend</span>&gt;
+      &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"row"</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"keywords"</span>&gt;
+        &lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"handle"</span> <span class="tok-a">xo-drag</span>=<span class="tok-s">"keywords[<span class="tok-i">{$index}</span>]"</span> <span class="tok-a">title</span>=<span class="tok-s">"Drag to reorder"</span>&gt;⠿&lt;/<span class="tok-t">span</span>&gt;
+        &lt;<span class="tok-t">input</span> <span class="tok-a">name</span>=<span class="tok-s">"keywords[<span class="tok-i">{$index}</span>]"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Keyword"</span>&gt;
+        &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-move</span>=<span class="tok-s">"keywords[<span class="tok-i">{$index}</span>]:up"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Move up"</span>&gt;↑&lt;/<span class="tok-t">button</span>&gt;
+        &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-move</span>=<span class="tok-s">"keywords[<span class="tok-i">{$index}</span>]:down"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Move down"</span>&gt;↓&lt;/<span class="tok-t">button</span>&gt;
+        &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-remove</span>=<span class="tok-s">"keywords[<span class="tok-i">{$index}</span>]"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Remove"</span>&gt;✕&lt;/<span class="tok-t">button</span>&gt;
+      &lt;/<span class="tok-t">div</span>&gt;
+      &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-add</span>=<span class="tok-s">"keywords"</span>&gt;Add keyword&lt;/<span class="tok-t">button</span>&gt;
+    &lt;/<span class="tok-t">fieldset</span>&gt;
+    &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span>&gt;Save&lt;/<span class="tok-t">button</span>&gt; &lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$form.dirty"</span>&gt;Unsaved changes&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
+  &lt;/<span class="tok-t">form</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+
+</xo-tabs>
+
+<h2>Your own rules</h2>
+<p>Schema rules always apply. Add rules the schema cannot express by path, with the loaded record at hand; a rule returns an empty string when the value is fine, or the message. Rules may be asynchronous, for example to ask the server whether a slug is free.</p>
+<xo-tabs label="Rules" class="code-tabs">
+  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-k">const</span> form = document.querySelector(<span class="tok-s">'form'</span>);
+
+form.rules = {
+  email: (value) =&gt; (value.endsWith(<span class="tok-s">'@example.org'</span>) ? <span class="tok-s">''</span> : <span class="tok-s">'Use a company address'</span>),
+  <span class="tok-s">'*'</span>: (record) =&gt; (record.role === <span class="tok-s">'admin'</span> &amp;&amp; !record.topics.length ? { topics: <span class="tok-s">'Admins need a topic'</span> } : {}),
+};
+form.serialize = (draft, body) =&gt; ({ ...body, name: body.name.trim() }); <span class="tok-c">// the last word on the request body</span></code></pre></section>
+</xo-tabs>
+<p>On an invalid submit the form fires a cancelable <code>xo-reveal</code> event with the path, so tabs and collapsed sections can open before the focus moves, then <code>xo-invalid</code>.</p>
+      <nav class="pager" aria-label="Pages"><a rel="prev" href="data.html"><small>Previous</small><span>Data and tables</span></a><a rel="next" href="controls.html"><small>Next</small><span>Controls</span></a></nav>
+    </main>
+  </div>
+  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+  <xo-toast></xo-toast>
+</body>
+</html>

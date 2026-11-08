@@ -195,6 +195,25 @@ describe('submit', () => {
     expect(screen.$('form').model.dirty).toBe(false);
   });
 
+  it('a form that was sent starts clean: no old required errors on the emptied fields, no summary of an earlier failed attempt', async () => {
+    let fail = true;
+    const a = api({ createArticle: ({ body }) => (fail ? respond(409, { error: { code: 'conflict', message: 'That slug is taken' } }) : { id: 99, ...body }) });
+    screen = await mount('<xo-view><form xo-submit="createArticle"><input name="slug"><input name="title.en"><input name="rating"><button>Add</button></form></xo-view>', { api: a });
+    await screen.submit('form'); // empty: every field shows what is missing
+    expect(screen.$$('[data-xo-error]').length).toBeGreaterThan(0);
+    await input('slug', 'a-b');
+    await input('title.en', 'T');
+    await input('rating', '2');
+    await screen.submit('form'); // the server refuses without a field to blame: a summary under the form
+    expect(screen.$('[data-xo-summary]').textContent).toBe('That slug is taken');
+    fail = false;
+    await screen.submit('form');
+    expect(screen.$('[data-xo-summary]')).toBeNull(); // gone with the next attempt
+    expect(screen.$('[name=slug]').value).toBe('');
+    expect(screen.$('[data-xo-error]')).toBeNull(); // the emptied fields are untouched again
+    expect(screen.$('[aria-invalid="true"]')).toBeNull();
+  });
+
   it('xo-reveal: the app can reveal a hidden field before it is focused; hidden controls never block the submit', async () => {
     const a = api();
     screen = await mount(`<xo-view get="getArticle" p-id="5"><form xo-submit="updateArticle"><input name="slug"><input name="title.en"><div id="tab" hidden><input name="title.vi" required></div><button>Save</button></form></xo-view>`, { api: a });

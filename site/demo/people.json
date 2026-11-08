@@ -1,7 +1,0 @@
-{ "items": [
-  { "id": 1, "name": "Ada Lovelace", "email": "ada@example.org", "role": "admin" },
-  { "id": 2, "name": "Grace Hopper", "email": "grace@example.org", "role": "editor" },
-  { "id": 3, "name": "Edsger Dijkstra", "email": "edsger@example.org", "role": "viewer" },
-  { "id": 4, "name": "Barbara Liskov", "email": "barbara@example.org", "role": "editor" },
-  { "id": 5, "name": "Donald Knuth", "email": "donald@example.org", "role": "viewer" }
-] }

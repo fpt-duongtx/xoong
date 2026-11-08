@@ -508,6 +508,7 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       const ref = opRef;
       const op = client.op(ref);
       if (!engine) clearFieldErrors(el);
+      else el.querySelectorAll?.('[data-xo-summary]').forEach((n) => n.remove()); // the last failure's summary: this is a new attempt
       /** One call, with the params and body taken from `sc` (the button's scope, or one selected row). */
       const callOnce = async (sc) => {
         const params = {};
@@ -614,8 +615,9 @@ function showFieldErrors(form, fields = {}, summary = '') {
     placed++;
   }
   const unplaced = Object.entries(fields).filter(([name]) => ![...form.elements].some((f) => f.name === name));
-  if (!placed && summary) form.append(note(summary, 'alert'));
-  else if (unplaced.length) form.append(note(unplaced.map(([name, message]) => `${name}: ${message}`).join('; '), 'alert')); // no input for these
+  const summarize = (message) => { const n = note(message, 'alert'); n.dataset.xoSummary = ''; form.append(n); };
+  if (!placed && summary) summarize(summary);
+  else if (unplaced.length) summarize(unplaced.map(([name, message]) => `${name}: ${message}`).join('; ')); // no input for these
 }
 
 function bindParam(el, spec, scope, ctx, disposers) {

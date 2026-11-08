@@ -3,39 +3,100 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Standards-first web framework · xoong</title>
+  <title>Overview · xoong</title>
   <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
   <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="src/site.css">
-  
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/demo.js"></script>
 </head>
 <body>
   <header class="top">
-    <strong>xoong</strong>
-    <nav aria-label="Main">
-      <a href="index.html" aria-current="page">Home</a>
+    <a class="brand" href="index.html">xoong</a>
+    <span class="tag">standards-first web framework</span>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="index.html" aria-current="page">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
-      <a href="demo.html">Demo</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="controls.html">Controls</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
     </nav>
-  </header>
-  <main>
-    <h1>xoong</h1>
-    <p>Build data-driven web pages with HTML, plain CSS and your OpenAPI document. No virtual DOM, no runtime dependencies in the core, no build step needed to try it.</p>
-    <p class="note"><strong>Status:</strong> a working prototype (0.0.x). It is not published to npm yet, so installing is done from release files. See <a href="install.html">Install</a>.</p>
-    <h2>What you write</h2>
-    <pre><code>&lt;xo-view get="listPeople"&gt;
-  &lt;xo-table columns="name,email,role" sortable&gt;&lt;/xo-table&gt;
-&lt;/xo-view&gt;</code></pre>
-    <p>The table, its loading and error states, the cache and the types come from the OpenAPI document. <a href="demo.html">See it running.</a></p>
-    <h2>Ideas</h2>
-    <ul>
-      <li><strong>Standards first:</strong> custom elements in the Light DOM, the History API, native <code>&lt;dialog&gt;</code>, <code>Intl</code>.</li>
-      <li><strong>Your API is the contract:</strong> <code>xoong sync</code> reads OpenAPI and writes typed operations; forms and tables are drawn from the schemas.</li>
-      <li><strong>Strict CSP ready:</strong> <code>xoong build</code> produces static output with no inline code.</li>
-      <li><strong>Made for AI and humans:</strong> a short <code>llms.txt</code>, an MCP server, and <code>xoong check</code> that catches mistakes in markup.</li>
-    </ul>
-  </main>
+    <main id="main">
+
+<h1>xoong</h1>
+<p class="lead">Build data-driven web pages with HTML, plain CSS and your OpenAPI document. Custom elements in the Light DOM, no virtual DOM, no runtime dependencies in the core, no build step needed to try it.</p>
+<aside class="callout note"><strong>Status:</strong> a working prototype (0.x). It is not published to npm yet, so you install it from release files: see <a href="install.html">Install</a>.</aside>
+
+<h2>What you write</h2>
+<p>A screen is HTML. The table below reads <code>listPeople</code> from an OpenAPI operation; sorting, search, paging, selection, the confirm dialog and the toast are attributes. Try it: sort a column, type in the search box, tick rows.</p>
+<xo-tabs label="A data table" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <xo-view get="listPeople">
+      <xo-table columns="name,email:E-mail,role" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
+        <span slot="role" class="badge">{role}</span>
+        <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
+        <button slot="bulk" xo-click="deletePerson" xo-selected>Delete ticked</button>
+      </xo-table>
+    </xo-view>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+  &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
+    &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"role"</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"bulk"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-selected</span>&gt;Delete ticked&lt;/<span class="tok-t">button</span>&gt;
+  &lt;/<span class="tok-t">xo-table</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/ui'</span>;
+<span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };
+
+configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</code></pre></section>
+  <section xo-tab="OpenAPI"><pre data-lang="json"><code>{
+  <span class="tok-a">"paths"</span>: {
+    <span class="tok-a">"/api/people"</span>: {
+      <span class="tok-a">"get"</span>: {
+        <span class="tok-a">"operationId"</span>: <span class="tok-s">"listPeople"</span>,
+        <span class="tok-a">"parameters"</span>: [{ <span class="tok-a">"name"</span>: <span class="tok-s">"sort"</span>, <span class="tok-a">"in"</span>: <span class="tok-s">"query"</span> }, { <span class="tok-a">"name"</span>: <span class="tok-s">"limit"</span>, <span class="tok-a">"in"</span>: <span class="tok-s">"query"</span> }, { <span class="tok-a">"name"</span>: <span class="tok-s">"offset"</span>, <span class="tok-a">"in"</span>: <span class="tok-s">"query"</span> }, { <span class="tok-a">"name"</span>: <span class="tok-s">"name"</span>, <span class="tok-a">"in"</span>: <span class="tok-s">"query"</span> }],
+        <span class="tok-a">"responses"</span>: { <span class="tok-a">"200"</span>: { <span class="tok-a">"description"</span>: <span class="tok-s">"ok"</span> } }
+      }
+    }
+  }
+}</code></pre></section>
+</xo-tabs>
+<p>There is no server behind this page: a function in the page plays the API (<code>configure({ fetch })</code>), and everything else, the typed operation, the cache, the loading and error states, is the real thing.</p>
+
+<h2>Ideas</h2>
+<div class="cards">
+  <section><h3>Standards first</h3><p>Custom elements in the Light DOM, the History API, native <code>&lt;dialog&gt;</code> and Popover, <code>Intl</code>, <code>ElementInternals</code> for form controls.</p></section>
+  <section><h3>Your API is the contract</h3><p><code>xoong sync</code> reads OpenAPI and writes typed operations. Tables and forms are drawn from the schemas; validation comes from them too.</p></section>
+  <section><h3>Plain CSS</h3><p>Design tokens are custom properties in cascade layers. Your own CSS always wins, no utility classes, no CSS-in-JS.</p></section>
+  <section><h3>Strict CSP ready</h3><p><code>xoong build</code> writes static output with no inline code and no import map. This site is built that way.</p></section>
+  <section><h3>Accessible by default</h3><p>Tabs, menu, tooltip, combobox and the toolbar follow the WAI-ARIA patterns, with keyboard support and tests in three browsers.</p></section>
+  <section><h3>Made for AI and humans</h3><p>A short <code>llms.txt</code>, an MCP server, and <code>xoong check</code>, which catches mistakes in markup and tells you the fix.</p></section>
+</div>
+
+<h2>Where to go next</h2>
+<ul>
+  <li><a href="install.html">Install</a> xoong and start a project in a few commands.</li>
+  <li>Read <a href="how-it-works.html">how it works</a>, then the guides: <a href="data.html">data and tables</a>, <a href="forms.html">forms</a>, <a href="controls.html">controls</a>, <a href="richtext.html">rich text</a> and <a href="styling.html">styling</a>.</li>
+  <li>Open the <a href="demo.html">live demo</a>, a small admin screen.</li>
+</ul>
+      <nav class="pager" aria-label="Pages"><span></span><a rel="next" href="install.html"><small>Next</small><span>Install</span></a></nav>
+    </main>
+  </div>
   <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+  <xo-toast></xo-toast>
 </body>
 </html>

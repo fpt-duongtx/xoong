@@ -1,16 +1,75 @@
 {
   "openapi": "3.0.3",
-  "info": { "title": "Demo", "version": "1" },
+  "info": { "title": "People (demo)", "version": "1" },
   "paths": {
-    "/demo/people.json": {
+    "/api/people": {
       "get": {
         "operationId": "listPeople",
+        "parameters": [
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "offset", "in": "query", "schema": { "type": "integer" } },
+          { "name": "name", "in": "query", "schema": { "type": "string" } },
+          { "name": "role", "in": "query", "schema": { "type": "string" } }
+        ],
         "responses": {
-          "200": { "description": "ok", "content": { "application/json": { "schema": { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Person" } } } } } } },
+          "200": { "description": "ok", "content": { "application/json": { "schema": { "type": "object", "properties": { "items": { "type": "array", "items": { "$ref": "#/components/schemas/Person" } }, "total": { "type": "integer" } } } } } },
+          "default": { "description": "error" }
+        }
+      },
+      "post": {
+        "operationId": "createPerson",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PersonInput" } } } },
+        "responses": {
+          "201": { "description": "created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Person" } } } },
           "default": { "description": "error" }
         }
       }
+    },
+    "/api/people/{id}": {
+      "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+      "get": {
+        "operationId": "getPerson",
+        "responses": { "200": { "description": "ok", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Person" } } } }, "default": { "description": "error" } }
+      },
+      "put": {
+        "operationId": "updatePerson",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PersonInput" } } } },
+        "responses": { "200": { "description": "ok", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Person" } } } }, "default": { "description": "error" } }
+      },
+      "delete": {
+        "operationId": "deletePerson",
+        "responses": { "204": { "description": "deleted" }, "default": { "description": "error" } }
+      }
     }
   },
-  "components": { "schemas": { "Person": { "type": "object", "required": ["id", "name"], "properties": { "id": { "type": "integer" }, "name": { "type": "string" }, "email": { "type": "string" }, "role": { "type": "string", "enum": ["admin", "editor", "viewer"] } } } } }
+  "components": {
+    "schemas": {
+      "Person": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "role": { "type": "string", "enum": ["admin", "editor", "viewer"] },
+          "topics": { "type": "array", "items": { "type": "string", "enum": ["web", "data", "design", "ops"] } },
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "bio": { "type": "string" }
+        }
+      },
+      "PersonInput": {
+        "type": "object",
+        "required": ["name", "email"],
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 40 },
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string", "enum": ["admin", "editor", "viewer"] },
+          "topics": { "type": "array", "items": { "type": "string", "enum": ["web", "data", "design", "ops"] }, "x-xoong-widget": "xo-combobox" },
+          "keywords": { "type": "array", "items": { "type": "string" }, "x-xoong-widget": "xo-tags" },
+          "bio": { "type": "string", "x-xoong-widget": "xo-richtext" }
+        }
+      }
+    }
+  }
 }

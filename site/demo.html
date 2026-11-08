@@ -3,38 +3,147 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Demo · xoong</title>
-  <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <title>Live demo · xoong</title>
+  <meta name="description" content="A small admin screen built with xoong: a data table, an add dialog and bulk actions on a fake in-page API.">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-  <script type="module" src="src/main.js"></script>
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/site.css">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/demo.js"></script>
 </head>
 <body>
   <header class="top">
-    <strong>xoong</strong>
-    <nav aria-label="Main">
-      <a href="index.html">Home</a>
+    <a class="brand" href="index.html">xoong</a>
+    <span class="tag">standards-first web framework</span>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="index.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
-      <a href="demo.html" aria-current="page">Demo</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="controls.html">Controls</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Demo</h2>
+      <a href="demo.html" aria-current="page">Live demo</a>
     </nav>
-  </header>
-  <main>
-    <h1>Demo</h1>
-    <p>This table is a real <code>&lt;xo-table&gt;</code> reading <code>demo/people.json</code> through a typed operation. There is no server: GitHub Pages serves the file.</p>
-    <div class="demo">
-      <xo-view get="listPeople">
-        <p xo-if="$loading">Loading…</p>
-        <p xo-if="$error" role="alert">{$error.code}: {$error.detail}</p>
-        <xo-table columns="name,email:E-mail,role" sortable></xo-table>
-      </xo-view>
-    </div>
-    <h2>The markup</h2>
-    <pre><code>&lt;xo-view get="listPeople"&gt;
-  &lt;xo-table columns="name,email:E-mail,role" sortable&gt;&lt;/xo-table&gt;
-&lt;/xo-view&gt;</code></pre>
-  </main>
+    <main id="main">
+
+<h1>Live demo</h1>
+<p>A small people admin on the in-page API: sort, search, page, add someone, delete one or several. It is a table, a dialog with a generated form, and two buttons; there is no application code. Changes last until you reload.</p>
+<xo-tabs label="People admin" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <xo-view get="listPeople">
+      <p class="toolbar"><button xo-open="#add">Add person</button></p>
+      <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
+        <span slot="role" class="badge">{role}</span>
+        <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
+        <button slot="bulk" xo-click="deletePerson" xo-selected xo-confirm="Delete the ticked people?">Delete ticked</button>
+      </xo-table>
+    </xo-view>
+    <xo-dialog id="add">
+      <h2>Add person</h2>
+      <xo-view><xo-form op="createPerson" submit="Add"></xo-form></xo-view>
+      <button type="button" xo-close>Cancel</button>
+    </xo-dialog>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+  &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#add"</span>&gt;Add person&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role,topics:Topics"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
+    &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"role"</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"bulk"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-selected</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete the ticked people?"</span>&gt;Delete ticked&lt;/<span class="tok-t">button</span>&gt;
+  &lt;/<span class="tok-t">xo-table</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;
+&lt;<span class="tok-t">xo-dialog</span> <span class="tok-a">id</span>=<span class="tok-s">"add"</span>&gt;
+  &lt;<span class="tok-t">h2</span>&gt;Add person&lt;/<span class="tok-t">h2</span>&gt;
+  &lt;<span class="tok-t">xo-view</span>&gt;&lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add"</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Cancel&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-dialog</span>&gt;</code></pre></section>
+  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-c">// The demo pages: the data layer, the admin parts and the rich widgets, pointed at the in-page API.</span>
+<span class="tok-k">import</span> <span class="tok-s">'./api.js'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/ui'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/forms'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/controls'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/richtext'</span>;</code></pre></section>
+  <section xo-tab="api.js"><pre data-lang="js"><code><span class="tok-c">// A backend for the demos, in the page: GitHub Pages serves files only, so a function plays the API.</span>
+<span class="tok-c">// The data layer takes any `fetch` (configure({ fetch })), so everything on the demo pages goes through the same code path</span>
+<span class="tok-c">// as a real server: typed operations, caching, loading and error states. Data lives in memory: reload to start again.</span>
+<span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };
+
+<span class="tok-k">const</span> people = [
+  { id: <span class="tok-n">1</span>, name: <span class="tok-s">'Ada Lovelace'</span>, email: <span class="tok-s">'ada@example.org'</span>, role: <span class="tok-s">'admin'</span>, topics: [<span class="tok-s">'web'</span>, <span class="tok-s">'data'</span>], keywords: [<span class="tok-s">'analysis'</span>, <span class="tok-s">'engine'</span>], bio: <span class="tok-s">'&lt;p&gt;Wrote the first program for the &lt;strong&gt;Analytical Engine&lt;/strong&gt;.&lt;/p&gt;'</span> },
+  { id: <span class="tok-n">2</span>, name: <span class="tok-s">'Grace Hopper'</span>, email: <span class="tok-s">'grace@example.org'</span>, role: <span class="tok-s">'editor'</span>, topics: [<span class="tok-s">'ops'</span>], keywords: [<span class="tok-s">'compiler'</span>], bio: <span class="tok-s">'&lt;p&gt;Built the first compiler.&lt;/p&gt;'</span> },
+  { id: <span class="tok-n">3</span>, name: <span class="tok-s">'Edsger Dijkstra'</span>, email: <span class="tok-s">'edsger@example.org'</span>, role: <span class="tok-s">'viewer'</span>, topics: [<span class="tok-s">'data'</span>], keywords: [<span class="tok-s">'graphs'</span>, <span class="tok-s">'semaphores'</span>], bio: <span class="tok-s">''</span> },
+  { id: <span class="tok-n">4</span>, name: <span class="tok-s">'Barbara Liskov'</span>, email: <span class="tok-s">'barbara@example.org'</span>, role: <span class="tok-s">'editor'</span>, topics: [<span class="tok-s">'design'</span>, <span class="tok-s">'data'</span>], keywords: [<span class="tok-s">'abstraction'</span>], bio: <span class="tok-s">''</span> },
+  { id: <span class="tok-n">5</span>, name: <span class="tok-s">'Donald Knuth'</span>, email: <span class="tok-s">'donald@example.org'</span>, role: <span class="tok-s">'viewer'</span>, topics: [<span class="tok-s">'data'</span>], keywords: [<span class="tok-s">'literate programming'</span>], bio: <span class="tok-s">''</span> },
+  { id: <span class="tok-n">6</span>, name: <span class="tok-s">'Margaret Hamilton'</span>, email: <span class="tok-s">'margaret@example.org'</span>, role: <span class="tok-s">'admin'</span>, topics: [<span class="tok-s">'ops'</span>], keywords: [<span class="tok-s">'software engineering'</span>], bio: <span class="tok-s">''</span> },
+  { id: <span class="tok-n">7</span>, name: <span class="tok-s">'Tim Berners-Lee'</span>, email: <span class="tok-s">'tim@example.org'</span>, role: <span class="tok-s">'editor'</span>, topics: [<span class="tok-s">'web'</span>], keywords: [<span class="tok-s">'http'</span>, <span class="tok-s">'html'</span>], bio: <span class="tok-s">''</span> },
+  { id: <span class="tok-n">8</span>, name: <span class="tok-s">'Linus Torvalds'</span>, email: <span class="tok-s">'linus@example.org'</span>, role: <span class="tok-s">'viewer'</span>, topics: [<span class="tok-s">'ops'</span>], keywords: [<span class="tok-s">'kernel'</span>], bio: <span class="tok-s">''</span> },
+];
+<span class="tok-k">let</span> nextId = people.length + <span class="tok-n">1</span>;
+
+<span class="tok-k">const</span> json = (status, body) =&gt; <span class="tok-k">new</span> Response(body === <span class="tok-k">undefined</span> ? <span class="tok-k">null</span> : JSON.stringify(body), { status, headers: { <span class="tok-s">'content-type'</span>: <span class="tok-s">'application/json'</span> } });
+<span class="tok-k">const</span> problem = (status, code, message, fields) =&gt; json(status, { error: { code, message, ...(fields ? { fields } : {}) } });
+<span class="tok-k">const</span> clean = (b) =&gt; ({
+  name: String(b.name ?? <span class="tok-s">''</span>).trim(), email: String(b.email ?? <span class="tok-s">''</span>).trim(), role: b.role || <span class="tok-s">'viewer'</span>,
+  topics: Array.isArray(b.topics) ? b.topics : [], keywords: Array.isArray(b.keywords) ? b.keywords : [], bio: b.bio ?? <span class="tok-s">''</span>,
+});
+
+<span class="tok-k">function</span> list(q) {
+  <span class="tok-k">let</span> rows = people.filter((p) =&gt; (!q.get(<span class="tok-s">'name'</span>) || p.name.toLowerCase().includes(q.get(<span class="tok-s">'name'</span>).toLowerCase())) &amp;&amp; (!q.get(<span class="tok-s">'role'</span>) || p.role === q.get(<span class="tok-s">'role'</span>)));
+  <span class="tok-k">const</span> sort = q.get(<span class="tok-s">'sort'</span>);
+  <span class="tok-k">if</span> (sort) {
+    <span class="tok-k">const</span> key = sort.replace(/^-/, <span class="tok-s">''</span>), dir = sort.startsWith(<span class="tok-s">'-'</span>) ? -<span class="tok-n">1</span> : <span class="tok-n">1</span>;
+    rows = [...rows].sort((a, b) =&gt; (<span class="tok-k">typeof</span> a[key] === <span class="tok-s">'number'</span> ? a[key] - b[key] : String(a[key] ?? <span class="tok-s">''</span>).localeCompare(String(b[key] ?? <span class="tok-s">''</span>))) * dir);
+  }
+  <span class="tok-k">const</span> offset = Number(q.get(<span class="tok-s">'offset'</span>) || <span class="tok-n">0</span>), limit = Number(q.get(<span class="tok-s">'limit'</span>) || rows.length);
+  <span class="tok-k">return</span> json(<span class="tok-n">200</span>, { items: rows.slice(offset, offset + limit), total: rows.length });
+}
+
+<span class="tok-k">async</span> <span class="tok-k">function</span> handle(url, init = {}) {
+  <span class="tok-k">const</span> { pathname, searchParams } = <span class="tok-k">new</span> URL(url, location.origin);
+  <span class="tok-k">const</span> method = (init.method || <span class="tok-s">'GET'</span>).toUpperCase();
+  <span class="tok-k">await</span> <span class="tok-k">new</span> Promise((r) =&gt; setTimeout(r, <span class="tok-n">120</span>)); <span class="tok-c">// a little latency, so loading states are visible</span>
+  <span class="tok-k">const</span> m = pathname.match(/^\/api\/people(?:\/(\d+))?$/);
+  <span class="tok-k">if</span> (!m) <span class="tok-k">return</span> problem(<span class="tok-n">404</span>, <span class="tok-s">'not_found'</span>, <span class="tok-s">'No such route'</span>);
+  <span class="tok-k">const</span> id = m[<span class="tok-n">1</span>] &amp;&amp; Number(m[<span class="tok-n">1</span>]);
+  <span class="tok-k">const</span> found = id ? people.find((p) =&gt; p.id === id) : <span class="tok-k">null</span>;
+  <span class="tok-k">if</span> (!id &amp;&amp; method === <span class="tok-s">'GET'</span>) <span class="tok-k">return</span> list(searchParams);
+  <span class="tok-k">if</span> (!id &amp;&amp; method === <span class="tok-s">'POST'</span>) {
+    <span class="tok-k">const</span> body = clean(JSON.parse(init.body));
+    <span class="tok-k">if</span> (people.some((p) =&gt; p.email === body.email)) <span class="tok-k">return</span> problem(<span class="tok-n">409</span>, <span class="tok-s">'email_taken'</span>, <span class="tok-s">`${body.email} is already used. Try another address.`</span>);
+    <span class="tok-k">const</span> person = { id: nextId++, ...body };
+    people.push(person);
+    <span class="tok-k">return</span> json(<span class="tok-n">201</span>, person);
+  }
+  <span class="tok-k">if</span> (!found) <span class="tok-k">return</span> problem(<span class="tok-n">404</span>, <span class="tok-s">'not_found'</span>, <span class="tok-s">`Person ${id} does not exist`</span>);
+  <span class="tok-k">if</span> (method === <span class="tok-s">'GET'</span>) <span class="tok-k">return</span> json(<span class="tok-n">200</span>, found);
+  <span class="tok-k">if</span> (method === <span class="tok-s">'PUT'</span>) {
+    <span class="tok-k">const</span> body = clean({ ...found, ...JSON.parse(init.body) });
+    <span class="tok-k">if</span> (people.some((p) =&gt; p.id !== id &amp;&amp; p.email === body.email)) <span class="tok-k">return</span> problem(<span class="tok-n">409</span>, <span class="tok-s">'email_taken'</span>, <span class="tok-s">`${body.email} is already used. Try another address.`</span>);
+    Object.assign(found, body);
+    <span class="tok-k">return</span> json(<span class="tok-n">200</span>, found);
+  }
+  <span class="tok-k">if</span> (method === <span class="tok-s">'DELETE'</span>) { people.splice(people.indexOf(found), <span class="tok-n">1</span>); <span class="tok-k">return</span> json(<span class="tok-n">204</span>); }
+  <span class="tok-k">return</span> problem(<span class="tok-n">405</span>, <span class="tok-s">'method_not_allowed'</span>, <span class="tok-s">'Not allowed'</span>);
+}
+
+configure({ api: operations, baseUrl: <span class="tok-s">''</span>, fetch: handle });</code></pre></section>
+</xo-tabs>
+<p>The <em>api.js</em> tab is the whole backend of this page. Replace <code>fetch: handle</code> with a <code>baseUrl</code> and the same markup talks to a real server.</p>
+      <nav class="pager" aria-label="Pages"><a rel="prev" href="styling.html"><small>Previous</small><span>Styling</span></a><span></span></nav>
+    </main>
+  </div>
   <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+  <xo-toast></xo-toast>
 </body>
 </html>

@@ -64,11 +64,13 @@ class XoTabs extends XoElement {
   #build() {
     if (this.#list || !this.isConnected) return;
     const id = `xo-tabs-${++counter}`;
+    this.querySelector(':scope > [role="tablist"]')?.remove(); // a copy of a tabs element that was already built (a view clones its content): start over
     const panels = /** @type {HTMLElement[]} */ ([...this.children].filter((c) => c.hasAttribute('xo-tab')));
     const list = document.createElement('div');
     list.setAttribute('role', 'tablist');
     if (this.label) list.setAttribute('aria-label', this.label);
     this.#items = panels.map((panel, i) => {
+      if ('xoGenId' in panel.dataset) { panel.removeAttribute('id'); delete panel.dataset.xoGenId; } // an id made by an earlier build is not a key
       const key = panel.id || String(i); // the section's id when it has one, else its position
       const tab = document.createElement('button');
       tab.type = 'button';
@@ -76,7 +78,7 @@ class XoTabs extends XoElement {
       tab.setAttribute('role', 'tab');
       tab.dataset.tab = key;
       tab.textContent = panel.getAttribute('xo-tab') ?? key;
-      if (!panel.id) panel.id = `${id}-panel-${i}`; // for aria-controls only: the key stays the position
+      if (!panel.id) { panel.id = `${id}-panel-${i}`; panel.dataset.xoGenId = ''; } // for aria-controls only: the key stays the position
       tab.setAttribute('aria-controls', panel.id);
       panel.setAttribute('role', 'tabpanel');
       panel.setAttribute('aria-labelledby', tab.id);

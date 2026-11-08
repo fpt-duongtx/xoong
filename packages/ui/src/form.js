@@ -108,7 +108,7 @@ defineTemplate('xo-form', (el, { client }) => {
   form.className = 'xo-form';
   if (op.bodySchema) { // the schema-driven generator: nested objects, arrays, unions, hints
     const submit = el.getAttribute('submit');
-    form.innerHTML = fields(op.bodySchema, '', 0) + (submit ? `<button>${esc(submit)}</button>` : '<button xo-t="xoong.form.save">Save</button>');
+    form.innerHTML = fields(op.bodySchema, '', 0) + (submit ? `<button class="xo-submit">${esc(submit)}</button>` : '<button class="xo-submit" xo-t="xoong.form.save">Save</button>');
     return form;
   }
   const flat = op.bodyFields ?? [];
@@ -141,6 +141,7 @@ defineTemplate('xo-form', (el, { client }) => {
     form.append(wrap);
   }
   const button = document.createElement('button');
+  button.className = 'xo-submit';
   button.textContent = el.getAttribute('submit') || 'Save';
   form.append(button);
   return form;

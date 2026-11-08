@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "site": "node tools/site.mjs",
     "lint": "oxlint -A all -D eslint/no-shadow packages/*/src",
     "test": "vitest run",
     "test:watch": "vitest",

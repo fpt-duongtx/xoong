@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rich text · xoong</title>
+  <meta name="description" content="A small rich text editor for forms: sanitised HTML value, accessible toolbar, two sizes, an expand dialog.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/site.css">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/demo.js"></script>
+  <script type="module" src="src/page-richtext.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html">xoong</a>
+    <span class="tag">standards-first web framework</span>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="index.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="controls.html">Controls</a>
+      <a href="richtext.html" aria-current="page">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main id="main">
+
+<h1>Rich text</h1>
+<p class="lead"><code>&lt;xo-richtext&gt;</code> is a <code>contenteditable</code> area with an accessible toolbar, and its value is <strong>sanitised HTML</strong>. It covers what most admin forms need and hands the rest (media libraries, embeds, custom blocks) to your app.</p>
+<xo-tabs label="Use" class="code-tabs">
+  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-k">import</span> <span class="tok-s">'@xoong/richtext'</span>;</code></pre></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/richtext/richtext.css"</span>&gt;
+&lt;<span class="tok-t">xo-richtext</span> <span class="tok-a">name</span>=<span class="tok-s">"body"</span> <span class="tok-a">label</span>=<span class="tok-s">"Body"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Write something"</span> <span class="tok-a">media</span>&gt;&lt;/<span class="tok-t">xo-richtext</span>&gt;</code></pre></section>
+</xo-tabs>
+
+<h2>Try it</h2>
+<p>Drag the handle in the corner of the box to change its width: under 580px the editor switches to the <strong>compact</strong> toolbar and the rest of the tools move into a <em>More</em> menu. The toolbar is chosen by the editor's own width, not the screen's, so an editor in a narrow side panel gets the compact one on a wide screen. Click the image tool to see the media hook, and paste something from a web page: only what the editor allows is kept.</p>
+<xo-tabs label="xo-richtext" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <div class="resizable">
+      <xo-richtext id="demo-editor" name="body" label="Body" placeholder="Write something" media></xo-richtext>
+    </div>
+    <p class="toolbar"><button id="expand" type="button">Expand</button><button id="reset" type="button">Reset</button></p>
+    <h3>Value</h3>
+    <pre class="value"><code id="rt-out"></code></pre>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"resizable"</span>&gt;
+  &lt;<span class="tok-t">xo-richtext</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-editor"</span> <span class="tok-a">name</span>=<span class="tok-s">"body"</span> <span class="tok-a">label</span>=<span class="tok-s">"Body"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Write something"</span> <span class="tok-a">media</span>&gt;&lt;/<span class="tok-t">xo-richtext</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;
+&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">id</span>=<span class="tok-s">"expand"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Expand&lt;/<span class="tok-t">button</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">id</span>=<span class="tok-s">"reset"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Reset&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
+&lt;<span class="tok-t">h3</span>&gt;Value&lt;/<span class="tok-t">h3</span>&gt;
+&lt;<span class="tok-t">pre</span> <span class="tok-a">class</span>=<span class="tok-s">"value"</span>&gt;&lt;<span class="tok-t">code</span> <span class="tok-a">id</span>=<span class="tok-s">"rt-out"</span>&gt;&lt;/<span class="tok-t">code</span>&gt;&lt;/<span class="tok-t">pre</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The rich text page: a start value, the media hook and a live view of the sanitised value.</span>
+<span class="tok-k">const</span> editor = document.querySelector(<span class="tok-s">'#demo-editor'</span>);
+<span class="tok-k">const</span> out = document.querySelector(<span class="tok-s">'#rt-out'</span>);
+<span class="tok-k">const</span> START = <span class="tok-s">'&lt;h2&gt;Release notes&lt;/h2&gt;&lt;p&gt;Write &lt;strong&gt;bold&lt;/strong&gt;, &lt;em&gt;italic&lt;/em&gt; and &lt;u&gt;underlined&lt;/u&gt; text, add a &lt;a href="https://example.org"&gt;link&lt;/a&gt; or a list:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;one&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;'</span>;
+
+<span class="tok-k">const</span> show = () =&gt; { out.textContent = editor.value; };
+customElements.whenDefined(<span class="tok-s">'xo-richtext'</span>).then(() =&gt; {
+  editor.value = START;
+  show();
+});
+editor.addEventListener(<span class="tok-s">'input'</span>, show);
+
+<span class="tok-c">// The image tool asks the app: open your own library, then call insert() now or later.</span>
+editor.addEventListener(<span class="tok-s">'xo-pick-media'</span>, (event) =&gt; {
+  event.preventDefault();
+  <span class="tok-k">const</span> src = <span class="tok-k">new</span> URL(<span class="tok-s">'../img/landscape.svg'</span>, <span class="tok-k">import</span>.meta.url).pathname;
+  event.detail.insert({ src, alt: <span class="tok-s">'A landscape'</span> });
+});
+
+document.querySelector(<span class="tok-s">'#expand'</span>).addEventListener(<span class="tok-s">'click'</span>, () =&gt; editor.expand());
+document.querySelector(<span class="tok-s">'#reset'</span>).addEventListener(<span class="tok-s">'click'</span>, () =&gt; { editor.value = START; show(); });</code></pre></section>
+</xo-tabs>
+
+<h2>What the value may contain</h2>
+<p><code>sanitizeHtml()</code> runs on every input, paste, drop and <code>value</code> set. Everything else is unwrapped (its text stays); scripts, styles, frames and the like are removed with their content, and no attribute outside this table survives (no <code>style</code>, <code>class</code>, <code>on*</code>).</p>
+<table class="props">
+<thead><tr><th>Allowed</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>p</code> <code>h2</code> <code>h3</code> <code>blockquote</code> <code>ul</code> <code>ol</code> <code>li</code> <code>br</code></td><td><code>h1</code> becomes <code>h2</code>, <code>h4</code> to <code>h6</code> become <code>h3</code>, <code>div</code> becomes <code>p</code></td></tr>
+<tr><td><code>strong</code> <code>em</code> <code>u</code></td><td><code>b</code> and <code>i</code> are mapped</td></tr>
+<tr><td><code>a</code> with <code>href</code></td><td>Only <code>http</code>, <code>https</code>, <code>mailto</code>, <code>tel</code>; <code>rel="noopener noreferrer"</code> is added</td></tr>
+<tr><td><code>img</code> with <code>src</code>, <code>alt</code></td><td><code>src</code> must be http(s) or a relative URL; no <code>data:</code>, no <code>javascript:</code></td></tr>
+</tbody></table>
+<aside class="callout note">The client is never a trust boundary. The same function is exported as <code>@xoong/richtext/sanitize</code> so your <strong>server</strong> can sanitise on save as well.</aside>
+
+<h2>Media</h2>
+<p>The image tool fires a cancelable <code>xo-pick-media</code> event. Open your own library, then call <code>detail.insert({ src, alt })</code> now or later. With the caret in a heading the image goes in a paragraph after it, and nothing is written inline, so it works under a strict CSP.</p>
+
+<h2>Keys and sizes</h2>
+<ul>
+  <li><strong>Toolbar:</strong> one tab stop; Left, Right, Home and End move inside it. Ctrl or Cmd with B, I, U and K work in the editor.</li>
+  <li><strong>Sizes:</strong> <code>toolbar="full"</code> or <code>"compact"</code> forces one; the default follows the editor's width.</li>
+  <li><strong>Expand:</strong> <code>el.expand()</code> moves the same editor, with its caret and undo history, into a dialog; Done and Escape close it. The host places its own Expand button.</li>
+  <li><strong>Props:</strong> <code>name</code>, <code>label</code>, <code>placeholder</code>, <code>required</code>, <code>readonly</code>, <code>disabled</code>, <code>maxlength</code>, <code>tools="bold italic link"</code>.</li>
+</ul>
+      <nav class="pager" aria-label="Pages"><a rel="prev" href="controls.html"><small>Previous</small><span>Controls</span></a><a rel="next" href="styling.html"><small>Next</small><span>Styling</span></a></nav>
+    </main>
+  </div>
+  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+  <xo-toast></xo-toast>
+</body>
+</html>

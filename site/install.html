@@ -4,38 +4,94 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Install · xoong</title>
-  <meta name="description" content="xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta name="description" content="Install xoong from release files, generate typed operations from OpenAPI and run a project.">
   <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="src/site.css">
-  
+  <script type="module" src="src/site.js"></script>
 </head>
 <body>
   <header class="top">
-    <strong>xoong</strong>
-    <nav aria-label="Main">
-      <a href="index.html">Home</a>
+    <a class="brand" href="index.html">xoong</a>
+    <span class="tag">standards-first web framework</span>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="index.html">Overview</a>
       <a href="install.html" aria-current="page">Install</a>
       <a href="how-it-works.html">How it works</a>
-      <a href="demo.html">Demo</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="controls.html">Controls</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
     </nav>
-  </header>
-  <main>
-    <h1>Install</h1>
-    <p class="note">xoong is not on npm yet. Each version is a GitHub Release with one tarball per package. Until it goes public the repository is private, so you need <code>gh</code> signed in to an account that can read it.</p>
-    <h2>1. Download a release</h2>
-    <pre><code>gh release download v0.0.14 -R fpt-duongtx/xoong -D vendor/xoong</code></pre>
-    <h2>2. Point your <code>package.json</code> at the tarballs</h2>
-    <p>Copy <code>dependencies</code> (what you import) and all <code>overrides</code> from <code>vendor/xoong/consume.json</code>, then run <code>npm install</code>.</p>
-    <pre><code>{
-  "dependencies": { "xoong": "file:./vendor/xoong/xoong-0.0.14.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.14.tgz" },
-  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.14.tgz" }
-}</code></pre>
-    <h2>3. Generate typed operations and run</h2>
-    <pre><code>npx xoong sync openapi.json      # writes .xoong/operations.json and api.d.ts
-npx xoong dev                    # dev server with an API proxy
-npx xoong build --out dist       # static output for strict CSP hosting</code></pre>
-    <p>Node 22.12 or newer. Full notes: <code>docs/consuming.md</code> in the repository.</p>
-  </main>
+    <main id="main">
+
+<h1>Install</h1>
+<aside class="callout note">xoong is not on npm yet. Each version is a GitHub Release with one tarball per package. Until the repository is public you need <code>gh</code> signed in to an account that can read it.</aside>
+<p>You need Node 22.12 or newer. The libraries themselves have no runtime dependencies; Node is only for the tools (<code>xoong sync</code>, <code>dev</code>, <code>build</code>).</p>
+
+<h2>1. Download a release</h2>
+<xo-tabs label="Download" class="code-tabs">
+  <section xo-tab="Terminal"><pre data-lang="bash"><code>gh release download v0.0.14 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
+</xo-tabs>
+<p>The folder holds one <code>.tgz</code> per package and a <code>consume.json</code> that says what to copy into your project.</p>
+
+<h2>2. Point your <code>package.json</code> at the tarballs</h2>
+<p>Copy <code>dependencies</code> (what you import) and every entry of <code>overrides</code> from <code>consume.json</code>, then run <code>npm install</code>.</p>
+<xo-tabs label="package.json" class="code-tabs">
+  <section xo-tab="package.json"><pre data-lang="json"><code>{
+  <span class="tok-a">"dependencies"</span>: {
+    <span class="tok-a">"xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-0.0.14.tgz"</span>,
+    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.14.tgz"</span>
+  },
+  <span class="tok-a">"overrides"</span>: {
+    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.14.tgz"</span>
+  }
+}</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash"><code>npm install</code></pre></section>
+</xo-tabs>
+
+<h2>3. Generate typed operations and run</h2>
+<p>Give <code>xoong sync</code> your OpenAPI document (a file or a URL). It writes <code>.xoong/operations.json</code>, which the data layer reads, and <code>api.d.ts</code> for TypeScript.</p>
+<xo-tabs label="Commands" class="code-tabs">
+  <section xo-tab="Terminal"><pre data-lang="bash"><code>npx xoong sync openapi.json      <span class="tok-c"># writes .xoong/operations.json and api.d.ts</span>
+npx xoong dev                    <span class="tok-c"># static server with an API proxy</span>
+npx xoong build <span class="tok-a">--out</span> dist       <span class="tok-c"># static output for strict-CSP hosting</span></code></pre></section>
+  <section xo-tab="xoong.config.json"><pre data-lang="json"><code>{
+  <span class="tok-a">"port"</span>: <span class="tok-n">5173</span>,
+  <span class="tok-a">"proxy"</span>: { <span class="tok-a">"/api"</span>: <span class="tok-s">"http://localhost:8080"</span> }
+}</code></pre></section>
+</xo-tabs>
+
+<h2>4. A first screen</h2>
+<p>Or let <code>xoong new</code> do steps 3 and 4: <code>npx xoong new my-app --spec openapi.json</code> creates a project with a first list screen.</p>
+<xo-tabs label="First screen" class="code-tabs">
+  <section xo-tab="index.html"><pre data-lang="html"><code>&lt;!doctype html&gt;
+&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/ui/src/xoong.css"</span>&gt;
+&lt;<span class="tok-t">script</span> <span class="tok-a">type</span>=<span class="tok-s">"module"</span> <span class="tok-a">src</span>=<span class="tok-s">"main.js"</span>&gt;&lt;/<span class="tok-t">script</span>&gt;
+
+&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+  &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$loading"</span>&gt;Loading…&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role"</span> <span class="tok-a">sortable</span>&gt;&lt;/<span class="tok-t">xo-table</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/ui'</span>;
+<span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };
+
+configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</code></pre></section>
+</xo-tabs>
+<p>Run <code>npx xoong check index.html</code> to lint the markup against your API; each message says how to fix it.</p>
+      <nav class="pager" aria-label="Pages"><a rel="prev" href="index.html"><small>Previous</small><span>Overview</span></a><a rel="next" href="how-it-works.html"><small>Next</small><span>How it works</span></a></nav>
+    </main>
+  </div>
   <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
 </body>
 </html>

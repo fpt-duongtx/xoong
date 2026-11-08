@@ -147,4 +147,9 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
     const css = readFileSync('packages/ui/src/xoong.css', 'utf8');
     for (const name of CSS_CLASSES) expect(css, `xoong.css has no .${name}`).toContain(`.${name}`);
   });
+
+  it('the documentation pages in site/ are what tools/site/pages.mjs generates (run: npm run site)', async () => {
+    const { render } = await import('../tools/site.mjs');
+    for (const { file, html } of render()) expect(readFileSync(`site/${file}`, 'utf8'), `site/${file} is out of date`).toBe(html);
+  });
 });
