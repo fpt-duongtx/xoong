@@ -1,0 +1,77 @@
+/*
+ * Mist tokens: the Rainlet design system's token block, VERBATIM from rainlet/admin-mist.css (owner: the Rainlet Designer, source of truth:
+ * fpt-duongtx/bloomoz docs/design/admin-mist/admin-mist.css). Do not edit the light values here; change them upstream and re-copy.
+ * Below it, the additions xoong needs (marked "xoong"): a dark scheme derived and approved by the Mist owner, and --primary.
+ * Load this file FIRST, before brand.css.
+ */
+:root {
+  --text: #1f2a33;
+  --text-2: #3f4d5a;
+  --text-3: #5a6877;
+  --bg: #f5f7f8;
+  --card: #fff;
+  --sunken: #edf1f3;
+  --line: #e2e8ec;
+  --line-strong: #7e8c99;
+  --scroll-thumb: #b4bfc9;
+  --scroll-thumb-hover: #7e8c99;
+  --scroll-thumb-active: #5a6877;
+
+  --accent: #0b63ce;
+  --accent-strong: #084c9e;
+  --accent-tint: #e8f1fc;
+  --accent-tint-2: #d0e3f9;
+
+  --ok: #1d7648;
+  --ok-bg: #e3f4ea;
+  --info: var(--accent-strong);
+  --info-bg: var(--accent-tint);
+  --warn: #8a5a00;
+  --warn-bg: #fbf0d5;
+  --danger: #b3322b;
+  --danger-bg: #fce8e6;
+
+  --f-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --f-brand: 'Be Vietnam Pro', var(--f-body);
+  --f-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --r: 8px;
+  --r-lg: 12px;
+  --h: 40px;
+  --shadow-sm: 0 1px 2px rgb(31 42 51 / 6%);
+  --shadow-float: 0 12px 32px rgb(31 42 51 / 14%), 0 2px 6px rgb(31 42 51 / 8%);
+}
+
+/* xoong: Mist dark (docs variant, derived; contrast measured by the Mist owner: text 14.9/12.7, text-2 9.6/8.2, text-3 6.5/5.5, accent 7.0/6.0) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --text: #e8eef2; --text-2: #b4c2cd; --text-3: #8fa0ad;
+    --bg: #121b22; --card: #1b2933; --sunken: #22313c;
+    --line: #2a3a46; --line-strong: #6b7d8a;
+    --scroll-thumb: #4a5b68; --scroll-thumb-hover: #6b7d8a; --scroll-thumb-active: #8fa0ad;
+    --accent: #6aa8f0; --accent-strong: #9cc7f6; --accent-tint: #16293b; --accent-tint-2: #1f3a56;
+    --ok: #5fc88f; --ok-bg: #14301f; --warn: #e0b04a; --warn-bg: #3a2f12; --danger: #f08a82; --danger-bg: #3a1c1a;
+    --shadow-sm: none; --shadow-float: 0 12px 32px rgb(0 0 0 / 40%), 0 2px 6px rgb(0 0 0 / 30%);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --text: #e8eef2; --text-2: #b4c2cd; --text-3: #8fa0ad;
+  --bg: #121b22; --card: #1b2933; --sunken: #22313c;
+  --line: #2a3a46; --line-strong: #6b7d8a;
+  --accent: #6aa8f0; --accent-strong: #9cc7f6; --accent-tint: #16293b; --accent-tint-2: #1f3a56;
+  --ok: #5fc88f; --ok-bg: #14301f; --warn: #e0b04a; --warn-bg: #3a2f12; --danger: #f08a82; --danger-bg: #3a1c1a;
+  --shadow-sm: none; --shadow-float: 0 12px 32px rgb(0 0 0 / 40%), 0 2px 6px rgb(0 0 0 / 30%);
+}
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+/* xoong: the fill of the primary button stays the Mist blue in dark (white text on it); --accent is the lighter blue for links, focus and text */
+:root { --primary: #0b63ce; --primary-text: #fff; }

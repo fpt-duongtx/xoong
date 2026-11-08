@@ -12,8 +12,8 @@ import { focusStates, weak } from '../../../tools/focus.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'more-controls', 'own-control', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand'];
-const DOCS = PAGES.filter((n) => !['index', 'brand'].includes(n)); // the pages with the side navigation
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'more-controls', 'own-control', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand', 'live-admin', 'live-landing'];
+const DOCS = PAGES.filter((n) => !['index', 'brand', 'live-admin', 'live-landing'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
 let errors = [];
@@ -55,11 +55,16 @@ describe('documentation site', () => {
     for (const name of PAGES) {
       await open(name);
       expect(await page.title(), name).toContain('xoong');
+      if (['live-admin', 'live-landing'].includes(name)) { // whole apps with their own layout: they must load without a CSP violation, a failed request or an error
+        expect(await page.$$('main'), name).not.toHaveLength(0);
+        clean();
+        continue;
+      }
       expect(await page.$eval('header.top .wrap', (el) => getComputedStyle(el).display), name).toBe('flex'); // site.css applied
       expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
       expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length : 0);
       expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
-      if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit', 'theme-builder', 'brand'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
+      if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit', 'theme-builder', 'brand', 'live-admin', 'live-landing'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
     }
   }, 240000);
@@ -279,7 +284,7 @@ describe('documentation site', () => {
     for (const name of PAGES) {
       await small.goto(`${base}${name}.html`);
       await small.waitForLoadState('networkidle');
-      const m = await small.evaluate(() => ({ scroll: document.documentElement.scrollWidth, width: innerWidth, header: document.querySelector('header.top').getBoundingClientRect().height }));
+      const m = await small.evaluate(() => ({ scroll: document.documentElement.scrollWidth, width: innerWidth, header: document.querySelector('header.top')?.getBoundingClientRect().height ?? 0 })); // the live demo pages are whole apps with their own header
       expect(m.scroll, `${name} scrolls sideways`).toBeLessThanOrEqual(m.width);
       expect(m.header, `${name} header`).toBeLessThanOrEqual(110);
     }

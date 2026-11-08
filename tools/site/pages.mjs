@@ -179,7 +179,7 @@ ${example({
 <ul>
   <li><a href="install.html">Install</a> xoong and start a project in a few commands.</li>
   <li>Read <a href="how-it-works.html">how it works</a>, then the guides: <a href="data.html">data and tables</a>, <a href="forms.html">forms</a>, <a href="controls.html">controls</a>, <a href="richtext.html">rich text</a> and <a href="styling.html">styling</a>.</li>
-  <li>Open the <a href="demo.html">live demo</a>, a small admin screen.</li>
+  <li>Open the <a href="demo.html">live demo</a>, a small admin screen, or the full pages: an <a href="live-admin.html">admin</a> and a <a href="live-landing.html">landing page</a>.</li>
 </ul>`,
   },
   // ------------------------------------------------------------------------------------------------------------------------------
@@ -1019,6 +1019,7 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
     description: 'A small admin screen built with xoong: a data table, an add dialog and bulk actions on a fake in-page API.',
     body: `
 <h1>Live demo</h1>
+<p>Two whole pages built only from the Mist kit and the xoong controls, to try them in context: an <a href="live-admin.html">admin</a> (dashboard, articles table with sort, select and bulk actions, settings, command palette on Ctrl or Cmd plus K, notifications) and a <a href="live-landing.html">landing page</a> (hero, pricing with a monthly and yearly switch, testimonials, FAQ, sign-up with validation, cookie consent). The numbers in them are made up.</p>
 <p>A small people admin on the in-page API: sort, search, page, add someone, delete one or several. It is a table, a dialog with a generated form, and two buttons; there is no application code. Changes last until you reload.</p>
 ${example({
   label: 'People admin',

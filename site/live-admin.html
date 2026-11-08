@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin demo · xoong</title>
+<meta name="description" content="A live admin demo built only from the xoong Mist kit: dashboard, articles table, settings."><link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="live-kit/css/fonts.css"><link rel="stylesheet" href="live-kit/css/mist-tokens.css"><link rel="stylesheet" href="live-kit/css/brand.css"><link rel="stylesheet" href="live-kit/css/xo-map.css"><link rel="stylesheet" href="live-kit/css/controls.css"><link rel="stylesheet" href="live-kit/css/icons.css"><link rel="stylesheet" href="live-kit/css/components.css"><link rel="stylesheet" href="live-kit/css/states.css"><link rel="stylesheet" href="live-kit/css/controls-new.css"><link rel="stylesheet" href="live-kit/css/mist.css"><link rel="stylesheet" href="live-kit/css/admin-shell.css"><link rel="stylesheet" href="live-kit/css/demo-pages.css"><link rel="stylesheet" href="live-kit/css/live-site.css">
+</head>
+<body class="admin-demo">
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" class="sprite">
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
+  <symbol id="i-heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+  <symbol id="i-paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
+  <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+  <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
+  <symbol id="i-underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
+  <symbol id="i-list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
+  <symbol id="i-list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
+  <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
+  <symbol id="i-success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A10 10 0 0 1 12 6c6 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.6 6.6A17 17 0 0 0 2 12s4 6 10 6a9.7 9.7 0 0 0 4-.9M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m4 11 8-7 8 7M6 10v10h12V10"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V10m7 10V4m7 16v-7"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.6-4.8 2.6 1-5.4-4-3.8 5.4-.7z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 5 6v5.5c0 4.2 2.8 7.4 7 9 4.2-1.6 7-4.8 7-9V6z"/><path d="m9 12 2.2 2.2L15 10"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5m-5 5 5-5 5 5M5 20h14"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c0-3.2 2.4-5 5.5-5s5.5 1.8 5.5 5M16 6a3 3 0 0 1 0 5.8M17.5 14.3c2 .6 3 2.2 3 4.7"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+</svg>
+
+<a class="xo-skip" href="#main">Skip to content</a>
+<div class="xo-app">
+  <aside class="xo-side" aria-label="Sidebar"><div class="xo-side__in"><button class="xo-ws" type="button" ><span class="xo-ws__mark" aria-hidden="true">A</span><span class="grow"><span class="xo-ws__name">Acme Studio</span><span class="xo-ws__env">Production</span></span><span class="xo-visually-hidden">Switch project</span><svg class="icon sm" aria-hidden="true"><use href="#i-sort"/></svg></button>
+    <nav aria-label="Admin" class="xo-side__nav xo-scroll" tabindex="0"><ul class="xo-nav">
+  <li><a class="xo-nav__link" href="#dashboard" data-go="dashboard" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span>Dashboard</span></a></li>
+  <li><div class="xo-nav__label">Content</div><ul class="xo-nav">
+    <li><a class="xo-nav__link" href="#articles" data-go="articles"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg><span>Articles</span><span class="xo-count" data-count="All">20</span></a></li>
+    <li><a class="xo-nav__link" href="#articles" data-go="articles" data-skip><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span>Media</span></a></li>
+    <li><a class="xo-nav__link" href="#articles" data-go="articles" data-skip><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Schedule</span></a></li></ul></li>
+  <li><div class="xo-nav__label">Audience</div><ul class="xo-nav">
+    <li><a class="xo-nav__link" href="#dashboard" data-go="dashboard" data-skip><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Subscribers</span></a></li>
+    <li><a class="xo-nav__link" href="#dashboard" data-go="dashboard" data-skip><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span>Messages</span><span class="xo-count">3</span></a></li></ul></li>
+  <li><div class="xo-nav__label">Site</div><ul class="xo-nav">
+    <li><a class="xo-nav__link" href="#settings" data-go="settings"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span>Settings</span></a></li></ul></li>
+</ul></nav>
+    <div class="xo-side__foot"><span class="xo-avatar" aria-hidden="true">AD</span><span class="grow"><span class="xo-ws__name">Admin</span><span class="xo-ws__env">admin@acme.test</span></span><button class="ghost icon-only sm" type="button" aria-label="Sign out" data-toast="Signed out (demo)"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button></div>
+  </div></aside>
+  <div class="xo-main">
+    <header class="xo-topbar">
+      <button class="icon-only xo-menu-button" type="button" aria-label="Open menu" aria-haspopup="dialog" data-open="#drawer"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <ol class="xo-crumbs"><li>Acme Studio</li><li><svg class="icon sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></li><li aria-current="page" data-crumb>Dashboard</li></ol>
+      <span class="grow"></span>
+      <button class="xo-search-button" type="button" data-open="#cmd"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>Search or jump to…</span><span class="xo-kbd">⌘K</span></button>
+      <div class="xo-notify"><button class="icon-only ghost" type="button" aria-label="Notifications, 3 new" aria-expanded="false" aria-controls="notif" data-popover="#notif"><svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg></button><span class="xo-notify__dot" aria-hidden="true"></span>
+        <div class="xo-popover" id="notif" role="region" aria-label="Notifications" hidden><div class="xo-popover__head">Notifications <button class="ghost sm" type="button" data-mark-read>Mark all read</button></div><ul class="xo-feed"><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">MT</span><div class="xo-feed__text">Mai published “Why Greece still appeals”<span>Articles</span></div><time>2h</time></li><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">LP</span><div class="xo-feed__text">Lucas commented on “Visa FAQ”<span>Needs a reply</span></div><time>5h</time></li><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">SR</span><div class="xo-feed__text">Sofia scheduled “Lisbon or Porto?”<span>Goes live Friday 09:00</span></div><time>Yesterday</time></li><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">DK</span><div class="xo-feed__text">Daniel uploaded 12 images<span>Media</span></div><time>Yesterday</time></li></ul></div></div>
+      <button class="icon-only ghost" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch to dark theme"></button>
+    </header>
+    <main class="xo-content" id="main">
+
+      <section data-view="dashboard" aria-labelledby="h-dash">
+        <div class="xo-page-head"><div><div class="xo-eyebrow">Overview</div><h1 class="xo-title" id="h-dash">Dashboard</h1><p class="xo-lede">How the site is doing this week.</p></div>
+          <div class="row-inline"><a class="button" href="#articles" data-go="articles"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>All articles</a><button class="button primary" type="button" data-go="articles" id="goto-new"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>New article</button></div></div>
+        <div class="xo-grid xo-grid--kpi">
+          <div class="xo-panel xo-kpi"><span class="xo-kpi__label">Visits</span><span class="xo-kpi__value">48,210</span><span class="xo-kpi__delta"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg>12.4% vs last week</span><svg class="xo-kpi__spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><path d="M0 24 L14 20 L28 22 L42 14 L56 16 L70 8 L84 10 L100 3"/></svg></div>
+          <div class="xo-panel xo-kpi"><span class="xo-kpi__label">New subscribers</span><span class="xo-kpi__value">1,284</span><span class="xo-kpi__delta"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg>4.1% vs last week</span><svg class="xo-kpi__spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 L14 22 L28 16 L42 18 L56 12 L70 14 L84 8 L100 6"/></svg></div>
+          <div class="xo-panel xo-kpi"><span class="xo-kpi__label">Avg. read time</span><span class="xo-kpi__value">3m 42s</span><span class="xo-kpi__delta" data-trend="down"><svg class="icon" aria-hidden="true"><use href="#i-arrow-down"/></svg>2.3% vs last week</span><svg class="xo-kpi__spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 L14 12 L28 10 L42 16 L56 14 L70 20 L84 18 L100 22"/></svg></div>
+          <div class="xo-panel xo-kpi"><span class="xo-kpi__label">Published articles</span><span class="xo-kpi__value">70</span><span class="xo-kpi__delta"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg>3 this week</span><svg class="xo-kpi__spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><path d="M0 26 L20 22 L40 22 L60 14 L80 12 L100 4"/></svg></div>
+        </div>
+        <div class="xo-grid xo-grid--wide live-s1">
+          <div class="xo-panel"><div class="xo-panel__head"><div><h2 class="xo-panel__title">Visits</h2><p class="xo-panel__sub">Thousands of visits per period</p></div>
+            <div class="xo-seg" id="range-seg" role="group" aria-label="Range"><button type="button" aria-pressed="true" data-range="7">7 days</button><button type="button" aria-pressed="false" data-range="30">30 days</button><button type="button" aria-pressed="false" data-range="90">12 months</button></div></div>
+            <figure class="xo-chart"><svg viewBox="0 0 640 220" role="img" aria-label="Bar chart of visits per period" id="chart"></svg>
+            <figcaption class="xo-visually-hidden">Visits per period</figcaption>
+            <details class="live-s2"><summary class="button ghost sm">View as table</summary><table class="std" id="chart-table"><thead><tr><th>Period</th><th>Visits</th></tr></thead><tbody></tbody></table></details></figure></div>
+          <div class="xo-panel"><div class="xo-panel__head"><h2 class="xo-panel__title">Recent activity</h2></div><ul class="xo-feed"><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">MT</span><div class="xo-feed__text">Mai published “Why Greece still appeals”<span>Articles</span></div><time>2h</time></li><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">LP</span><div class="xo-feed__text">Lucas commented on “Visa FAQ”<span>Needs a reply</span></div><time>5h</time></li><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">SR</span><div class="xo-feed__text">Sofia scheduled “Lisbon or Porto?”<span>Goes live Friday 09:00</span></div><time>Yesterday</time></li><li><span class="xo-avatar xo-avatar--sm" aria-hidden="true">DK</span><div class="xo-feed__text">Daniel uploaded 12 images<span>Media</span></div><time>Yesterday</time></li></ul></div>
+        </div>
+      </section>
+
+      <section data-view="articles" aria-labelledby="h-art" hidden>
+        <div class="xo-page-head"><div><div class="xo-eyebrow">Content</div><h1 class="xo-title" id="h-art">Articles</h1><p class="xo-lede">News and guides for your visitors. Drafts stay private until you publish.</p></div>
+          <div class="row-inline"><button class="button" type="button" data-toast="Export started (demo)"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Export</button><button class="button primary" type="button" id="new-article"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>New article</button></div></div>
+        <div class="row-inline between">
+          <div class="xo-seg" id="status-seg" role="group" aria-label="Status"><button type="button" aria-pressed="true" data-status="All">All <span class="xo-count" data-count="All"></span></button><button type="button" aria-pressed="false" data-status="Published">Published <span class="xo-count" data-count="Published"></span></button><button type="button" aria-pressed="false" data-status="Draft">Draft <span class="xo-count" data-count="Draft"></span></button><button type="button" aria-pressed="false" data-status="Scheduled">Scheduled <span class="xo-count" data-count="Scheduled"></span></button></div>
+          <label class="xo-input-wrap grow"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="q" placeholder="Search by title or path" aria-label="Search articles"></label>
+        </div>
+        <div class="xo-bulk" id="bulk" hidden role="region" aria-label="Bulk actions"><strong id="bulk-n">0 selected</strong><span class="grow"></span><button class="button sm" type="button" id="bulk-pub"><svg class="icon sm" aria-hidden="true"><use href="#i-check"/></svg>Publish</button><button class="button sm" type="button" id="bulk-del"><svg class="icon sm" aria-hidden="true"><use href="#i-trash"/></svg>Delete</button></div>
+        <div class="table-frame xo-cards"><table class="std"><thead><tr><th class="select"><input type="checkbox" id="all" aria-label="Select all on this page"></th><th data-sort="title" aria-sort="none"><button type="button">Title</button></th><th data-sort="status" aria-sort="none"><button type="button">Status</button></th><th data-sort="author" aria-sort="none"><button type="button">Author</button></th><th data-sort="views" aria-sort="none"><button type="button">Views</button></th><th data-sort="age" aria-sort="ascending"><button type="button">Updated</button></th><th><span class="xo-visually-hidden">Actions</span></th></tr></thead><tbody id="rows"></tbody></table>
+          <div class="table-foot"><span id="foot-count"></span><span class="row-inline"><button class="sm icon-only" id="prev" aria-label="Previous page"><svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg></button><span id="pageno" aria-live="polite"></span><button class="sm icon-only" id="next" aria-label="Next page"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button></span></div></div>
+      </section>
+
+      <section data-view="settings" aria-labelledby="h-set" hidden>
+        <div class="xo-page-head"><div><div class="xo-eyebrow">Site</div><h1 class="xo-title" id="h-set">Settings</h1><p class="xo-lede">Basics, notifications and the logo.</p></div></div>
+        <form id="settings-form" class="xo-settings">
+          <div><div class="xo-seg live-s3" role="group" aria-label="Section"><button type="button" aria-pressed="true">General</button><button type="button" aria-pressed="false">Notifications</button><button type="button" aria-pressed="false">Branding</button></div></div>
+          <div class="xo-panel">
+            <div class="xo-fields xo-prose">
+              <div class="field"><label for="s-name">Site name</label><input id="s-name" value="Acme Studio"></div>
+              <div class="field"><label for="s-lang">Language</label><select id="s-lang"><option>English</option><option>Tiếng Việt</option><option>Français</option></select></div>
+              <div class="field"><label for="s-desc">Description</label><textarea id="s-desc" rows="3">News and guides for people moving abroad.</textarea><span class="hint">Shown in search results.</span></div>
+              <div class="field"><span class="label">Logo</span><label class="xo-dropzone"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg><span><b>Drop a file</b> or click to browse</span><span data-dz-out>PNG or SVG, up to 2 MB</span><input type="file" accept="image/*"></label></div>
+            </div>
+            <div class="xo-row-setting"><div><strong>Email me about new comments</strong><p>One summary per day.</p></div><button class="xo-switch" type="button" role="switch" aria-checked="true" aria-label="Email me about new comments"></button></div>
+            <div class="xo-row-setting"><div><strong>Show drafts to editors</strong><p>Editors can preview unpublished work.</p></div><button class="xo-switch" type="button" role="switch" aria-checked="false" aria-label="Show drafts to editors"></button></div>
+            <div class="row-inline live-s4"><button class="button primary" type="submit">Save changes</button><button class="button" type="reset">Cancel</button></div>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</div>
+
+<dialog class="xo-drawer" id="drawer" aria-label="Menu"><button class="icon-only ghost xo-drawer__close" type="button" aria-label="Close menu" data-close><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button><div class="xo-side__in"><button class="xo-ws" type="button" ><span class="xo-ws__mark" aria-hidden="true">A</span><span class="grow"><span class="xo-ws__name">Acme Studio</span><span class="xo-ws__env">Production</span></span><span class="xo-visually-hidden">Switch project</span><svg class="icon sm" aria-hidden="true"><use href="#i-sort"/></svg></button><nav aria-label="Admin" class="xo-side__nav"><ul class="xo-nav">
+  <li><a class="xo-nav__link" href="#dashboard" data-go="dashboard" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span>Dashboard</span></a></li>
+  <li><div class="xo-nav__label">Content</div><ul class="xo-nav">
+    <li><a class="xo-nav__link" href="#articles" data-go="articles"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg><span>Articles</span><span class="xo-count" data-count="All">20</span></a></li>
+    <li><a class="xo-nav__link" href="#articles" data-go="articles" data-skip><svg class="icon" aria-hidden="true"><use href="#i-image"/></svg><span>Media</span></a></li>
+    <li><a class="xo-nav__link" href="#articles" data-go="articles" data-skip><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Schedule</span></a></li></ul></li>
+  <li><div class="xo-nav__label">Audience</div><ul class="xo-nav">
+    <li><a class="xo-nav__link" href="#dashboard" data-go="dashboard" data-skip><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Subscribers</span></a></li>
+    <li><a class="xo-nav__link" href="#dashboard" data-go="dashboard" data-skip><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span>Messages</span><span class="xo-count">3</span></a></li></ul></li>
+  <li><div class="xo-nav__label">Site</div><ul class="xo-nav">
+    <li><a class="xo-nav__link" href="#settings" data-go="settings"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span>Settings</span></a></li></ul></li>
+</ul></nav></div></dialog>
+
+<dialog class="xo-modal" id="editor" aria-labelledby="ed-t"><form id="editor-form" method="dialog" novalidate>
+  <div class="xo-modal__head"><h2 id="ed-t">Article</h2><button class="icon-only ghost" type="button" aria-label="Close" data-close><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+  <div class="xo-modal__body"><div class="xo-fields xo-prose">
+    <div class="field"><label for="f-title">Title <span class="req" aria-hidden="true">*</span></label><input id="f-title" required aria-describedby="f-title-err"><p class="error" id="f-title-err" hidden><svg class="icon sm" aria-hidden="true"><use href="#i-error"/></svg>Enter a title.</p></div>
+    <div class="field"><label for="f-status">Status</label><select id="f-status"><option>Draft</option><option>Published</option><option>Scheduled</option></select></div>
+    <div class="field"><label for="f-body">Summary</label><textarea id="f-body" rows="4"></textarea></div></div></div>
+  <div class="xo-modal__foot"><button class="button" type="button" data-close>Cancel</button><button class="button primary" type="submit">Save article</button></div></form></dialog>
+
+<dialog class="xo-modal" id="confirm" aria-labelledby="cf-t"><div class="xo-modal__head"><h2 id="cf-t">Delete this article?</h2></div><div class="xo-modal__body"><p id="del-text"></p><p class="muted">This cannot be undone.</p></div><div class="xo-modal__foot"><button class="button" type="button" data-close>Cancel</button><button class="button danger" type="button" id="confirm-ok">Delete</button></div></dialog>
+
+<dialog class="xo-modal" id="cmd" aria-label="Command palette"><div class="xo-command"><div class="xo-command__input"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input aria-label="Search commands" placeholder="Type a command or page"><span class="xo-kbd">Esc</span></div>
+  <div class="xo-listbox" role="listbox" aria-label="Results"><div class="xo-option__group">Go to</div>
+  <button class="xo-option" role="option" type="button" data-go="dashboard" data-nav><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg>Dashboard</button><button class="xo-option" role="option" type="button" data-go="articles"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>Articles</button><button class="xo-option" role="option" type="button" data-go="settings"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>Settings</button></div></div></dialog>
+
+<div class="xo-toasts" aria-live="polite"></div>
+<script src="live-kit/js/live-demo.js"></script>
+</body></html>
