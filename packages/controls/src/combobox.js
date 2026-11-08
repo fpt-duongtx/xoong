@@ -121,6 +121,7 @@ class XoCombobox extends XoControl {
     if (fromMarkup.length && !this.#options.length) this.#options = fromMarkup.map((o) => normalize({ value: o.value, label: o.textContent?.trim() || o.value, disabled: o.disabled }));
     const chosen = fromMarkup.filter((o) => o.selected && o.hasAttribute('selected')).map((o) => o.value);
     fromMarkup.forEach((o) => o.remove());
+    for (const stale of this.querySelectorAll(':scope > .xo-combobox-box, :scope > .xo-combobox-list')) stale.remove(); // a prerendered page (or a copied snapshot) already holds the drawn control: draw it once
 
     const box = document.createElement('div');
     box.className = 'xo-combobox-box';

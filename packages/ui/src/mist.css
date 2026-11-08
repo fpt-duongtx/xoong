@@ -1471,6 +1471,35 @@
   .xo-file-list li img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex: none; }
   .xo-file-list li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   xo-menu:not(:defined) > :not([xo-menu-trigger]) { display: none; }
+  xo-tabs:not(:defined) { display: block; padding-top: 44px; }
+  xo-tabs:not(:defined) > [xo-tab] { padding: 0; margin: 0; }
+  xo-tabs:not(:defined) > [xo-tab]:not(:first-of-type) { display: none !important; }
+  xo-carousel:not(:defined) { display: block; overflow: hidden; padding-bottom: 48px; }
+  xo-carousel:not(:defined) > :not(:first-child) { display: none !important; }
+  xo-combobox:not(:defined), xo-tags:not(:defined) { display: block; min-height: var(--xo-control-height, 40px); }
+  xo-combobox:not(:defined) > *, xo-tags:not(:defined) > * { display: none !important; }
+  xo-richtext:not(:defined) { display: block; min-height: 274px; }
+  xo-switch:not(:defined), xo-slider:not(:defined), xo-range-slider:not(:defined), xo-progress:not(:defined), xo-steps:not(:defined), xo-segmented:not(:defined), xo-split-button:not(:defined), xo-stepper:not(:defined), xo-date:not(:defined), xo-time:not(:defined), xo-password:not(:defined), xo-copy:not(:defined), xo-textarea:not(:defined), xo-file:not(:defined), xo-accordion:not(:defined), xo-stat:not(:defined), xo-chart:not(:defined), xo-otp:not(:defined), xo-inline-edit:not(:defined) { display: block; }
+  xo-switch:not(:defined), xo-slider:not(:defined), xo-range-slider:not(:defined) { min-height: 24px; }
+  xo-progress:not(:defined) { min-height: 8px; }
+  xo-steps:not(:defined), xo-inline-edit:not(:defined) { min-height: 30px; }
+  xo-split-button:not(:defined), xo-stepper:not(:defined), xo-date:not(:defined), xo-time:not(:defined), xo-password:not(:defined), xo-copy:not(:defined) { min-height: 40px; }
+  xo-segmented:not(:defined) { min-height: 46px; }
+  xo-otp:not(:defined) { min-height: 52px; }
+  xo-textarea:not(:defined) { min-height: 123px; }
+  xo-file:not(:defined) { min-height: 155px; }
+  xo-accordion:not(:defined) { min-height: 98px; }
+  xo-stat:not(:defined) { min-height: 120px; }
+  xo-chart:not(:defined) { min-height: 284px; }
+  xo-switch:not(:defined) > *, xo-segmented:not(:defined) > *, xo-split-button:not(:defined) > *, xo-accordion:not(:defined) > * { visibility: hidden; }
+  xo-image:not(:defined) { display: block; }
+  xo-image[ratio="16/9"]:not(:defined) { aspect-ratio: 16 / 9; }
+  xo-image[ratio="4/3"]:not(:defined) { aspect-ratio: 4 / 3; }
+  xo-image[ratio="3/2"]:not(:defined) { aspect-ratio: 3 / 2; }
+  xo-image[ratio="1/1"]:not(:defined) { aspect-ratio: 1; }
+  xo-image[ratio="21/9"]:not(:defined) { aspect-ratio: 21 / 9; }
+  xo-image[ratio="3/4"]:not(:defined) { aspect-ratio: 3 / 4; }
+  xo-image[ratio="2/3"]:not(:defined) { aspect-ratio: 2 / 3; }
 
   /* ---- skin ---- */
   :root { --shadow-sm: 0 1px 2px color-mix(in srgb, var(--xo-color-text) 6%, transparent); --shadow-float: 0 12px 32px color-mix(in srgb, var(--xo-color-text) 14%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 8%, transparent); --xo-shadow-pop: var(--shadow-float); --xo-shadow-raised: none; --xo-focus: 2px solid var(--xo-color-accent); --xo-focus-thin: 2px solid var(--xo-color-accent); }

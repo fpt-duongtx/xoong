@@ -901,3 +901,44 @@ xo-file progress::-moz-progress-bar { background: var(--xo-color-accent); }
 
 /* before xo-menu is upgraded its items are plain buttons and links: keep only the trigger so the page does not jump when the script runs */
 xo-menu:not(:defined) > :not([xo-menu-trigger]) { display: none; }
+
+/* ---- before the scripts run (!important: a page's own unlayered classes must not undo the guard; it only lasts until the element upgrades): keep the size the element will have, so the page does not jump when it upgrades ---- */
+/* tabs: only the first panel, with room for the tab list above it */
+xo-tabs:not(:defined) { display: block; padding-top: 44px; }
+xo-tabs:not(:defined) > [xo-tab] { padding: 0; margin: 0; }
+xo-tabs:not(:defined) > [xo-tab]:not(:first-of-type) { display: none !important; }
+/* carousel: one slide */
+xo-carousel:not(:defined) { display: block; overflow: hidden; padding-bottom: 48px; }
+xo-carousel:not(:defined) > :not(:first-child) { display: none !important; }
+/* combobox, tags: one control-height box without the loose children (options, labels) */
+xo-combobox:not(:defined), xo-tags:not(:defined) { display: block; min-height: var(--xo-control-height, 40px); }
+xo-combobox:not(:defined) > *, xo-tags:not(:defined) > * { display: none !important; }
+/* rich text editor: toolbar and a body */
+xo-richtext:not(:defined) { display: block; min-height: 274px; }
+/* elements whose whole inside is drawn by the script: reserve their height (an unknown element is inline and 0px tall until it upgrades) */
+xo-switch:not(:defined), xo-slider:not(:defined), xo-range-slider:not(:defined), xo-progress:not(:defined), xo-steps:not(:defined),
+xo-segmented:not(:defined), xo-split-button:not(:defined), xo-stepper:not(:defined), xo-date:not(:defined), xo-time:not(:defined),
+xo-password:not(:defined), xo-copy:not(:defined), xo-textarea:not(:defined), xo-file:not(:defined), xo-accordion:not(:defined),
+xo-stat:not(:defined), xo-chart:not(:defined), xo-otp:not(:defined), xo-inline-edit:not(:defined) { display: block; }
+xo-switch:not(:defined), xo-slider:not(:defined), xo-range-slider:not(:defined) { min-height: 24px; }
+xo-progress:not(:defined) { min-height: 8px; }
+xo-steps:not(:defined), xo-inline-edit:not(:defined) { min-height: 30px; }
+xo-split-button:not(:defined), xo-stepper:not(:defined), xo-date:not(:defined), xo-time:not(:defined), xo-password:not(:defined), xo-copy:not(:defined) { min-height: 40px; }
+xo-segmented:not(:defined) { min-height: 46px; }
+xo-otp:not(:defined) { min-height: 52px; }
+xo-textarea:not(:defined) { min-height: 123px; }
+xo-file:not(:defined) { min-height: 155px; }
+xo-accordion:not(:defined) { min-height: 98px; }
+xo-stat:not(:defined) { min-height: 120px; }
+xo-chart:not(:defined) { min-height: 284px; }
+/* their loose children (a switch's text, an accordion's details) wait for the upgrade */
+xo-switch:not(:defined) > *, xo-segmented:not(:defined) > *, xo-split-button:not(:defined) > *, xo-accordion:not(:defined) > * { visibility: hidden; }
+/* images: the space comes from `ratio` (the common ones; width and height attributes cannot be read in CSS) */
+xo-image:not(:defined) { display: block; }
+xo-image[ratio="16/9"]:not(:defined) { aspect-ratio: 16 / 9; }
+xo-image[ratio="4/3"]:not(:defined) { aspect-ratio: 4 / 3; }
+xo-image[ratio="3/2"]:not(:defined) { aspect-ratio: 3 / 2; }
+xo-image[ratio="1/1"]:not(:defined) { aspect-ratio: 1; }
+xo-image[ratio="21/9"]:not(:defined) { aspect-ratio: 21 / 9; }
+xo-image[ratio="3/4"]:not(:defined) { aspect-ratio: 3 / 4; }
+xo-image[ratio="2/3"]:not(:defined) { aspect-ratio: 2 / 3; }

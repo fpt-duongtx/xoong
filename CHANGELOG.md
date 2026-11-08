@@ -3,6 +3,11 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+* Fixed: `<xo-combobox>` and `<xo-tags>` on a page that already holds the drawn control (a prerendered page, a copied snapshot) drew a second box next to it; the old box and list are now replaced, so it is drawn once.
+* Mist (kit ux/preupgrade): `:not(:defined)` guards so the page does not jump while the elements upgrade (tabs, carousel, combobox, richtext and the script-drawn controls reserve their size).
+
 ## 0.0.44 (menu trigger in a form, toast z-index, no flash of the header)
 
 breaking: none.

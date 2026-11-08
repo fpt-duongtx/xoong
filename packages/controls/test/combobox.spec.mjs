@@ -17,6 +17,16 @@ const key = (k) => { const e = new KeyboardEvent('keydown', { key: k, bubbles: t
 
 afterEach(() => { document.body.innerHTML = ''; });
 
+describe('<xo-combobox> on a page that already holds the drawn control', () => {
+  it('draws it once: a prerendered box and list are replaced, not doubled', async () => {
+    const prerendered = '<div class="xo-combobox-box"><input class="xo-combobox-input" role="combobox"></div><ul class="xo-combobox-list" role="listbox" hidden></ul>';
+    await mount('xo-combobox', '', OPTIONS + prerendered);
+    expect(document.querySelectorAll('xo-combobox .xo-combobox-box')).toHaveLength(1);
+    expect(document.querySelectorAll('xo-combobox [role=listbox]')).toHaveLength(1);
+    expect(document.querySelectorAll('xo-combobox .xo-combobox-input')).toHaveLength(1);
+  });
+});
+
 describe('<xo-combobox> (single)', () => {
   it('is a combobox with a listbox: roles and the label, options read from <option> children', async () => {
     const el = await mount();
