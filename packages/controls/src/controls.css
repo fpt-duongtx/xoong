@@ -25,7 +25,7 @@
 
 @layer xoong-controls {
   xo-combobox, xo-tags { display: block; position: relative; }
-  .xo-combobox-box { display: flex; flex-wrap: wrap; gap: var(--xo-space-1, .25rem); align-items: center; padding: var(--xo-space-1, .25rem) var(--xo-space-2, .5rem); border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
+  .xo-combobox-box { display: flex; flex-wrap: wrap; gap: var(--xo-space-1, .25rem); align-items: center; padding: var(--xo-space-1, .25rem) var(--xo-space-2, .5rem); border: 1px solid var(--xo-color-control-border, #838c9b); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
   .xo-combobox-box:focus-within { outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 1px; }
   .xo-combobox-input { flex: 1 1 8rem; min-width: 6rem; border: 0; outline: none; background: transparent; font: inherit; color: inherit; padding: var(--xo-space-1, .25rem) 0; }
   .xo-chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .25rem 0 .5rem; border-radius: 999px; background: var(--xo-color-hover, rgb(127 127 127 / .18)); font-size: .9em; }
@@ -54,10 +54,10 @@
   .xo-carousel-nav { display: flex; gap: var(--xo-space-2, .5rem); }
   .xo-carousel-nav button { width: 2.5rem; height: 2.5rem; padding: 0; border-radius: 50%; font-size: 1.1rem; line-height: 1; }
   .xo-carousel-nav button:disabled { opacity: .4; cursor: default; }
-  .xo-carousel-nav button:disabled:hover { border-color: var(--xo-color-border, #d8dee4); }
+  .xo-carousel-nav button:disabled:hover { border-color: var(--xo-color-control-border, #838c9b); }
   :dir(rtl) > .xo-carousel-controls .xo-carousel-prev span, :dir(rtl) > .xo-carousel-controls .xo-carousel-next span { display: inline-block; transform: scaleX(-1); }
   .xo-carousel-dots { display: flex; flex: 1; justify-content: center; flex-wrap: wrap; gap: var(--xo-space-2, .5rem); }
-  .xo-carousel-dots button { width: .65rem; height: .65rem; padding: 0; border: 0; border-radius: 50%; background: var(--xo-color-border, #d8dee4); cursor: pointer; }
+  .xo-carousel-dots button { width: .65rem; height: .65rem; padding: 0; border: 0; border-radius: 50%; background: var(--xo-color-control-border, #838c9b); cursor: pointer; }
   .xo-carousel-dots button[aria-current="true"] { background: var(--xo-color-accent, #0969da); }
   .xo-carousel-dots button.xo-carousel-thumb { width: 4rem; height: 3rem; border-radius: 4px; overflow: hidden; opacity: .6; background: none; }
   .xo-carousel-dots button.xo-carousel-thumb[aria-current="true"] { opacity: 1; outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 2px; }

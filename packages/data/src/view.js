@@ -24,6 +24,7 @@
  *   xo-param="name"    on an <input>/<select>: set the view param `name` to its value as it changes (empty removes it).
  *   xo-param="k=v"     on click, set a view param and refetch: `k=v`, `k+=n`, `k-=n` (never below 0),
  *                     `k~=v` (toggle between `v` and `-v`, for sorting). `{path}` in v is resolved.
+ *   xo-refresh        on click, fetch this view's data again ("Try again" after an error, a refresh button).
  * Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
  */
 import { effect, signal, batch } from '@xoong/core/signals';
@@ -98,6 +99,7 @@ class XoView extends XoElement {
   /** @type {(() => void)[]} */ #bound = [];
   #params = signal(/** @type {Record<string, any>} */ ({}));
   #release = null;
+  /** Fetch the selected query again (xo-refresh). */ refresh = () => {};
   /** @type {AbortController | null} */ #streamCtl = null;
   #stream = signal(/** @type {any[]} */ ([]));
   #streaming = signal(false);
@@ -248,7 +250,8 @@ class XoView extends XoElement {
       q.value = current;
       current.retain();
     }));
-    this.#bound.push(() => current?.release());
+    this.refresh = () => current?.invalidate();
+    this.#bound.push(() => { current?.release(); this.refresh = () => {}; });
     const urlNames = this.#urlNames();
     if (urlNames.length) {
       const sync = urlSync();
@@ -357,6 +360,12 @@ function bindNode(node, scope, ctx, disposers) {
     }
     if (attr.name === 'xo-param') {
       bindParam(el, attr.value, scope, ctx, disposers);
+      continue;
+    }
+    if (attr.name === 'xo-refresh') {
+      const refresh = () => ctx.host.refresh();
+      el.addEventListener('click', refresh);
+      disposers.push(() => el.removeEventListener('click', refresh));
       continue;
     }
     if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected' || attr.name === 'xo-with' || attr.name === 'xo-confirm' || attr.name === 'xo-notice' || attr.name === 'xo-t') continue;

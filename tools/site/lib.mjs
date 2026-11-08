@@ -93,6 +93,9 @@ export const mark = ({ size = 32, steam = false } = {}) => `<svg class="mark${st
   <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
 </svg>`;
 
+/** The empty pot (lid off) and the tipped pot with a cracked side, for empty and error states; colours from the palette (classes in site.css). */
+export const art = { empty: `<svg class="art" viewBox="-2 -2 68 68" aria-hidden="true"><rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/><path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/><ellipse cx="32" cy="31.5" rx="20" ry="4.5" fill="none" stroke="currentColor" stroke-width="3"/><rect class="m-ink" x="9" y="8" width="48" height="7.5" rx="3.75" transform="rotate(-14 33 12)"/><path class="empty-body" d="M20 20h24"/></svg>`, error: `<svg class="art" viewBox="-2 -2 68 68" aria-hidden="true"><g transform="rotate(-10 32 40)"><rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/><rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/><path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/><path d="M34 31.5l-4 8 6 4-5 9" fill="none" stroke="var(--bg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><path class="m-steam" d="M44 6l6 6-6 6"/></svg>` };
+
 const TOP = [['home', 'index.html', 'Home'], ['docs', 'overview.html', 'Docs'], ['demo', 'demo.html', 'Demo'], ['brand', 'brand.html', 'Brand']];
 
 /** A code card in the brand's "window" look (highlighted when the page is generated). */
@@ -107,8 +110,13 @@ export function layout({ pages, page }) {
   const prev = docs[i - 1], next = docs[i + 1];
   const pager = `<nav class="pager" aria-label="Pages">${prev ? `<a rel="prev" href="${prev.file}"><small>Previous</small><span>${esc(prev.nav)}</span></a>` : '<span></span>'}${next ? `<a rel="next" href="${next.file}"><small>Next</small><span>${esc(next.nav)}</span></a>` : '<span></span>'}</nav>`;
   const top = TOP.map(([key, file, label]) => `<a href="${file}"${key === page.section ? ' aria-current="page"' : ''}>${label}</a>`).join('\n        ');
+  const og = page.og ?? ({ Guides: 'og-guides.png', Controls: 'og-controls.png', Demo: 'og-demo.png' }[page.group ?? ''] ?? (page.section === 'brand' ? 'og-brand.png' : 'og.png'));
+  const menu = `  <details class="docs-menu"><summary><span>Menu · <span class="here">${esc(page.nav ?? '')}</span></span></summary><nav aria-label="Documentation menu">
+${side.replace(/^/gm, '    ')}
+  </nav></details>
+`;
   const body = page.group
-    ? `  <div class="layout">
+    ? `${menu}  <div class="layout">
     <nav class="side" aria-label="Documentation">
 ${side.replace(/^/gm, '      ')}
     </nav>
@@ -120,7 +128,7 @@ ${pager}
     : `  <main id="main">
 ${page.body}
   </main>`;
-  return `<!doctype html>
+  const html = `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -129,7 +137,7 @@ ${page.body}
   <meta name="description" content="${esc(page.description)}">
   <meta property="og:title" content="${esc(page.title)} · xoong">
   <meta property="og:description" content="${esc(page.description)}">
-  <meta property="og:image" content="brand/og.png">
+  <meta property="og:image" content="brand/${og}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
   <script src="src/palette.js"></script>
@@ -163,4 +171,5 @@ ${body}
 </body>
 </html>
 `;
+  return page.root ? html.replace(/\b(href|src)="(?!https?:|\/|#|data:|mailto:)([^"]+)"/g, '$1="/$2"') : html; // a page served at any depth (404.html) names its files from the site root
 }

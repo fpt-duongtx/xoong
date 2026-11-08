@@ -94,15 +94,16 @@ describe('documentation site', () => {
     clean();
   });
 
+  const T = '.xo-table:has([type=checkbox])'; // the first table of the data page (the selectable one)
   it('data: the table sorts, searches and pages; the list filters with xo-param', async () => {
     await open('data');
-    await page.waitForSelector('.xo-table td');
-    expect((await texts('.xo-table tbody tr td:nth-child(2)'))).toHaveLength(5); // page-size 5 of 8
-    await page.click('.xo-table th button >> text=name');
-    await page.waitForFunction(() => document.querySelector('.xo-table tbody td:nth-child(2)')?.textContent === 'Ada Lovelace');
-    await page.fill('.xo-table input[type=search]', 'gra');
-    await page.waitForFunction(() => document.querySelectorAll('.xo-table tbody tr').length === 1);
-    expect(await text('.xo-table tbody tr')).toContain('Grace Hopper');
+    await page.waitForSelector(`${T} td`);
+    expect((await texts(`${T} tbody tr td:nth-child(2)`))).toHaveLength(5); // page-size 5 of 8
+    await page.click(`${T} th button >> text=name`);
+    await page.waitForFunction(() => document.querySelector('.xo-table:has([type=checkbox]) tbody td:nth-child(2)')?.textContent === 'Ada Lovelace');
+    await page.fill(`${T} input[type=search]`, 'gra');
+    await page.waitForFunction(() => document.querySelectorAll('.xo-table:has([type=checkbox]) tbody tr').length === 1);
+    expect(await text(`${T} tbody tr`)).toContain('Grace Hopper');
     await page.getByRole('button', { name: 'Admins' }).click();
     await page.waitForFunction(() => document.querySelectorAll('.people li').length === 2);
     expect(await texts('.people li strong')).toEqual(['Ada Lovelace', 'Margaret Hamilton']);
@@ -212,6 +213,54 @@ describe('documentation site', () => {
     clean();
   });
 
+  it('data states: a skeleton while loading, an empty state, an error state with Try again that works', async () => {
+    await open('data');
+    const states = 'xo-view.states';
+    await page.waitForSelector(`${states} .xo-table td`);
+    await page.fill(`${states} input[type=search]`, 'zzz');
+    await page.waitForSelector(`${states} .state:not(.error)`);
+    expect(await text(`${states} .state h3`)).toBe('Nobody here yet');
+    await page.fill(`${states} input[type=search]`, 'fail');
+    await page.waitForSelector(`${states} .state.error`);
+    expect(await text(`${states} .state.error p`)).toBe('The people service is not answering');
+    expect(await page.$$(`${states} .state:not(.error)`)).toHaveLength(0); // not "nobody here" after a failure
+    await page.click(`${states} button:text-is("Try again")`);
+    await page.waitForFunction(() => !document.querySelector('xo-view .state.error'));
+    clean();
+  });
+
+  it('the docs menu: below 52rem the sidebar is a Menu disclosure that shows the current page, with 44px targets', async () => {
+    const small = await (await browser.newContext({ viewport: { width: 390, height: 800 } })).newPage();
+    small.on('pageerror', (e) => errors.push(e.message));
+    await small.goto(`${base}forms.html`);
+    expect(await small.isVisible('nav.side')).toBe(false);
+    expect(await small.isVisible('.docs-menu summary')).toBe(true);
+    expect(await small.textContent('.docs-menu summary')).toContain('Forms');
+    await small.click('.docs-menu summary');
+    expect(await small.$$eval('.docs-menu nav a', (a) => a.length)).toBe(DOCS.length);
+    expect(await small.$eval('.docs-menu a', (a) => a.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+    expect(await small.$eval('.docs-menu a[aria-current=page]', (a) => a.textContent)).toBe('Forms');
+    expect(await axe(small)).toEqual([]);
+    await small.context().close();
+  });
+
+  it('404.html names its files from the site root and shows the missing path; every page has a social card', async () => {
+    violations = []; errors = [];
+    const out404 = await page.goto(`${base}404.html`);
+    expect(out404.status()).toBe(200);
+    expect(await page.$eval('link[href*="site.css"]', (l) => l.getAttribute('href'))).toBe('/xoong/src/site.css');
+    expect(await page.$eval('.lost h1', (h) => h.textContent)).toBe('This page went off the boil');
+    expect(await text('#lost-path')).toBe('/xoong/404.html');
+    expect(await page.$eval('.lost', (el) => getComputedStyle(el).minHeight)).not.toBe('0px'); // the stylesheet applied
+    for (const name of ['index', 'data', 'tabs', 'demo', 'brand']) {
+      await open(name);
+      const image = await page.$eval('meta[property="og:image"]', (m) => m.content);
+      const got = await page.request.get(new URL(image, page.url()).href);
+      expect(got.status(), `${name} ${image}`).toBe(200);
+    }
+    clean();
+  });
+
   describe('accessibility (axe-core, WCAG 2.0 and 2.1 A and AA)', () => {
     const scan = async (label) => {
       const found = await axe(page);
@@ -270,6 +319,16 @@ describe('documentation site', () => {
       await page.click('.xo-form .xo-submit');
       await page.waitForSelector('.xo-toast:not([hidden])');
       await scan('form with a server error and a toast');
+      await open('data');
+      await page.waitForSelector('xo-view.states .xo-table td');
+      await page.fill('xo-view.states input[type=search]', 'zzz');
+      await page.waitForSelector('xo-view.states .state');
+      await scan('empty state');
+      await page.fill('xo-view.states input[type=search]', 'fail');
+      await page.waitForSelector('xo-view.states .state.error');
+      await scan('error state');
+      await open('404');
+      await scan('404');
       clean();
     });
   });

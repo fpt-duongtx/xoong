@@ -1,6 +1,6 @@
 // The content of the documentation site. `npm run site` writes site/*.html from this file; the architecture test fails when they differ.
 import { readFileSync } from 'node:fs';
-import { tabs, example, callout, code, codeCard, mark } from './lib.mjs';
+import { tabs, example, callout, code, codeCard, mark, art } from './lib.mjs';
 
 const VERSION = JSON.parse(readFileSync(new URL('../../packages/xoong/package.json', import.meta.url), 'utf8')).version; // the release the install page names
 
@@ -335,6 +335,26 @@ ${example({
       <a href="mailto:{email}">{email}</a>
     </li>
   </ul>
+</xo-view>`,
+})}
+
+<h2>Loading, empty and error</h2>
+<p>A view tells you in which state it is: <code>$loading</code> while a request runs, <code>$error</code> when it failed, and an empty list otherwise. <code>&lt;xo-table&gt;</code> shows its <code>empty</code> content only when the list is really empty (not while loading, not after an error); a <code>&lt;template slot="empty"&gt;</code> gives it any markup. <code>xo-refresh</code> on a button fetches the view's data again: a "Try again". Say what happened, what to do, and offer one action.</p>
+<p>Try it: type <strong>zzz</strong> for an empty list, or <strong>fail</strong>: the first request with it fails, and Try again then succeeds.</p>
+${example({
+  label: 'Loading, empty and error states',
+  preview: `
+<xo-view class="states" get="listPeople" p-limit="4">
+  <div class="skeleton" xo-if="$loading" role="status" aria-label="Loading"><i></i><i></i><i></i></div>
+  <div class="state error" xo-if="$error" role="alert">
+    ${art.error}
+    <h3>Could not load people</h3>
+    <p>{$error.detail}</p>
+    <div class="row-actions"><button class="btn primary" type="button" xo-refresh>Try again</button></div>
+  </div>
+  <xo-table columns="name,email:E-mail" filters="name:Search (try zzz or fail)" empty="Nobody here">
+    <template slot="empty"><div class="state">${art.empty}<h3>Nobody here yet</h3><p>No one matches this search.</p></div></template>
+  </xo-table>
 </xo-view>`,
 })}
 
@@ -758,6 +778,16 @@ ${example({
   </xo-carousel>
 </xo-view>`,
 })}
+<h2>Arrows at the sides</h2>
+<p>The arrows, dots and counter are children of the carousel's controls row. To lay them out another way, make the row and the arrows' box transparent to layout (<code>display: contents</code>) and place each piece in the carousel's own grid. This is how this site draws them:</p>
+${tabs('Layout recipe', [['CSS', 'css', `
+xo-carousel { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 0.75rem; align-items: center; }
+xo-carousel .xo-carousel-controls, xo-carousel .xo-carousel-nav { display: contents; }
+xo-carousel .xo-carousel-track { grid-column: 2; grid-row: 1; }
+xo-carousel .xo-carousel-prev { grid-column: 1; grid-row: 1; }
+xo-carousel .xo-carousel-next { grid-column: 3; grid-row: 1; }
+xo-carousel .xo-carousel-dots { grid-column: 2; grid-row: 2; justify-self: center; }
+xo-carousel .xo-carousel-count { grid-column: 2; grid-row: 2; justify-self: end; }`]])}
 <table class="props">
 <thead><tr><th>API</th><th>What it does</th></tr></thead>
 <tbody>
@@ -892,5 +922,18 @@ ${example({
     </div>
   </section>
   </div>`,
+  },
+
+  // ------------------------------------------------------------------------------------------------------------------------------
+  {
+    file: '404.html', root: true, title: 'Page not found', script: 'not-found.js',
+    description: 'This page went off the boil.',
+    body: `
+  <div class="lost"><div>
+    <div class="big" aria-hidden="true"><span>4</span>${mark({ size: 128, steam: true })}<span>4</span></div>
+    <h1>This page went off the boil</h1>
+    <p>We could not find <span class="path" id="lost-path">this page</span>. It may have moved, or the link may be wrong.</p>
+    <div class="actions"><a class="btn primary" href="index.html">Back to the kitchen</a><a class="btn" href="overview.html">Read the docs</a></div>
+  </div></div>`,
   },
 ];

@@ -64,7 +64,7 @@ defineTemplate('xo-table', (el, { host }) => {
   <thead><tr>${tickAll}${head}${actions ? '<th scope="col"><span class="xo-visually-hidden" xo-t="xoong.table.actions">Actions</span></th>' : ''}</tr></thead>
   <tbody><tr xo-each="${esc(of)}">${tickRow}${cells}${actions ?`<td class="xo-actions">${actions}</td>` : ''}</tr></tbody>
 </table>${empty ? `
-<div class="xo-empty" xo-if="!${esc(of)}"><div xo-if="!$loading">${empty}</div></div>` : ''}${pageSize ? `
+<div class="xo-empty" xo-if="!${esc(of)}"><div xo-if="!$loading"><div xo-if="!$error">${empty}</div></div></div>` : ''}${pageSize ? `
 <nav class="xo-pager" aria-label="Pagination" xo-t="aria-label:xoong.table.pagination">
   <span class="xo-range" xo-if="total" xo-t="xoong.table.range">{$from}–{$to} of {total}</span>${sizes.length ? `
   <select class="xo-page-size" xo-param="limit" aria-label="Rows per page" xo-t="aria-label:xoong.table.rowsPerPage">${sizes.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}

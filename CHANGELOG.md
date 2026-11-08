@@ -3,6 +3,15 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.22 (states, refresh, control border)
+
+breaking: none.
+
+* Added: `xo-refresh` on a button inside an `<xo-view>` fetches the view's data again ("Try again" after an error, a refresh button).
+* Added: `--xo-color-control-border` (3:1 against the page, WCAG 1.4.11) for the edge of buttons, fields, the combobox box and the rich text box; `--xo-color-border` stays the soft divider colour.
+* Fixed: `<xo-table>`'s empty content no longer shows after a failed request.
+* Docs site: loading, empty and error states, the mobile Menu disclosure, a 404 page, a social card per section, the focus ring and selected tab on Ember Deep (3:1), and the carousel in the brand (arrows at the sides, a pill for the current dot, thumbnails).
+
 ## 0.0.21 (accessibility checks with axe-core)
 
 breaking: none.

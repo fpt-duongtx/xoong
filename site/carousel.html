@@ -7,7 +7,7 @@
   <meta name="description" content="Cards, banners, testimonials and galleries with scroll snap.">
   <meta property="og:title" content="Carousel · xoong">
   <meta property="og:description" content="Cards, banners, testimonials and galleries with scroll snap.">
-  <meta property="og:image" content="brand/og.png">
+  <meta property="og:image" content="brand/og-controls.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
   <script src="src/palette.js"></script>
@@ -41,6 +41,26 @@
       </nav>
     </div>
   </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Carousel</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="styling.html">Styling</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html" aria-current="page">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
   <div class="layout">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
@@ -143,6 +163,17 @@
   &lt;/<span class="tok-t">xo-carousel</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
 
+</xo-tabs>
+<h2>Arrows at the sides</h2>
+<p>The arrows, dots and counter are children of the carousel's controls row. To lay them out another way, make the row and the arrows' box transparent to layout (<code>display: contents</code>) and place each piece in the carousel's own grid. This is how this site draws them:</p>
+<xo-tabs label="Layout recipe" class="code-tabs">
+  <section xo-tab="CSS"><pre data-lang="css"><code>xo-carousel { display: grid; grid-template-columns: auto minmax(<span class="tok-n">0</span>, <span class="tok-n">1</span>fr) auto; column-gap: <span class="tok-n">0.75rem</span>; align-items: center; }
+xo-carousel .xo-carousel-controls, xo-carousel .xo-carousel-nav { display: contents; }
+xo-carousel .xo-carousel-track { grid-column: <span class="tok-n">2</span>; grid-row: <span class="tok-n">1</span>; }
+xo-carousel .xo-carousel-prev { grid-column: <span class="tok-n">1</span>; grid-row: <span class="tok-n">1</span>; }
+xo-carousel .xo-carousel-next { grid-column: <span class="tok-n">3</span>; grid-row: <span class="tok-n">1</span>; }
+xo-carousel .xo-carousel-dots { grid-column: <span class="tok-n">2</span>; grid-row: <span class="tok-n">2</span>; justify-self: center; }
+xo-carousel .xo-carousel-count { grid-column: <span class="tok-n">2</span>; grid-row: <span class="tok-n">2</span>; justify-self: end; }</code></pre></section>
 </xo-tabs>
 <table class="props">
 <thead><tr><th>API</th><th>What it does</th></tr></thead>

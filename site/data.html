@@ -7,7 +7,7 @@
   <meta name="description" content="Read data with xo-view, draw a table with xo-table, and run actions with plain attributes.">
   <meta property="og:title" content="Data and tables · xoong">
   <meta property="og:description" content="Read data with xo-view, draw a table with xo-table, and run actions with plain attributes.">
-  <meta property="og:image" content="brand/og.png">
+  <meta property="og:image" content="brand/og-guides.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
   <script src="src/palette.js"></script>
@@ -41,6 +41,26 @@
       </nav>
     </div>
   </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Data and tables</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html" aria-current="page">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="styling.html">Styling</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
   <div class="layout">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
@@ -147,6 +167,39 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
       &lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"mailto:<span class="tok-i">{email}</span>"</span>&gt;<span class="tok-i">{email}</span>&lt;/<span class="tok-t">a</span>&gt;
     &lt;/<span class="tok-t">li</span>&gt;
   &lt;/<span class="tok-t">ul</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+
+</xo-tabs>
+
+<h2>Loading, empty and error</h2>
+<p>A view tells you in which state it is: <code>$loading</code> while a request runs, <code>$error</code> when it failed, and an empty list otherwise. <code>&lt;xo-table&gt;</code> shows its <code>empty</code> content only when the list is really empty (not while loading, not after an error); a <code>&lt;template slot="empty"&gt;</code> gives it any markup. <code>xo-refresh</code> on a button fetches the view's data again: a "Try again". Say what happened, what to do, and offer one action.</p>
+<p>Try it: type <strong>zzz</strong> for an empty list, or <strong>fail</strong>: the first request with it fails, and Try again then succeeds.</p>
+<xo-tabs label="Loading, empty and error states" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <xo-view class="states" get="listPeople" p-limit="4">
+      <div class="skeleton" xo-if="$loading" role="status" aria-label="Loading"><i></i><i></i><i></i></div>
+      <div class="state error" xo-if="$error" role="alert">
+        <svg class="art" viewBox="-2 -2 68 68" aria-hidden="true"><g transform="rotate(-10 32 40)"><rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/><rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/><path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/><path d="M34 31.5l-4 8 6 4-5 9" fill="none" stroke="var(--bg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><path class="m-steam" d="M44 6l6 6-6 6"/></svg>
+        <h3>Could not load people</h3>
+        <p>{$error.detail}</p>
+        <div class="row-actions"><button class="btn primary" type="button" xo-refresh>Try again</button></div>
+      </div>
+      <xo-table columns="name,email:E-mail" filters="name:Search (try zzz or fail)" empty="Nobody here">
+        <template slot="empty"><div class="state"><svg class="art" viewBox="-2 -2 68 68" aria-hidden="true"><rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/><path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/><ellipse cx="32" cy="31.5" rx="20" ry="4.5" fill="none" stroke="currentColor" stroke-width="3"/><rect class="m-ink" x="9" y="8" width="48" height="7.5" rx="3.75" transform="rotate(-14 33 12)"/><path class="empty-body" d="M20 20h24"/></svg><h3>Nobody here yet</h3><p>No one matches this search.</p></div></template>
+      </xo-table>
+    </xo-view>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">class</span>=<span class="tok-s">"states"</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span> <span class="tok-a">p-limit</span>=<span class="tok-s">"4"</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"skeleton"</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$loading"</span> <span class="tok-a">role</span>=<span class="tok-s">"status"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Loading"</span>&gt;&lt;<span class="tok-t">i</span>&gt;&lt;/<span class="tok-t">i</span>&gt;&lt;<span class="tok-t">i</span>&gt;&lt;/<span class="tok-t">i</span>&gt;&lt;<span class="tok-t">i</span>&gt;&lt;/<span class="tok-t">i</span>&gt;&lt;/<span class="tok-t">div</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"state error"</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$error"</span> <span class="tok-a">role</span>=<span class="tok-s">"alert"</span>&gt;
+    &lt;<span class="tok-t">svg</span> <span class="tok-a">class</span>=<span class="tok-s">"art"</span> <span class="tok-a">viewBox</span>=<span class="tok-s">"-2 -2 68 68"</span> <span class="tok-a">aria-hidden</span>=<span class="tok-s">"true"</span>&gt;&lt;<span class="tok-t">g</span> <span class="tok-a">transform</span>=<span class="tok-s">"rotate(-10 32 40)"</span>&gt;&lt;<span class="tok-t">rect</span> <span class="tok-a">class</span>=<span class="tok-s">"m-ink"</span> <span class="tok-a">x</span>=<span class="tok-s">"8"</span> <span class="tok-a">y</span>=<span class="tok-s">"22"</span> <span class="tok-a">width</span>=<span class="tok-s">"48"</span> <span class="tok-a">height</span>=<span class="tok-s">"7.5"</span> <span class="tok-a">rx</span>=<span class="tok-s">"3.75"</span>/&gt;&lt;<span class="tok-t">rect</span> <span class="tok-a">class</span>=<span class="tok-s">"m-ink"</span> <span class="tok-a">x</span>=<span class="tok-s">"1"</span> <span class="tok-a">y</span>=<span class="tok-s">"35"</span> <span class="tok-a">width</span>=<span class="tok-s">"12"</span> <span class="tok-a">height</span>=<span class="tok-s">"6.5"</span> <span class="tok-a">rx</span>=<span class="tok-s">"3.25"</span>/&gt;&lt;<span class="tok-t">rect</span> <span class="tok-a">class</span>=<span class="tok-s">"m-ink"</span> <span class="tok-a">x</span>=<span class="tok-s">"51"</span> <span class="tok-a">y</span>=<span class="tok-s">"35"</span> <span class="tok-a">width</span>=<span class="tok-s">"12"</span> <span class="tok-a">height</span>=<span class="tok-s">"6.5"</span> <span class="tok-a">rx</span>=<span class="tok-s">"3.25"</span>/&gt;&lt;<span class="tok-t">path</span> <span class="tok-a">class</span>=<span class="tok-s">"m-body"</span> <span class="tok-a">d</span>=<span class="tok-s">"M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"</span>/&gt;&lt;<span class="tok-t">path</span> <span class="tok-a">d</span>=<span class="tok-s">"M34 31.5l-4 8 6 4-5 9"</span> <span class="tok-a">fill</span>=<span class="tok-s">"none"</span> <span class="tok-a">stroke</span>=<span class="tok-s">"var(--bg)"</span> <span class="tok-a">stroke-width</span>=<span class="tok-s">"3"</span> <span class="tok-a">stroke-linecap</span>=<span class="tok-s">"round"</span> <span class="tok-a">stroke-linejoin</span>=<span class="tok-s">"round"</span>/&gt;&lt;/<span class="tok-t">g</span>&gt;&lt;<span class="tok-t">path</span> <span class="tok-a">class</span>=<span class="tok-s">"m-steam"</span> <span class="tok-a">d</span>=<span class="tok-s">"M44 6l6 6-6 6"</span>/&gt;&lt;/<span class="tok-t">svg</span>&gt;
+    &lt;<span class="tok-t">h3</span>&gt;Could not load people&lt;/<span class="tok-t">h3</span>&gt;
+    &lt;<span class="tok-t">p</span>&gt;<span class="tok-i">{$error.detail}</span>&lt;/<span class="tok-t">p</span>&gt;
+    &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"row-actions"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">class</span>=<span class="tok-s">"btn primary"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-refresh</span>&gt;Try again&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">div</span>&gt;
+  &lt;/<span class="tok-t">div</span>&gt;
+  &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail"</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search (try zzz or fail)"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
+    &lt;<span class="tok-t">template</span> <span class="tok-a">slot</span>=<span class="tok-s">"empty"</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"state"</span>&gt;&lt;<span class="tok-t">svg</span> <span class="tok-a">class</span>=<span class="tok-s">"art"</span> <span class="tok-a">viewBox</span>=<span class="tok-s">"-2 -2 68 68"</span> <span class="tok-a">aria-hidden</span>=<span class="tok-s">"true"</span>&gt;&lt;<span class="tok-t">rect</span> <span class="tok-a">class</span>=<span class="tok-s">"m-ink"</span> <span class="tok-a">x</span>=<span class="tok-s">"1"</span> <span class="tok-a">y</span>=<span class="tok-s">"35"</span> <span class="tok-a">width</span>=<span class="tok-s">"12"</span> <span class="tok-a">height</span>=<span class="tok-s">"6.5"</span> <span class="tok-a">rx</span>=<span class="tok-s">"3.25"</span>/&gt;&lt;<span class="tok-t">rect</span> <span class="tok-a">class</span>=<span class="tok-s">"m-ink"</span> <span class="tok-a">x</span>=<span class="tok-s">"51"</span> <span class="tok-a">y</span>=<span class="tok-s">"35"</span> <span class="tok-a">width</span>=<span class="tok-s">"12"</span> <span class="tok-a">height</span>=<span class="tok-s">"6.5"</span> <span class="tok-a">rx</span>=<span class="tok-s">"3.25"</span>/&gt;&lt;<span class="tok-t">path</span> <span class="tok-a">class</span>=<span class="tok-s">"m-body"</span> <span class="tok-a">d</span>=<span class="tok-s">"M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"</span>/&gt;&lt;<span class="tok-t">ellipse</span> <span class="tok-a">cx</span>=<span class="tok-s">"32"</span> <span class="tok-a">cy</span>=<span class="tok-s">"31.5"</span> <span class="tok-a">rx</span>=<span class="tok-s">"20"</span> <span class="tok-a">ry</span>=<span class="tok-s">"4.5"</span> <span class="tok-a">fill</span>=<span class="tok-s">"none"</span> <span class="tok-a">stroke</span>=<span class="tok-s">"currentColor"</span> <span class="tok-a">stroke-width</span>=<span class="tok-s">"3"</span>/&gt;&lt;<span class="tok-t">rect</span> <span class="tok-a">class</span>=<span class="tok-s">"m-ink"</span> <span class="tok-a">x</span>=<span class="tok-s">"9"</span> <span class="tok-a">y</span>=<span class="tok-s">"8"</span> <span class="tok-a">width</span>=<span class="tok-s">"48"</span> <span class="tok-a">height</span>=<span class="tok-s">"7.5"</span> <span class="tok-a">rx</span>=<span class="tok-s">"3.75"</span> <span class="tok-a">transform</span>=<span class="tok-s">"rotate(-14 33 12)"</span>/&gt;&lt;<span class="tok-t">path</span> <span class="tok-a">class</span>=<span class="tok-s">"empty-body"</span> <span class="tok-a">d</span>=<span class="tok-s">"M20 20h24"</span>/&gt;&lt;/<span class="tok-t">svg</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Nobody here yet&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;No one matches this search.&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">div</span>&gt;&lt;/<span class="tok-t">template</span>&gt;
+  &lt;/<span class="tok-t">xo-table</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
 
 </xo-tabs>

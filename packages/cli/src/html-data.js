@@ -29,6 +29,7 @@ export const ATTRIBUTE_DOCS = {
   'xo-layout': 'On a <template> inside <xo-router>: a layout (shell) that routes use with `layout="name"`. It must contain one element with xo-outlet.',
   'xo-outlet': 'In a layout: the element where the matched route content is shown. The layout stays while only this content changes.',
   'xo-optimistic': 'On xo-click: set these fields (`field=value,field2={path}`) on the current item immediately, and undo them if the call fails.',
+  'xo-refresh': 'On a button inside an <xo-view>: on click, fetch the view\'s data again (a "Try again" button after an error, or a refresh button).',
   'xo-param': 'On an <input> or <select>: set the view parameter of that name to its value. On other elements, on click, set a view parameter and refetch: `name=value`, `name+=n`, `name-=n`, or `name~=value` (toggle value / -value, for sorting).',
   'xo-open': 'Open the <xo-dialog> matched by this selector, for example `#add`.',
   'xo-close': 'Close the <xo-dialog> this element is in.',

@@ -1,7 +1,7 @@
 /* Optional styles for @xoong/richtext, in one @layer, using the --xo-* tokens of @xoong/ui with fallbacks. */
 @layer xoong-richtext {
   xo-richtext { display: block; }
-  .xo-richtext-box { border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
+  .xo-richtext-box { border: 1px solid var(--xo-color-control-border, #838c9b); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
   .xo-richtext-box:has(.xo-richtext-editable:focus) { outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 1px; }
   /* one row, never wrapped and never scrolled sideways: the full toolbar fits from 580px of the editor's width, the compact one below it (the More menu holds the rest) */
   .xo-richtext-toolbar { display: flex; flex-wrap: nowrap; align-items: center; gap: 2px; padding: var(--xo-space-1, .25rem); border-bottom: 1px solid var(--xo-color-border, #d8dee4); }

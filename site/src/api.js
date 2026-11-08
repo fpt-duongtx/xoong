@@ -23,7 +23,10 @@ const clean = (b) => ({
   topics: Array.isArray(b.topics) ? b.topics : [], keywords: Array.isArray(b.keywords) ? b.keywords : [], bio: b.bio ?? '',
 });
 
+let failed = false; // the demo of an error state: the first search for "fail" is refused, the retry works
+
 function list(q) {
+  if (!failed && q.get('name') === 'fail') { failed = true; return problem(500, 'unavailable', 'The people service is not answering'); }
   let rows = people.filter((p) => (!q.get('name') || p.name.toLowerCase().includes(q.get('name').toLowerCase())) && (!q.get('role') || p.role === q.get('role')));
   const sort = q.get('sort');
   if (sort) {

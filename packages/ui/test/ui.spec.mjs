@@ -209,6 +209,21 @@ describe('<xo-form>', () => {
   });
 });
 
+describe('xo-refresh', () => {
+  it('a button inside the view fetches its data again: Try again after an error, then the list appears', async () => {
+    let fail = true;
+    const api = mockApi(table, { listUsers: () => (fail ? respond(503, { error: { code: 'down', message: 'Service down' } }) : { items: [{ id: 1, name: 'Ada' }] }) });
+    screen = await mount('<xo-view get="listUsers"><p class="err" xo-if="$error">{$error.detail}</p><button id="again" xo-refresh>Try again</button><ul><li xo-each="items">{name}</li></ul></xo-view>', { api });
+    await screen.settle();
+    expect(screen.$('.err').textContent).toBe('Service down');
+    fail = false;
+    await screen.click('#again');
+    await screen.settle();
+    expect(screen.$('.err')).toBeNull();
+    expect(screen.texts('li')).toEqual(['Ada']);
+  });
+});
+
 describe('<xo-dialog>', () => {
   it('a mistyped xo-open selector is reported, not thrown from the page-wide click handler', async () => {
     const seen = [];
