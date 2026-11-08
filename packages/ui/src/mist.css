@@ -1291,6 +1291,9 @@
   .xo-calendar button[aria-pressed="true"]:not(.is-range):hover { background: var(--xo-color-primary); }
   .xo-calendar button.is-range[aria-pressed="true"] { background: var(--xo-color-accent-soft); }
   xo-date .xo-input-wrap input, .xo-input-wrap--end:has(.xo-date-open) input { padding-left: 12px; padding-right: 44px; }
+  .xo-time { display: inline-flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
+  .xo-time > select { width: auto; min-width: 5rem; }
+  .xo-time > span { font-weight: 600; color: var(--xo-color-muted); line-height: 1; }
 
   /* ---- skin ---- */
   :root { --shadow-sm: 0 1px 2px color-mix(in srgb, var(--xo-color-text) 6%, transparent); --shadow-float: 0 12px 32px color-mix(in srgb, var(--xo-color-text) 14%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 8%, transparent); --xo-shadow-pop: var(--shadow-float); --xo-shadow-raised: none; --xo-focus: 2px solid var(--xo-color-accent); --xo-focus-thin: 2px solid var(--xo-color-accent); }

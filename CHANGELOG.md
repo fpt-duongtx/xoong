@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
+## 0.0.34 (slider, stepper, password, copy)
+
+breaking: none.
+
+* Added in `@xoong/controls`, each with its own entry point: `<xo-slider>` (native range, fill, stop labels), `<xo-stepper>` (spinbutton semantics, clamping, keys), `<xo-password>` (show/hide button, `aria-pressed`), `<xo-copy>` (read-only value, Copy then Copied, `copied` event). Controls budget raised to 15.8 KB for them.
+* Mist (kit ux/time-style): the layout of `<xo-time>`.
+
 ## 0.0.33 (xo-time, date picker style)
 
 breaking: none.

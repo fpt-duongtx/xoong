@@ -726,3 +726,8 @@ button[aria-pressed="true"]:not(.chip, [role="tab"], .xo-seg button) { backgroun
 .xo-calendar button[aria-pressed="true"]:not(.is-range):hover { background: var(--xo-color-primary); }
 .xo-calendar button.is-range[aria-pressed="true"] { background: var(--xo-color-accent-soft); }
 xo-date .xo-input-wrap input, .xo-input-wrap--end:has(.xo-date-open) input { padding-left: 12px; padding-right: 44px; }
+
+/* xo-time: two native selects around a colon */
+.xo-time { display: inline-flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
+.xo-time > select { width: auto; min-width: 5rem; }
+.xo-time > span { font-weight: 600; color: var(--xo-color-muted); line-height: 1; }
