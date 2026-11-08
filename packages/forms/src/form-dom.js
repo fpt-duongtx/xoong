@@ -208,6 +208,7 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
   observer?.observe(form, { childList: true, subtree: true, attributes: true, attributeFilter: ['name'] });
 
   // A dirty form announces itself (a router asks before the page is left), and says when it is clean again.
+  const stopArrays = model.onArrayChange((detail) => form.dispatchEvent(new CustomEvent('xo-array-change', { bubbles: true, detail }))); // the add, remove and move buttons, a drag, or code
   const stopDirty = effect(() => form.dispatchEvent(new CustomEvent('xo-dirty', { bubbles: true, detail: { dirty: model.dirty } })));
 
   // ---- the record underneath: a live update refreshes a pristine form, a dirty one keeps its draft ----------------------------
@@ -247,6 +248,7 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     observer?.disconnect();
     stopRecord();
     stopDirty();
+    stopArrays();
     form.dispatchEvent(new CustomEvent('xo-dirty', { bubbles: true, detail: { dirty: false } }));
     for (const el of [...bound.keys()]) unbind(el);
   }

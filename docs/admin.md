@@ -172,6 +172,7 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
 * **Submit.** Touch all, validate (async rules included), and when invalid nothing is sent: `xo-invalid` fires, then a cancelable `xo-reveal` `{ path }` lets the
   application show the field (switch a tab) before it is focused. Server field errors (problem+json pointers, FastAPI, envelopes) land on the same paths and
   clear when the field is edited.
+* **Lists.** `xo-array-change` bubbles from the form when an array gains, loses or reorders an item (the add, remove and move buttons, a drag, or `model.append`, `removeAt`, `moveItem`): `detail: { path, op: 'add' | 'remove' | 'move', from, to }`. A UI that keeps a selected row follows it; `model.onArrayChange(fn)` is the same for code.
 * **Hints** for presentation (`xoong.hints.json`, `fields["Schema.property"]`): `label`, `hint`, `placeholder`, `widget` (a built-in name or the tag of an `XoControl`),
   `order`, `readOnly`, `hidden`, `group`, `emptyAs`, `pruneEmpty`; any other key is passed through to the widget (`schema.hints`). The same can be written **in the OpenAPI document**
   on any node, inline objects included: `x-xoong-widget`, `x-xoong-prune-empty: true`, `x-xoong-empty-as: "null"`; every other `x-*` extension (for example `x-rainlet-localized`)

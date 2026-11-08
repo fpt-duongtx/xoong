@@ -80,7 +80,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   The model validates (novalidate); errors show after blur/submit.
   `$form.dirty|valid|submitting|stale|errors['a.b']|touched[..]|filled[..]`. Arrays/unions: `xo-each="blocks"` over the draft with
   `name="blocks[{$index}].title"`, `xo-add="blocks" xo-with="type=image"`, `xo-remove="blocks[{$index}]"`, `xo-move="blocks[{$index}]:up"`, `xo-drag="blocks[{$index}]"` (row handle), `xo-if="type=image"`. Rules: `form.rules = { slug: (v, { record }) => '' | 'message',
-  '*': (record) => ({ path: 'message' }) }` (async ok); `form.serialize = (draft, body) => body`. Invalid submit: cancelable `xo-reveal` {path}, then focus; `xo-invalid`.
+  '*': (record) => ({ path: 'message' }) }` (async ok); `form.serialize = (draft, body) => body`. Invalid submit: cancelable `xo-reveal` {path}, then focus; `xo-invalid`. `xo-array-change` {path, op, from, to}.
 
 ## Admin set (@xoong/ui; `import '@xoong/ui'`, `<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">`)
     <xo-view get="/users" live>
@@ -128,7 +128,6 @@ Failures become XoongError (problem+json, `{ error: { code, message, retry_after
     const screen = await mount('<xo-view get="/users">...</xo-view>', { api });
     await screen.click('button'); await screen.submit('form', { name: 'Cy' }); await screen.push(event);
     expect(screen.texts('li')).toEqual([...]); expect(api.unhandled).toEqual([]);
-Mock the network, not the data layer.
 
 ## Limits today (tell the user, do not work around them)
 Swagger 2.0 is converted by `sync` (basic; use `npx swagger2openapi` for exotic files). No request-time SSR (prerender per URL: `xoong render --url /path`), no WebSocket.

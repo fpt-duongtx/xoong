@@ -75,6 +75,8 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
   let draft = clone(baseline);
   /** @type {Record<string, string>} */ let errors = {};
   /** @type {Record<string, string>} */ let serverErrors = {};
+  /** @type {Set<(change: { path: string, op: 'add' | 'remove' | 'move', from?: number, to?: number }) => void>} */ const arrayListeners = new Set();
+  const arrayChanged = (/** @type {any[]} */ parent, op, from, to) => { const change = { path: pathKey(parent), op, from, to }; for (const fn of arrayListeners) fn(change); };
   /** @type {Record<string, string>} */ let asyncErrors = {};
   const asyncToken = new Map();
   const touchedSet = new Set();
@@ -262,6 +264,7 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
       else if (item === undefined) item = items?.t === 'string' ? '' : defaults(items) ?? (items?.t === 'object' ? {} : undefined);
       draft = setAt(draft, parts, [...current, item]);
       publish(runRules(undefined));
+      arrayChanged(parts, 'add', undefined, current.length);
       return current.length;
     },
 
@@ -275,6 +278,7 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
       draft = setAt(draft, parent, list.filter((_, i) => i !== index));
       remap(parent, (i) => (i === index ? -1 : i > index ? i - 1 : i));
       publish(runRules(undefined));
+      arrayChanged(parent, 'remove', index, undefined);
     },
 
     /** Move the array item at `path` by `delta` places (-1 up, +1 down); a move past either end does nothing. */
@@ -292,7 +296,11 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
       draft = setAt(draft, parent, next);
       remap(parent, (i) => (i === from ? to : from < to ? (i > from && i <= to ? i - 1 : i) : (i >= to && i < from ? i + 1 : i)));
       publish(runRules(undefined));
+      arrayChanged(parent, 'move', from, to);
     },
+
+    /** Be told when an array gains, loses or reorders an item, from any source (buttons, a drag, code): `{ path, op, from, to }`. Returns the stop function. */
+    onArrayChange(fn) { arrayListeners.add(fn); return () => arrayListeners.delete(fn); },
 
     touch(path) { touchedSet.add(pathKey(parsePath(path))); publish(); },
     /** Mark every field and every field with an error as touched (what submit does, so all errors show). */

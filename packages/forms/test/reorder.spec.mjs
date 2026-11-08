@@ -80,4 +80,27 @@ describe('reordering rows', () => {
     const foreign = drag('dragover', handles()[0], { types: ['text/plain'], getData: () => '' });
     expect(foreign.defaultPrevented).toBe(false); // not one of ours
   });
+
+  it('xo-array-change tells the page what happened to a list: add, remove, move by button, a drag, or code', async () => {
+    screen = await mount(FORM, { api: api() });
+    await settle();
+    const seen = [];
+    screen.$('form').addEventListener('xo-array-change', (e) => seen.push(e.detail));
+    screen.$('#add-tag').click();
+    rows()[0].querySelector('.up').click(); // the first row cannot move up: nothing
+    rows()[1].querySelector('.up').click();
+    rows()[0].querySelector('.rm').click();
+    const data = dt();
+    drag('dragstart', screen.$$('.tags .h')[0], data);
+    drag('drop', screen.$$('.tags .h')[1], data);
+    model().append('blocks', 'z');
+    await settle();
+    expect(seen).toEqual([
+      { path: 'tags', op: 'add', from: undefined, to: 2 },
+      { path: 'tags', op: 'move', from: 1, to: 0 },
+      { path: 'tags', op: 'remove', from: 0, to: undefined },
+      { path: 'tags', op: 'move', from: 0, to: 1 },
+      { path: 'blocks', op: 'add', from: undefined, to: 2 },
+    ]);
+  });
 });
