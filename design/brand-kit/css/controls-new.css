@@ -731,3 +731,43 @@ xo-date .xo-input-wrap input, .xo-input-wrap--end:has(.xo-date-open) input { pad
 .xo-time { display: inline-flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
 .xo-time > select { width: auto; min-width: 5rem; }
 .xo-time > span { font-weight: 600; color: var(--xo-color-muted); line-height: 1; }
+
+/* ---- the real elements: xo-slider, xo-stepper, xo-password, xo-copy ---- */
+xo-slider, xo-stepper, xo-password, xo-copy { display: block; }
+xo-slider > .xo-range { display: block; }
+.xo-range:focus-visible { outline: none; }
+.xo-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--xo-color-accent); outline-offset: 2px; }
+.xo-range:focus-visible::-moz-range-thumb { outline: 2px solid var(--xo-color-accent); outline-offset: 2px; }
+.xo-range::-webkit-slider-thumb { background: var(--xo-color-surface); }
+.xo-range::-moz-range-thumb { background: var(--xo-color-surface); }
+.xo-range:disabled::-webkit-slider-runnable-track { background: var(--xo-color-border); }
+
+xo-stepper > .xo-stepper { display: inline-flex; }
+.xo-stepper button .ic { --xo-icon: 18px; }
+.xo-stepper button { display: inline-grid; place-items: center; padding: 0; min-height: 0; border-radius: 0; }
+.xo-stepper input { min-height: 0; border-radius: 0; box-shadow: none; }
+.xo-stepper:focus-within { border-color: var(--xo-color-accent); outline: var(--xo-focus); outline-offset: 0; }
+.xo-stepper input:focus-visible { outline: none; box-shadow: none; }
+
+xo-password .xo-input-wrap--end { display: flex; }
+xo-password .xo-input-end { position: absolute; right: 4px; top: 50%; translate: 0 -50%; display: inline-grid; place-items: center; color: var(--xo-color-muted); }
+xo-password .xo-input-end:hover { color: var(--xo-color-text); }
+xo-password .xo-input-end .ic { --xo-icon: 18px; }
+xo-password .xo-input-end[aria-pressed="true"] { color: var(--xo-color-accent-strong); background: var(--xo-color-accent-soft); border-color: transparent; }
+xo-password .xo-input-end[aria-pressed="true"] .ic[data-ic="eye"] { --ic: var(--ic-eye-off); }
+xo-password .xo-input-wrap--end input { padding-right: 44px; }
+
+xo-copy > .xo-copyfield { display: flex; }
+.xo-copyfield input { flex: 1; min-width: 0; }
+.xo-copyfield button { display: inline-flex; align-items: center; gap: 8px; flex: none; white-space: nowrap; }
+.xo-copyfield button .ic { --xo-icon: 18px; }
+.xo-copyfield button[data-state="copied"] { color: color-mix(in srgb, var(--xo-color-success) 55%, var(--xo-color-text)); background: color-mix(in srgb, var(--xo-color-success) 12%, var(--xo-color-surface)); border-color: var(--xo-color-success); }
+
+/* fixes found on the real elements */
+xo-slider > input.xo-range, input.xo-range { width: 100%; height: 24px; min-height: 0; padding: 0; background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+xo-slider > input.xo-range:hover { border: 0; }
+xo-password > .xo-input-wrap, xo-password .xo-input-wrap--end { display: flex; position: relative; width: 100%; }
+xo-password .xo-input-wrap input { width: 100%; padding-left: 12px; padding-right: 44px; }
+xo-copy .xo-copyfield input { background: var(--xo-color-subtle); }
+.xo-input-wrap button.xo-input-end, xo-password button.xo-input-end { position: absolute; right: 4px; top: 50%; translate: 0 -50%; }
+.xo-input-wrap button.xo-date-open { position: absolute; }
