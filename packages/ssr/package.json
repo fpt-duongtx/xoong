@@ -19,9 +19,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@xoong/core": "*",
-    "@xoong/data": "*",
-    "@xoong/ui": "*",
+    "@xoong/core": "0.0.29",
+    "@xoong/data": "0.0.29",
+    "@xoong/ui": "0.0.29",
     "happy-dom": "^21.0.4"
   },
   "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
@@ -33,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }

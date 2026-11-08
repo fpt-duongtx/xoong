@@ -40,6 +40,12 @@
   },
   "homepage": "https://github.com/fpt-duongtx/xoong#readme",
   "dependencies": {
-    "@xoong/core": "*"
+    "@xoong/core": "0.0.29"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.12"
   }
 }

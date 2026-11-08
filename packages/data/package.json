@@ -15,7 +15,7 @@
   "sideEffects": false,
   "license": "MIT",
   "dependencies": {
-    "@xoong/core": "*"
+    "@xoong/core": "0.0.29"
   },
   "files": [
     "src"
@@ -35,5 +35,11 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
 }

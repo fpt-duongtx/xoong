@@ -3,6 +3,11 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
+## Unreleased
+
+* Publishing to npm is prepared, not done: every package has a LICENSE, a README, `publishConfig`, `engines` and exact lockstep dependencies (`node tools/set-version.mjs`, `node tools/package-files.mjs`); `@xoong/forms` and `@xoong/i18n` now ship the type declarations their `exports` already promised; `test/publish.test.mjs` checks the tarballs; the manual workflow `publish.yml` (dry run by default) and the runbook `docs/publishing.md` are in.
+* Docs site: Architecture section (data flow, forms, rendering, router, build, tooling) with diagrams; the theme builder preview sets every palette variable of its region.
+
 ## 0.0.29 (Mist, table cards)
 
 breaking: none.

@@ -10,8 +10,8 @@
     "vitest": ">=2"
   },
   "dependencies": {
-    "@xoong/core": "*",
-    "@xoong/data": "*"
+    "@xoong/core": "0.0.29",
+    "@xoong/data": "0.0.29"
   },
   "license": "MIT",
   "files": [
@@ -32,5 +32,11 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
 }

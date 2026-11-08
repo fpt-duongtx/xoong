@@ -127,7 +127,7 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 .dg-fig { margin: 1.4rem 0 2rem; }
 .dg-scroll { overflow-x: auto; padding: 0.5rem; border: 1px solid var(--line); border-radius: var(--radius, 8px); background: var(--surface); }
 .dg-scroll:focus-visible { outline: 3px solid var(--ember-deep); outline-offset: 2px; }
-.dg-fig > .hint { margin: 0.5rem 0 0; max-width: var(--measure, 44rem); }
+.dg-fig > .hint { margin: 0.5rem 0 0; padding-inline: 4px; max-width: var(--measure, 44rem); }
 
 .dg { display: block; width: 100%; height: auto; margin-inline: auto; }
 .dg-sm { min-width: 26rem; max-width: 35rem; }
@@ -141,7 +141,7 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 .dg .dg-start { text-anchor: start; }
 .dg .dg-end { text-anchor: end; }
 .dg .dg-lab { font-size: 13px; font-weight: 600; stroke: var(--surface); stroke-width: 5px; paint-order: stroke; stroke-linejoin: round; }
-.dg .dg-zlab { font-size: 13px; font-weight: 700; fill: var(--muted); text-anchor: start; }
+.dg .dg-zlab { font-size: 13px; font-weight: 700; fill: var(--muted); text-anchor: start; stroke: var(--surface); stroke-width: 5px; paint-order: stroke; stroke-linejoin: round; }
 .dg .dg-note-text { font-size: 13px; font-weight: 600; }
 
 /* boxes */

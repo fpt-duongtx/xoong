@@ -309,7 +309,7 @@ describe('documentation site', () => {
 
   describe('accessibility (axe-core, WCAG 2.0 and 2.1 A and AA)', () => {
     const scan = async (label) => {
-      const found = await axe(page, { exclude: ['#theme-preview'] }); // the builder's live preview is a scoped theme: until it sets every token, in dark its muted and danger text fall on a light surface
+      const found = await axe(page);
       expect(found, label).toEqual([]);
     };
     const scheme = async (colorScheme, palette) => {

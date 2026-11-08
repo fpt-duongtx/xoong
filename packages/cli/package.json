@@ -1,7 +1,7 @@
 {
   "name": "@xoong/cli",
   "version": "0.0.29",
-  "description": "xoong CLI: sync (OpenAPI -> typed client tables), doctor (spec audit).",
+  "description": "The xoong command line: sync (OpenAPI to typed operations), doctor, check (lint screens), dev, build (strict-CSP static output), render and i18n.",
   "type": "module",
   "bin": {
     "xoong": "src/cli.js"
@@ -17,9 +17,9 @@
   "dependencies": {
     "parse5": "^8.1.0",
     "yaml": "^2.8.0",
-    "@xoong/server": "*",
-    "@xoong/core": "*",
-    "@xoong/i18n": "*"
+    "@xoong/server": "0.0.29",
+    "@xoong/core": "0.0.29",
+    "@xoong/i18n": "0.0.29"
   },
   "files": [
     "src"
@@ -42,5 +42,8 @@
   "bugs": {
     "url": "https://github.com/fpt-duongtx/xoong/issues"
   },
-  "homepage": "https://github.com/fpt-duongtx/xoong#readme"
+  "homepage": "https://github.com/fpt-duongtx/xoong#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }

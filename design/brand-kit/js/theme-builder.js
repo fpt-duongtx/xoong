@@ -121,8 +121,11 @@
 
   /* ---------- preview ---------- */
   const preview = $('#theme-preview'); let previewScheme = 'light';
+  // site rules may read the palette variables (--text, --muted, --danger ...) instead of the --xo-* tokens: inside the preview they all point at the previewed theme
+  const ALIASES = [['--text', '--xo-color-text'], ['--text-2', '--xo-color-text-2'], ['--text-3', '--xo-color-muted'], ['--muted', '--xo-color-muted'], ['--bg', '--xo-color-bg'], ['--surface', '--xo-color-surface'], ['--card', '--xo-color-surface'], ['--broth', '--xo-color-subtle'], ['--sunken', '--xo-color-subtle'], ['--line', '--xo-color-border'], ['--line-strong', '--xo-color-control-border'], ['--accent', '--xo-color-accent'], ['--ember', '--xo-color-accent'], ['--ember-deep', '--xo-color-accent'], ['--accent-strong', '--xo-color-accent-strong'], ['--ember-soft', '--xo-color-accent-soft'], ['--accent-tint', '--xo-color-accent-soft'], ['--danger', '--xo-color-danger'], ['--herb', '--xo-color-success'], ['--ok', '--xo-color-success'], ['--sesame', '--xo-color-warning'], ['--warn', '--xo-color-warning'], ['--primary', '--xo-color-primary'], ['--primary-text', '--xo-color-primary-text'], ['--shadow-float', '--xo-shadow-pop']];
   function applyPreview() {
     for (const [k, v] of tokens()) preview.style.setProperty(k, v);
+    for (const [k, v] of ALIASES) preview.style.setProperty(k, `var(${v})`);
     preview.style.colorScheme = state.schemes === 'both' ? previewScheme : state.schemes;
     preview.style.background = 'var(--xo-color-bg)'; preview.style.color = 'var(--xo-color-text)'; preview.style.fontFamily = 'var(--xo-font)'; preview.style.fontSize = 'var(--xo-text)';
   }

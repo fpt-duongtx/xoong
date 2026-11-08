@@ -1,0 +1,50 @@
+# Publishes the packages to npm. MANUAL ONLY: nothing here runs by itself.
+#
+# Run it from the Actions tab ("Run workflow"). It defaults to a dry run (npm checks everything and uploads nothing).
+# A real run needs the repository secret NPM_TOKEN (see docs/publishing.md) and `dry_run` switched off.
+# The packages are published in dependency order, with provenance (npm shows that they were built from this repository).
+name: publish
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run: check and pack, upload nothing'
+        type: boolean
+        default: true
+      tag:
+        description: 'npm dist-tag to publish under (next while xoong is 0.0.x; promote to latest later)'
+        type: string
+        default: next
+
+permissions:
+  contents: read
+  id-token: write # for provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - name: Lint and test
+        run: |
+          npm run lint
+          npx vitest run
+      - name: Publish in dependency order
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DRY: ${{ inputs.dry_run }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          flag=""
+          if [ "$DRY" = "true" ]; then flag="--dry-run"; fi
+          for p in core data forms i18n ui controls richtext server cli test ssr mcp lsp xoong; do
+            echo "::group::$p"
+            npm publish -w "packages/$p" --provenance --access public --tag "$TAG" $flag
+            echo "::endgroup::"
+          done
