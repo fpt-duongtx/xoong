@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+* Fixed: an `<xo-view>` inside another `<xo-view>` bound its children against the outer data (the inner view stayed on `$loading`); it now binds its own children against its own data, and `p-id="{id}"` on a nested view in an `xo-each` row takes the row's id.
+* Added: `<xo-pager page-size="12">` (Previous, Next and "1–12 of 48") for lists that are not tables; `<xo-table>` uses the same markup.
+* Dev diagnostics: a view with no value for a path parameter logs a warning naming it (`add p-id="..."`); an effect that keeps triggering itself stops with an error that names it instead of hanging the tab.
+* Docs: `docs/scope-and-lifecycle.md`, the rules of scopes, nested views, view start and `p-*` vs `url-params` vs `?param`.
+
 ## 0.0.42 (the rest of the Mist controls, types, docs)
 
 breaking: none.

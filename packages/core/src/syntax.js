@@ -12,7 +12,7 @@ export const XO_ELEMENTS = ['xo-view'];
 
 /** Attributes and elements that come with @xoong/ui (the admin set). */
 export const XO_UI_ATTRIBUTES = ['xo-open', 'xo-close', 'xo-route', 'xo-layout', 'xo-outlet', 'xo-guard'];
-export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast', 'xo-router'];
+export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast', 'xo-router', 'xo-pager'];
 
 /** Attributes and elements of @xoong/controls and @xoong/richtext. */
 export const XO_CONTROL_ATTRIBUTES = ['xo-tab', 'xo-menu-trigger', 'xo-tooltip', 'xo-consent-open'];

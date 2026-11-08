@@ -72,7 +72,7 @@ test('untracked does not subscribe', () => {
 
 test('runaway effect loop is stopped with a clear error', () => {
   const a = signal(0);
-  assert.throws(() => effect(() => { a.value = a.value + 1; }), /did not settle/);
+  assert.throws(() => effect(() => { a.value = a.value + 1; }), /did not settle.*a\.value/);
 });
 
 test('a throwing effect does not stop other effects from running', () => {

@@ -23,6 +23,7 @@
  * The operation must declare those query parameters; `xoong check` reports it when it does not (XO250).
  */
 import { defineTemplate } from '@xoong/data/view';
+import { pagerMarkup } from './pager.js';
 
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -68,12 +69,6 @@ defineTemplate('xo-table', (el, { host }) => {
   <thead><tr>${tickAll}${head}${actions ? '<th scope="col"><span class="xo-visually-hidden" xo-t="xoong.table.actions">Actions</span></th>' : ''}</tr></thead>
   <tbody><tr xo-each="${esc(of)}">${tickRow}${cells}${actions ?`<td class="xo-actions">${actions}</td>` : ''}</tr></tbody>
 </table>${empty ? `
-<div class="xo-empty" xo-if="!${esc(of)}"><div xo-if="!$loading"><div xo-if="!$error">${empty}</div></div></div>` : ''}${pageSize ? `
-<nav class="xo-pager" aria-label="Pagination" xo-t="aria-label:xoong.table.pagination">
-  <span class="xo-range" xo-if="total" xo-t="xoong.table.range">{$from}–{$to} of {total}</span>${sizes.length ? `
-  <select class="xo-page-size" xo-param="limit" aria-label="Rows per page" xo-t="aria-label:xoong.table.rowsPerPage">${sizes.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}
-  <button type="button" xo-if="$hasPrev" xo-param="offset-=${pageSize}" xo-t="xoong.table.previous">Previous</button>
-  <button type="button" xo-if="$hasNext" xo-param="offset+=${pageSize}" xo-t="xoong.table.next">Next</button>
-</nav>` : ''}`;
+<div class="xo-empty" xo-if="!${esc(of)}"><div xo-if="!$loading"><div xo-if="!$error">${empty}</div></div></div>` : ''}${pageSize ? pagerMarkup({ pageSize, sizes }) : ''}`;
   return box;
 });

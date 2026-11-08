@@ -101,6 +101,7 @@ class XoView extends XoElement {
   /** @type {Node[] | null} */ #tpl = null;
   /** @type {(() => void)[]} */ #bound = [];
   #params = signal(/** @type {Record<string, any>} */ ({}));
+  #warned = new Set();
   #release = null;
   /** Fetch the selected query again (xo-refresh). */ refresh = () => {};
   /** @type {AbortController | null} */ #streamCtl = null;
@@ -254,6 +255,12 @@ class XoView extends XoElement {
       q.value = null;
       this.clearSelection(); // other rows are on screen now
       if (!ref) return;
+      try { // a path parameter without a value: say so once (the symptom is a request to /users/{id} and an empty screen)
+        for (const m of client.op(ref.startsWith('/') ? `GET ${ref}` : ref).path.matchAll(/\{([^}]+)\}/g)) {
+          const v = params[m[1]];
+          if ((v == null || v === '') && !this.#warned.has(m[1])) { this.#warned.add(m[1]); console.warn(`xoong: <xo-view get="${ref}"> has no value for {${m[1]}}: add p-${m[1]}="..." (or p-${m[1]}=":${m[1]}" from a route)`); }
+        }
+      } catch { /* an unknown operation is reported by the query below */ }
       try {
         current = client.query(ref.startsWith('/') ? `GET ${ref}` : ref, params); // "/users" or an operationId
       } catch (e) {
@@ -398,6 +405,7 @@ function bindNode(node, scope, ctx, disposers) {
       }));
     }
   }
+  if (el.localName === 'xo-view') return; // a nested view binds its own children against its own data when it starts; the outer pass must not touch them (its `p-*` attributes above are bound to the outer scope)
   if (!translated) for (const child of [...el.childNodes]) bindNode(child, childScope, ctx, disposers); // a translated element's text is the message, not markup
 }
 

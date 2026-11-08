@@ -10,6 +10,7 @@
       "default": "./src/index.js"
     },
     "./table": "./src/table.js",
+    "./pager": "./src/pager.js",
     "./form": "./src/form.js",
     "./dialog": "./src/dialog.js",
     "./toast": "./src/toast.js",

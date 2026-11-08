@@ -5,6 +5,9 @@ Status: **Draft**. Package: `@xoong/data`.
 The data layer turns an OpenAPI 3.x document into a typed client, an automatic
 cache, a shared entity store, derived views and live updates.
 
+For the rules of `{path}` scopes, nested views, when a view starts and how `p-*`, `url-params` and `?param` differ, see
+[scope-and-lifecycle.md](scope-and-lifecycle.md).
+
 ## 1. Sync
 
 ```bash

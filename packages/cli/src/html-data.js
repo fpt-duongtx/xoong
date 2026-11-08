@@ -78,6 +78,7 @@ export const ELEMENT_DOCS = {
   'xo-spinner': ['A loading spinner (@xoong/controls), `role=status`; `label=""` makes it decorative.', [['label', 'What is loading.'], ['size', '`md` or `lg`.']]],
   'xo-steps': ['Progress through a flow of steps (@xoong/controls): the children are the step titles; `aria-current=step` marks the current one; done steps show a check.', [['current', 'Index of the current step (from 0).'], ['label', 'Accessible name of the list.']]],
   'xo-inline-edit': ['Text you rename in place (@xoong/controls): select it or press the Rename button; Enter saves, Escape cancels. Fires `save` and `cancel`.', [['name', 'Form field path.'], ['value', 'The text.'], ['label', 'Accessible name of the Rename button.'], ['disabled', 'Not available.'], ['readonly', 'Not editable.']]],
+  'xo-pager': ['Previous and Next (and the "1–12 of 48" text) for any list in the enclosing <xo-view>: a tile grid, a thread list. The same pager <xo-table page-size> draws.', [['page-size', 'Rows per page: sets `limit`; the buttons change `offset`. The response needs a `total`.'], ['page-sizes', 'Comma-separated rows-per-page choices.']]],
   'xo-dialog': ['A modal on the native <dialog>. Open it with xo-open, close it with xo-close or by submitting a form inside.', []],
 };
 

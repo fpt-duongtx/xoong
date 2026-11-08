@@ -35,12 +35,15 @@ function flush() {
   try {
     // Effects may schedule more effects while running; loop until stable.
     let guard = 0;
+    /** @type {Map<unknown, number>} */ const runs = new Map();
     while (pending.size) {
-      if (++guard > 10000) {
-        pending.clear();
-        throw new Error('xoong: effect loop did not settle (an effect keeps writing a signal it reads)');
-      }
       const [next] = pending;
+      const n = (runs.get(next) ?? 0) + 1;
+      runs.set(next, n);
+      if (++guard > 10000 || n > 200) { // the same effect 200 times in one flush: it keeps triggering itself (or a pair of effects trigger each other)
+        pending.clear();
+        throw new Error(`xoong: effect loop did not settle (an effect keeps writing a signal it reads): ${String(/** @type {any} */ (next).fn).replace(/\s+/g, ' ').slice(0, 200)}`);
+      }
       pending.delete(next);
       // One broken effect must not stop the others from running.
       try { next.run(); } catch (e) { errors.push(e); }
