@@ -214,6 +214,13 @@ describe('submit', () => {
     expect(screen.$('[aria-invalid="true"]')).toBeNull();
   });
 
+  it('xo-form-ready fires on the form when its model exists, for a child control that needs it', async () => {
+    const seen = [];
+    document.addEventListener('xo-form-ready', (e) => seen.push([e.target.localName, e.detail.model === e.target.model]), { once: true });
+    screen = await mount('<xo-view><form xo-submit="createArticle"><input name="slug"><button>Add</button></form></xo-view>', { api: api() });
+    expect(seen).toEqual([['form', true]]);
+  });
+
   it('xo-reveal: the app can reveal a hidden field before it is focused; hidden controls never block the submit', async () => {
     const a = api();
     screen = await mount(`<xo-view get="getArticle" p-id="5"><form xo-submit="updateArticle"><input name="slug"><input name="title.en"><div id="tab" hidden><input name="title.vi" required></div><button>Save</button></form></xo-view>`, { api: a });

@@ -33,10 +33,19 @@ class XoDialog extends XoElement {
     if (!d || d.open) return;
     if (d.showModal) d.showModal(); else d.setAttribute('open', ''); // DOMs without <dialog> support (tests)
   }
-  close() {
+  /** Open it and wait for the answer: resolves with the `returnValue` when it closes (`xo-close value="ok"`, `close('ok')`, or '' for Escape and Cancel). */
+  open() {
+    const d = this.#dialog;
+    if (!d) return Promise.resolve('');
+    return new Promise((resolve) => {
+      d.addEventListener('close', () => resolve(d.returnValue), { once: true });
+      this.show();
+    });
+  }
+  close(/** @type {string | undefined} */ value) {
     const d = this.#dialog;
     if (!d?.open) return;
-    if (d.close) d.close(); else d.removeAttribute('open');
+    if (d.close) d.close(value); else { d.returnValue = value ?? ''; d.removeAttribute('open'); d.dispatchEvent(new Event('close')); }
   }
 }
 define('xo-dialog', XoDialog);
@@ -56,6 +65,7 @@ define('xo-dialog', XoDialog);
         console.error(`xoong: xo-open="${selector}" is not a valid selector (use an id such as #add)`);
       }
     }
-    if (target.closest?.('[xo-close]')) target.closest('xo-dialog')?.close();
+    const closer = target.closest?.('[xo-close]');
+    if (closer) closer.closest('xo-dialog')?.close(closer.getAttribute('value') ?? undefined);
   });
 }

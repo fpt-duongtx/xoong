@@ -80,6 +80,11 @@ export class XoElement extends Base {
     this.disconnected?.();
   }
 
+  /** Resolves when the element's children are there: at once when the page is parsed, else after the parser reached the end of the document. Await it in connected(). */
+  ready() {
+    return new Promise((r) => (document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', () => r(this), { once: true }) : r(this)));
+  }
+
   /** Side effect bound to this element's lifetime. @param {() => void | (() => void)} fn */
   effect(fn) {
     this.#disposers.push(effect(fn));

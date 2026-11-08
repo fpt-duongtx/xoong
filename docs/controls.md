@@ -88,6 +88,18 @@ the control replaces the row editor:
 
 or `x-xoong-widget: xo-tags` in the OpenAPI document.
 
+## Building elements for your own package
+
+The pieces a package of widgets (a media library, a block editor) usually needs:
+
+* **Children are not there yet.** The parser connects an element before its children exist. `await this.ready()` in `connected()` resolves when they can be read (at once for an element made after load).
+* **Props are attribute to property.** Setting `el.value = x` changes the signal, not the attribute; call `setAttribute('value', x)` when CSS or a test should see it (the controls here do).
+* **Dynamic style under a strict CSP.** `style="..."` is blocked, so a template binds the CSS object model: `html\`<div style:--x=${() => v.value} style:width=${() => w.value}></div>\`` (a `null` removes the property). Write property names in lower case.
+* **A dialog that returns a result.** `const answer = await dialog.open()` resolves when it closes, with the `returnValue`: `<button xo-close value="done">`, `dialog.close('done')`, or an empty string for Escape and Cancel.
+* **The form model.** `form.model` exists once the binder attached; the form fires `xo-form-ready` (`detail: { model }`) at that moment, and a child control that needs the model listens for it (and reads `form.model` if it connected later).
+* **Words of your package.** Ship `text('rainlet.crop.title', 'Crop')` in the code (the English default needs nothing else), and register translations under your own prefix with `addMessages('vi', { 'rainlet.crop.title': 'Cắt ảnh' })` from `@xoong/i18n`; `xoong i18n extract` lists the keys.
+* **Tooling.** `xoong check` and the editor data know the `xo-*` syntax. Elements of other prefixes (`rl-*`) are left alone: no false errors, and no completion for them yet.
+
 ## Languages
 
 Strings (`Remove {label}`, `No results`, `Add "{value}"`) are `xoong.controls.*` keys of the built-in catalog (Vietnamese included).

@@ -75,8 +75,8 @@ describe('size budget (gzip of the source without comments; a regression guard, 
   // Comments and documentation grew with every feature and made the old budget (gzip of the raw files) move without the code
   // growing, so the budget now measures code only. The roadmap's single-digit KB target applies to the *minified* size,
   // which still has to be measured (docs/roadmap.md, size budgets, and the benchmark issue).
-  // Budgets sit about 5-10% above the measured values (core 5.0, data ~16.3 (focus follows a moved or removed row, xo-drag: raised from 15.5 for that), forms ~6, ui ~9, controls ~6.5, richtext ~8 KB (two toolbar sizes, More menu, text style, expand dialog: raised from 6 for those); raising one needs a reason in the commit.
-  const budgetKb = { core: 5.5, data: 16.5, forms: 9.5, i18n: 5, ui: 10, controls: 7, richtext: 8.5 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
+  // Budgets sit about 5-10% above the measured values (core 5.0, 5.6 budget since style:name bindings and ready() (the CSP-safe style binding and the children-parsed hook), data ~16.3 (focus follows a moved or removed row, xo-drag: raised from 15.5 for that), forms ~6, ui ~9, controls ~6.5, richtext ~8 KB (two toolbar sizes, More menu, text style, expand dialog: raised from 6 for those); raising one needs a reason in the commit.
+  const budgetKb = { core: 5.6, data: 16.5, forms: 9.5, i18n: 5, ui: 10, controls: 7, richtext: 8.5 }; // forms: schema rules, model, binder, array editing; ui: router, toast, confirm, table, the schema form generator // data: url state, confirm, notices, bulk, formats, selection; ui: router, toast, confirm, table
   const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
   for (const [name, kb] of Object.entries(budgetKb)) {
     it(`@xoong/${name} stays under ${kb} KB`, () => {

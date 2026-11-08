@@ -106,4 +106,28 @@ describe('XoElement', () => {
     pre.setAttribute('flag', ''); pre.setAttribute('n', '3');
     expect([pre.flag, pre.n]).toEqual([true, 3]);
   });
+
+  it('style:name=${...} sets a CSS property through the CSS object model (custom properties too), and removes it for null', () => {
+    const x = signal('10px'), w = signal(null);
+    const root = mount();
+    render(html`<i style:--x=${() => x.value} style:width=${() => w.value} style:color=${'red'}></i>`, root);
+    const el = root.querySelector('i');
+    expect(el.hasAttribute('style:--x')).toBe(false);
+    expect(el.style.getPropertyValue('--x')).toBe('10px');
+    expect(el.style.width).toBe('');
+    expect(el.style.color).toBe('red');
+    x.value = '2rem'; w.value = '50%';
+    expect([el.style.getPropertyValue('--x'), el.style.width]).toEqual(['2rem', '50%']);
+    w.value = null;
+    expect(el.style.width).toBe('');
+  });
+
+  it('ready() resolves with the element once its children can be read', async () => {
+    class R extends XoElement {}
+    define('x-ready-spec', R);
+    document.body.innerHTML = '<x-ready-spec><b>child</b></x-ready-spec>';
+    const el = document.querySelector('x-ready-spec');
+    expect(await el.ready()).toBe(el);
+    expect(el.querySelector('b').textContent).toBe('child');
+  });
 });

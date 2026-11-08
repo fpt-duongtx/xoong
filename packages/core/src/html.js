@@ -114,7 +114,8 @@ function bindAttr(el, part, value, disposers) {
     return;
   }
   const apply = (v) => {
-    if (prefix === '.') el[name] = v;
+    if (name.startsWith('style:')) el.style[v == null || v === false ? 'removeProperty' : 'setProperty'](name.slice(6), v); // style:--x=${v}: the CSS object model, so a strict CSP (no style="") allows it
+    else if (prefix === '.') el[name] = v;
     else if (prefix === '?') el.toggleAttribute(name, !!v);
     else if (v == null || v === false) el.removeAttribute(name);
     else el.setAttribute(name, v === true ? '' : String(v));

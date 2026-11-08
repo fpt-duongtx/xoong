@@ -233,6 +233,21 @@ describe('<xo-dialog>', () => {
     expect(dialog.hasAttribute('open')).toBe(false);
   });
 
+  it('open() waits for the answer: the returnValue of xo-close value, close(value), or an empty string', async () => {
+    screen = await mount(`<xo-dialog id="d"><p>Crop?</p><button id="ok" xo-close value="done">Done</button><button id="no" xo-close>Cancel</button></xo-dialog>`, { api: mockApi(table) });
+    const dialog = screen.$('xo-dialog');
+    let answer = dialog.open();
+    expect(screen.$('dialog').hasAttribute('open')).toBe(true);
+    await screen.click('#ok');
+    expect(await answer).toBe('done');
+    answer = dialog.open();
+    await screen.click('#no');
+    expect(await answer).toBe('');
+    answer = dialog.open();
+    dialog.close('later');
+    expect(await answer).toBe('later');
+  });
+
   it('closes when a form inside it succeeds, and stays open when it fails', async () => {
     let fail = true;
     const api = mockApi(table, { createUser: ({ body }) => (fail ? respond(422, { error: { code: 'bad', message: 'no' } }) : { id: 9, ...body }) });

@@ -260,5 +260,6 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     model: { value: model, configurable: true },
   });
 
+  form.dispatchEvent(new CustomEvent('xo-form-ready', { bubbles: true, detail: { model } })); // `form.model` exists from here: a child control that needs it listens for this
   return { model, submit, detach, rescan: () => scan(form) };
 }

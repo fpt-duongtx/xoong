@@ -3,6 +3,15 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.18 (building blocks for widget packages)
+
+breaking: none.
+
+* Added: `style:--x=${...}` / `style:width=${...}` in `html` templates (CSS object model, strict-CSP safe; null removes).
+* Added: `await dialog.open()` on `<xo-dialog>` resolves with the `returnValue`; `xo-close value="..."` and `close(value)` set it.
+* Added: `this.ready()` on `XoElement` (children can be read) and the `xo-form-ready` event (`detail: { model }`).
+* Docs: "Building elements for your own package" in `docs/controls.md` (props are attribute to property, package texts with `addMessages`, tooling).
+
 ## 0.0.17 (cache seeding)
 
 breaking: none.

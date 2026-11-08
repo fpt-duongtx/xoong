@@ -7,7 +7,7 @@ tarball per package and a `consume.json`. All packages share the version number.
 
 ```bash
 # in your project (needs `gh` signed in to the private repository)
-gh release download v0.0.17 -R fpt-duongtx/xoong -D vendor/xoong
+gh release download v0.0.18 -R fpt-duongtx/xoong -D vendor/xoong
 ```
 
 Then copy `dependencies` (only what you import) and the whole `overrides` from `vendor/xoong/consume.json` into your `package.json`
@@ -15,8 +15,8 @@ Then copy `dependencies` (only what you import) and the whole `overrides` from `
 
 ```json
 {
-  "dependencies": { "xoong": "file:./vendor/xoong/xoong-0.0.17.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.17.tgz" },
-  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.17.tgz", "...": "every package listed in consume.json" }
+  "dependencies": { "xoong": "file:./vendor/xoong/xoong-0.0.18.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.18.tgz" },
+  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.18.tgz", "...": "every package listed in consume.json" }
 }
 ```
 
