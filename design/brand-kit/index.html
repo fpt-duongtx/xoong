@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>xoong · One pot. Whole app.</title>
+  <meta name="description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta name="theme-color" content="#f7f4ec">
+  <meta property="og:title" content="xoong · One pot. Whole app.">
+  <meta property="og:description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta property="og:image" content="assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/brand.css">
+  <script src="js/palette.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <nav aria-label="Main">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="docs.html">Docs sample</a>
+        <a href="brand.html">Brand</a>
+        <button class="palette-toggle" type="button" aria-pressed="false" title="Switch colour palette"><span>Calm</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Standards-first web framework</span>
+        <h1>One pot.<br><em>Whole app.</em></h1>
+        <p class="lede">Xoong is a small web framework that cooks with what the browser already gives you. Declare a screen, point it at your OpenAPI document, write plain CSS. That is the whole job.</p>
+        <div class="actions">
+          <a class="btn primary" href="docs.html">Get started</a>
+          <a class="btn" href="docs.html">See it running</a>
+        </div>
+        <ul class="pills"><li><b>0</b> runtime deps</li><li><b>0</b> shadow DOM</li><li><b>0</b> inline scripts</li></ul>
+      </div>
+      <div class="stage">
+        <div class="pot-badge"><svg class="mark steam" width="128" height="128" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg></div>
+        <div class="window">
+          <div class="bar"><i></i><i></i><i></i><span>people.html</span></div>
+<pre><code><span class="t-tag">&lt;xo-view</span> <span class="t-attr">get</span>=<span class="t-str">"listPeople"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;xo-table</span> <span class="t-attr">columns</span>=<span class="t-str">"name,email,role"</span>
+            <span class="t-attr">sortable</span><span class="t-tag">&gt;&lt;/xo-table&gt;</span>
+<span class="t-tag">&lt;/xo-view&gt;</span>
+
+<span class="t-mute">&lt;!-- loading, errors, cache and types</span>
+<span class="t-mute">     come from your OpenAPI document --&gt;</span><span class="cursor"></span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">The ingredients</span><h2>Few things, chosen well.</h2><p>Mainstream frameworks make you chase them. Xoong keeps its surface tiny and lets the platform do the heavy lifting.</p></div>
+      <ul class="grid">
+        <li class="card"><span class="no">01</span><h3>Standards first</h3><p>Custom elements, the DOM, ES modules, the History API, native <code>&lt;dialog&gt;</code> and <code>Intl</code>. No virtual DOM, no JSX, no hooks.</p></li>
+        <li class="card"><span class="no">02</span><h3>Light DOM only</h3><p>Your CSS and your tests see the real DOM. No Shadow DOM and no scoped-style magic between you and the page.</p></li>
+        <li class="card"><span class="no">03</span><h3>OpenAPI is the contract</h3><p><code>xoong sync</code> reads your spec and writes typed operations. Forms and tables are drawn from the schemas.</p></li>
+        <li class="card"><span class="no">04</span><h3>Zero runtime deps</h3><p>Upgrading Node never breaks the runtime, because the runtime runs in the browser and brings nothing along.</p></li>
+        <li class="card"><span class="no">05</span><h3>Strict CSP ready</h3><p><code>xoong build</code> outputs static files that run under <code>script-src 'self'</code>. No inline code, ever.</p></li>
+        <li class="card"><span class="no">06</span><h3>Made for AI and people</h3><p>One way to do each thing, a short <code>llms.txt</code>, an MCP server, and <code>xoong check</code> with messages that contain the fix.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="band" role="presentation">
+    <div class="wrap">
+      <div><strong>1</strong><span>way to do each thing</span></div>
+      <div><strong>0</strong><span>runtime dependencies</span></div>
+      <div><strong>150+</strong><span>tests, incl. real-browser end-to-end</span></div>
+      <div><strong>MIT</strong><span>licence, forever</span></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">The recipe</span><h2>Three steps from spec to screen.</h2></div>
+      <ol class="recipe">
+        <li><div><h3>Sync your API</h3><p>Generate typed operations from the OpenAPI document you already have.</p><pre class="plain"><code>npx xoong sync openapi.json</code></pre></div></li>
+        <li><div><h3>Write the screen</h3><p>HTML with a few <code>xo-*</code> elements. Style it with plain CSS and custom properties.</p><pre class="plain"><code>&lt;xo-view get="listPeople"&gt;&lt;xo-table sortable&gt;&lt;/xo-table&gt;&lt;/xo-view&gt;</code></pre></div></li>
+        <li><div><h3>Serve it hot</h3><p>Run the dev server, then build static output for strict-CSP hosting.</p><pre class="plain"><code>npx xoong dev
+npx xoong build --out dist</code></pre></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <div class="box">
+        <h2>Hungry for less framework?</h2>
+        <p>Xoong is a 0.0.x prototype and the syntax is still Draft. Come cook with us early.</p>
+        <div class="actions"><a class="btn primary" href="docs.html">Install</a><a class="btn" href="docs.html">How it works</a></div>
+      </div>
+    </div>
+  </section>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="docs.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data and tables · xoong</title>
+  <meta name="description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta name="theme-color" content="#f7f4ec">
+  <meta property="og:title" content="Data and tables · xoong">
+  <meta property="og:description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta property="og:image" content="assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/brand.css">
+  <script src="js/palette.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="docs.html" aria-current="page">Docs sample</a>
+        <a href="brand.html">Brand</a>
+        <button class="palette-toggle" type="button" aria-pressed="false" title="Switch colour palette"><span>Calm</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="docs">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2><a href="docs.html">Overview</a><a href="docs.html">Install</a><a href="docs.html">How it works</a>
+      <h2>Guides</h2><a href="docs.html" aria-current="page">Data and tables</a><a href="docs.html">Forms</a><a href="docs.html">Controls</a><a href="docs.html">Styling</a>
+      <h2>Brand</h2><a href="brand.html">Brand kit</a>
+    </nav>
+    <article>
+      <h1>Data and tables</h1>
+      <p class="lede">A sample documentation page in the brand: headings, prose, a callout, code tabs and a table. Use it to judge long-form reading.</p>
+      <div class="callout note"><strong>Status:</strong> a working prototype (0.x). The HTML syntax is still Draft.</div>
+      <h2>A table in one element</h2>
+      <p>The table below reads <code>listPeople</code> from an OpenAPI operation; sorting, search and paging are attributes.</p>
+      <div class="tabs">
+        <div class="tablist" role="tablist"><span class="tab" role="tab" aria-selected="false">Preview</span><span class="tab" role="tab" aria-selected="true">HTML</span><span class="tab" role="tab" aria-selected="false">OpenAPI</span></div>
+<pre><code><span class="t-tag">&lt;xo-view</span> <span class="t-attr">get</span>=<span class="t-str">"listPeople"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;xo-table</span> <span class="t-attr">columns</span>=<span class="t-str">"name,email:E-mail,role"</span> <span class="t-attr">sortable</span> <span class="t-attr">page-size</span>=<span class="t-str">"5"</span><span class="t-tag">&gt;&lt;/xo-table&gt;</span>
+<span class="t-tag">&lt;/xo-view&gt;</span></code></pre>
+      </div>
+      <h2>Attributes</h2>
+      <table class="data"><thead><tr><th>Attribute</th><th>Meaning</th></tr></thead><tbody>
+        <tr><td><code>sortable</code></td><td>Header buttons set the <code>sort</code> query parameter.</td></tr>
+        <tr><td><code>filters</code></td><td>A search box per field.</td></tr>
+        <tr><td><code>page-size</code></td><td>Shows Previous and Next, which change <code>offset</code>.</td></tr>
+      </tbody></table>
+      <nav class="pager" aria-label="Pages"><a href="docs.html"><small>Previous</small><span>How it works</span></a><a href="docs.html"><small>Next</small><span>Forms</span></a></nav>
+    </article>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="docs.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>
