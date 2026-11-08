@@ -398,6 +398,16 @@ function bindNode(node, scope, ctx, disposers) {
         el.removeAttribute(name);
         continue;
       }
+      if (BOOLEAN_ATTRS.has(name) && parts.length === 1 && typeof parts[0] !== 'string') { // hidden="{closed}": present when true, absent when false
+        const path = parts[0].path;
+        disposers.push(effect(() => {
+          const v = lookup(scope, path);
+          const on = Array.isArray(v) ? v.length > 0 : !!v && v !== 'false';
+          el.toggleAttribute(name, on);
+          if ((name === 'checked' || name === 'selected') && name in el) /** @type {any} */ (el)[name] = on; // the attribute only sets the default state
+        }));
+        continue;
+      }
       disposers.push(effect(() => {
         let v = evalParts(parts, scope, lookup);
         if (URL_ATTRS.has(name) && !isSafeUrl(v)) v = 'about:blank';
@@ -408,6 +418,9 @@ function bindNode(node, scope, ctx, disposers) {
   if (el.localName === 'xo-view') return; // a nested view binds its own children against its own data when it starts; the outer pass must not touch them (its `p-*` attributes above are bound to the outer scope)
   if (!translated) for (const child of [...el.childNodes]) bindNode(child, childScope, ctx, disposers); // a translated element's text is the message, not markup
 }
+
+/** Boolean attributes: `{flag}` as the whole value turns them on and off (an attribute with the value "false" would still count as set). */
+const BOOLEAN_ATTRS = new Set(['hidden', 'disabled', 'checked', 'selected', 'readonly', 'required', 'open', 'multiple', 'inert', 'autofocus', 'controls', 'loop', 'muted', 'reversed']);
 
 /** Attributes whose value is a URL: data must not smuggle in script schemes. */
 const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction', 'poster', 'xlink:href', 'data', 'cite', 'srcset']);
@@ -453,24 +466,29 @@ function bindIf(el, scope, ctx, disposers) {
 
 function bindEach(el, scope, ctx, disposers) {
   const path = el.getAttribute('xo-each').trim();
+  // `<template xo-each="blocks">...</template>` repeats its children with no element of its own (a list of mixed blocks: h2, p, ul, figure)
+  const fragmentRows = el.localName === 'template';
   const tpl = /** @type {Element} */ (el.cloneNode(true));
   tpl.removeAttribute('xo-each');
   const start = document.createComment('xo-each');
   const end = document.createComment('/xo-each');
   el.replaceWith(start, end);
-  /** @type {Map<string, { node: Element, stops: (() => void)[], index: ReturnType<typeof signal>, current: ReturnType<typeof signal> }>} */
+  /** A row is the nodes from `first` to `last` (one element, or the children of a template between two comments). */
+  /** @typedef {{ first: Node, last: Node, stops: (() => void)[], index: ReturnType<typeof signal>, current: ReturnType<typeof signal>, frag?: DocumentFragment }} Row */
+  /** @type {Map<string, Row>} */
   let rows = new Map();
+  const nodesOf = (/** @type {Row} */ row) => { const out = [row.first]; for (let n = row.first; n !== row.last && n.nextSibling; ) { n = /** @type {Node} */ (n.nextSibling); out.push(n); } return out; };
+  const dropRow = (/** @type {Row} */ row) => { row.stops.forEach((s) => s()); for (const n of nodesOf(row)) n.remove(); };
   disposers.push(effect(() => {
     const list = ctx.lookup(scope, path);
     const items = (Array.isArray(list) ? list : []).filter((it) => !isRef(it) || ctx.client.store.has(it)); // drop deleted entities
     // Do not subscribe this effect to row internals: bind rows untracked by their own effects.
     const next = new Map();
-    let cursor = start;
+    /** @type {Node} */ let cursor = start;
     items.forEach((item, i) => {
       const key = isRef(item) ? item.$ref : `#${i}`;
       let row = rows.get(key) ?? next.get(key);
       if (!row) {
-        const node = /** @type {Element} */ (tpl.cloneNode(true));
         const index = signal(i);
         const current = signal(item);
         // `$index` is the nearest row; `$i0`, `$i1` ... are the rows of the enclosing `xo-each`s, outermost first (names of nested array fields)
@@ -478,17 +496,29 @@ function bindEach(el, scope, ctx, disposers) {
         for (let s = scope; s; s = s.parent) if (s.vars?.$index) depth++;
         const itemScope = { value: () => current.value, parent: scope, vars: { $index: () => index.value, $n: () => index.value + 1, [`$i${depth}`]: () => index.value } };
         const stops = [];
-        batch(() => bindNode(node, itemScope, ctx, stops));
-        row = { node, stops, index, current };
+        let first, last;
+        if (fragmentRows) {
+          const frag = document.createDocumentFragment();
+          first = document.createComment('xo-row');
+          last = document.createComment('/xo-row');
+          frag.append(first, .../** @type {HTMLTemplateElement} */ (tpl).content.cloneNode(true).childNodes, last);
+          batch(() => { for (const n of [...frag.childNodes]) if (n !== first && n !== last) bindNode(n, itemScope, ctx, stops); });
+          row = { first, last, stops, index, current, frag };
+        } else {
+          const node = /** @type {Element} */ (tpl.cloneNode(true));
+          batch(() => bindNode(node, itemScope, ctx, stops));
+          row = { first: node, last: node, stops, index, current };
+        }
       } else batch(() => { row.index.value = i; row.current.value = item; }); // reused row follows its new item
       next.set(key, row);
-      if (cursor.nextSibling !== row.node) cursor.after(row.node);
-      cursor = row.node;
+      if (cursor.nextSibling !== row.first) cursor.after(...(row.frag ? [row.frag] : nodesOf(row)));
+      row.frag = undefined;
+      cursor = row.last;
     });
-    for (const [key, row] of rows) if (!next.has(key)) { row.stops.forEach((s) => s()); row.node.remove(); }
+    for (const [key, row] of rows) if (!next.has(key)) dropRow(row);
     rows = next;
   }));
-  disposers.push(() => { for (const row of rows.values()) { row.stops.forEach((s) => s()); row.node.remove(); } rows.clear(); });
+  disposers.push(() => { for (const row of rows.values()) dropRow(row); rows.clear(); });
 }
 
 /** `@xoong/i18n` registers how `xo-t` elements are translated (the view supplies the scope for `{placeholders}`). */

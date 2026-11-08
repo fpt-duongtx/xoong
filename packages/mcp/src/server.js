@@ -30,6 +30,7 @@ export const EXPLANATIONS = {
   XO220: 'xo-submit is only valid on a <form>. Move the attribute to the form element.',
   XO221: 'xo-each, xo-if or xo-body has no path. Give it one, for example xo-each="items".',
   XO230: 'An xo-* element or attribute that xoong does not define, usually a typo. The message names the closest valid one.',
+  XO243: 'An <img> whose src or srcset has {data} inside an <xo-view> is requested by the browser with the literal text before the data is bound. Use <xo-image src="{path}" alt="..."> instead.',
   XO242: '<xo-image> has no alt attribute. Describe the image, or write alt="" when it is only decoration.',
   XO240: 'A button or link triggered by xo-click has no accessible name. Add visible text or aria-label.',
   XO241: 'xo-click is on an element that keyboards cannot reach. Use a <button>, or add role="button" and tabindex="0".',

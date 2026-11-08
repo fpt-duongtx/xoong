@@ -133,6 +133,12 @@ describe('xoong check: admin set', () => {
     expect(found('<xo-image src="/a.jpg" alt="Harbour"></xo-image>')).toEqual([]);
   });
 
+  it('XO243: an img with bound data in src loads the literal text', () => {
+    expect(found('<xo-view><img src="{cover.url}" alt=""></xo-view>')).toEqual(['XO243']);
+    expect(found('<xo-view><xo-image src="{cover.url}" alt=""></xo-image></xo-view>')).toEqual([]);
+    expect(found('<img src="/static.png" alt="">')).toEqual([]);
+  });
+
   it('XO222: a submit form needs an <xo-view>', () => {
     expect(found('<form xo-submit="POST /users"></form>')).toEqual(['XO222']);
     expect(found('<xo-view><form xo-submit="POST /users"></form></xo-view>')).toEqual([]);

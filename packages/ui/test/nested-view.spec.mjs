@@ -35,6 +35,26 @@ describe('rows with their own view, and a path parameter without a value', () =>
   });
 });
 
+describe('template xo-each and boolean attributes', () => {
+  it('<template xo-each> repeats its children without a host element, and follows the list', async () => {
+    screen = await mount('<xo-view get="listMedia"><article><template xo-each="items"><h2>{name}</h2><p>about {name}</p></template></article></xo-view>', { api: api() });
+    await wait(80);
+    expect(screen.$$('article > h2').map((e) => e.textContent)).toEqual(['one.png', 'two.png']);
+    expect(screen.$$('article > p').map((e) => e.textContent)).toEqual(['about one.png', 'about two.png']);
+    expect(screen.$$('article > *').map((e) => e.localName)).toEqual(['h2', 'p', 'h2', 'p']); // flat: no wrapper
+    expect(screen.$('article template')).toBeNull();
+  });
+  it('hidden="{flag}" and aria-selected="{flag}" follow the data', async () => {
+    const flags = { ...table, operations: { ...table.operations, getAsset: { ...table.operations.getAsset, response: { t: 'object', props: { open: { t: 'boolean' }, closed: { t: 'boolean' } } } } } };
+    screen = await mount('<xo-view get="getAsset" p-id="1"><p id="a" hidden="{closed}">a</p><p id="b" hidden="{open}">b</p><button id="t" aria-selected="{open}" disabled="{closed}">t</button></xo-view>', { api: mockApi(flags, { getAsset: () => ({ id: 1, open: true, closed: false }) }) });
+    await wait(80);
+    expect(screen.$('#a').hasAttribute('hidden')).toBe(false);
+    expect(screen.$('#b').hasAttribute('hidden')).toBe(true);
+    expect(screen.$('#t').getAttribute('aria-selected')).toBe('true');
+    expect(screen.$('#t').hasAttribute('disabled')).toBe(false);
+  });
+});
+
 describe('<xo-pager>', () => {
   it('pages a list that is not a table: range text, Previous and Next change offset', async () => {
     const big = { ...table, operations: { ...table.operations, listMedia: { ...table.operations.listMedia, query: ['limit', 'offset'], response: { t: 'object', props: { items: { t: 'array', items: { t: 'entity', name: 'Asset' } }, total: { t: 'integer' } } } } } };

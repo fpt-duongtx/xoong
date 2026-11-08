@@ -33,6 +33,20 @@ that row's id:
 </xo-view>
 ```
 
+## Repeating several elements, and boolean attributes
+
+`xo-each` repeats the element it is on. To repeat a group of children with no wrapper (an article body of mixed blocks), put it on a `<template>`:
+
+```html
+<article><template xo-each="blocks"><h2>{title}</h2><p>{text}</p></template></article>
+```
+
+A boolean attribute whose whole value is one `{path}` is present when the value is true and absent when it is false: `hidden="{closed}"`,
+`disabled="{saving}"`, `checked="{done}"`. (`aria-selected="{open}"` gets the text `true` or `false`, as ARIA wants.)
+
+An `<img src="{cover.url}">` inside a view is requested by the browser with the literal text before the data is bound. Use `<xo-image src="{cover.url}" alt="...">`,
+which waits for the data (`xoong check` warns about the plain `<img>`, XO243).
+
 ## When a view starts
 
 1. The element connects. Its children are **copied as its template** and the view starts in a microtask, so the order in which custom elements are
