@@ -57,7 +57,7 @@ function errorFromBody(status, statusText, body, operation) {
 /** Stable key part for params: sorted keys, undefined/null dropped. */
 function canonical(params = {}) {
   const out = {};
-  for (const k of Object.keys(params).sort()) if (params[k] != null) out[k] = params[k];
+  for (const k of Object.keys(params).sort()) if (params[k] != null) out[k] = Array.isArray(params[k]) ? params[k].map(String) : String(params[k]); // a param is its text in the URL: 1 and "1" are one query
   return JSON.stringify(out);
 }
 

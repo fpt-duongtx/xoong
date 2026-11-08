@@ -31,6 +31,16 @@ test('seed puts server-known data in the cache: no request, entities shared, a l
   assert.equal(f.calls.filter((x) => x.key === 'GET /users').length, 1);
 });
 
+test('a param is its text in the URL: 1 and "1", true and "true" are one query, so seed and views find the same entry', async () => {
+  const f = fakeFetch({ 'GET /users': () => users() });
+  const c = createClient({ api, fetch: f });
+  c.seed('listUsers', { page: 1, tag: ['a', 'b'] }, users());
+  assert.equal(c.query('listUsers', { tag: ['a', 'b'], page: '1' }), c.query('listUsers', { page: 1, tag: ['a', 'b'] }));
+  await c.load('listUsers', { page: '1', tag: ['a', 'b'] });
+  assert.equal(f.calls.length, 0);
+  assert.notEqual(c.query('listUsers', { page: 2 }), c.query('listUsers', { page: 1 }));
+});
+
 test('unknown operation gives a hint', () => {
   const c = createClient({ api, fetch: fakeFetch({}) });
   assert.throws(() => c.query('GET /user'), /Closest: "GET \/users"/);

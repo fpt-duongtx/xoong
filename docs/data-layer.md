@@ -130,7 +130,7 @@ Everything that talks to the API goes through the one client that `configure()` 
 * **Paths live in the OpenAPI document** (and so in `operations.json`). Code names an operation: `getClient().query('listMedia', { limit: 50 })`, `getClient().mutate('uploadMedia', {}, formData)`. A multipart operation takes a `FormData` body as it is.
 * **Errors are one type.** Whatever the server returns (`application/problem+json`, `{ errors: [{ pointer, detail }] }`, `{ error: { code, message, fields } }`, `{ detail }`) becomes a `XoongError` with `status`, `code`, `detail` and `fields`.
 * **Reads share the cache.** A list read with `<xo-view get>` or `client.query()` refreshes by itself after a mutation whose path overlaps it, and records are shared by entity id.
-* **Data the server already has** goes in with `client.seed(operation, params, data)`: the server writes the JSON into the page (a `<script type="application/json">` is not code, so a strict CSP allows it), one module script calls `seed`, and a view that asks for the same operation and params shows it at once and makes no request until it is stale (`staleTime`). The API stays the contract for everything else.
+* **Data the server already has** goes in with `client.seed(operation, params, data)`: the server writes the JSON into the page (a `<script type="application/json">` is not code, so a strict CSP allows it), one module script calls `seed` (params are matched by their text in the URL, so `1` and `"1"` are the same query), and a view that asks for the same operation and params shows it at once and makes no request until it is stale (`staleTime`). The API stays the contract for everything else.
 
 ## 8. Declarative call syntax (Draft)
 

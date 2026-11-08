@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.20 (one cache key per query)
+
+breaking: none.
+
+* Fixed: query params are keyed by their text in the URL, so `{ offset: 1 }` and `{ offset: '1' }` (a number from code, a string from the page URL) are one query: `client.seed`, `query()` and views find the same entry.
+
 ## 0.0.19 (carousel)
 
 breaking: none.
