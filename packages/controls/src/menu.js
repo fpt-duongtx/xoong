@@ -66,7 +66,7 @@ class XoMenu extends XoElement {
     trigger.setAttribute('aria-haspopup', 'menu');
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-controls', id);
-    if (trigger instanceof HTMLButtonElement && !trigger.type) trigger.type = 'button';
+    if (trigger instanceof HTMLButtonElement && !trigger.hasAttribute('type')) trigger.type = 'button'; // the `type` property is never empty (it reads "submit"): test the attribute, or a trigger inside a form submits it
     this.#trigger = trigger;
     this.#panel = panel;
     prepareLayer(panel);

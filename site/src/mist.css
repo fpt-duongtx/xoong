@@ -250,4 +250,7 @@ header.top nav > a[aria-current="page"] { background: var(--xo-color-accent-soft
 header.top nav xo-theme-toggle > button.icon-only[aria-pressed] { background: transparent; border-color: transparent; color: var(--xo-color-text-2); }
 header.top nav xo-theme-toggle > button.icon-only[aria-pressed]:hover { background: var(--xo-color-subtle); color: var(--xo-color-text); }
 
+/* the header theme toggle is empty until its script runs: keep its 40px so the palette button does not shift sideways */
+header.top nav xo-theme-toggle:not(:defined) { display: inline-block; width: 40px; height: 40px; }
+
 }

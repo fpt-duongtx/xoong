@@ -3,6 +3,15 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.44 (menu trigger in a form, toast z-index, no flash of the header)
+
+breaking: none.
+
+* Fixed: the `xo-menu` trigger inside a `<form>` stayed a submit button (the code tested the `type` property, which is never empty, instead of the attribute): opening the menu submitted the form and could swallow the click on an item. The trigger is now `type="button"` unless you set a type.
+* Fixed: `.xo-toast` has a z-index (`--xo-z-toast`, 60) so a sticky bar at the bottom of the page does not cover its Undo button.
+* Mist (kit ux/palette-flash): the header's Palette menu and theme toggle no longer jump while the page loads (the menu items are hidden and the toggle keeps its 40px until the elements are defined).
+* Live demo pages: `live-admin.html` and `live-landing.html` are published on the site.
+
 ## 0.0.43 (nested views, template rows, boolean attributes)
 
 breaking: none.

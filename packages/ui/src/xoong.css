@@ -112,7 +112,7 @@
   .xo-table .xo-actions > * + * { margin-inline-start: var(--xo-space-2); }
   .xo-bulk { display: flex; align-items: center; gap: var(--xo-space-2); padding: var(--xo-space-2); background: var(--xo-color-bg); border-bottom: 1px solid var(--xo-color-border); }
   .xo-filters { display: flex; flex-wrap: wrap; gap: var(--xo-space-2); padding: var(--xo-space-2); border-bottom: 1px solid var(--xo-color-border); }
-  .xo-toast { position: fixed; inset-block-end: var(--xo-space-4); inset-inline-end: var(--xo-space-4); max-width: 24rem; margin: 0; padding: var(--xo-space-2) var(--xo-space-3); color: var(--xo-color-danger); background: var(--xo-color-surface); border: 1px solid var(--xo-color-danger); border-radius: var(--xo-radius); }
+  .xo-toast { z-index: var(--xo-z-toast, 60); position: fixed; inset-block-end: var(--xo-space-4); inset-inline-end: var(--xo-space-4); max-width: 24rem; margin: 0; padding: var(--xo-space-2) var(--xo-space-3); color: var(--xo-color-danger); background: var(--xo-color-surface); border: 1px solid var(--xo-color-danger); border-radius: var(--xo-radius); }
   .xo-toast[hidden] { display: none; }
   .xo-pager { display: flex; gap: var(--xo-space-2); justify-content: flex-end; padding: var(--xo-space-2); }
 

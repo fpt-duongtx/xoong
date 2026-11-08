@@ -1470,6 +1470,7 @@
   .xo-file-list li { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); background: var(--xo-color-surface); font-size: 14px; }
   .xo-file-list li img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex: none; }
   .xo-file-list li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  xo-menu:not(:defined) > :not([xo-menu-trigger]) { display: none; }
 
   /* ---- skin ---- */
   :root { --shadow-sm: 0 1px 2px color-mix(in srgb, var(--xo-color-text) 6%, transparent); --shadow-float: 0 12px 32px color-mix(in srgb, var(--xo-color-text) 14%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 8%, transparent); --xo-shadow-pop: var(--shadow-float); --xo-shadow-raised: none; --xo-focus: 2px solid var(--xo-color-accent); --xo-focus-thin: 2px solid var(--xo-color-accent); }

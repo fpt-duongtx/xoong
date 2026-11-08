@@ -14,6 +14,24 @@ const key = (el, k, init = {}) => { const e = new KeyboardEvent('keydown', { key
 
 afterEach(() => { document.body.innerHTML = ''; });
 
+describe('<xo-menu> inside a form', () => {
+  it('the trigger is a plain button (type="button"), so opening the menu does not submit the form', async () => {
+    document.body.innerHTML = '<form id="f"><xo-menu label="Block actions"><button xo-menu-trigger>Actions</button><button id="m">Move down</button></xo-menu></form>';
+    await new Promise((r) => setTimeout(r, 0));
+    let submits = 0;
+    document.querySelector('#f').addEventListener('submit', (e) => { e.preventDefault(); submits++; });
+    expect(trigger().getAttribute('type')).toBe('button');
+    trigger().click();
+    expect(submits).toBe(0);
+    expect(panel().hidden).toBe(false);
+  });
+  it('an explicit type on the trigger is kept', async () => {
+    document.body.innerHTML = '<form><xo-menu label="x"><button type="submit" xo-menu-trigger>Go</button><button>One</button></xo-menu></form>';
+    await new Promise((r) => setTimeout(r, 0));
+    expect(trigger().getAttribute('type')).toBe('submit');
+  });
+});
+
 describe('<xo-menu>', () => {
   it('builds a menu button: the trigger is linked to a hidden role=menu list of menuitems', async () => {
     await mountMenu();
