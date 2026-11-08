@@ -46,3 +46,19 @@ describe('<xo-switch>', () => {
     expect(el.serialize(el.value)).toBe(null);
   });
 });
+
+describe('<xo-switch> with visible text', () => {
+  it('wraps the text in a label with the button: the text names it and a click on the text toggles', async () => {
+    document.body.innerHTML = '<xo-switch name="n">Email me about replies</xo-switch>';
+    await new Promise((r) => setTimeout(r, 0));
+    const el = document.querySelector('xo-switch');
+    const row = el.querySelector('label.xo-switch-row');
+    expect(row.querySelector('.xo-switch-text').textContent).toBe('Email me about replies');
+    const b = row.querySelector('button[role=switch]');
+    expect(b.hasAttribute('aria-label')).toBe(false);
+    expect(row.querySelector('span').textContent).toBe('Email me about replies');
+    expect(row.firstElementChild).toBe(b);
+    b.click();
+    expect(el.value).toBe(true);
+  });
+});
