@@ -23,6 +23,15 @@ const controlCards = () => {
   return sprite + grid;
 };
 
+/** A whole page of the design kit between its header and footer (a wide page: head, then sections). */
+const kitWide = (file) => {
+  const html = readFileSync(new URL(`../../design/brand-kit/${file}`, import.meta.url), 'utf8');
+  const part = html.slice(html.indexOf('</header>') + '</header>'.length, html.indexOf('<footer'));
+  return part.replace(/<main class="wrap">/, '<div class="wrap">').replace(/<\/main>/, '</div>')
+    .replace(/assets\/mist\//g, 'brand/mist/').replace(/assets\/(mark[\w-]*\.svg|favicon[\w-]*\.svg|lockup\.png|og[\w-]*\.png)/g, 'brand/$1')
+    .replace(/ style="[^"]*"/g, '').replace(/^\s+/, '');
+};
+
 const VERSION = JSON.parse(readFileSync(new URL('../../packages/xoong/package.json', import.meta.url), 'utf8')).version; // the release the install page names
 
 const TABLE = `
@@ -569,6 +578,12 @@ ${callout('note', 'The client is never a trust boundary. The same function is ex
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
+    file: 'theme-builder.html', section: 'docs', group: 'Guides', nav: 'Theme builder', title: 'Theme builder', classic: 'theme-builder.js',
+    description: 'Pick a preset, change colours, shape and type, check the contrast and download a theme.css for your app.',
+    body: kit('theme-builder.html'),
+  },
+  // ------------------------------------------------------------------------------------------------------------------------------
+  {
     file: 'styling.html', section: 'docs', group: 'Guides', nav: 'Styling', title: 'Styling', demo: false, script: 'page-styling.js',
     description: 'Change the look of xoong with CSS custom properties and cascade layers.',
     body: `
@@ -903,73 +918,7 @@ ${example({
   {
     file: 'brand.html', section: 'brand', title: 'Brand kit',
     description: 'The identity of xoong: logo, colour, type and voice, with downloads.',
-    body: `
-  <div class="page-head"><div class="wrap"><h1>Brand kit</h1><p class="lede">The identity of xoong: a small pot with a lot of heat.</p></div></div>
-  <div class="wrap">
-  <div class="prose">
-    <h2>The idea</h2>
-    <p><em>Xoong</em> is the Vietnamese word for a saucepan, the pot every kitchen has and nobody replaces. That is the framework: one small, sturdy tool that does the whole job. The steam rising from the lid is a pair of angle brackets, so the pot reads as code at a glance.</p>
-    <p>Personality: <strong>practical, warm, a little cheeky.</strong> We talk like a good cook explaining a recipe, not like a vendor selling a platform.</p>
-  </div>
-
-  <section>
-    <div class="head"><span class="eyebrow">Logo</span><h2>Mark and wordmark</h2><p>The mark is the only symbol. The wordmark is lowercase <b>xoong</b>, heavy weight, tracking −0.045em. On this site the mark is inline SVG and follows the palette (use the menu in the header); the files below are fixed colour.</p></div>
-    <div class="logo-grid">
-      <div class="tile on-rice"><span class="lockup"><img src="brand/mark.svg" alt=""><span class="word">xoong</span></span><small>mark.svg · on Paper</small></div>
-      <div class="tile on-soot"><span class="lockup"><img src="brand/mark-reverse.svg" alt=""><span class="word">xoong</span></span><small>mark-reverse.svg · on Ink</small></div>
-      <div class="tile on-ember"><span class="lockup"><img src="brand/mark-mono.svg" alt=""><span class="word">xoong</span></span><small>mark-mono.svg · one colour</small></div>
-      <div class="tile on-broth"><span class="sizes"><img src="brand/favicon.svg" alt="" width="72" height="72"><img src="brand/favicon.svg" alt="" width="48" height="48"><img src="brand/favicon.svg" alt="" width="32" height="32"><img src="brand/favicon.svg" alt="" width="16" height="16"></span><small>favicon.svg · 72 48 32 16</small></div>
-    </div>
-    <div class="prose"><p>Clear space equals one handle (about a fifth of the mark) on every side. Minimum size: 16 px for the icon, 24 px for the mark. Do not recolour the pot outside a palette, add outlines, rotate it for effect or use the steam alone.</p></div>
-    <div class="dl">
-      <a class="btn" href="brand/mark.svg" download>mark.svg</a><a class="btn" href="brand/mark-reverse.svg" download>mark-reverse.svg</a><a class="btn" href="brand/mark-mono.svg" download>mark-mono.svg</a><a class="btn" href="brand/favicon.svg" download>favicon.svg</a>
-      <a class="btn" href="brand/mark-ember.svg" download>mark-ember.svg</a><a class="btn" href="brand/mark-ember-reverse.svg" download>mark-ember-reverse.svg</a><a class="btn" href="brand/favicon-ember.svg" download>favicon-ember.svg</a>
-      <a class="btn" href="brand/lockup.png" download>lockup.png</a><a class="btn" href="brand/og.png" download>og.png</a>
-    </div>
-  </section>
-
-  <section>
-    <div class="head"><span class="eyebrow">Colour</span><h2>Two palettes, one structure.</h2><p><b>Calm</b> (clay and sage on warm paper) is the default. <b>Ember</b> turns the heat up. A palette is only a set of custom-property values, so a third is easy: see the tabs below.</p></div>
-    <ul class="swatches">
-      <li><span class="swatch-chip c-clay"></span><div class="info"><b>Clay</b><code>#DF8A6A</code><p>Calm: the pot, fills.</p></div></li>
-      <li><span class="swatch-chip c-deep"></span><div class="info"><b>Clay Deep</b><code>#9A4D33</code><p>Calm: links, primary actions.</p></div></li>
-      <li><span class="swatch-chip c-soot"></span><div class="info"><b>Ink</b><code>#2B2623</code><p>Text, outlines, dark surfaces.</p></div></li>
-      <li><span class="swatch-chip c-paper"></span><div class="info"><b>Paper</b><code>#F7F4EC</code><p>Page background.</p></div></li>
-      <li><span class="swatch-chip c-ember"></span><div class="info"><b>Ember</b><code>#FF5B22</code><p>Ember palette: the pot.</p></div></li>
-      <li><span class="swatch-chip c-embdeep"></span><div class="info"><b>Ember Deep</b><code>#B93A0A</code><p>Ember: links on light.</p></div></li>
-      <li><span class="swatch-chip c-sesame"></span><div class="info"><b>Sesame</b><code>#E6C783</code><p>Notes, highlights.</p></div></li>
-      <li><span class="swatch-chip c-herb"></span><div class="info"><b>Sage</b><code>#5B8A6B</code><p>Success.</p></div></li>
-    </ul>
-    ${tabs('Palette as tokens', [['CSS', 'css', `
-/* a palette is values for the brand tokens; the site maps them onto the --xo-* tokens */
-:root[data-palette="ember"] {
-  --ember:      light-dark(#ff5b22, #ff7a45);
-  --ember-deep: light-dark(#b93a0a, #ff9068);
-  --bg:         light-dark(#fff8ee, #15110f);
-  --text:       light-dark(#1c1512, #f6ebdd);
-}`], ['HTML', 'html', `
-<xo-menu label="Colour palette" value="calm">
-  <button xo-menu-trigger>Palette</button>
-  <button value="calm">Calm</button>
-  <button value="ember">Ember</button>
-</xo-menu>`]])}
-  </section>
-
-  <section>
-    <div class="head"><span class="eyebrow">Type</span><h2>System fonts, set with confidence.</h2><p>No font files: zero requests and a strict CSP that stays strict.</p></div>
-    <div class="type-row"><small>Display<br>800 · −0.055em</small><div class="t-display">One pot. Whole app.</div></div>
-    <div class="type-row"><small>Text<br>400 · 17px / 1.65</small><div>Avenir Next, Segoe UI Variable, then the system UI font. Short paragraphs, plain words.</div></div>
-    <div class="type-row"><small>Code<br>ui-monospace</small><div class="t-mono">&lt;xo-view get="listPeople"&gt;</div></div>
-  </section>
-
-  <section>
-    <div class="head"><span class="eyebrow">Voice</span><h2>Say it like a cook.</h2></div>
-    <div class="dodont">
-      <div class="card"><span class="no">Do</span><ul><li>Be concrete: “one way to do each thing”.</li><li>Use kitchen words lightly: pot, recipe, ingredients.</li><li>Say the status honestly: prototype, Draft syntax.</li><li>Lead with what the reader can do next.</li></ul></div>
-      <div class="card"><span class="no bad">Don't</span><ul><li>Say “revolutionary”, “blazing” or “next-gen”.</li><li>Use more than one cooking word per paragraph.</li><li>Promise what is still planned.</li><li>Write the name in capitals. It is <b>xoong</b>.</li></ul></div>
-    </div>
-  </section>
-  </div>`,
+    body: kitWide('brand.html'),
   },
 
   // ------------------------------------------------------------------------------------------------------------------------------

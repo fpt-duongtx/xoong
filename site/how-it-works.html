@@ -7,20 +7,26 @@
   <meta name="description" content="How xoong turns an OpenAPI document into data, forms and screens.">
   <meta property="og:title" content="How it works · xoong">
   <meta property="og:description" content="How xoong turns an OpenAPI document into data, forms and screens.">
-  <meta property="og:image" content="brand/og.png">
+  <meta property="og:image" content="brand/mist/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
   <link rel="stylesheet" href="src/brand.css">
   <link rel="stylesheet" href="src/xo-map.css">
   <link rel="stylesheet" href="src/standard.css">
   <link rel="stylesheet" href="src/icons.css">
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
   <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
@@ -28,23 +34,19 @@
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
-      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
         <a href="demo.html">Demo</a>
         <a href="brand.html">Brand</a>
-        <xo-menu class="palette" label="Colour palette" value="calm">
+        <xo-menu class="palette" label="Colour palette" value="mist">
           <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
           <button value="calm">Calm</button>
           <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
         </xo-menu>
       </nav>
     </div>
@@ -59,6 +61,7 @@
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
@@ -86,6 +89,7 @@
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
@@ -186,14 +190,7 @@ configureI18n({ locale: <span class="tok-s">'en'</span>, load: (locale) =&gt; fe
   </div>
   <footer class="foot">
     <div class="wrap">
-      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
       <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
     </div>

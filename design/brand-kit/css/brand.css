@@ -9,16 +9,16 @@
   /* Palette: "Ember" is the pot on the stove. Every colour has a light and a dark value. */
 
 
-  --font:  "Avenir Next", "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font:  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono:  ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  --radius: 14px;
+  --radius: 12px;
   --wrap: none;      /* fluid: the page fills the window; reading text keeps its own measure */
   --gutter: clamp(1rem, 2.4vw, 2.5rem);
 
   /* the framework's tokens, themed */
   --xo-font: var(--font);
   --xo-font-mono: var(--mono);
-  --xo-radius: 10px;
+  --xo-radius: 8px;
   --xo-color-bg: var(--bg);
   --xo-color-surface: var(--surface);
   --xo-color-text: var(--text);
@@ -27,7 +27,25 @@
   --xo-color-accent: var(--ember-deep);
   --xo-color-accent-text: light-dark(#fff, #1c1512);
 
-  /* Calm (default) */
+  /* Mist (default): the palette IS the Rainlet tokens (css/mist-tokens.css, loaded first). These lines only give the xoong names to them. */
+  --ember:        var(--accent);                 /* brand fill / accent */
+  --ember-deep:   var(--accent);                 /* links, focus ring, current item */
+  --ember-soft:   var(--accent-tint);
+  --soot:         #1f2a33;                       /* Mist ink: tooltip, dark window (fixed, also in dark) */
+  --rice:         #ffffff;
+  --surface:      var(--card);
+  --broth:        var(--sunken);
+  --muted:        var(--text-3);
+  --herb:         var(--ok);
+  --sesame:       var(--warn);
+  --glow:         var(--accent-tint);
+  --dots:         var(--line);
+  --glow-2:       var(--accent-tint);
+  --shadow: var(--shadow-sm);
+  --f-brand:      "Be Vietnam Pro", var(--font);  /* self-hosted, css/fonts.css; the interface stays on the system font */
+}
+/* Calm: clay and sage on warm paper (the previous default). <html data-palette="calm"> */
+:root[data-palette="calm"] {
   --ember:        light-dark(#df8a6a, #e8977a);
   --ember-deep:   light-dark(#9a4d33, #eeaa90);
   --ember-soft:   light-dark(#f7e6dc, #33231d);
@@ -47,6 +65,8 @@
   --dots:         light-dark(#e6dfcd, #2a2621);
   --glow-2:       light-dark(#efe3d3, #2f241d);
   --shadow: light-dark(0 1px 0 #fff inset, 0 1px 0 #ffffff0d inset), light-dark(0 18px 40px -26px #4a3a2e44, 0 18px 40px -26px #000a);
+  --primary: var(--ember-deep); --primary-text: light-dark(#fff, #2b2623); --accent-strong: var(--ember-deep);
+  --text-2: color-mix(in srgb, var(--text) 82%, var(--bg)); --shadow-sm: none; --shadow-float: 0 12px 32px color-mix(in srgb, var(--text) 18%, transparent), 0 2px 6px color-mix(in srgb, var(--text) 10%, transparent);
 }
 /* Ember: the same system with the heat turned up. <html data-palette="ember"> */
 :root[data-palette="ember"] {
@@ -69,6 +89,8 @@
   --dots:         light-dark(#e9d3b6, #2f2620);
   --glow-2:       light-dark(#ffdcc7, #3a1d11);
   --shadow: light-dark(0 1px 0 #fff inset, 0 1px 0 #ffffff0d inset), light-dark(0 18px 40px -22px #7a3a1a55, 0 18px 40px -22px #000a);
+  --primary: var(--ember-deep); --primary-text: light-dark(#fff, #1c1512); --accent-strong: var(--ember-deep);
+  --text-2: color-mix(in srgb, var(--text) 82%, var(--bg)); --shadow-sm: none; --shadow-float: 0 12px 32px color-mix(in srgb, var(--text) 18%, transparent), 0 2px 6px color-mix(in srgb, var(--text) 10%, transparent);
 }
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"]  { color-scheme: dark; }
@@ -406,3 +428,7 @@ a.card:active { transform: translateY(-1px); box-shadow: none; }
   header.top nav a[href="index.html"] { display: none; }
   .window pre, pre { max-width: 100%; }
 }
+
+.c-blue { background: #0b63ce; } .c-blue-strong { background: #084c9e; } .c-ink { background: #1f2a33; } .c-page { background: #f5f7f8; border-bottom: 1px solid var(--line); }
+.c-white { background: #ffffff; border-bottom: 1px solid var(--line); } .c-tint { background: #e8f1fc; } .c-line { background: #e2e8ec; } .c-clay { background: #df8a6a; }
+.tile .lockup-img { width: min(100%, 15rem); height: auto; display: block; } .tile.on-rice { background: #fff; color: #1f2a33; } .tile.on-soot { background: #1e2e38; color: #fff; } .tile.on-broth { background: #e8f1fc; color: #1f2a33; }

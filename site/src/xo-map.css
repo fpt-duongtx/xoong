@@ -18,17 +18,21 @@
   --xo-color-border: var(--line);
   --xo-color-control-border: var(--line-strong);
   --xo-color-accent: var(--ember-deep);
-  --xo-color-accent-text: light-dark(#ffffff, #2b2623);
+  --xo-color-accent-text: var(--primary-text, light-dark(#ffffff, #2b2623));
+  --xo-color-primary: var(--primary, var(--ember-deep));      /* fill of the primary button */
+  --xo-color-primary-text: var(--primary-text, #fff);
+  --xo-color-accent-strong: var(--accent-strong, var(--ember-deep));  /* selected text, link hover */
+  --xo-color-text-2: var(--text-2, var(--muted));
   --xo-color-accent-soft: var(--ember-soft);
   --xo-color-subtle: var(--broth);
   --xo-color-success: var(--herb);
   --xo-color-warning: var(--sesame);
   --xo-color-danger: var(--danger);
-  --xo-color-inverse: light-dark(var(--soot), #3b3530);   /* lighter than the page in dark, so a toast or tooltip reads */
+  --xo-color-inverse: light-dark(var(--soot), #2f4252);   /* tooltip and toast: ink in light, a lighter slate than the page in dark */
   --xo-color-inverse-text: var(--rice);
   --xo-font: var(--font);
   --xo-font-mono: var(--mono);
-  --xo-radius: 10px;
+  --xo-radius: 8px;
 }
 
 }

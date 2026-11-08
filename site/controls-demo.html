@@ -7,20 +7,26 @@
   <meta name="description" content="Every control with realistic content, in one place.">
   <meta property="og:title" content="All controls · xoong">
   <meta property="og:description" content="Every control with realistic content, in one place.">
-  <meta property="og:image" content="brand/og-controls.png">
+  <meta property="og:image" content="brand/mist/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
   <link rel="stylesheet" href="src/brand.css">
   <link rel="stylesheet" href="src/xo-map.css">
   <link rel="stylesheet" href="src/standard.css">
   <link rel="stylesheet" href="src/icons.css">
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
   <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
@@ -28,23 +34,19 @@
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
-      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
         <a href="demo.html">Demo</a>
         <a href="brand.html">Brand</a>
-        <xo-menu class="palette" label="Colour palette" value="calm">
+        <xo-menu class="palette" label="Colour palette" value="mist">
           <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
           <button value="calm">Calm</button>
           <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
         </xo-menu>
       </nav>
     </div>
@@ -59,6 +61,7 @@
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
@@ -86,6 +89,7 @@
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
@@ -105,55 +109,55 @@
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>All controls</span></div>
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" class="sprite">
-  <symbol id="chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-  <symbol id="chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
-  <symbol id="chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
-  <symbol id="chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-  <symbol id="arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
-  <symbol id="arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
-  <symbol id="arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
-  <symbol id="arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
-  <symbol id="pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
-  <symbol id="play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
-  <symbol id="heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
-  <symbol id="paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
-  <symbol id="sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
-  <symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
-  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
-  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
-  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
-  <symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
-  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-  <symbol id="more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
-  <symbol id="grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
-  <symbol id="trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
-  <symbol id="edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
-  <symbol id="copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
-  <symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
-  <symbol id="external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
-  <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
-  <symbol id="expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
-  <symbol id="undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
-  <symbol id="redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
-  <symbol id="bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
-  <symbol id="italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
-  <symbol id="underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
-  <symbol id="list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
-  <symbol id="list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
-  <symbol id="quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
-  <symbol id="code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
-  <symbol id="image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
-  <symbol id="calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
-  <symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
-  <symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
-  <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
-  <symbol id="warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
-  <symbol id="error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
-  <symbol id="success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
-  <symbol id="palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
-  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
-  <symbol id="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
+  <symbol id="i-heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+  <symbol id="i-paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
+  <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+  <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
+  <symbol id="i-underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
+  <symbol id="i-list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
+  <symbol id="i-list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
+  <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
+  <symbol id="i-success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
 </svg>      
       <h1>All controls</h1>
       <p class="lede">Every xoong control, styled with the standard and filled with realistic content. The markup is what the framework renders, copied from the live pages, so the dev side can swap in the real elements and logic without touching the look.</p>
@@ -161,7 +165,7 @@
       <h2 id="tabs">Tabs</h2>
 <p><code>&lt;xo-tabs&gt;</code>: underline tabs for sections; the pill variant (<code>class="tabs-pills"</code>) switches a view in place.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><xo-tabs id="demo-tabs" label="Article" value="seo"><div role="tablist" aria-label="Article"><button type="button" id="xo-tabs-2-tab-0" role="tab" data-tab="0" aria-controls="xo-tabs-2-panel-0" aria-selected="false" tabindex="-1">General</button><button type="button" id="xo-tabs-2-tab-1" role="tab" data-tab="seo" aria-controls="seo" aria-selected="true" tabindex="0">SEO</button><button type="button" id="xo-tabs-2-tab-2" role="tab" data-tab="2" aria-controls="xo-tabs-2-panel-2" aria-selected="false" tabindex="-1">Social</button></div>
       <section xo-tab="General" id="xo-tabs-2-panel-0" data-xo-gen-id="" role="tabpanel" aria-labelledby="xo-tabs-2-tab-0" hidden=""><p>General settings: title, slug, author.</p></section>
       <section xo-tab="SEO" id="seo" role="tabpanel" aria-labelledby="xo-tabs-2-tab-1"><p>Search engine settings. This tab is selected by <code>value="seo"</code>.</p></section>
@@ -176,7 +180,7 @@
       <h2 id="menu">Menu and tooltip</h2>
 <p><code>&lt;xo-menu&gt;</code> with action items; <code>xo-tooltip</code> on any element.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><div class="toolbar"><xo-menu class="palette" label="Colour palette" value="calm">
           <button xo-menu-trigger="" xo-tooltip="Switch the colour palette" aria-haspopup="menu" aria-expanded="false" aria-controls="xo-menu-1"><span class="dot" aria-hidden="true"></span>Palette</button>
           
@@ -186,14 +190,14 @@
         
         
         
-      <div id="xo-menu-2" role="menu" aria-label="Row actions" hidden="" popover="manual"><button type="button" role="menuitem" tabindex="-1">Edit</button><button type="button" role="menuitem" tabindex="-1">Duplicate</button><a href="#menu-link" role="menuitem" tabindex="-1">Open link</a></div></xo-menu><button xo-tooltip="Save the draft"><svg class="icon " aria-hidden="true"><use href="#check"/></svg>Save</button><span class="tooltip" role="presentation">Save the draft</span></div><div class="menu-panel stage-gap" role="menu" aria-label="Open state">
-        <button role="menuitem" aria-current="true"><svg class="icon " aria-hidden="true"><use href="#palette"/></svg>Calm</button><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#palette"/></svg>Ember</button><hr><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg>Copy link</button><button role="menuitem" class="danger"><svg class="icon " aria-hidden="true"><use href="#trash"/></svg>Delete</button></div><p class="preview-note">The second block shows the open state of a menu panel.</p></div>
+      <div id="xo-menu-2" role="menu" aria-label="Row actions" hidden="" popover="manual"><button type="button" role="menuitem" tabindex="-1">Edit</button><button type="button" role="menuitem" tabindex="-1">Duplicate</button><a href="#menu-link" role="menuitem" tabindex="-1">Open link</a></div></xo-menu><button xo-tooltip="Save the draft"><svg class="icon " aria-hidden="true"><use href="#i-check"/></svg>Save</button><span class="tooltip" role="presentation">Save the draft</span></div><div class="menu-panel stage-gap" role="menu" aria-label="Open state">
+        <button role="menuitem" aria-current="true"><svg class="icon " aria-hidden="true"><use href="#i-palette"/></svg>Calm</button><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#i-palette"/></svg>Ember</button><hr><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg>Copy link</button><button role="menuitem" class="danger"><svg class="icon " aria-hidden="true"><use href="#i-trash"/></svg>Delete</button></div><p class="preview-note">The second block shows the open state of a menu panel.</p></div>
 </div>
 
       <h2 id="combobox">Combobox and tags</h2>
 <p><code>&lt;xo-combobox&gt;</code> picks from a list you can filter; <code>&lt;xo-tags&gt;</code> collects free text. Chips remove with the close icon.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><div class="split even"><div><div class="field"><xo-combobox id="demo-author" name="author" label="Author" placeholder="Choose an author">
         
         
@@ -209,7 +213,7 @@
       <h2 id="carousel">Carousel</h2>
 <p><code>&lt;xo-carousel&gt;</code>: cards several at a time, a banner that moves by itself, a gallery with thumbnails.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button><button role="tab" aria-selected="false" tabindex="-1">CSS</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button><button role="tab" aria-selected="false" tabindex="-1">CSS</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><xo-carousel class="cards-3" label="Services" counter="" role="region" aria-roledescription="carousel" aria-label="Services"><div class="xo-carousel-track" tabindex="0" role="group" aria-label="Slides" aria-live="polite">
       <article class="card" aria-label="1 of 5" role="group" aria-roledescription="slide"><h3>Digestive check</h3><p>Advice on stomach, bowel and liver symptoms.</p><a href="#book">Book</a></article>
       <article class="card" aria-label="2 of 5" role="group" aria-roledescription="slide"><h3>Painless endoscopy</h3><p>Stomach and bowel, with sedation.</p><a href="#book">Book</a></article>
@@ -232,7 +236,7 @@
       <h2 id="data">Data table</h2>
 <p><code>&lt;xo-view&gt;</code> and <code>&lt;xo-table&gt;</code>: search, sort, select, bulk action, paging. The loading, empty and error states are in <a href="states.html">States</a>.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><xo-view get="listPeople">
       <div class="xo-table"><!--xo-if--><div class="xo-filters"><input type="search" xo-param="name" placeholder="Search by name" aria-label="Search by name"></div><table>
   <thead><tr><th scope="col"><input type="checkbox" xo-select="all:items" aria-label="Select all rows" xo-t="aria-label:xoong.table.selectAll"></th><th scope="col"><button type="button" xo-param="sort~=name">name</button></th><th scope="col"><button type="button" xo-param="sort~=email">E-mail</button></th><th scope="col"><button type="button" xo-param="sort~=role">role</button></th><th scope="col"><span class="xo-visually-hidden" xo-t="xoong.table.actions">Actions</span></th></tr></thead>
@@ -250,24 +254,24 @@
       <h2 id="forms">Forms</h2>
 <p><code>&lt;xo-form&gt;</code> draws the fields from the schema: label above, control, hint or error.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button><button role="tab" aria-selected="false" tabindex="-1">OpenAPI</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button><button role="tab" aria-selected="false" tabindex="-1">OpenAPI</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><div class="panel"><form xo-submit="createPerson" class="xo-form" novalidate=""><label class="xo-field"><span>Name</span><input name="name" type="text" minlength="2" maxlength="40" required=""></label><label class="xo-field"><span>Email</span><input name="email" type="email" required=""></label><label class="xo-field"><span>Role</span><select aria-label="Example" name="role"><option value=""></option><option value="admin">admin</option><option value="editor">editor</option><option value="viewer">viewer</option></select></label><label class="xo-field"><span>Topics</span><xo-combobox name="topics" multiple=""><div class="xo-combobox-box"><input type="text" class="xo-combobox-input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="xo-combobox-3-list" aria-label="topics"></div><ul id="xo-combobox-3-list" class="xo-combobox-list" role="listbox" aria-multiselectable="true" hidden="" popover="manual"></ul></xo-combobox></label><label class="xo-field"><span>Keywords</span><xo-tags name="keywords" multiple="" creatable=""><div class="xo-combobox-box"><input type="text" class="xo-combobox-input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="xo-combobox-4-list" aria-label="keywords"></div><ul id="xo-combobox-4-list" class="xo-combobox-list" role="listbox" aria-multiselectable="true" hidden="" popover="manual"></ul></xo-tags></label><label class="xo-field"><span>Bio</span><xo-richtext name="bio"><div class="xo-richtext-box"><div class="xo-richtext-toolbar" role="toolbar" aria-label="Formatting" aria-controls="xo-richtext-2-editor" data-size="compact"><button type="button" data-tool="undo" tabindex="0" data-face="↶" aria-label="Undo" title="Undo" hidden=""></button><button type="button" data-tool="redo" tabindex="-1" data-face="↷" aria-label="Redo" title="Redo" hidden=""></button><select data-tool="style" tabindex="0" aria-label="Text style" title="Text style"><option value="p" data-short="P">P</option><option value="h2" data-short="H2">H2</option><option value="h3" data-short="H3">H3</option><option value="mixed" data-short="Mixed" disabled="">Mixed</option></select><button type="button" data-tool="bold" tabindex="-1" data-face="B" aria-label="Bold" title="Bold" aria-pressed="false"></button><button type="button" data-tool="italic" tabindex="-1" data-face="I" aria-label="Italic" title="Italic" aria-pressed="false"></button><button type="button" data-tool="underline" tabindex="-1" data-face="U" aria-label="Underline" title="Underline" aria-pressed="false" hidden=""></button><button type="button" data-tool="ul" tabindex="-1" data-face="•" aria-label="Bulleted list" title="Bulleted list" aria-pressed="false"></button><button type="button" data-tool="ol" tabindex="-1" data-face="1." aria-label="Numbered list" title="Numbered list" aria-pressed="false" hidden=""></button><button type="button" data-tool="quote" tabindex="-1" data-face="“" aria-label="Quote" title="Quote" aria-pressed="false" hidden=""></button><button type="button" data-tool="link" tabindex="-1" data-face="🔗" aria-label="Link" title="Link" aria-pressed="false"></button><div class="xo-richtext-morewrap"><button type="button" data-tool="more" tabindex="-1" data-face="⋯" aria-label="More" title="More" aria-haspopup="menu" aria-expanded="false" aria-controls="xo-richtext-2-more"></button><div class="xo-richtext-more" id="xo-richtext-2-more" role="menu" aria-label="More" hidden=""><button type="button" data-tool="underline" tabindex="-1" data-face="U" aria-label="Underline" title="Underline" role="menuitemcheckbox" aria-checked="false">Underline</button><button type="button" data-tool="ol" tabindex="-1" data-face="1." aria-label="Numbered list" title="Numbered list" role="menuitemcheckbox" aria-checked="false">Numbered list</button><button type="button" data-tool="quote" tabindex="-1" data-face="“" aria-label="Quote" title="Quote" role="menuitemcheckbox" aria-checked="false">Quote</button><button type="button" data-tool="undo" tabindex="-1" data-face="↶" aria-label="Undo" title="Undo" role="menuitem">Undo</button><button type="button" data-tool="redo" tabindex="-1" data-face="↷" aria-label="Redo" title="Redo" role="menuitem">Redo</button></div></div></div><div class="xo-richtext-link" hidden=""><input type="text" inputmode="url" aria-label="Link address" placeholder="https://"><button type="button" data-action="apply">Apply</button><button type="button" data-action="remove">Remove link</button><small class="xo-richtext-error" role="alert"></small></div><div id="xo-richtext-2-editor" class="xo-richtext-editable" role="textbox" aria-multiline="true" aria-label="bio" data-empty="" contenteditable="true"></div></div></xo-richtext></label><button class="xo-submit">Add person</button></form></div></div>
 </div>
 
       <h2 id="richtext">Rich text</h2>
 <p><code>&lt;xo-richtext&gt;</code>: an accessible toolbar over a contenteditable area. The toolbar faces are icons.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><xo-richtext id="demo-editor" name="body" label="Body" placeholder="Write something" media="" data-dirty=""><div class="xo-richtext-box"><div class="xo-richtext-toolbar" role="toolbar" aria-label="Formatting" aria-controls="xo-richtext-1-editor" data-size="full"><button type="button" data-tool="undo" tabindex="0" data-face="↶" aria-label="Undo" title="Undo"></button><button type="button" data-tool="redo" tabindex="-1" data-face="↷" aria-label="Redo" title="Redo"></button><select data-tool="style" tabindex="-1" aria-label="Text style" title="Text style"><option value="p" data-short="P">Paragraph</option><option value="h2" data-short="H2">Heading 2</option><option value="h3" data-short="H3">Heading 3</option><option value="mixed" data-short="Mixed" disabled="">Mixed</option></select><button type="button" data-tool="bold" tabindex="-1" data-face="B" aria-label="Bold" title="Bold" aria-pressed="false"></button><button type="button" data-tool="italic" tabindex="-1" data-face="I" aria-label="Italic" title="Italic" aria-pressed="false"></button><button type="button" data-tool="underline" tabindex="-1" data-face="U" aria-label="Underline" title="Underline" aria-pressed="false"></button><button type="button" data-tool="ul" tabindex="-1" data-face="•" aria-label="Bulleted list" title="Bulleted list" aria-pressed="false"></button><button type="button" data-tool="ol" tabindex="-1" data-face="1." aria-label="Numbered list" title="Numbered list" aria-pressed="false"></button><button type="button" data-tool="quote" tabindex="-1" data-face="“" aria-label="Quote" title="Quote" aria-pressed="false"></button><button type="button" data-tool="link" tabindex="-1" data-face="🔗" aria-label="Link" title="Link" aria-pressed="false"></button><button type="button" data-tool="image" tabindex="-1" data-face="🖼" aria-label="Image" title="Image"></button><div class="xo-richtext-morewrap" hidden=""><button type="button" data-tool="more" tabindex="-1" data-face="⋯" aria-label="More" title="More" aria-haspopup="menu" aria-expanded="false" aria-controls="xo-richtext-1-more"></button><div class="xo-richtext-more" id="xo-richtext-1-more" role="menu" aria-label="More" hidden=""><button type="button" data-tool="underline" tabindex="-1" data-face="U" aria-label="Underline" title="Underline" role="menuitemcheckbox" aria-checked="false">Underline</button><button type="button" data-tool="ol" tabindex="-1" data-face="1." aria-label="Numbered list" title="Numbered list" role="menuitemcheckbox" aria-checked="false">Numbered list</button><button type="button" data-tool="quote" tabindex="-1" data-face="“" aria-label="Quote" title="Quote" role="menuitemcheckbox" aria-checked="false">Quote</button><button type="button" data-tool="undo" tabindex="-1" data-face="↶" aria-label="Undo" title="Undo" role="menuitem">Undo</button><button type="button" data-tool="redo" tabindex="-1" data-face="↷" aria-label="Redo" title="Redo" role="menuitem">Redo</button></div></div></div><div class="xo-richtext-link" hidden=""><input type="text" inputmode="url" aria-label="Link address" placeholder="https://"><button type="button" data-action="apply">Apply</button><button type="button" data-action="remove">Remove link</button><small class="xo-richtext-error" role="alert"></small></div><div id="xo-richtext-1-editor" class="xo-richtext-editable" role="textbox" aria-multiline="true" aria-label="Body" data-placeholder="Write something" contenteditable="true"><h2 id="release-notes">Release notes</h2><p>Write <strong>bold</strong>, <em>italic</em> and <u>underlined</u> text, add a <a href="https://example.org" rel="noopener noreferrer">link</a> or a list:</p><ul><li>one</li><li>two</li></ul></div></div></xo-richtext></div>
 </div>
 
       <h2 id="overlays">Dialog, confirm, toast</h2>
 <p><code>&lt;xo-dialog&gt;</code> for forms, the native confirm for destructive actions, <code>&lt;xo-toast&gt;</code> for results. Shown open and static here.</p>
 <div class="example">
-  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg></button></div></div>
+  <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><div class="split even"><div class="dialog-stage"><xo-dialog><dialog open><h2 id="add-person">Add person</h2><div class="field"><label for="dn">Name</label><input id="dn" placeholder="Ada Lovelace"></div><div class="field"><label for="dm">E-mail</label><input id="dm" type="email" placeholder="ada@example.org"></div><div class="form-actions"><button class="primary">Add</button><button type="button">Cancel</button></div></dialog></xo-dialog></div>
         <div class="dialog-stage"><dialog class="xo-confirm" open><h2 id="delete-ada-lovelace">Delete Ada Lovelace?</h2><p>This cannot be undone.</p><div class="xo-confirm-actions"><button>Cancel</button><button class="xo-confirm-ok">Delete</button></div></dialog></div></div>
-        <p class="toolbar"><span class="toast"><svg class="icon " aria-hidden="true"><use href="#success"/></svg>Deleted</span><span class="toast toast-error"><svg class="icon " aria-hidden="true"><use href="#error"/></svg>Could not save</span></p></div>
+        <p class="toolbar"><span class="toast"><svg class="icon " aria-hidden="true"><use href="#i-success"/></svg>Deleted</span><span class="toast toast-error"><svg class="icon " aria-hidden="true"><use href="#i-error"/></svg>Could not save</span></p></div>
 </div>
     
 <nav class="pager" aria-label="Pages"><a rel="prev" href="components.html"><small>Previous</small><span>Standard</span></a><a rel="next" href="overlays.html"><small>Next</small><span>Overlays</span></a></nav>
@@ -279,14 +283,7 @@
   </div>
   <footer class="foot">
     <div class="wrap">
-      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
       <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
     </div>

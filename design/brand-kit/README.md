@@ -89,3 +89,17 @@ Fixes found on the live site: nested tab bars with a different look, form fields
 ## Update 5: framework-ready tokens (the dev's naming)
 
 `controls.css` and `components.css` now use only `--xo-*` tokens, no brand colours: `--xo-control-height` (+ `-sm`, `-lg`), `--xo-control-padding`, `--xo-color-control-border`, `--xo-focus` (3px proposal), `--xo-touch` (44px option: `.touch`), `--xo-radius`, plus the new colour tokens listed at the top of `css/xo-map.css` (`--xo-color-accent-soft`, `-subtle`, `-success`, `-warning`, `-danger`, `-inverse`, `-inverse-text`). `xo-map.css` maps them to the Calm/Ember palettes. Brand flourishes (offset shadows on carousel arrows and the primary button) moved to the end of `shell.css`. Icons: ids are kebab-case; one path or a few primitives, `fill: none`, stroke only (dots are tiny stroked circles); added `pause`, `play`, `heading`, `paragraph`; `external` is now `external-link`.
+
+## Update 6: Mist (the Rainlet design system) on xoong
+
+The user asked to reuse the Rainlet/Mist design (owner: the Designer session) and keep the xoong pot logo. What changed in the kit:
+
+- **Palette**: `brand.css` now defines **Mist** as the default (light and a derived dark, approved by the Mist owner); **Calm** and **Ember** stay as selectable palettes (`data-palette="calm|ember"`). New palette vars: `--text-2`, `--accent-strong`, `--primary` / `--primary-text` (the fill of the primary button; stays #0B63CE in dark). `xo-map.css` maps them to `--xo-color-primary`, `--xo-color-primary-text`, `--xo-color-accent-strong`, `--xo-color-text-2`, and `--xo-radius` is 8px.
+- **Skin**: `css/mist.css` (load it last): 14px Mist controls (40/32), grey page, white 12px cards with one 1px line, accent tint + accent text + 3px bar for the current item, glyph badges (diamond, dot, square, triangle), tinted notices without frames, floating things with the soft float shadow, segmented control for `.tabs-pills`, sentence-case table headers, tooltips in ink, toasts as white cards; landing page without the heavy blocks. Docs variant: prose 16px/1.65, h1 40 / h2 28 / h3 20 at weight 600.
+- **Logo**: `assets/mist/*` and `brand-mist.html` (option B chosen by the user: the clay pot on the Mist tint tile, wordmark drawn with the round stroke, simple mark at 24px and below). Headers use `xoong-lockup.svg` (`xoong-lockup-dark.svg` in dark).
+- **Checks**: axe (WCAG 2.1 AA) on 12 kit pages in Mist light, Mist dark, Calm light and Ember dark: 0 violations; no page scrolls sideways at 390px. Not yet run on the built site (needs your layer and the palette menu wiring).
+- **Palette menu**: Mist (default, current mark), Calm, Ember; localStorage key `xoong-palette`, values `mist|calm|ember`.
+
+## Update 7: new controls (UI only), from the Rainlet design
+
+`controls-new.html` + `css/controls-new.css` (Rainlet's control CSS, `a-*` renamed `xo-*`, on `--xo-*` tokens) + `js/controls-new-demo.js` (demo behaviour only) + `CONTROLS-SPEC.md` (proposed elements, keyboard, ARIA, value and events for 25 controls: switch, radio cards, slider, range slider, stepper, date, date range, time, password, one-time code, copy field, textarea counter, inline edit, search with filters, button group, split button, toggle, busy button, spinner/skeleton/progress, steps, accordion, avatars, command palette, scrollbars). Load `controls-new.css` after `states.css`.

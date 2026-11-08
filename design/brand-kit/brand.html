@@ -8,75 +8,60 @@
   <meta name="theme-color" content="#f7f4ec">
   <meta property="og:title" content="Brand kit · xoong">
   <meta property="og:description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
-  <meta property="og:image" content="assets/og.png">
+  <meta property="og:image" content="assets/mist/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/mist/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/mist-tokens.css">
   <link rel="stylesheet" href="css/brand.css">
+  <link rel="stylesheet" href="css/xo-map.css">
   <script src="js/palette.js"></script>
+  <link rel="stylesheet" href="css/mist.css">
 </head>
 <body>
   <header class="top">
     <div class="wrap">
-      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/mist/xoong-lockup-dark.svg"><img src="assets/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="docs.html">Docs sample</a>
         <a href="brand.html" aria-current="page">Brand</a>
-        <button class="palette-toggle" type="button" aria-pressed="false" title="Switch colour palette"><span>Calm</span></button>
+        <button class="palette-toggle" type="button" aria-pressed="false" title="Switch colour palette"><span>Mist</span></button>
       </nav>
     </div>
   </header>
 
-  <div class="page-head"><div class="wrap"><h1>Brand kit</h1><p class="lede">The identity of xoong: a small pot with a lot of heat.</p></div></div>
+  <div class="page-head"><div class="wrap"><h1>Brand kit</h1><p class="lede">The identity of xoong, in the Mist design language.</p></div></div>
   <main class="wrap">
   <div class="prose">
     <h2>The idea</h2>
-    <p><em>Xoong</em> is the Vietnamese word for a saucepan, the pot every kitchen has and nobody replaces. That is the framework: one small, sturdy tool that does the whole job. The steam rising from the lid is a pair of angle brackets, so the pot reads as code at a glance.</p>
-    <p>Personality: <strong>practical, warm, a little cheeky.</strong> We talk like a good cook explaining a recipe, not like a vendor selling a platform.</p>
+    <p><em>Xoong</em> is the Vietnamese word for a saucepan, the pot every kitchen has and nobody replaces. That is the framework: one small, sturdy tool that does the whole job. The steam rising from the lid is a pair of angle brackets, so the pot reads as code at a glance. The design language is <strong>Mist</strong> (the Rainlet design system): calm, soft, one accent blue, nothing that dates.</p>
   </div>
 
   <section>
-    <div class="head"><span class="eyebrow">Logo</span><h2>Mark and wordmark</h2><p>The mark is the only symbol. The wordmark is lowercase <b>xoong</b>, heavy weight, tracking −0.045em. On the site the mark is inline SVG and follows the active palette (use the toggle in the header); the files below are fixed colour.</p></div>
+    <div class="head"><span class="eyebrow">Logo</span><h2>The pot on the Mist tile</h2><p>The clay pot, drawn with the Mist round stroke on the Mist tint tile; the lowercase wordmark is drawn with the same stroke, so it never depends on a font. Full guide and files: <a href="brand-mist.html">brand-mist.html</a>.</p></div>
     <div class="logo-grid">
-      <div class="tile on-rice"><span class="lockup"><img src="assets/mark.svg" alt=""><span class="word">xoong</span></span><small>mark.svg · on Paper</small></div>
-      <div class="tile on-soot"><span class="lockup"><img src="assets/mark-reverse.svg" alt=""><span class="word">xoong</span></span><small>mark-reverse.svg · on Ink</small></div>
-      <div class="tile on-ember"><span class="lockup"><img src="assets/mark-mono.svg" alt=""><span class="word">xoong</span></span><small>mark-mono.svg · one colour</small></div>
-      <div class="tile on-broth"><span class="sizes"><img src="assets/favicon.svg" alt="" width="72" height="72"><img src="assets/favicon.svg" alt="" width="48" height="48"><img src="assets/favicon.svg" alt="" width="32" height="32"><img src="assets/favicon.svg" alt="" width="16" height="16"></span><small>favicon.svg · 72 48 32 16</small></div>
-    </div>
-    <div class="prose"><p>Clear space equals one handle (about a fifth of the mark) on every side. Minimum size: 16 px for the icon, 24 px for the mark. Do not recolour the pot outside a palette, add outlines, rotate it for effect or use the steam alone.</p></div>
-    <div class="dl">
-      <a class="btn" href="assets/mark.svg" download>mark.svg</a><a class="btn" href="assets/mark-reverse.svg" download>mark-reverse.svg</a><a class="btn" href="assets/mark-mono.svg" download>mark-mono.svg</a><a class="btn" href="assets/favicon.svg" download>favicon.svg</a>
-      <a class="btn" href="assets/mark-ember.svg" download>mark-ember.svg</a><a class="btn" href="assets/mark-ember-reverse.svg" download>mark-ember-reverse.svg</a><a class="btn" href="assets/favicon-ember.svg" download>favicon-ember.svg</a>
-      <a class="btn" href="assets/lockup.png" download>lockup.png</a><a class="btn" href="assets/og.png" download>og.png</a>
+      <div class="tile on-rice"><img class="lockup-img" src="assets/mist/xoong-lockup.svg" alt="xoong lockup" width="240" height="64"><small>xoong-lockup.svg · on white</small></div>
+      <div class="tile on-soot"><img class="lockup-img" src="assets/mist/xoong-lockup-dark.svg" alt="xoong lockup on night" width="240" height="64"><small>xoong-lockup-dark.svg · on night</small></div>
+      <div class="tile on-broth"><span class="sizes"><img src="assets/mist/xoong-mark.svg" alt="" width="72" height="72"><img src="assets/mist/xoong-mark.svg" alt="" width="48" height="48"><img src="assets/mist/xoong-mark.svg" alt="" width="32" height="32"><img src="assets/mist/xoong-mark-small.svg" alt="" width="24" height="24"><img src="assets/mist/xoong-mark-small.svg" alt="" width="16" height="16"></span><small>mark · 72 48 32 · simple mark 24 16</small></div>
+      <div class="tile on-rice"><img class="lockup-img" src="assets/mist/xoong-lockup-stacked.svg" alt="xoong stacked lockup" width="130" height="108"><small>xoong-lockup-stacked.svg</small></div>
     </div>
   </section>
 
   <section>
-    <div class="head"><span class="eyebrow">Colour</span><h2>Two palettes, one structure.</h2><p><b>Calm</b> (clay and sage on warm paper) is the default. <b>Ember</b> turns the heat up. A palette is only a set of custom-property values, so a third is easy.</p></div>
+    <div class="head"><span class="eyebrow">Colour</span><h2>One blue, one ink, soft greys.</h2><p>Mist is the default palette, light and dark. The accent marks the primary action, the current place and focus: nothing is blue for decoration. Clay belongs to the pot only. Calm and Ember stay as selectable themes.</p></div>
     <ul class="swatches">
-      <li><span class="swatch-chip c-clay"></span><div class="info"><b>Clay</b><code>#DF8A6A</code><p>Calm: the pot, fills.</p></div></li>
-      <li><span class="swatch-chip c-deep"></span><div class="info"><b>Clay Deep</b><code>#9A4D33</code><p>Calm: links, primary actions.</p></div></li>
-      <li><span class="swatch-chip c-soot"></span><div class="info"><b>Ink</b><code>#2B2623</code><p>Text, outlines, dark surfaces.</p></div></li>
-      <li><span class="swatch-chip c-paper"></span><div class="info"><b>Paper</b><code>#F7F4EC</code><p>Page background.</p></div></li>
-      <li><span class="swatch-chip c-ember"></span><div class="info"><b>Ember</b><code>#FF5B22</code><p>Ember palette: the pot.</p></div></li>
-      <li><span class="swatch-chip c-embdeep"></span><div class="info"><b>Ember Deep</b><code>#B93A0A</code><p>Ember: links on light.</p></div></li>
-      <li><span class="swatch-chip c-sesame"></span><div class="info"><b>Sesame</b><code>#E6C783</code><p>Notes, highlights.</p></div></li>
-      <li><span class="swatch-chip c-herb"></span><div class="info"><b>Sage</b><code>#5B8A6B</code><p>Success.</p></div></li>
+      <li><span class="swatch-chip c-blue"></span><div class="info"><b>Mist blue</b><code>#0B63CE</code><p>Accent, primary button, focus.</p></div></li><li><span class="swatch-chip c-blue-strong"></span><div class="info"><b>Blue strong</b><code>#084C9E</code><p>Selected text, link hover.</p></div></li><li><span class="swatch-chip c-ink"></span><div class="info"><b>Ink</b><code>#1F2A33</code><p>Text, tooltip, dark window.</p></div></li><li><span class="swatch-chip c-page"></span><div class="info"><b>Page</b><code>#F5F7F8</code><p>Background.</p></div></li><li><span class="swatch-chip c-white"></span><div class="info"><b>Card</b><code>#FFFFFF</code><p>Surfaces.</p></div></li><li><span class="swatch-chip c-tint"></span><div class="info"><b>Mist tint</b><code>#E8F1FC</code><p>Selected, chips, tile.</p></div></li><li><span class="swatch-chip c-line"></span><div class="info"><b>Line</b><code>#E2E8EC</code><p>Dividers; controls use #7E8C99.</p></div></li><li><span class="swatch-chip c-clay"></span><div class="info"><b>Clay</b><code>#DF8A6A</code><p>The pot only.</p></div></li>
     </ul>
+    <p class="hint">Dark (derived, approved by the Mist owner): page #121B22, card #1B2933, text #E8EEF2, accent #6AA8F0, controls #6B7D8A. The primary button stays #0B63CE with white text.</p>
   </section>
 
   <section>
-    <div class="head"><span class="eyebrow">Type</span><h2>System fonts, set with confidence.</h2><p>No font files: zero requests and a strict CSP that stays strict.</p></div>
-    <div class="type-row"><small>Display<br>800 · −0.055em</small><div class="t-display">One pot. Whole app.</div></div>
-    <div class="type-row"><small>Text<br>400 · 17px / 1.65</small><div>Avenir Next, Segoe UI Variable, then the system UI font. Short paragraphs, plain words.</div></div>
-    <div class="type-row"><small>Code<br>ui-monospace</small><div class="t-mono">&lt;xo-view get="listPeople"&gt;</div></div>
+    <div class="head"><span class="eyebrow">Type</span><h2>Be Vietnam Pro for headings, the system font for the rest.</h2><p>Headings and brand surfaces use Be Vietnam Pro 400/500/600 (Latin and Vietnamese, self-hosted, SIL OFL). The interface and the prose use the system font stack: nothing to load, every script covered.</p></div>
+    <div class="type-row"><small>Display<br>Be Vietnam Pro 600</small><div class="t-display">One pot. Whole app.</div></div>
+    <div class="type-row"><small>Prose (docs)<br>system · 16px / 1.65</small><div>Short paragraphs, plain words, one idea each. Headings are 40, 28 and 20 px at weight 600.</div></div>
+    <div class="type-row"><small>Interface<br>system · 14px</small><div>Buttons, fields, tables and menus are 14px, 40px tall (small 32px).</div></div>
+    <div class="type-row"><small>Code<br>ui-monospace · 14px</small><div class="t-mono">&lt;xo-view get="listPeople"&gt;</div></div>
   </section>
 
   <section>
@@ -89,14 +74,7 @@
   </main>
   <footer class="foot">
     <div class="wrap">
-      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/mist/xoong-lockup-dark.svg"><img src="assets/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
       <nav aria-label="Footer"><a href="docs.html">Docs</a><a href="brand.html">Brand kit</a></nav>
     </div>

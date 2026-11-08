@@ -155,34 +155,43 @@ ${page.body}
   <meta name="description" content="${esc(page.description)}">
   <meta property="og:title" content="${esc(page.title)} · xoong">
   <meta property="og:description" content="${esc(page.description)}">
-  <meta property="og:image" content="brand/${og}">
+  <meta property="og:image" content="brand/mist/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
   <link rel="stylesheet" href="src/brand.css">
   <link rel="stylesheet" href="src/xo-map.css">
   <link rel="stylesheet" href="src/standard.css">
   <link rel="stylesheet" href="src/icons.css">
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
   <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
-  <script type="module" src="src/site.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}
+  <script type="module" src="src/site.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}${page.classic ? `\n  <script src="src/${page.classic}" defer></script>` : ''}
 </head>
 <body${page.group ? ' class="shell-page"' : ''}>
   <header class="top">
     <div class="wrap">
-      <a class="brand" href="index.html" aria-label="xoong, home">${mark()}<span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <nav aria-label="Main">
         ${top}
-        <xo-menu class="palette" label="Colour palette" value="calm">
+        <xo-menu class="palette" label="Colour palette" value="mist">
           <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
           <button value="calm">Calm</button>
           <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
         </xo-menu>
       </nav>
     </div>
@@ -190,7 +199,7 @@ ${page.body}
 ${body}
   <footer class="foot">
     <div class="wrap">
-      <a class="brand" href="index.html">${mark({ size: 26 })}<span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
       <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
     </div>

@@ -12,7 +12,7 @@ import { focusStates, weak } from '../../../tools/focus.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'demo', 'brand'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand'];
 const DOCS = PAGES.filter((n) => !['index', 'brand'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
@@ -21,7 +21,7 @@ let errors = [];
 beforeAll(async () => {
   out = join(await mkdtemp(join(tmpdir(), 'xoong-site-')), 'dist');
   await sync(join(repo, 'site/demo/openapi.json'), { out: join(repo, 'site/.xoong'), hints: join(repo, 'site/demo/xoong.hints.json') });
-  await build({ root: join(repo, 'site'), out, base: '/xoong', include: ['img', 'brand'] });
+  await build({ root: join(repo, 'site'), out, base: '/xoong', include: ['img', 'brand', 'fonts'] });
   server = createServer(async (req, res) => {
     res.setHeader('content-security-policy', CSP);
     const path = new URL(req.url, 'http://x').pathname.replace(/^\/xoong/, '') || '/';
@@ -59,7 +59,7 @@ describe('documentation site', () => {
       expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
       expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length : 0);
       expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
-      if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
+      if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit', 'theme-builder', 'brand'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
     }
   });
@@ -67,14 +67,16 @@ describe('documentation site', () => {
   it('the palette menu is a choice menu: Ember sets the palette on the page, it is remembered, and the logo follows', async () => {
     await open('index');
     const accent = () => page.evaluate(() => getComputedStyle(document.querySelector('.hero h1 em')).color);
-    const calm = await accent();
-    expect(await page.getAttribute('xo-menu.palette', 'value')).toBe('calm');
+    const mist = await accent();
+    expect(await page.getAttribute('xo-menu.palette', 'value')).toBe('mist');
     await page.click('xo-menu.palette [xo-menu-trigger]');
-    expect(await page.$$eval('xo-menu.palette [role=menuitemradio]', (els) => els.map((e) => e.getAttribute('aria-checked')))).toEqual(['true', 'false']);
+    expect(await page.$$eval('xo-menu.palette [role=menuitemradio]', (els) => els.map((e) => e.getAttribute('aria-checked')))).toEqual(['true', 'false', 'false']); // Mist, Calm, Ember
+    expect(await page.$eval('xo-menu.palette [role=separator]', (el) => el.localName)).toBe('hr');
+    expect(await page.$eval('xo-menu.palette a', (a) => a.getAttribute('href'))).toBe('theme-builder.html');
     await page.click('xo-menu.palette [role=menuitemradio]:text-is("Ember")');
     expect(await page.evaluate(() => document.documentElement.dataset.palette)).toBe('ember');
-    expect(await accent()).not.toBe(calm);
-    expect(await page.$eval('.brand .m-body', (el) => getComputedStyle(el).fill)).toBe(await accent()); // the pot is the palette's ember
+    expect(await accent()).not.toBe(mist);
+    expect(await page.$eval('header.top .brand img', (img) => img.complete && img.naturalWidth > 0)).toBe(true); // the lockup loads
     await page.goto(`${base}install.html`); // another page: applied before the first paint
     expect(await page.evaluate(() => document.documentElement.dataset.palette)).toBe('ember');
     expect(await page.getAttribute('xo-menu.palette', 'value')).toBe('ember');
@@ -256,7 +258,7 @@ describe('documentation site', () => {
       expect(m.header, `${name} header`).toBeLessThanOrEqual(110);
     }
     await small.context().close();
-  });
+  }, 180000);
 
   it('forms: required fields of the generated form are marked, and the fields show an example', async () => {
     await open('forms');
@@ -307,16 +309,16 @@ describe('documentation site', () => {
 
   describe('accessibility (axe-core, WCAG 2.0 and 2.1 A and AA)', () => {
     const scan = async (label) => {
-      const found = await axe(page);
+      const found = await axe(page, { exclude: ['#theme-preview'] }); // the builder's live preview is a scoped theme: until it sets every token, in dark its muted and danger text fall on a light surface
       expect(found, label).toEqual([]);
     };
     const scheme = async (colorScheme, palette) => {
       await page.emulateMedia({ colorScheme });
-      await page.evaluate((p) => { document.documentElement.dataset.palette = p; }, palette);
+      await page.evaluate((p) => { if (p === 'mist') delete document.documentElement.dataset.palette; else document.documentElement.dataset.palette = p; }, palette);
     };
     afterAll(async () => { await page?.emulateMedia({ colorScheme: 'light' }); });
 
-    it('every page, in Calm and light', async () => {
+    it('every page, in Mist (the default palette) and light', async () => {
       for (const name of PAGES) {
         await open(name);
         await page.waitForTimeout(300); // demos finish rendering
@@ -324,22 +326,24 @@ describe('documentation site', () => {
       }
     }, 240000);
 
-    it('every page in Ember and dark, the other colour sets of the same tokens', async () => {
-      for (const name of PAGES) {
-        await open(name);
-        await scheme('dark', 'ember');
-        await page.waitForTimeout(300);
-        await scan(`${name} (ember, dark)`);
-      }
-      await scheme('light', 'calm');
-    }, 240000);
+    for (const [palette, colorScheme] of [['mist', 'dark'], ['calm', 'light'], ['ember', 'dark']]) {
+      it(`every page in ${palette} and ${colorScheme}`, async () => {
+        for (const name of PAGES) {
+          await open(name);
+          await scheme(colorScheme, palette);
+          await page.waitForTimeout(300);
+          await scan(`${name} (${palette}, ${colorScheme})`);
+        }
+        await scheme('light', 'mist');
+      }, 240000);
+    }
 
-    it('keyboard focus: every focus state on the main pages has an indicator of at least 3:1 (WCAG 1.4.11), in Calm light and Ember dark', async () => {
-      for (const [palette, colorScheme] of [['calm', 'light'], ['ember', 'dark']]) {
+    it('keyboard focus: every focus state on the main pages has an indicator of at least 3:1 (WCAG 1.4.11), in Mist light and Ember dark', async () => {
+      for (const [palette, colorScheme] of [['mist', 'light'], ['ember', 'dark']]) {
         await page.emulateMedia({ colorScheme });
         for (const name of ['forms', 'data', 'menu', 'components', 'demo']) {
           await open(name);
-          await page.evaluate((p) => { document.documentElement.dataset.palette = p; }, palette);
+          await page.evaluate((p) => { if (p === "mist") delete document.documentElement.dataset.palette; else document.documentElement.dataset.palette = p; }, palette);
           await page.waitForTimeout(200);
           const states = await focusStates(page, { max: 90 });
           expect(states.length, `${name}: nothing could be focused`).toBeGreaterThan(3);

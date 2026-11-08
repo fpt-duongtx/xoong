@@ -120,7 +120,7 @@ xo-dialog > dialog > h2, .xo-confirm h2 { margin: 0 0 .5rem; font-size: 1.3rem; 
 .xo-toast-action:hover { background: color-mix(in srgb, var(--xo-color-inverse-text) 14%, transparent); }
 
 /* ======================= xo-richtext ======================= */
-.xo-richtext-box { border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); background: var(--xo-color-surface); overflow: hidden; transition: border-color .15s ease, box-shadow .15s ease; }
+.xo-richtext-box { border: var(--xo-border-width, 1px) solid var(--xo-color-control-border); border-radius: var(--xo-radius); background: var(--xo-color-surface); overflow: hidden; transition: border-color .15s ease, box-shadow .15s ease; }
 .xo-richtext-box:hover { border-color: var(--xo-color-text); }
 .xo-richtext-box:has(.xo-richtext-editable:focus) { border-color: var(--xo-color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--xo-color-accent) 30%, transparent); outline: none; }
 .xo-richtext-toolbar { gap: .15rem; padding: .35rem; background: var(--xo-color-subtle); border-bottom: 1px solid var(--xo-color-border); }

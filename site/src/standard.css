@@ -13,10 +13,12 @@
   --xo-control-padding: 0.9rem;      /* horizontal padding */
   --xo-control-gap: 0.5rem;     /* between an icon and a label, and between controls in a toolbar */
   /* --xo-color-control-border: 3:1 against the page and surfaces (the palette maps it) */
+  --xo-border-width: 1px;           /* control borders; themes may use 2px */
   --xo-icon: 1.25rem;
   --xo-field-gap: 0.4rem;       /* label, control, hint */
   --xo-focus: 3px solid var(--xo-color-accent);   /* proposal: 3px (was 2px); the accent must be >= 3:1 on the page */
   --xo-touch: 2.75rem;          /* 44px minimum target: add class="touch" or set --xo-control-height: var(--xo-touch) */
+  --xo-shadow-raised: none;         /* tables, cards, notices at rest; themes may raise them */
   --xo-shadow-pop: 0 14px 34px -14px color-mix(in srgb, var(--xo-color-text) 55%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 10%, transparent);
 }
 
@@ -30,7 +32,7 @@ button, .button {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--xo-control-gap);
   min-height: var(--xo-control-height); padding: 0 var(--xo-control-padding); box-sizing: border-box;
   font: 600 0.95rem/1 var(--xo-font); color: var(--xo-color-text); text-decoration: none; white-space: nowrap; cursor: pointer;
-  background: var(--xo-color-surface); border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius);
+  background: var(--xo-color-surface); border: var(--xo-border-width, 1px) solid var(--xo-color-control-border); border-radius: var(--xo-radius);
   transition: background .15s ease, border-color .15s ease, transform .1s ease, box-shadow .15s ease;
 }
 button:hover, button.is-hover, .button:hover { border-color: var(--xo-color-accent); background: color-mix(in srgb, var(--xo-color-accent) 7%, var(--xo-color-surface)); }
@@ -58,7 +60,7 @@ button.icon-only { width: var(--xo-control-height); padding: 0; } button.icon-on
 /* ---- text fields, selects, textareas ---- */
 input:not([type="checkbox"], [type="radio"], [type="color"], [type="range"], [type="file"]), select, textarea {
   box-sizing: border-box; width: 100%; min-height: var(--xo-control-height); padding: 0 .75rem; font: 400 1rem/1.4 var(--xo-font); color: var(--xo-color-text);
-  background: var(--xo-color-surface); border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); transition: border-color .15s ease, box-shadow .15s ease;
+  background: var(--xo-color-surface); border: var(--xo-border-width, 1px) solid var(--xo-color-control-border); border-radius: var(--xo-radius); transition: border-color .15s ease, box-shadow .15s ease;
 }
 textarea { padding: .6rem .75rem; min-height: 6rem; resize: vertical; }
 input::placeholder, textarea::placeholder { color: var(--xo-color-muted); opacity: 1; }
@@ -96,7 +98,7 @@ legend { padding: 0 .4rem; font-weight: 600; font-size: .9rem; }
 .badge.warn { color: color-mix(in srgb, var(--xo-color-warning) 35%, var(--xo-color-text)); background: color-mix(in srgb, var(--xo-color-warning) 22%, var(--xo-color-surface)); }
 .badge.danger { color: var(--xo-color-danger); background: color-mix(in srgb, var(--xo-color-danger) 12%, var(--xo-color-surface)); }
 .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
-.chip { display: inline-flex; align-items: center; min-height: var(--xo-control-height-sm); padding: 0 .85rem; border-radius: 99px; font: 600 .875rem/1 var(--xo-font); background: var(--xo-color-surface); border: 1px solid var(--xo-color-control-border); color: var(--xo-color-text); cursor: pointer; }
+.chip { display: inline-flex; align-items: center; min-height: var(--xo-control-height-sm); padding: 0 .85rem; border-radius: 99px; font: 600 .875rem/1 var(--xo-font); background: var(--xo-color-surface); border: var(--xo-border-width, 1px) solid var(--xo-color-control-border); color: var(--xo-color-text); cursor: pointer; }
 .chip:hover { border-color: var(--xo-color-accent); }
 .chip[aria-pressed="true"], .chip[aria-current="true"] { background: var(--xo-color-accent); border-color: var(--xo-color-accent); color: var(--xo-color-accent-text); }
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--xo-control-gap); }
@@ -157,12 +159,15 @@ table.std .primary-cell { font-weight: 600; } table.std .muted { color: var(--xo
 /* ---- range and colour inputs ---- */
 input[type="range"] { width: 100%; min-height: var(--xo-control-height); margin: 0; accent-color: var(--xo-color-accent); cursor: pointer; background: transparent; }
 input[type="range"]:focus-visible { outline: var(--xo-focus); outline-offset: 2px; border-radius: var(--xo-radius); }
-input[type="color"] { width: 3.25rem; height: var(--xo-control-height); padding: 3px; background: var(--xo-color-surface); border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); cursor: pointer; }
+input[type="color"] { width: 3.25rem; height: var(--xo-control-height); padding: 3px; background: var(--xo-color-surface); border: var(--xo-border-width, 1px) solid var(--xo-color-control-border); border-radius: var(--xo-radius); cursor: pointer; }
 input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; } input[type="color"]::-webkit-color-swatch { border: 0; border-radius: calc(var(--xo-radius) - 3px); } input[type="color"]::-moz-color-swatch { border: 0; border-radius: calc(var(--xo-radius) - 3px); }
 input[type="color"]:hover { border-color: var(--xo-color-text); } input[type="color"]:focus-visible { outline: var(--xo-focus); outline-offset: 2px; }
 .setting { display: inline-flex; align-items: center; gap: .6rem; } .setting output { min-width: 3ch; font: 600 .85rem var(--xo-font-mono); color: var(--xo-color-muted); }
 button.ghost.is-hover { background: color-mix(in srgb, var(--xo-color-text) 8%, transparent); border-color: transparent; }
 /* ring colour on inverse surfaces (toast, tooltip): the accent fails 3:1 there in the light scheme */
 :root { --xo-focus-inverse: 3px solid var(--xo-color-inverse-text); --xo-focus-thin: 2px solid var(--xo-color-accent); }
+
+/* resting surfaces take the theme's raised shadow (none by default) */
+.table-frame, .xo-table, .notice, .state, .skeleton, .panel { box-shadow: var(--xo-shadow-raised); }
 
 }

@@ -7,20 +7,26 @@
   <meta name="description" content="One size scale, one focus ring and the same states for every control.">
   <meta property="og:title" content="Controls standard · xoong">
   <meta property="og:description" content="One size scale, one focus ring and the same states for every control.">
-  <meta property="og:image" content="brand/og-controls.png">
+  <meta property="og:image" content="brand/mist/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
   <link rel="stylesheet" href="src/brand.css">
   <link rel="stylesheet" href="src/xo-map.css">
   <link rel="stylesheet" href="src/standard.css">
   <link rel="stylesheet" href="src/icons.css">
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
   <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
@@ -28,23 +34,19 @@
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
-      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
         <a href="demo.html">Demo</a>
         <a href="brand.html">Brand</a>
-        <xo-menu class="palette" label="Colour palette" value="calm">
+        <xo-menu class="palette" label="Colour palette" value="mist">
           <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
           <button value="calm">Calm</button>
           <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
         </xo-menu>
       </nav>
     </div>
@@ -59,6 +61,7 @@
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
@@ -86,6 +89,7 @@
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
@@ -105,55 +109,55 @@
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Standard</span></div>
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" class="sprite">
-  <symbol id="chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-  <symbol id="chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
-  <symbol id="chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
-  <symbol id="chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-  <symbol id="arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
-  <symbol id="arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
-  <symbol id="arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
-  <symbol id="arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
-  <symbol id="pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
-  <symbol id="play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
-  <symbol id="heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
-  <symbol id="paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
-  <symbol id="sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
-  <symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
-  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
-  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
-  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
-  <symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
-  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-  <symbol id="more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
-  <symbol id="grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
-  <symbol id="trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
-  <symbol id="edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
-  <symbol id="copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
-  <symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
-  <symbol id="external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
-  <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
-  <symbol id="expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
-  <symbol id="undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
-  <symbol id="redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
-  <symbol id="bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
-  <symbol id="italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
-  <symbol id="underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
-  <symbol id="list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
-  <symbol id="list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
-  <symbol id="quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
-  <symbol id="code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
-  <symbol id="image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
-  <symbol id="calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
-  <symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
-  <symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
-  <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
-  <symbol id="warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
-  <symbol id="error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
-  <symbol id="success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
-  <symbol id="palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
-  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
-  <symbol id="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
+  <symbol id="i-heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+  <symbol id="i-paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
+  <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+  <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
+  <symbol id="i-underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
+  <symbol id="i-list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
+  <symbol id="i-list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
+  <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
+  <symbol id="i-success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
 </svg>      
       <h1>Controls standard</h1>
       <p class="lede">One height scale, one radius, one focus ring and the same states for every control. Candidate for the framework: everything here reads <code>--xo-*</code> and the palette tokens.</p>
@@ -161,9 +165,9 @@
       <h2 id="scale">Scale</h2>
       <p>Three heights, a few paddings. Mixing them in one toolbar is allowed; mixing them in one row of a form is not.</p>
       <div class="example"><div class="preview">
-        <div class="std-row"><span class="std-label">sm 32px</span><div class="std-cells"><button class="sm">Small</button><button class="sm primary"><svg class="icon sm" aria-hidden="true"><use href="#plus"/></svg>Add</button><input class="sm" placeholder="Small field"><select class="sm" aria-label="Example"><option>Select</option></select></div></div>
-        <div class="std-row"><span class="std-label">md 40px · default</span><div class="std-cells"><button>Medium</button><button class="primary"><svg class="icon " aria-hidden="true"><use href="#plus"/></svg>Add</button><input placeholder="Field"><select aria-label="Example"><option>Select</option></select></div></div>
-        <div class="std-row"><span class="std-label">lg 48px · touch</span><div class="std-cells"><button class="lg">Large</button><button class="lg primary"><svg class="icon " aria-hidden="true"><use href="#plus"/></svg>Add</button><input class="lg" placeholder="Field"><select class="lg" aria-label="Example"><option>Select</option></select></div></div>
+        <div class="std-row"><span class="std-label">sm 32px</span><div class="std-cells"><button class="sm">Small</button><button class="sm primary"><svg class="icon sm" aria-hidden="true"><use href="#i-plus"/></svg>Add</button><input class="sm" placeholder="Small field"><select class="sm" aria-label="Example"><option>Select</option></select></div></div>
+        <div class="std-row"><span class="std-label">md 40px · default</span><div class="std-cells"><button>Medium</button><button class="primary"><svg class="icon " aria-hidden="true"><use href="#i-plus"/></svg>Add</button><input placeholder="Field"><select aria-label="Example"><option>Select</option></select></div></div>
+        <div class="std-row"><span class="std-label">lg 48px · touch</span><div class="std-cells"><button class="lg">Large</button><button class="lg primary"><svg class="icon " aria-hidden="true"><use href="#i-plus"/></svg>Add</button><input class="lg" placeholder="Field"><select class="lg" aria-label="Example"><option>Select</option></select></div></div>
       </div></div>
       <div class="table-frame"><table class="std"><thead><tr><th>Token</th><th>Value</th><th>Used for</th></tr></thead><tbody>
         <tr><td class="primary-cell"><code>--xo-control-h</code></td><td>2.5rem</td><td class="muted">Default height of every control</td></tr>
@@ -177,7 +181,7 @@
       <h2 id="buttons">Buttons</h2>
       <div class="example"><div class="preview">
         <div class="std-row"><span class="std-label">Default</span><div class="std-cells"><button class="">Default</button><button class=" is-hover">Hover</button><button class=" is-focus">Focus</button><button class=" is-active">Active</button><button class="" disabled>Disabled</button><button class="" aria-busy="true">Busy</button></div></div><div class="std-row"><span class="std-label">Primary</span><div class="std-cells"><button class="primary">Default</button><button class="primary is-hover">Hover</button><button class="primary is-focus">Focus</button><button class="primary is-active">Active</button><button class="primary" disabled>Disabled</button><button class="primary" aria-busy="true">Busy</button></div></div><div class="std-row"><span class="std-label">Danger</span><div class="std-cells"><button class="danger">Default</button><button class="danger is-hover">Hover</button><button class="danger is-focus">Focus</button><button class="danger is-active">Active</button><button class="danger" disabled>Disabled</button><button class="danger" aria-busy="true">Busy</button></div></div><div class="std-row"><span class="std-label">Ghost</span><div class="std-cells"><button class="ghost">Default</button><button class="ghost is-hover">Hover</button><button class="ghost is-focus">Focus</button><button class="ghost is-active">Active</button><button class="ghost" disabled>Disabled</button><button class="ghost" aria-busy="true">Busy</button></div></div>
-        <div class="std-row"><span class="std-label">With icons</span><div class="std-cells"><button><svg class="icon " aria-hidden="true"><use href="#download"/></svg>Download</button><button class="primary"><svg class="icon " aria-hidden="true"><use href="#plus"/></svg>New</button><button class="icon-only" aria-label="Search"><svg class="icon " aria-hidden="true"><use href="#search"/></svg></button><button class="icon-only ghost" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><span class="button-group"><button aria-label="Bold" class="icon-only"><svg class="icon " aria-hidden="true"><use href="#bold"/></svg></button><button aria-label="Italic" class="icon-only"><svg class="icon " aria-hidden="true"><use href="#italic"/></svg></button><button aria-label="Underline" class="icon-only"><svg class="icon " aria-hidden="true"><use href="#underline"/></svg></button></span></div></div>
+        <div class="std-row"><span class="std-label">With icons</span><div class="std-cells"><button><svg class="icon " aria-hidden="true"><use href="#i-download"/></svg>Download</button><button class="primary"><svg class="icon " aria-hidden="true"><use href="#i-plus"/></svg>New</button><button class="icon-only" aria-label="Search"><svg class="icon " aria-hidden="true"><use href="#i-search"/></svg></button><button class="icon-only ghost" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button><span class="button-group"><button aria-label="Bold" class="icon-only"><svg class="icon " aria-hidden="true"><use href="#i-bold"/></svg></button><button aria-label="Italic" class="icon-only"><svg class="icon " aria-hidden="true"><use href="#i-italic"/></svg></button><button aria-label="Underline" class="icon-only"><svg class="icon " aria-hidden="true"><use href="#i-underline"/></svg></button></span></div></div>
       </div></div>
 
       <h2 id="fields">Fields</h2>
@@ -185,11 +189,11 @@
       <div class="example"><div class="preview"><div class="form-grid">
         <div class="field"><label for="c1">Default</label><input id="c1" placeholder="Placeholder"><span class="hint">A hint under the field.</span></div>
         <div class="field"><label for="c2">Focused</label><input id="c2" class="is-focus field-control" value="Typing here"></div>
-        <div class="field"><label for="c3">Invalid</label><input id="c3" aria-invalid="true" value="not-an-email" aria-describedby="c3e"><span class="error" id="c3e"><svg class="icon " aria-hidden="true"><use href="#error"/></svg>Enter a valid e-mail.</span></div>
+        <div class="field"><label for="c3">Invalid</label><input id="c3" aria-invalid="true" value="not-an-email" aria-describedby="c3e"><span class="error" id="c3e"><svg class="icon " aria-hidden="true"><use href="#i-error"/></svg>Enter a valid e-mail.</span></div>
         <div class="field"><label for="c4">Disabled</label><input id="c4" disabled value="Read only"></div>
         <div class="field"><label for="c5">Select</label><select aria-label="Example" id="c5"><option>admin</option><option>editor</option></select></div>
         <div class="field"><label for="c6">Date</label><input id="c6" type="date" value="2026-03-01"></div>
-        <div class="field"><label for="c7">Search</label><label class="search"><span class="xo-visually-hidden">Search</span><svg class="icon " aria-hidden="true"><use href="#search"/></svg><input id="c7" type="search" placeholder="Search"></label></div>
+        <div class="field"><label for="c7">Search</label><label class="search"><span class="xo-visually-hidden">Search</span><svg class="icon " aria-hidden="true"><use href="#i-search"/></svg><input id="c7" type="search" placeholder="Search"></label></div>
         <div class="field"><span class="label">Options</span><label class="check"><input type="checkbox" checked> Notify me</label><label class="check"><input type="checkbox"> Weekly digest</label></div>
         <div class="field"><span class="label">Choice</span><label class="check"><input type="radio" name="r" checked> Calm</label><label class="check"><input type="radio" name="r"> Ember</label></div>
         <div class="field"><label for="c8">Textarea</label><textarea id="c8" placeholder="Notes"></textarea></div>
@@ -200,18 +204,18 @@
         <div class="panel"><div role="tablist" aria-label="Sections"><button role="tab" aria-selected="true">General</button><button role="tab" aria-selected="false">Topics</button><button role="tab" aria-selected="false">Bio</button></div><p class="hint">Underline tabs for sections and code.</p>
           <div role="tablist" class="tabs-pills" aria-label="View"><button role="tab" aria-selected="true">Table</button><button role="tab" aria-selected="false">Cards</button><button role="tab" aria-selected="false">Map</button></div><p class="hint">Pills for switching a view in place.</p>
           <div class="chips"><button class="chip" aria-pressed="true">Everyone</button><button class="chip" aria-pressed="false">Admins</button><button class="chip" aria-pressed="false">Editors</button></div></div>
-        <div class="panel"><div class="menu-panel" role="menu" aria-label="Palette"><button role="menuitem" aria-current="true"><svg class="icon " aria-hidden="true"><use href="#palette"/></svg>Calm</button><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#palette"/></svg>Ember</button><hr><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#copy"/></svg>Copy link</button><button role="menuitem" class="danger"><svg class="icon " aria-hidden="true"><use href="#trash"/></svg>Delete</button></div>
+        <div class="panel"><div class="menu-panel" role="menu" aria-label="Palette"><button role="menuitem" aria-current="true"><svg class="icon " aria-hidden="true"><use href="#i-palette"/></svg>Calm</button><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#i-palette"/></svg>Ember</button><hr><button role="menuitem"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg>Copy link</button><button role="menuitem" class="danger"><svg class="icon " aria-hidden="true"><use href="#i-trash"/></svg>Delete</button></div>
           <p><span class="tooltip">Choose a colour palette</span></p>
           <p class="toolbar"><span class="badge">admin</span><span class="badge warn">editor</span><span class="badge ok">viewer</span><span class="badge danger">blocked</span></p></div>
       </div></div></div>
 
       <h2 id="feedback">Feedback</h2>
       <div class="example"><div class="preview">
-        <div class="notice info"><svg class="icon " aria-hidden="true"><use href="#info"/></svg><p><b>Info.</b> Something worth knowing.</p></div><p></p>
-        <div class="notice ok"><svg class="icon " aria-hidden="true"><use href="#success"/></svg><p><b>Saved.</b> Your changes are live.</p></div><p></p>
-        <div class="notice warn"><svg class="icon " aria-hidden="true"><use href="#warning"/></svg><p><b>Careful.</b> This cannot be undone.</p></div><p></p>
-        <div class="notice error" role="alert"><svg class="icon " aria-hidden="true"><use href="#error"/></svg><p><b>Failed.</b> Try again.</p></div><p></p>
-        <span class="toast"><svg class="icon " aria-hidden="true"><use href="#success"/></svg>Deleted</span>
+        <div class="notice info"><svg class="icon " aria-hidden="true"><use href="#i-info"/></svg><p><b>Info.</b> Something worth knowing.</p></div><p></p>
+        <div class="notice ok"><svg class="icon " aria-hidden="true"><use href="#i-success"/></svg><p><b>Saved.</b> Your changes are live.</p></div><p></p>
+        <div class="notice warn"><svg class="icon " aria-hidden="true"><use href="#i-warning"/></svg><p><b>Careful.</b> This cannot be undone.</p></div><p></p>
+        <div class="notice error" role="alert"><svg class="icon " aria-hidden="true"><use href="#i-error"/></svg><p><b>Failed.</b> Try again.</p></div><p></p>
+        <span class="toast"><svg class="icon " aria-hidden="true"><use href="#i-success"/></svg>Deleted</span>
       </div></div>
     
 <nav class="pager" aria-label="Pages"><a rel="prev" href="own-control.html"><small>Previous</small><span>Your own control</span></a><a rel="next" href="controls-demo.html"><small>Next</small><span>All controls</span></a></nav>
@@ -219,14 +223,7 @@
   </div>
   <footer class="foot">
     <div class="wrap">
-      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
-  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
-  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
-  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
-  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
-  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
-  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-</svg><span class="word">xoong</span></a>
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
       <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
       <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
     </div>

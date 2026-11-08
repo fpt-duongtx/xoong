@@ -4,9 +4,9 @@ import '@xoong/controls';
 // The palette menu: a choice menu (<xo-menu value>) sets <html data-palette>; palette.js applies the saved one before the first paint.
 const palette = document.querySelector('xo-menu.palette');
 if (palette) {
-  palette.setAttribute('value', document.documentElement.dataset.palette || 'calm');
+  palette.setAttribute('value', document.documentElement.dataset.palette || 'mist');
   palette.addEventListener('xo-menu-select', (e) => {
-    document.documentElement.dataset.palette = e.detail.value;
+    if (e.detail.value === 'mist') delete document.documentElement.dataset.palette; else document.documentElement.dataset.palette = e.detail.value; // mist is the default: no attribute
     try { localStorage.setItem('xoong-palette', e.detail.value); } catch { /* not saved */ }
   });
 }
