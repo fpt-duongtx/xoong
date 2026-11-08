@@ -9,6 +9,7 @@
  *   - bare imports ("@xoong/data") are rewritten to URLs, so the page needs no import map;
  *   - TypeScript is stripped (erasable syntax only) and .ts files are written as .js;
  *   - `--base` prefixes root-absolute URLs for an app served under a path;
+ *   - every page gets <link rel="modulepreload"> for the modules its scripts import (the whole graph is known here; `--no-preload` or `"build": { "preload": false }` turns it off);
  *   - nothing is minified or bundled; every file is the one you wrote (readable in the browser's tools).
  * HTML files that are not pages (partials, fixtures, drafts) are kept out of the start list with `--exclude <glob>` (repeatable) or `"build": { "exclude": [...] }` in
  * xoong.config.json (paths relative to the root; see exclude.js). A file that a page references is still published.
@@ -30,11 +31,62 @@ const isLocal = (u) => !!u && !/^([a-z][a-z0-9+.-]*:|\/\/|#)/i.test(u);
 /** The policy this output is meant to run under (and is tested with). */
 export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'";
 
+const STATIC_IMPORT = /(?:\bimport\s*(?:[\w*${}\s,]*?\bfrom\s*)?|\bexport\s+(?:\*(?:\s+as\s+\w+)?|\{[^}]*\})\s*from\s*)(['"])([^'"\n]+)\1/g;
+
 /**
- * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[] }} [options]
+ * Modules are fetched one import level at a time, so a chain of N modules costs N round trips. The build knows the whole graph (static imports only;
+ * a dynamic import() stays lazy): every page lists the modules its scripts pull in as `<link rel="modulepreload">`, ahead of its first module script.
+ * @param {Map<string, Buffer | string>} written output path -> content (the pages are changed in place)
+ * @param {string} basePath
+ */
+export function preloadModules(written, basePath) {
+  const toOut = (url) => {
+    const clean = url.split(/[?#]/)[0];
+    if (basePath ? !clean.startsWith(`${basePath}/`) : !clean.startsWith('/') || clean.startsWith('//')) return null;
+    return basePath ? clean.slice(basePath.length) : clean;
+  };
+  /** @param {string} at @param {Set<string>} seen */
+  const follow = (at, seen) => {
+    const code = written.get(at);
+    if (typeof code !== 'string') return;
+    for (const m of code.matchAll(STATIC_IMPORT)) {
+      const target = toOut(m[2]);
+      if (!target || seen.has(target) || !/\.m?js$/.test(target) || !written.has(target)) continue;
+      seen.add(target);
+      follow(target, seen);
+    }
+  };
+  for (const [page, html] of written) {
+    if (typeof html !== 'string' || !/\.html?$/i.test(page)) continue;
+    /** @type {string[]} */ const entries = [];
+    const have = new Set();
+    let first = -1;
+    const visit = (/** @type {any} */ node) => {
+      for (const child of node.childNodes ?? []) visit(child);
+      if (!node.tagName) return;
+      const attr = (/** @type {string} */ n) => node.attrs.find((/** @type {{ name: string }} */ a) => a.name === n)?.value;
+      if (node.tagName === 'link' && attr('rel') === 'modulepreload' && attr('href')) have.add(toOut(attr('href')));
+      if (node.tagName !== 'script' || attr('type') !== 'module' || !attr('src')) return;
+      const entry = toOut(attr('src'));
+      if (!entry || !written.has(entry)) return;
+      entries.push(entry);
+      const start = node.sourceCodeLocation.startOffset;
+      if (first < 0 || start < first) first = start;
+    };
+    visit(parse(html, { sourceCodeLocationInfo: true }));
+    if (!entries.length) continue;
+    const seen = new Set(entries);
+    for (const entry of entries) follow(entry, seen);
+    const links = [...seen].filter((p) => !entries.includes(p) && !have.has(p)).sort().map((p) => `<link rel="modulepreload" href="${basePath}${p}">`);
+    if (links.length) written.set(page, `${html.slice(0, first)}${links.join('\n')}\n${html.slice(first)}`);
+  }
+}
+
+/**
+ * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[], preload?: boolean }} [options]
  * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string }>}
  */
-export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, packages: extra } = {}) {
+export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, preload, packages: extra } = {}) {
   const rootDir = await realpath(resolve(root)); // real path: packages are found by theirs, so an app inside a symlinked package must compare equal
   // the output folder may not exist yet: resolve the part that does
   const realOut = async (p) => { try { return await realpath(p); } catch { const up = dirname(p); return up === p ? p : join(await realOut(up), basename(p)); } };
@@ -200,6 +252,8 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
   }
   queue.push(...pages);
   while (queue.length) await emit(/** @type {string} */ (queue.shift()));
+
+  if (preload ?? (await loadConfig(rootDir)).build?.preload ?? true) preloadModules(written, basePath);
 
   const report = [];
   for (const [outPath, content] of written) {

@@ -47,6 +47,8 @@ class XoMenu extends XoElement {
 
   #build() {
     if (this.#panel || !this.isConnected) return;
+    const drawn = this.querySelector(':scope > [role="menu"]');
+    if (drawn) drawn.replaceWith(...drawn.children); // a copy of a menu that was already built (a cloned row): take the items back out of its panel and start over
     const children = /** @type {HTMLElement[]} */ ([...this.children]);
     const trigger = children.find((c) => c.hasAttribute('xo-menu-trigger')) ?? children.find((c) => c.localName === 'button');
     if (!trigger) { console.error('xoong: <xo-menu> needs a trigger button (xo-menu-trigger)'); return; }

@@ -14,7 +14,7 @@ const HELP = `xoong <command>
   new <folder> --spec <openapi.json|yaml|url> [--title "My app"] [--link <xoong checkout>]   create a project with a first screen
   check <file|folder>... [--operations .xoong/operations.json] [--format text|json] [--exclude glob]...   check HTML screens
   render <page.html> --api <url> [--url /users/7] [--operations .xoong/operations.json] [--out file]   prerender a page (a route, with --url) with its data (needs @xoong/ssr)
-  build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]...   static output for strict-CSP hosting (no import map, no inline code)
+  build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]... [--no-preload]   static output for strict-CSP hosting (no import map, no inline code)
   i18n extract <html|js files or folders>... [--out catalogs/en.json]   list xo-t keys with their source text
   i18n check <catalog.json> --source <en.json>   missing keys, wrong placeholders, invalid messages
   dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080] [--spa]   serve the app (static, proxy, .ts)
@@ -76,12 +76,12 @@ try {
     console.log(problems.length ? `${problems.length} problems` : 'ok');
     process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'build') {
-    const unknown = rest.filter((v, i) => v.startsWith('-') && !['--root', '--out', '--base', '--include', '--exclude'].includes(v) && true);
-    if (unknown.length) throw new Error(`xoong build: unknown option ${unknown.join(', ')} (known: --root, --out, --base, --include, --exclude)`);
+    const unknown = rest.filter((v, i) => v.startsWith('-') && !['--root', '--out', '--base', '--include', '--exclude', '--no-preload'].includes(v) && true);
+    if (unknown.length) throw new Error(`xoong build: unknown option ${unknown.join(', ')} (known: --root, --out, --base, --include, --exclude, --no-preload)`);
     const { build, CSP } = await import('./build.js');
     const include = rest.flatMap((v, i) => (rest[i - 1] === '--include' ? [v] : []));
     const exclude = rest.flatMap((v, i) => (rest[i - 1] === '--exclude' ? [v] : []));
-    const r = await build({ root: flag('--root', '.'), out: flag('--out', 'dist'), base: flag('--base', ''), include, exclude });
+    const r = await build({ root: flag('--root', '.'), out: flag('--out', 'dist'), base: flag('--base', ''), include, exclude, preload: rest.includes('--no-preload') ? false : undefined });
     const total = r.files.reduce((n, f) => n + f.bytes, 0);
     const gz = r.files.reduce((n, f) => n + f.gzip, 0);
     console.log(`built ${r.files.length} files into ${r.out} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);

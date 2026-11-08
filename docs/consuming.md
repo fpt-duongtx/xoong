@@ -39,6 +39,7 @@ Every `.html` file under the root is a page. HTML that is not (partials, fixture
 HTML pages, rewrites package imports to URLs (no import map), strips TypeScript, copies what is referenced, and prints the Content-Security-Policy
 the output is tested with ([security.md](security.md)). Serve `dist` as static files, with the pages' routes answering the app's HTML if you use
 `<xo-router>`. Nothing is minified or bundled yet: the files are the ones you wrote, and `dist/build-report.json` lists sizes (also gzipped).
+The build also lists, on every page, the modules its scripts import as `<link rel="modulepreload">` (static imports only; a dynamic `import()` stays lazy), so the browser fetches the whole chain at once instead of one import level at a time. `--no-preload` or `"build": { "preload": false }` turns it off.
 
 ## What a drop promises
 

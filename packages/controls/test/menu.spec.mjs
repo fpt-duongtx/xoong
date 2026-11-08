@@ -14,6 +14,22 @@ const key = (el, k, init = {}) => { const e = new KeyboardEvent('keydown', { key
 
 afterEach(() => { document.body.innerHTML = ''; });
 
+describe('<xo-menu> copied after it was built', () => {
+  it('a clone of a built menu is built once: one panel, the same items, a working trigger', async () => {
+    const menu = await mountMenu();
+    const copy = menu.cloneNode(true);
+    document.body.append(copy);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(copy.querySelectorAll('[role=menu]')).toHaveLength(1);
+    expect([...copy.querySelectorAll('[role=menuitem]')].map((i) => i.textContent)).toEqual(['Edit', 'Open', 'Delete']);
+    const t = copy.querySelector('[xo-menu-trigger]');
+    expect(t.getAttribute('aria-controls')).toBe(copy.querySelector('[role=menu]').id);
+    t.click();
+    expect(copy.querySelector('[role=menu]').hidden).toBe(false);
+    expect(copy.querySelectorAll('[role=menu]')).toHaveLength(1);
+  });
+});
+
 describe('<xo-menu> inside a form', () => {
   it('the trigger is a plain button (type="button"), so opening the menu does not submit the form', async () => {
     document.body.innerHTML = '<form id="f"><xo-menu label="Block actions"><button xo-menu-trigger>Actions</button><button id="m">Move down</button></xo-menu></form>';

@@ -6,6 +6,8 @@ projects run xoong in production. The `@xoong/*` packages are published to npm u
 ## Unreleased
 
 * Fixed: `<xo-combobox>` and `<xo-tags>` on a page that already holds the drawn control (a prerendered page, a copied snapshot) drew a second box next to it; the old box and list are now replaced, so it is drawn once.
+* Fixed: a copy of a built `<xo-menu>` (a cloned row) took its drawn panel for a menu item and built a second, empty panel; the items are now taken back out of the old panel first.
+* Added: `xoong build` writes `<link rel="modulepreload">` on every page for the modules its scripts import, so the browser fetches the whole chain at once (`--no-preload` or `"build": { "preload": false }` turns it off). Tests: `build-preload.test.mjs`; `redraw.spec.mjs` checks that every control on the site's pages is drawn once after being moved or copied.
 * Mist (kit ux/preupgrade): `:not(:defined)` guards so the page does not jump while the elements upgrade (tabs, carousel, combobox, richtext and the script-drawn controls reserve their size).
 
 ## 0.0.44 (menu trigger in a form, toast z-index, no flash of the header)
