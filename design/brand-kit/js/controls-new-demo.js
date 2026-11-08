@@ -38,4 +38,7 @@
     for (const x of $$('button', m)) x.classList.remove('is-sel');
     b.classList.add('is-sel');
   });
+  for (const o of $$('[data-open]')) o.addEventListener('click', () => document.querySelector(o.dataset.open).showModal());
+  for (const c of $$('[data-close]')) c.addEventListener('click', () => c.closest('dialog').close());
+  for (const d of $$('dialog.xo-drawer')) d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
 })();

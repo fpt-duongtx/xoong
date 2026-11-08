@@ -3,6 +3,14 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
+## 0.0.32 (xo-date, check XO222)
+
+breaking: none.
+
+* Added: `<xo-date>` in `@xoong/controls` (`@xoong/controls/date`): a date field with a calendar popover; ISO value, locale text that also accepts typing, `min`/`max`, `week-start`, arrow/PageUp/Home/End keys, `range` with Clear and Apply. Controls budget raised to 13.5 KB for it.
+* Added: `xoong check` rule XO222, a `<form xo-submit>` outside `<xo-view>` never binds.
+* Mist (kit ux/mist-4): admin shell box-sizing reset, the content width cap is opt-in (`.xo-content--readable`), `aria-current` styled in `.xo-seg`, `summary.button`, mobile drawer menu.
+
 ## 0.0.31 (xo-switch, admin shell)
 
 breaking: none.

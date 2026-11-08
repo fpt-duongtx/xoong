@@ -1,6 +1,6 @@
 {
   "name": "@xoong/forms",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "xoong forms: a typed draft model with per-path state, validation rules taken from the OpenAPI request schema, custom rules, payload normalisation and dirty tracking. Zero dependencies besides @xoong/core and @xoong/data.",
   "type": "module",
   "main": "src/index.js",
@@ -34,8 +34,8 @@
   },
   "homepage": "https://github.com/fpt-duongtx/xoong#readme",
   "dependencies": {
-    "@xoong/core": "0.0.31",
-    "@xoong/data": "0.0.31"
+    "@xoong/core": "0.0.32",
+    "@xoong/data": "0.0.32"
   },
   "publishConfig": {
     "access": "public"

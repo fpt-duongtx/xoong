@@ -701,4 +701,10 @@ button[aria-pressed="true"]:not(.chip, [role="tab"], .xo-seg button) { backgroun
 .xo-copyfield.slug .prefix { max-width: 7.5rem; } .hit-demo button.icon-only::before { outline: 1px dashed var(--xo-color-accent); }
 .path { font: 12px var(--xo-font-mono); }
 
+/* xo-param buttons and links mark the current one with aria-current: selected like aria-pressed */
+.xo-seg button[aria-current='true'], .xo-seg a[aria-current='true'], .xo-seg a[aria-current='page'] { font-weight: 600; color: var(--xo-color-accent-strong); background: var(--xo-color-surface); box-shadow: var(--shadow-sm), inset 0 0 0 1px color-mix(in srgb, var(--xo-color-accent) 22%, var(--xo-color-surface)); }
+.xo-seg button[aria-current='true'] .xo-count { color: var(--xo-color-accent-strong); background: var(--xo-color-accent-soft); }
+.xo-seg a { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 16px; font-weight: 500; color: var(--xo-color-text-2); text-decoration: none; border-radius: var(--xo-radius); }
+.xo-seg a:hover { color: var(--xo-color-text); background: var(--xo-color-border); }
+
 }

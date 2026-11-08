@@ -229,3 +229,9 @@ dialog.xo-modal::backdrop { background: color-mix(in srgb, #1f2a33 45%, transpar
 .button.sm { min-height: var(--xo-control-height-sm); padding: 0 12px; font-size: 13px; }
 .button.icon-only { width: var(--xo-control-height); padding: 0; } .button.icon-only.sm { width: var(--xo-control-height-sm); }
 .button[aria-disabled="true"] { color: var(--xo-color-muted); background: var(--xo-color-subtle); border-color: var(--xo-color-border); pointer-events: none; }
+
+/* <summary class="button"> (a details/summary menu button): summary is display:list-item by default; make it a button and hide the marker */
+summary.button { display: inline-flex; list-style: none; cursor: pointer; }
+summary.button::-webkit-details-marker { display: none; }
+summary.button::marker { content: ""; }
+details[open] > summary.button { background: var(--xo-color-subtle); }

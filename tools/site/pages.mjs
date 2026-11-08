@@ -313,7 +313,7 @@ await setLocale('vi');`]])}
 <tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>17.4 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
 <tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialog, toast, router</td><td>10 KB</td></tr>
-<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch</td><td>10 KB</td></tr>
+<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch</td><td>13.5 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
 <tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5 KB</td></tr>
 <tr><td><code>@xoong/cli</code></td><td><code>sync</code>, <code>check</code>, <code>dev</code>, <code>build</code>, <code>render</code>, <code>i18n</code></td><td>tools</td></tr>

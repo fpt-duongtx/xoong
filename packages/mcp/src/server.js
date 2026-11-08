@@ -22,6 +22,7 @@ export const EXPLANATIONS = {
   XO202: 'xo-click calls a GET operation. Reads are declared with <xo-view get="...">; xo-click is for mutations.',
   XO203: '<xo-view get> uses an operation that is not GET. Use a GET operation for reading and xo-click/xo-submit for writes.',
   XO210: 'The view\'s operation has a path parameter such as {id}, but the view has no p-id attribute. Add p-id="..." or set view.params in JavaScript.',
+  XO222: '<form xo-submit> must be inside an <xo-view>, otherwise it never binds. Wrap it in <xo-view> (without get is fine).',
   XO220: 'xo-submit is only valid on a <form>. Move the attribute to the form element.',
   XO221: 'xo-each, xo-if or xo-body has no path. Give it one, for example xo-each="items".',
   XO230: 'An xo-* element or attribute that xoong does not define, usually a typo. The message names the closest valid one.',

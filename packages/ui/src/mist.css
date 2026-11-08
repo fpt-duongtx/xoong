@@ -1264,6 +1264,10 @@
   .xo-copyfield.slug .prefix { max-width: 7.5rem; }
   .hit-demo button.icon-only::before { outline: 1px dashed var(--xo-color-accent); }
   .path { font: 12px var(--xo-font-mono); }
+  .xo-seg button[aria-current='true'], .xo-seg a[aria-current='true'], .xo-seg a[aria-current='page'] { font-weight: 600; color: var(--xo-color-accent-strong); background: var(--xo-color-surface); box-shadow: var(--shadow-sm), inset 0 0 0 1px color-mix(in srgb, var(--xo-color-accent) 22%, var(--xo-color-surface)); }
+  .xo-seg button[aria-current='true'] .xo-count { color: var(--xo-color-accent-strong); background: var(--xo-color-accent-soft); }
+  .xo-seg a { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 16px; font-weight: 500; color: var(--xo-color-text-2); text-decoration: none; border-radius: var(--xo-radius); }
+  .xo-seg a:hover { color: var(--xo-color-text); background: var(--xo-color-border); }
 
   /* ---- skin ---- */
   :root { --shadow-sm: 0 1px 2px color-mix(in srgb, var(--xo-color-text) 6%, transparent); --shadow-float: 0 12px 32px color-mix(in srgb, var(--xo-color-text) 14%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 8%, transparent); --xo-shadow-pop: var(--shadow-float); --xo-shadow-raised: none; --xo-focus: 2px solid var(--xo-color-accent); --xo-focus-thin: 2px solid var(--xo-color-accent); }
@@ -1402,8 +1406,14 @@
   .button.icon-only { width: var(--xo-control-height); padding: 0; }
   .button.icon-only.sm { width: var(--xo-control-height-sm); }
   .button[aria-disabled="true"] { color: var(--xo-color-muted); background: var(--xo-color-subtle); border-color: var(--xo-color-border); pointer-events: none; }
+  summary.button { display: inline-flex; list-style: none; cursor: pointer; }
+  summary.button::-webkit-details-marker { display: none; }
+  summary.button::marker { content: ""; }
+  details[open] > summary.button { background: var(--xo-color-subtle); }
 
   /* ---- admin shell ---- */
+  .xo-app, .xo-app *, .xo-app *::before, .xo-app *::after { box-sizing: border-box; }
+  .xo-content--readable { --xo-content-max: 1240px; }
   .xo-app {
     display: flex;
     flex-wrap: wrap;
@@ -1430,7 +1440,7 @@
   }
   .xo-content {
     width: 100%;
-    max-width: 1240px;
+    max-width: var(--xo-content-max, none); /* no cap by default (Mist wide-screen rule); .xo-content--readable sets 1240px */
     padding: 24px 24px 32px;
     display: flex;
     flex-direction: column;
@@ -1691,4 +1701,13 @@
     .xo-page-head .row-inline { width: 100%; }
     .xo-page-head .row-inline .button { flex: 1; }
   }
+  .xo-menu-button { display: none; }
+  @media (max-width: 47.99rem) {
+    .xo-menu-button { display: inline-flex; }
+  }
+  dialog.xo-drawer { margin: 0; padding: 0; width: min(20rem, 88vw); max-width: none; height: 100dvh; max-height: none; color: var(--xo-color-text); background: var(--xo-color-surface); border: 0; border-right: 1px solid var(--xo-color-border); border-radius: 0; box-shadow: var(--xo-shadow-pop); overflow: hidden; }
+  dialog.xo-drawer[open] { display: block; inset: 0 auto 0 0; }
+  dialog.xo-drawer::backdrop { background: color-mix(in srgb, #1f2a33 45%, transparent); }
+  dialog.xo-drawer .xo-side__in { height: 100%; }
+  .xo-drawer__close { position: absolute; top: 8px; right: 8px; }
 }

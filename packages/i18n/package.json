@@ -1,6 +1,6 @@
 {
   "name": "@xoong/i18n",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "xoong internationalization: ICU-subset JSON catalogs, xo-t in markup, a locale signal, Intl formats. Zero dependencies besides @xoong/core and @xoong/data.",
   "type": "module",
   "main": "src/index.js",
@@ -37,8 +37,8 @@
   },
   "homepage": "https://github.com/fpt-duongtx/xoong#readme",
   "dependencies": {
-    "@xoong/core": "0.0.31",
-    "@xoong/data": "0.0.31"
+    "@xoong/core": "0.0.32",
+    "@xoong/data": "0.0.32"
   },
   "publishConfig": {
     "access": "public"
