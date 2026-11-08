@@ -1,5 +1,7 @@
 # Publishing xoong to npm
 
+**Status:** the 14 packages are on npm (tag `next`) and publish through Trusted Publishing: on npmjs.com each package has the trusted publisher GitHub Actions, `fpt-duongtx/xoong`, `publish.yml`, no environment, `npm publish` allowed. The steps below that mention `NPM_TOKEN` were used for the first release only.
+
 Nothing is published yet. Publishing is manual and deliberate: the workflow `.github/workflows/publish.yml` never runs by itself.
 This page is the runbook; the checks it relies on are in `test/publish.test.mjs`.
 

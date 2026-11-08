@@ -1,7 +1,8 @@
 # Publishes the packages to npm. MANUAL ONLY: nothing here runs by itself.
 #
 # Run it from the Actions tab ("Run workflow"). It defaults to a dry run (npm checks everything and uploads nothing).
-# A real run needs the repository secret NPM_TOKEN (see docs/publishing.md) and `dry_run` switched off.
+# A real run needs `dry_run` switched off. It publishes with npm Trusted Publishing (OIDC): each package has this repository and
+# workflow registered as a trusted publisher on npmjs.com, so no token is stored (see docs/publishing.md).
 # The packages are published in dependency order, with provenance (npm shows that they were built from this repository).
 name: publish
 on:
@@ -38,7 +39,6 @@ jobs:
           npx vitest run
       - name: Publish in dependency order
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DRY: ${{ inputs.dry_run }}
           TAG: ${{ inputs.tag }}
         run: |
