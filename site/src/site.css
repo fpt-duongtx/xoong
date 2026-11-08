@@ -100,3 +100,11 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 
 /* until the kit takes it: the red of the "Don't" badge must keep 4.5:1 on the dark badge background */
 .dodont .card .no.bad { color: var(--danger); }
+
+.shell.no-rail { grid-template-columns: var(--nav-w) minmax(0, 1fr); } /* a page with fewer than two headings has no right rail */
+
+@media (max-width: 40rem) { /* the header is the logo and one row of links: under 110px */
+  header.top .wrap { min-height: 3rem; gap: 0.25rem 1rem; padding-block: 0.3rem; }
+  xo-menu.palette > button { min-height: 2.25rem; }
+  header.top nav > a { padding-block: 0.3rem; }
+}

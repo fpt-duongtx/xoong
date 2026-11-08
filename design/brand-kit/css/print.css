@@ -1,0 +1,32 @@
+/*
+ * Print styles (site only): load with <link rel="stylesheet" href="print.css" media="print"> after everything else.
+ * The page prints as a document: no navigation, no controls, black on white, the full width of the sheet, code wrapped,
+ * external links followed by their address, and nothing split in the middle of an example or a table row.
+ */
+@media print {
+  :root { color-scheme: light; --xo-color-bg: #fff; --xo-color-surface: #fff; --xo-color-text: #000; --xo-color-muted: #444; --xo-color-border: #bbb; --xo-color-accent: #000; --xo-color-subtle: #f2f2f2; }
+  @page { margin: 16mm 14mm; }
+  html, body { background: #fff !important; color: #000 !important; font-size: 11pt; }
+  header.top, footer.foot, .shell > nav.side, .shell > aside.rail, .docs-menu, .pager, .crumbs, .palette-toggle, xo-menu.palette,
+  .xo-toast, .actions-end, .example [role="tablist"], .xo-carousel-controls, .actions, .hero .mark, .sprite { display: none !important; }
+  .shell { display: block; } .content { padding: 0; max-width: none; }
+  .content > p, .content > .lede, .content > ul, .content > ol { max-width: none; }
+  h1, h2, h3 { break-after: avoid; color: #000; }
+  h2 { border-top: 1px solid #999; padding-top: .4rem; }
+  a { color: inherit; text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .85em; color: #444; word-break: break-all; }
+  /* examples: show the preview and the first code tab, drop the dotted backdrop */
+  .example, .preview, xo-tabs.example { border: 1px solid #bbb !important; box-shadow: none !important; background: #fff !important; break-inside: avoid; }
+  .preview { background-image: none !important; }
+  xo-tabs.example [role="tabpanel"][hidden] { display: block !important; }
+  xo-tabs.example [role="tabpanel"]:not([hidden]) ~ [role="tabpanel"] { border-top: 1px dashed #999; }
+  pre { white-space: pre-wrap; word-break: break-word; background: #f6f6f6 !important; color: #000 !important; border: 1px solid #ddd; break-inside: avoid; font-size: 9pt; }
+  pre * { color: #000 !important; }
+  table, .xo-table { break-inside: auto; } tr, .card, .person { break-inside: avoid; }
+  button:not(.chip), .button { border: 1px solid #000 !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
+  .window { background: #fff !important; color: #000 !important; border: 1px solid #000; box-shadow: none; }
+  .band { background: #fff !important; color: #000 !important; border-top: 1px solid #000; border-bottom: 1px solid #000; } .band strong { color: #000 !important; }
+  .hero, .page-head { background: none !important; border: 0; padding-block: 0; }
+  .cta .box { background: #fff !important; color: #000 !important; border: 1px solid #000; box-shadow: none; }
+  * { animation: none !important; transition: none !important; }
+}

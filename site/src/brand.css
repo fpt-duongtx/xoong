@@ -12,7 +12,8 @@
   --font:  "Avenir Next", "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono:  ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
   --radius: 14px;
-  --wrap: 68rem;
+  --wrap: none;      /* fluid: the page fills the window; reading text keeps its own measure */
+  --gutter: clamp(1rem, 2.4vw, 2.5rem);
 
   /* the framework's tokens, themed */
   --xo-font: var(--font);
@@ -94,7 +95,7 @@ h3 { font-size: 1.2rem; letter-spacing: -.02em; }
 p { margin: 0 0 1rem; text-wrap: pretty; }
 code, kbd { font-family: var(--mono); font-size: .88em; }
 :not(pre) > code { background: var(--broth); padding: .12em .42em; border-radius: 6px; }
-.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 1.25rem; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
 .eyebrow { font: 700 .78rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ember-deep); margin-bottom: .9rem; display: block; }
 .lede { font-size: clamp(1.1rem, 2vw, 1.3rem); color: var(--muted); max-width: 38rem; }
 
@@ -255,7 +256,7 @@ section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
 .t-display { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -.055em; line-height: 1; }
 .t-mono { font-family: var(--mono); font-size: 1.1rem; }
 .dodont { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
-.dodont .card .no.bad { color: #b42318; background: light-dark(#fde4e1, #3a1613); }
+.dodont .card .no.bad { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, var(--surface)); }
 .dodont ul { margin: .4rem 0 0; padding-left: 1.2rem; color: var(--muted); }
 .dl { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1rem; }
 .dl .btn { padding: .7rem 1.1rem; font-size: .92rem; }
@@ -395,3 +396,14 @@ a.card:active { transform: translateY(-1px); box-shadow: none; }
 .lost p { color: var(--muted); max-width: 30rem; margin: 0 auto 1.5rem; }
 .lost .actions { justify-content: center; margin-top: 0; }
 .lost .path { font-family: var(--mono); background: var(--broth); padding: .15em .5em; border-radius: 6px; }
+
+/* ---- polish round 1 ---- */
+.hero .wrap > *, .band .wrap > *, .grid > *, .recipe li > * { min-width: 0; }
+.grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+.lede, .head p { max-width: 42rem; }
+@media (max-width: 62rem) { .hero .wrap { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 40rem) {
+  header.top nav { flex-wrap: nowrap; overflow-x: auto; width: 100%; margin-left: 0; scrollbar-width: none; }
+  header.top nav a[href="index.html"] { display: none; }
+  .window pre, pre { max-width: 100%; }
+}

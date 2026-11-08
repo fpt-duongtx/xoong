@@ -11,7 +11,7 @@ import { axe } from '../../../tools/axe.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'demo', 'brand'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'components', 'controls-demo', 'icons', 'demo', 'brand'];
 const DOCS = PAGES.filter((n) => !['index', 'brand'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
@@ -19,7 +19,7 @@ let errors = [];
 
 beforeAll(async () => {
   out = join(await mkdtemp(join(tmpdir(), 'xoong-site-')), 'dist');
-  await sync(join(repo, 'site/demo/openapi.json'), { out: join(repo, 'site/.xoong') });
+  await sync(join(repo, 'site/demo/openapi.json'), { out: join(repo, 'site/.xoong'), hints: join(repo, 'site/demo/xoong.hints.json') });
   await build({ root: join(repo, 'site'), out, base: '/xoong', include: ['img', 'brand'] });
   server = createServer(async (req, res) => {
     res.setHeader('content-security-policy', CSP);
@@ -58,7 +58,7 @@ describe('documentation site', () => {
       expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
       expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length : 0);
       expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
-      expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs
+      if (!['components', 'icons'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
     }
   });
@@ -243,6 +243,26 @@ describe('documentation site', () => {
     expect(await small.$eval('.docs-menu a[aria-current=page]', (a) => a.textContent)).toBe('Forms');
     expect(await axe(small)).toEqual([]);
     await small.context().close();
+  });
+
+  it('no page scrolls sideways at 390px, and the header stays one slim row', async () => {
+    const small = await (await browser.newContext({ viewport: { width: 390, height: 800 } })).newPage();
+    for (const name of PAGES) {
+      await small.goto(`${base}${name}.html`);
+      await small.waitForLoadState('networkidle');
+      const m = await small.evaluate(() => ({ scroll: document.documentElement.scrollWidth, width: innerWidth, header: document.querySelector('header.top').getBoundingClientRect().height }));
+      expect(m.scroll, `${name} scrolls sideways`).toBeLessThanOrEqual(m.width);
+      expect(m.header, `${name} header`).toBeLessThanOrEqual(110);
+    }
+    await small.context().close();
+  });
+
+  it('forms: required fields of the generated form are marked, and the fields show an example', async () => {
+    await open('forms');
+    await page.waitForSelector('.xo-form .xo-submit');
+    expect(await page.$eval('.xo-form [name=name]', (el) => el.placeholder)).toBe('Ada Lovelace');
+    expect(await page.$eval('.xo-form label.xo-field > :first-child', (el) => getComputedStyle(el, '::after').content)).toContain('*');
+    clean();
   });
 
   it('404.html names its files from the site root and shows the missing path; every page has a social card', async () => {

@@ -1,0 +1,10 @@
+{
+  "fields": {
+    "PersonInput.name": { "label": "Full name", "placeholder": "Ada Lovelace", "order": 1 },
+    "PersonInput.email": { "label": "E-mail", "placeholder": "ada@example.org", "order": 2 },
+    "PersonInput.role": { "order": 3 },
+    "PersonInput.topics": { "order": 4 },
+    "PersonInput.keywords": { "placeholder": "Type a keyword and press Enter", "order": 5 },
+    "PersonInput.bio": { "order": 6 }
+  }
+}

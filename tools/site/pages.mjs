@@ -2,6 +2,18 @@
 import { readFileSync } from 'node:fs';
 import { tabs, example, callout, code, codeCard, mark, art } from './lib.mjs';
 
+/** The inside of a page of the design kit (design/brand-kit/<file>): its content column with the icon sprite it uses; the crumbs are made by the layout. */
+const kit = (file) => {
+  const html = readFileSync(new URL(`../../design/brand-kit/${file}`, import.meta.url), 'utf8');
+  const sprite = html.match(/<svg[^>]*class="sprite"[\s\S]*?<\/svg>/)?.[0] ?? '';
+  const main = html.match(/<main class="content" id="main">([\s\S]*?)<\/main>/)?.[1] ?? '';
+  const named = main
+    .replace(/assets\/img\//g, 'img/') // the site's pictures live in site/img
+    .replace(/ style="[^"]*"/g, '') // a style attribute is blocked by the page's CSP; the elements that had one (a carousel's --xo-carousel-items) set it again from their own attributes
+    .replace(/<select(?![^>]*aria-label)/g, '<select aria-label="Example"'); // until the kit names its example selects (axe: select-name)
+  return sprite + named.replace(/<div class="crumbs">[\s\S]*?<\/div>/, '').replace(/^\n+/, '');
+};
+
 const VERSION = JSON.parse(readFileSync(new URL('../../packages/xoong/package.json', import.meta.url), 'utf8')).version; // the release the install page names
 
 const TABLE = `
@@ -411,13 +423,7 @@ ${example({
     "keywords": { "type": "array", "items": { "type": "string" }, "x-xoong-widget": "xo-tags" },
     "bio": { "type": "string", "x-xoong-widget": "xo-richtext" }
   }
-}`], ['Hints', 'json', `
-{
-  "fields": {
-    "PersonInput.name": { "label": "Full name", "hint": "2 to 40 characters", "order": 1 },
-    "PersonInput.bio": { "widget": "xo-richtext" }
-  }
-}`]],
+}`], ['Hints', 'json', { file: 'site/demo/xoong.hints.json' }]],
 })}
 
 <h2>Written by hand</h2>
@@ -668,7 +674,7 @@ ${example({
     <button type="button">Duplicate</button>
     <a href="#menu-link">Open link</a>
   </xo-menu>
-  <button xo-tooltip="Save the draft (Ctrl+S)" aria-label="Save">💾</button>
+  <button xo-tooltip="Save the draft (Ctrl+S)" aria-label="Save"><span class="ic" data-ic="download" aria-hidden="true"></span></button>
   <button xo-tooltip="Keyboard focus shows this at once">Focus me</button>
 </p>
 <p class="hint">Chosen: <output id="menu-out">nothing yet</output></p>`,
@@ -825,6 +831,22 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
+    file: 'components.html', section: 'docs', group: 'Controls', nav: 'Standard', title: 'Controls standard',
+    description: 'One size scale, one focus ring and the same states for every control.',
+    body: kit('components.html'),
+  },
+  {
+    file: 'controls-demo.html', section: 'docs', group: 'Controls', nav: 'All controls', title: 'All controls',
+    description: 'Every control with realistic content, in one place.',
+    body: kit('controls-demo.html'),
+  },
+  {
+    file: 'icons.html', section: 'docs', group: 'Controls', nav: 'Icons', title: 'Icons',
+    description: 'The icon set: 24px grid, 1.75 stroke, currentColor.',
+    body: kit('icons.html'),
+  },
+  // ------------------------------------------------------------------------------------------------------------------------------
+  {
     file: 'demo.html', section: 'demo', group: 'Demo', nav: 'Live demo', title: 'Live demo', demo: true, richtext: true,
     description: 'A small admin screen built with xoong: a data table, an add dialog and bulk actions on a fake in-page API.',
     body: `
@@ -837,6 +859,7 @@ ${example({
   <p class="toolbar"><button xo-open="#add">Add person</button></p>
   <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
     <span slot="role" class="badge">{role}</span>
+    <span slot="topics"><span class="badge" xo-each="topics">{.}</span></span>
     <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
     <button slot="bulk" xo-click="deletePerson" xo-selected xo-confirm="Delete the ticked people?">Delete ticked</button>
   </xo-table>

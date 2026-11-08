@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/demo.js"></script>
 </head>
@@ -65,6 +66,9 @@
     <a href="combobox.html">Combobox and tags</a>
     <a href="carousel.html">Carousel</a>
     <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="icons.html">Icons</a>
     <h2>Demo</h2>
     <a href="demo.html" aria-current="page">Live demo</a>
   </nav></details>
@@ -86,6 +90,9 @@
       <a href="combobox.html">Combobox and tags</a>
       <a href="carousel.html">Carousel</a>
       <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="icons.html">Icons</a>
       <h2>Demo</h2>
       <a href="demo.html" aria-current="page">Live demo</a>
     </nav>
@@ -100,6 +107,7 @@
       <p class="toolbar"><button xo-open="#add">Add person</button></p>
       <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
         <span slot="role" class="badge">{role}</span>
+        <span slot="topics"><span class="badge" xo-each="topics">{.}</span></span>
         <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
         <button slot="bulk" xo-click="deletePerson" xo-selected xo-confirm="Delete the ticked people?">Delete ticked</button>
       </xo-table>
@@ -114,6 +122,7 @@
   &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#add"</span>&gt;Add person&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
   &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role,topics:Topics"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
     &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"role"</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;
+    &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"topics"</span>&gt;&lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"topics"</span>&gt;<span class="tok-i">{.}</span>&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">span</span>&gt;
     &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
     &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"bulk"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-selected</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete the ticked people?"</span>&gt;Delete ticked&lt;/<span class="tok-t">button</span>&gt;
   &lt;/<span class="tok-t">xo-table</span>&gt;
@@ -200,7 +209,7 @@
 configure({ api: operations, baseUrl: <span class="tok-s">''</span>, fetch: handle });</code></pre></section>
 </xo-tabs>
 <p>The <em>api.js</em> tab is the whole backend of this page. Replace <code>fetch: handle</code> with a <code>baseUrl</code> and the same markup talks to a real server.</p>
-<nav class="pager" aria-label="Pages"><a rel="prev" href="own-control.html"><small>Previous</small><span>Your own control</span></a><span></span></nav>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="icons.html"><small>Previous</small><span>Icons</span></a><span></span></nav>
     </main>
   </div>
   <footer class="foot">

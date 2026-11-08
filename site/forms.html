@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/demo.js"></script>
 </head>
@@ -65,6 +66,9 @@
     <a href="combobox.html">Combobox and tags</a>
     <a href="carousel.html">Carousel</a>
     <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="icons.html">Icons</a>
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
@@ -86,6 +90,9 @@
       <a href="combobox.html">Combobox and tags</a>
       <a href="carousel.html">Carousel</a>
       <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="icons.html">Icons</a>
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
@@ -128,8 +135,12 @@
 }</code></pre></section>
   <section xo-tab="Hints"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"fields"</span>: {
-    <span class="tok-a">"PersonInput.name"</span>: { <span class="tok-a">"label"</span>: <span class="tok-s">"Full name"</span>, <span class="tok-a">"hint"</span>: <span class="tok-s">"2 to 40 characters"</span>, <span class="tok-a">"order"</span>: <span class="tok-n">1</span> },
-    <span class="tok-a">"PersonInput.bio"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-richtext"</span> }
+    <span class="tok-a">"PersonInput.name"</span>: { <span class="tok-a">"label"</span>: <span class="tok-s">"Full name"</span>, <span class="tok-a">"placeholder"</span>: <span class="tok-s">"Ada Lovelace"</span>, <span class="tok-a">"order"</span>: <span class="tok-n">1</span> },
+    <span class="tok-a">"PersonInput.email"</span>: { <span class="tok-a">"label"</span>: <span class="tok-s">"E-mail"</span>, <span class="tok-a">"placeholder"</span>: <span class="tok-s">"ada@example.org"</span>, <span class="tok-a">"order"</span>: <span class="tok-n">2</span> },
+    <span class="tok-a">"PersonInput.role"</span>: { <span class="tok-a">"order"</span>: <span class="tok-n">3</span> },
+    <span class="tok-a">"PersonInput.topics"</span>: { <span class="tok-a">"order"</span>: <span class="tok-n">4</span> },
+    <span class="tok-a">"PersonInput.keywords"</span>: { <span class="tok-a">"placeholder"</span>: <span class="tok-s">"Type a keyword and press Enter"</span>, <span class="tok-a">"order"</span>: <span class="tok-n">5</span> },
+    <span class="tok-a">"PersonInput.bio"</span>: { <span class="tok-a">"order"</span>: <span class="tok-n">6</span> }
   }
 }</code></pre></section>
 </xo-tabs>

@@ -3,6 +3,15 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.25 (table cells, required marker, docs polish)
+
+breaking: none.
+
+* Fixed: the actions cell of `<xo-table>` was `display: flex`, so it stopped being a table cell (its row border was missing, rows misaligned); it is a cell again.
+* Fixed: `.xo-table` is positioned, so a visually hidden label in a header cell cannot widen the page.
+* Added: a generated field that must be filled in shows a `*` after its label (`.xo-field` with a `required` control).
+* Docs site: the design kit's polish round 1 (no sideways scroll on a phone, slim mobile header, print styles, fluid home), the Standard, All controls and Icons pages generated from the kit, placeholders from `xoong.hints.json`, topics as badges, an icon on the Save button; tests: no page scrolls sideways at 390px.
+
 ## 0.0.24 (nullable fields, base-relative links)
 
 breaking: none (`base-links` is opt-in; the nullable change only affects schemas that list a nullable property as required or set `emptyAs: "null"`).

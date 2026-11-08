@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/page-menu.js"></script>
 </head>
@@ -65,6 +66,9 @@
     <a href="combobox.html">Combobox and tags</a>
     <a href="carousel.html">Carousel</a>
     <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="icons.html">Icons</a>
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
@@ -86,6 +90,9 @@
       <a href="combobox.html">Combobox and tags</a>
       <a href="carousel.html">Carousel</a>
       <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="icons.html">Icons</a>
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
@@ -103,7 +110,7 @@
         <button type="button">Duplicate</button>
         <a href="#menu-link">Open link</a>
       </xo-menu>
-      <button xo-tooltip="Save the draft (Ctrl+S)" aria-label="Save">💾</button>
+      <button xo-tooltip="Save the draft (Ctrl+S)" aria-label="Save"><span class="ic" data-ic="download" aria-hidden="true"></span></button>
       <button xo-tooltip="Keyboard focus shows this at once">Focus me</button>
     </p>
     <p class="hint">Chosen: <output id="menu-out">nothing yet</output></p>
@@ -115,7 +122,7 @@
     &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Duplicate&lt;/<span class="tok-t">button</span>&gt;
     &lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#menu-link"</span>&gt;Open link&lt;/<span class="tok-t">a</span>&gt;
   &lt;/<span class="tok-t">xo-menu</span>&gt;
-  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Save the draft (Ctrl+S)"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Save"</span>&gt;💾&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Save the draft (Ctrl+S)"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Save"</span>&gt;&lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"ic"</span> <span class="tok-a">data-ic</span>=<span class="tok-s">"download"</span> <span class="tok-a">aria-hidden</span>=<span class="tok-s">"true"</span>&gt;&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">button</span>&gt;
   &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Keyboard focus shows this at once"</span>&gt;Focus me&lt;/<span class="tok-t">button</span>&gt;
 &lt;/<span class="tok-t">p</span>&gt;
 &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Chosen: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"menu-out"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>

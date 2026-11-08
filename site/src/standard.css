@@ -150,3 +150,4 @@ table.std .primary-cell { font-weight: 600; } table.std .muted { color: var(--xo
 @media (prefers-reduced-motion: reduce) { button[aria-busy="true"]::after { animation: none; } }
 .xo-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
+.table-frame, .xo-table { position: relative; }   /* contains the absolutely positioned visually-hidden labels, so they cannot widen the page */

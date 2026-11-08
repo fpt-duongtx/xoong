@@ -168,6 +168,7 @@ ${page.body}
   <link rel="stylesheet" href="src/components.css">
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}
 </head>
 <body${page.group ? ' class="shell-page"' : ''}>
