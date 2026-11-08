@@ -8,6 +8,7 @@
  *   XO203 <xo-view get> uses an operation that is not GET
  *   XO210 <xo-view get> path parameter has no p-<name> attribute
  *   XO220 xo-submit is not on a <form>
+ *   XO222 <form xo-submit> outside an <xo-view> (it never binds)
  *   XO221 empty xo-each / xo-if / xo-body expression
  *   XO230 unknown xo-* attribute or element (with the closest match)
  *   XO240 button/link triggered by xo-click has no accessible name
@@ -139,6 +140,7 @@ export function checkHtml(source, table, file = '<input>') {
         if (a.name === 'xo-click' || a.name === 'xo-submit') {
           const op = lookup(node, a.name, a.value);
           if (op && op.method === 'GET' && a.name === 'xo-click') report('warn', 'XO202', node, a.name, `${a.name} calls the GET operation ${op.path}`, 'Reads are declared with <xo-view get="...">; xo-click is for mutations');
+          if (a.name === 'xo-submit' && tag === 'form' && !view) report('error', 'XO222', node, a.name, '<form xo-submit> is not inside an <xo-view>, so it never binds: no model, the inputs stay empty', 'Wrap it in <xo-view> (an <xo-view> without get is enough)');
           if (a.name === 'xo-submit' && tag !== 'form') report('error', 'XO220', node, a.name, `xo-submit must be on a <form>, found <${tag}>`, 'Move xo-submit to the form element');
           if (a.name === 'xo-click') {
             if (!INTERACTIVE.has(tag) && !attr(node, 'role') && !attr(node, 'tabindex')) {

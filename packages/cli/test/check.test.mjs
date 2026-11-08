@@ -127,6 +127,11 @@ describe('xoong check: admin set', () => {
     expect(found('<xo-view get="/tags"><xo-table columns="a" page-size="5"></xo-table></xo-view>')).toEqual(['XO250']);
   });
 
+  it('XO222: a submit form needs an <xo-view>', () => {
+    expect(found('<form xo-submit="POST /users"></form>')).toEqual(['XO222']);
+    expect(found('<xo-view><form xo-submit="POST /users"></form></xo-view>')).toEqual([]);
+  });
+
   it('XO251: a table needs an <xo-view get>', () => {
     expect(found('<xo-table columns="a"></xo-table>')).toEqual(['XO251']);
     expect(found('<xo-view><xo-table columns="a"></xo-table></xo-view>')).toEqual(['XO251']);
