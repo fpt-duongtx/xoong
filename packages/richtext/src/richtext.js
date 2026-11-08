@@ -231,11 +231,11 @@ class XoRichtext extends XoControl {
     button.type = 'button';
     button.dataset.tool = name;
     button.tabIndex = first ? 0 : -1;
-    button.textContent = tool.face;
+    button.dataset.face = tool.face; // drawn by CSS (::before): the symbol is not text, so the accessible name is the caption alone (WCAG 2.5.3)
     button.setAttribute('aria-label', caption);
     button.title = caption;
-    if (tool.state) button.setAttribute('aria-pressed', 'false');
-    if (inMenu) { button.setAttribute('role', 'menuitem'); button.tabIndex = -1; button.textContent = `${tool.face}  ${caption}`; }
+    if (inMenu) { button.setAttribute('role', tool.state ? 'menuitemcheckbox' : 'menuitem'); button.tabIndex = -1; button.textContent = caption; } // a menu item is checked, a toolbar button is pressed
+    if (tool.state) button.setAttribute(inMenu ? 'aria-checked' : 'aria-pressed', 'false');
     return button;
   }
 
@@ -419,9 +419,9 @@ class XoRichtext extends XoControl {
   }
 
   #refreshState() {
-    for (const button of /** @type {NodeListOf<HTMLButtonElement>} */ (this.#box?.querySelectorAll('.xo-richtext-toolbar button[aria-pressed]') ?? [])) {
+    for (const button of /** @type {NodeListOf<HTMLButtonElement>} */ (this.#box?.querySelectorAll('.xo-richtext-toolbar button[aria-pressed], .xo-richtext-more [aria-checked]') ?? [])) {
       const tool = /** @type {any} */ (TOOLS)[/** @type {string} */ (button.dataset.tool)];
-      button.setAttribute('aria-pressed', String(!!tool?.state?.()));
+      button.setAttribute(button.hasAttribute('aria-checked') ? 'aria-checked' : 'aria-pressed', String(!!tool?.state?.()));
     }
     const style = /** @type {HTMLSelectElement | null} */ (this.#box?.querySelector('select[data-tool=style]') ?? null);
     if (style) style.value = this.#blockStyle();

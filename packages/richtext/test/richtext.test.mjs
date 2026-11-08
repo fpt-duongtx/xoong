@@ -188,7 +188,7 @@ describe('<xo-richtext> in a browser', () => {
     await typeIn('menu text');
     await selectLine();
     await page.click('[data-tool=more]');
-    expect(await page.$$eval('.xo-richtext-more [role=menuitem]', (items) => items.map((i) => i.dataset.tool))).toEqual(['underline', 'ol', 'quote', 'undo', 'redo']);
+    expect(await page.$$eval('.xo-richtext-more [role^=menuitem]', (items) => items.map((i) => i.dataset.tool))).toEqual(['underline', 'ol', 'quote', 'undo', 'redo']);
     const inside = await page.evaluate(() => { const m = document.querySelector('.xo-richtext-more').getBoundingClientRect(); const b = document.querySelector('.xo-richtext-box').getBoundingClientRect(); return m.left >= b.left - 1 && m.right <= b.right + 1; });
     expect(inside).toBe(true); // the menu does not hang outside the editor
     await page.click('.xo-richtext-more [data-tool=ol]');

@@ -299,7 +299,8 @@ describe('toolbar sizes, the More menu and expanding', () => {
     more().click();
     expect(menu().hidden).toBe(false);
     expect(more().getAttribute('aria-expanded')).toBe('true');
-    expect(menuItems().every((i) => i.getAttribute('role') === 'menuitem')).toBe(true);
+    expect(menuItems().map((i) => i.getAttribute('role'))).toEqual(['menuitemcheckbox', 'menuitemcheckbox', 'menuitemcheckbox', 'menuitem', 'menuitem']); // a toggle is a checkbox item (aria-checked), undo and redo plain items
+    expect(menuItems().filter((i) => i.hasAttribute('aria-pressed')).length).toBe(0);
     key(more(), 'ArrowDown');
     expect(document.activeElement).toBe(menuItems()[0]);
     key(menuItems()[0], 'ArrowDown');

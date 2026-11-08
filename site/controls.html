@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Controls · xoong</title>
-  <meta name="description" content="Accessible tabs, menu, tooltip, combobox and tags as custom elements.">
+  <meta name="description" content="Accessible tabs, menu, tooltip, combobox, tags and carousel as custom elements.">
   <meta property="og:title" content="Controls · xoong">
-  <meta property="og:description" content="Accessible tabs, menu, tooltip, combobox and tags as custom elements.">
+  <meta property="og:description" content="Accessible tabs, menu, tooltip, combobox, tags and carousel as custom elements.">
   <meta property="og:image" content="brand/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
@@ -15,8 +15,6 @@
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
-  <script type="module" src="src/demo.js"></script>
-  <script type="module" src="src/page-controls.js"></script>
 </head>
 <body>
   <header class="top">
@@ -51,13 +49,20 @@
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html">Forms</a>
-      <a href="controls.html" aria-current="page">Controls</a>
       <a href="richtext.html">Rich text</a>
       <a href="styling.html">Styling</a>
+      <h2>Controls</h2>
+      <a href="controls.html" aria-current="page">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
     <main id="main">
+
 
 <h1>Controls</h1>
 <p class="lead">The controls every admin needs, as custom elements in the Light DOM with plain CSS. <code>@xoong/controls</code> depends only on <code>@xoong/core</code>, so it works with or without the rest.</p>
@@ -66,274 +71,16 @@
   <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/controls/controls.css"</span>&gt;  <span class="tok-c">&lt;!-- optional; one @layer, uses the --xo-* tokens --&gt;</span></code></pre></section>
 </xo-tabs>
 
-<h2>Tabs</h2>
-<p>The WAI-ARIA tabs pattern with automatic activation: Left and Right (wrapping), Home and End move and select, and only the selected tab is in the tab order. <code>xo-tab</code> is the label; the section's <code>id</code> is its key. Panels are hidden, not removed, so their form fields stay in the form. <em>The code tabs on this page are made with it.</em></p>
-<xo-tabs label="xo-tabs" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
-    <xo-tabs id="demo-tabs" label="Article" value="seo">
-      <section xo-tab="General"><p>General settings: title, slug, author.</p></section>
-      <section xo-tab="SEO" id="seo"><p>Search engine settings. This tab is selected by <code>value="seo"</code>.</p></section>
-      <section xo-tab="Social"><p>How the page looks when it is shared.</p></section>
-    </xo-tabs>
-    <p class="hint">Selected: <output id="tabs-out">seo</output></p>
-  </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-tabs</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-tabs"</span> <span class="tok-a">label</span>=<span class="tok-s">"Article"</span> <span class="tok-a">value</span>=<span class="tok-s">"seo"</span>&gt;
-  &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"General"</span>&gt;&lt;<span class="tok-t">p</span>&gt;General settings: title, slug, author.&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">section</span>&gt;
-  &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"SEO"</span> <span class="tok-a">id</span>=<span class="tok-s">"seo"</span>&gt;&lt;<span class="tok-t">p</span>&gt;Search engine settings. This tab is selected by &lt;<span class="tok-t">code</span>&gt;value="seo"&lt;/<span class="tok-t">code</span>&gt;.&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">section</span>&gt;
-  &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"Social"</span>&gt;&lt;<span class="tok-t">p</span>&gt;How the page looks when it is shared.&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">section</span>&gt;
-&lt;/<span class="tok-t">xo-tabs</span>&gt;
-&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Selected: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"tabs-out"</span>&gt;seo&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The controls page: show what the controls report, to see the events and values.</span>
-<span class="tok-k">const</span> $ = (selector) =&gt; document.querySelector(selector);
+<h2>The controls</h2>
+<ul>
+  <li><a href="tabs.html">Tabs</a>: the WAI-ARIA tabs pattern, panels that stay in the form.</li>
+  <li><a href="menu.html">Menu and tooltip</a>: a menu button in the top layer, choice menus, descriptions on hover and focus.</li>
+  <li><a href="combobox.html">Combobox and tags</a>: pick from a list you can filter, or type free tags; both are form controls.</li>
+  <li><a href="carousel.html">Carousel</a>: cards, banners, testimonials, galleries, with the platform's scroll snap.</li>
+  <li><a href="own-control.html">Your own control</a>: a form control built on <code>XoControl</code>.</li>
+</ul>
 
-<span class="tok-c">// Tabs: `xo-tab-change` carries the selected key.</span>
-$(<span class="tok-s">'#demo-tabs'</span>).addEventListener(<span class="tok-s">'xo-tab-change'</span>, (e) =&gt; { $(<span class="tok-s">'#tabs-out'</span>).textContent = e.detail.value; });
-
-<span class="tok-c">// Menu: choosing an item runs it as it is (a handler, a link, xo-click); here a click handler notes it.</span>
-$(<span class="tok-s">'#demo-menu'</span>).addEventListener(<span class="tok-s">'click'</span>, (e) =&gt; {
-  <span class="tok-k">const</span> item = e.target.closest(<span class="tok-s">'button:not([xo-menu-trigger]), a'</span>);
-  <span class="tok-k">if</span> (item) $(<span class="tok-s">'#menu-out'</span>).textContent = item.textContent;
-});
-
-<span class="tok-c">// Combobox and tags are form controls: `value` is a string, or an array with `multiple` and for tags.</span>
-<span class="tok-k">const</span> report = () =&gt; {
-  $(<span class="tok-s">'#combo-out'</span>).textContent = JSON.stringify({ author: $(<span class="tok-s">'#demo-author'</span>).value, topics: $(<span class="tok-s">'#demo-topics'</span>).value, keywords: $(<span class="tok-s">'#demo-tags'</span>).value });
-};
-<span class="tok-k">for</span> (<span class="tok-k">const</span> id <span class="tok-k">of</span> [<span class="tok-s">'#demo-author'</span>, <span class="tok-s">'#demo-topics'</span>, <span class="tok-s">'#demo-tags'</span>]) $(id).addEventListener(<span class="tok-s">'change'</span>, report);
-report();</code></pre></section>
-</xo-tabs>
-<table class="props">
-<thead><tr><th>API</th><th>What it does</th></tr></thead>
-<tbody>
-<tr><td><code>value</code>, <code>tabs.select(key)</code></td><td>Select a tab by key (its <code>id</code>, or its position)</td></tr>
-<tr><td><code>xo-tab-change</code></td><td>Fires with <code>{ value }</code></td></tr>
-<tr><td><code>xo-reveal</code></td><td>A form fires it when an invalid field is on another tab; the tab is selected first</td></tr>
-<tr><td><code>data-invalid</code></td><td>Set on a tab whose panel has an <code>aria-invalid</code> control</td></tr>
-</tbody></table>
-
-<h2>Menu and tooltip</h2>
-<p>The menu button pattern: click, Enter, Space or ArrowDown opens it (ArrowUp opens on the last item); arrows wrap, Home and End jump, a letter jumps to the next item that starts with it, Escape closes and returns to the trigger. The list is drawn in the <strong>top layer</strong> with the Popover API, so a table cell or a scroll area never clips it, and it is positioned through the CSS object model, which a strict CSP allows. A tooltip shows after a delay on hover and at once on keyboard focus, stays while the pointer is on it (WCAG 1.4.13) and describes, never names: an icon-only button still needs <code>aria-label</code>.</p>
-<xo-tabs label="xo-menu and xo-tooltip" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
-    <p class="toolbar">
-      <xo-menu id="demo-menu" label="Row actions">
-        <button xo-menu-trigger>Actions</button>
-        <button type="button">Edit</button>
-        <button type="button">Duplicate</button>
-        <a href="#menu-link">Open link</a>
-      </xo-menu>
-      <button xo-tooltip="Save the draft (Ctrl+S)" aria-label="Save">💾</button>
-      <button xo-tooltip="Keyboard focus shows this at once">Focus me</button>
-    </p>
-    <p class="hint">Chosen: <output id="menu-out">nothing yet</output></p>
-  </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
-  &lt;<span class="tok-t">xo-menu</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-menu"</span> <span class="tok-a">label</span>=<span class="tok-s">"Row actions"</span>&gt;
-    &lt;<span class="tok-t">button</span> <span class="tok-a">xo-menu-trigger</span>&gt;Actions&lt;/<span class="tok-t">button</span>&gt;
-    &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Edit&lt;/<span class="tok-t">button</span>&gt;
-    &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Duplicate&lt;/<span class="tok-t">button</span>&gt;
-    &lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#menu-link"</span>&gt;Open link&lt;/<span class="tok-t">a</span>&gt;
-  &lt;/<span class="tok-t">xo-menu</span>&gt;
-  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Save the draft (Ctrl+S)"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Save"</span>&gt;💾&lt;/<span class="tok-t">button</span>&gt;
-  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Keyboard focus shows this at once"</span>&gt;Focus me&lt;/<span class="tok-t">button</span>&gt;
-&lt;/<span class="tok-t">p</span>&gt;
-&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Chosen: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"menu-out"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The controls page: show what the controls report, to see the events and values.</span>
-<span class="tok-k">const</span> $ = (selector) =&gt; document.querySelector(selector);
-
-<span class="tok-c">// Tabs: `xo-tab-change` carries the selected key.</span>
-$(<span class="tok-s">'#demo-tabs'</span>).addEventListener(<span class="tok-s">'xo-tab-change'</span>, (e) =&gt; { $(<span class="tok-s">'#tabs-out'</span>).textContent = e.detail.value; });
-
-<span class="tok-c">// Menu: choosing an item runs it as it is (a handler, a link, xo-click); here a click handler notes it.</span>
-$(<span class="tok-s">'#demo-menu'</span>).addEventListener(<span class="tok-s">'click'</span>, (e) =&gt; {
-  <span class="tok-k">const</span> item = e.target.closest(<span class="tok-s">'button:not([xo-menu-trigger]), a'</span>);
-  <span class="tok-k">if</span> (item) $(<span class="tok-s">'#menu-out'</span>).textContent = item.textContent;
-});
-
-<span class="tok-c">// Combobox and tags are form controls: `value` is a string, or an array with `multiple` and for tags.</span>
-<span class="tok-k">const</span> report = () =&gt; {
-  $(<span class="tok-s">'#combo-out'</span>).textContent = JSON.stringify({ author: $(<span class="tok-s">'#demo-author'</span>).value, topics: $(<span class="tok-s">'#demo-topics'</span>).value, keywords: $(<span class="tok-s">'#demo-tags'</span>).value });
-};
-<span class="tok-k">for</span> (<span class="tok-k">const</span> id <span class="tok-k">of</span> [<span class="tok-s">'#demo-author'</span>, <span class="tok-s">'#demo-topics'</span>, <span class="tok-s">'#demo-tags'</span>]) $(id).addEventListener(<span class="tok-s">'change'</span>, report);
-report();</code></pre></section>
-</xo-tabs>
-
-<h2>Combobox and tags</h2>
-<p>Both are form controls: <code>name</code>, <code>required</code>, <code>disabled</code>, <code>value</code>, validity, <code>dirty</code> and <code>touched</code>, and they work in <code>&lt;form xo-submit&gt;</code> like a native field. The value is a string, or an array with <code>multiple</code> and for tags. Options come from <code>&lt;option&gt;</code> children, from <code>el.options</code>, or from the schema's <code>enum</code>. <code>creatable</code> lets people add a value that is not in the list; <code>remote</code> leaves filtering to you through the <code>xo-search</code> event.</p>
-<xo-tabs label="xo-combobox and xo-tags" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
-    <div class="split">
-      <xo-combobox id="demo-author" name="author" label="Author" placeholder="Choose an author">
-        <option value="1">Ada Lovelace</option>
-        <option value="2">Grace Hopper</option>
-        <option value="3">Barbara Liskov</option>
-      </xo-combobox>
-      <xo-combobox id="demo-topics" name="topics" label="Topics (several, new allowed)" multiple creatable>
-        <option value="web">Web</option>
-        <option value="data" selected>Data</option>
-        <option value="design">Design</option>
-      </xo-combobox>
-      <xo-tags id="demo-tags" name="keywords" label="Keywords" placeholder="Type and press Enter"></xo-tags>
-    </div>
-    <p class="hint">Values: <output id="combo-out"></output></p>
-  </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"split"</span>&gt;
-  &lt;<span class="tok-t">xo-combobox</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-author"</span> <span class="tok-a">name</span>=<span class="tok-s">"author"</span> <span class="tok-a">label</span>=<span class="tok-s">"Author"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Choose an author"</span>&gt;
-    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"1"</span>&gt;Ada Lovelace&lt;/<span class="tok-t">option</span>&gt;
-    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"2"</span>&gt;Grace Hopper&lt;/<span class="tok-t">option</span>&gt;
-    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"3"</span>&gt;Barbara Liskov&lt;/<span class="tok-t">option</span>&gt;
-  &lt;/<span class="tok-t">xo-combobox</span>&gt;
-  &lt;<span class="tok-t">xo-combobox</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-topics"</span> <span class="tok-a">name</span>=<span class="tok-s">"topics"</span> <span class="tok-a">label</span>=<span class="tok-s">"Topics (several, new allowed)"</span> <span class="tok-a">multiple</span> <span class="tok-a">creatable</span>&gt;
-    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"web"</span>&gt;Web&lt;/<span class="tok-t">option</span>&gt;
-    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"data"</span> <span class="tok-a">selected</span>&gt;Data&lt;/<span class="tok-t">option</span>&gt;
-    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"design"</span>&gt;Design&lt;/<span class="tok-t">option</span>&gt;
-  &lt;/<span class="tok-t">xo-combobox</span>&gt;
-  &lt;<span class="tok-t">xo-tags</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-tags"</span> <span class="tok-a">name</span>=<span class="tok-s">"keywords"</span> <span class="tok-a">label</span>=<span class="tok-s">"Keywords"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Type and press Enter"</span>&gt;&lt;/<span class="tok-t">xo-tags</span>&gt;
-&lt;/<span class="tok-t">div</span>&gt;
-&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Values: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"combo-out"</span>&gt;&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The controls page: show what the controls report, to see the events and values.</span>
-<span class="tok-k">const</span> $ = (selector) =&gt; document.querySelector(selector);
-
-<span class="tok-c">// Tabs: `xo-tab-change` carries the selected key.</span>
-$(<span class="tok-s">'#demo-tabs'</span>).addEventListener(<span class="tok-s">'xo-tab-change'</span>, (e) =&gt; { $(<span class="tok-s">'#tabs-out'</span>).textContent = e.detail.value; });
-
-<span class="tok-c">// Menu: choosing an item runs it as it is (a handler, a link, xo-click); here a click handler notes it.</span>
-$(<span class="tok-s">'#demo-menu'</span>).addEventListener(<span class="tok-s">'click'</span>, (e) =&gt; {
-  <span class="tok-k">const</span> item = e.target.closest(<span class="tok-s">'button:not([xo-menu-trigger]), a'</span>);
-  <span class="tok-k">if</span> (item) $(<span class="tok-s">'#menu-out'</span>).textContent = item.textContent;
-});
-
-<span class="tok-c">// Combobox and tags are form controls: `value` is a string, or an array with `multiple` and for tags.</span>
-<span class="tok-k">const</span> report = () =&gt; {
-  $(<span class="tok-s">'#combo-out'</span>).textContent = JSON.stringify({ author: $(<span class="tok-s">'#demo-author'</span>).value, topics: $(<span class="tok-s">'#demo-topics'</span>).value, keywords: $(<span class="tok-s">'#demo-tags'</span>).value });
-};
-<span class="tok-k">for</span> (<span class="tok-k">const</span> id <span class="tok-k">of</span> [<span class="tok-s">'#demo-author'</span>, <span class="tok-s">'#demo-topics'</span>, <span class="tok-s">'#demo-tags'</span>]) $(id).addEventListener(<span class="tok-s">'change'</span>, report);
-report();</code></pre></section>
-</xo-tabs>
-<p>Keys: ArrowDown and ArrowUp open and move (the focus stays in the input, <code>aria-activedescendant</code> follows), Enter picks, Escape closes, Backspace on an empty field removes the last chip. In tags, Enter or a comma adds the typed text. Enter never submits the form while the list is open.</p>
-
-<h2>Carousel</h2>
-<p><code>&lt;xo-carousel&gt;</code> is a row of slides, its children, that you move through. It is made on the platform: the slides sit in a scroll container with CSS scroll snap, so touch swiping, the wheel and momentum are the browser's own, and the buttons only ask it to scroll. It follows the WAI-ARIA carousel pattern, and a slide that is out of view cannot be reached with Tab. These are the forms it covers, one element each:</p>
-
-<h3>Cards, several at a time</h3>
-<p><code>items</code> sets how many are visible; set <code>--xo-carousel-items</code> in CSS to change it with the screen width. <code>counter</code> shows the position, and the arrows stop at the ends (or wrap with <code>loop</code>).</p>
-<xo-tabs label="xo-carousel with cards" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
-    <xo-carousel class="service-cards" label="Services" counter>
-      <article class="card"><h3>Digestive check</h3><p>Advice on stomach, bowel and liver symptoms.</p><a href="#book">Book</a></article>
-      <article class="card"><h3>Painless endoscopy</h3><p>Stomach and bowel, with sedation.</p><a href="#book">Book</a></article>
-      <article class="card"><h3>H. pylori test</h3><p>A sample taken during the endoscopy.</p><a href="#book">Book</a></article>
-      <article class="card"><h3>Abdominal ultrasound</h3><p>Done together with the doctor.</p><a href="#book">Book</a></article>
-      <article class="card"><h3>Health packages</h3><p>Checks with offers.</p><a href="#book">Book</a></article>
-    </xo-carousel>
-  </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"service-cards"</span> <span class="tok-a">label</span>=<span class="tok-s">"Services"</span> <span class="tok-a">counter</span>&gt;
-  &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Digestive check&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Advice on stomach, bowel and liver symptoms.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
-  &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Painless endoscopy&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Stomach and bowel, with sedation.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
-  &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;H. pylori test&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;A sample taken during the endoscopy.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
-  &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Abdominal ultrasound&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Done together with the doctor.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
-  &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Health packages&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Checks with offers.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
-&lt;/<span class="tok-t">xo-carousel</span>&gt;</code></pre></section>
-  <section xo-tab="CSS"><pre data-lang="css"><code>.service-cards { <span class="tok-a">--xo-carousel-items</span>: <span class="tok-n">1</span>; }
-<span class="tok-k">@media</span> (min-width: <span class="tok-n">40rem</span>) { .service-cards { <span class="tok-a">--xo-carousel-items</span>: <span class="tok-n">2</span>; } }
-<span class="tok-k">@media</span> (min-width: <span class="tok-n">60rem</span>) { .service-cards { <span class="tok-a">--xo-carousel-items</span>: <span class="tok-n">3</span>; <span class="tok-a">--xo-carousel-gap</span>: <span class="tok-n">1.5rem</span>; } }</code></pre></section>
-</xo-tabs>
-
-<h3>A banner or testimonials, moving by itself</h3>
-<p>One slide at a time with <code>dots</code> and <code>autoplay</code> (milliseconds). It adds a pause button, pauses while the pointer or the focus is inside, does not run under <code>prefers-reduced-motion</code>, and the slides are announced politely only when it is not moving.</p>
-<xo-tabs label="xo-carousel as a banner" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
-    <xo-carousel class="banner" label="What people say" dots autoplay="6000" loop>
-      <blockquote><p>The form just worked: validation, errors and the draft came from the OpenAPI document.</p><footer>Ada, platform team</footer></blockquote>
-      <blockquote><p>We deleted our table component and kept the markup.</p><footer>Grace, admin app</footer></blockquote>
-      <blockquote><p>Strict CSP on day one, no exceptions to write.</p><footer>Barbara, security</footer></blockquote>
-    </xo-carousel>
-  </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"banner"</span> <span class="tok-a">label</span>=<span class="tok-s">"What people say"</span> <span class="tok-a">dots</span> <span class="tok-a">autoplay</span>=<span class="tok-s">"6000"</span> <span class="tok-a">loop</span>&gt;
-  &lt;<span class="tok-t">blockquote</span>&gt;&lt;<span class="tok-t">p</span>&gt;The form just worked: validation, errors and the draft came from the OpenAPI document.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">footer</span>&gt;Ada, platform team&lt;/<span class="tok-t">footer</span>&gt;&lt;/<span class="tok-t">blockquote</span>&gt;
-  &lt;<span class="tok-t">blockquote</span>&gt;&lt;<span class="tok-t">p</span>&gt;We deleted our table component and kept the markup.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">footer</span>&gt;Grace, admin app&lt;/<span class="tok-t">footer</span>&gt;&lt;/<span class="tok-t">blockquote</span>&gt;
-  &lt;<span class="tok-t">blockquote</span>&gt;&lt;<span class="tok-t">p</span>&gt;Strict CSP on day one, no exceptions to write.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">footer</span>&gt;Barbara, security&lt;/<span class="tok-t">footer</span>&gt;&lt;/<span class="tok-t">blockquote</span>&gt;
-&lt;/<span class="tok-t">xo-carousel</span>&gt;</code></pre></section>
-
-</xo-tabs>
-
-<h3>A gallery with thumbnails</h3>
-<p>A slide with <code>data-thumb</code> gives its picture to the button that goes to it, in place of a dot. Keys on the picture area: Left and Right, Home and End.</p>
-<xo-tabs label="xo-carousel as a gallery" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
-    <xo-carousel label="Gallery" dots>
-      <img src="img/gallery-1.svg" alt="Clay hills" data-thumb="img/gallery-1.svg">
-      <img src="img/gallery-2.svg" alt="Green valley" data-thumb="img/gallery-2.svg">
-      <img src="img/gallery-3.svg" alt="Night over the ridge" data-thumb="img/gallery-3.svg">
-    </xo-carousel>
-  </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">label</span>=<span class="tok-s">"Gallery"</span> <span class="tok-a">dots</span>&gt;
-  &lt;<span class="tok-t">img</span> <span class="tok-a">src</span>=<span class="tok-s">"img/gallery-1.svg"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Clay hills"</span> <span class="tok-a">data-thumb</span>=<span class="tok-s">"img/gallery-1.svg"</span>&gt;
-  &lt;<span class="tok-t">img</span> <span class="tok-a">src</span>=<span class="tok-s">"img/gallery-2.svg"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Green valley"</span> <span class="tok-a">data-thumb</span>=<span class="tok-s">"img/gallery-2.svg"</span>&gt;
-  &lt;<span class="tok-t">img</span> <span class="tok-a">src</span>=<span class="tok-s">"img/gallery-3.svg"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Night over the ridge"</span> <span class="tok-a">data-thumb</span>=<span class="tok-s">"img/gallery-3.svg"</span>&gt;
-&lt;/<span class="tok-t">xo-carousel</span>&gt;</code></pre></section>
-
-</xo-tabs>
-
-<h3>Slides from data</h3>
-<p>The slides can come from the data layer: put <code>xo-each</code> on the slide. The carousel follows its children as they arrive and change.</p>
-<xo-tabs label="xo-carousel with data" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
-    <xo-view get="listPeople" p-limit="6">
-      <xo-carousel class="service-cards" label="People" items="2" counter no-arrows>
-        <article class="card" xo-each="items"><h3>{name}</h3><p>{email}</p><span class="badge">{role}</span></article>
-      </xo-carousel>
-    </xo-view>
-  </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span> <span class="tok-a">p-limit</span>=<span class="tok-s">"6"</span>&gt;
-  &lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"service-cards"</span> <span class="tok-a">label</span>=<span class="tok-s">"People"</span> <span class="tok-a">items</span>=<span class="tok-s">"2"</span> <span class="tok-a">counter</span> <span class="tok-a">no-arrows</span>&gt;
-    &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;<span class="tok-i">{email}</span>&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
-  &lt;/<span class="tok-t">xo-carousel</span>&gt;
-&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
-
-</xo-tabs>
-<table class="props">
-<thead><tr><th>API</th><th>What it does</th></tr></thead>
-<tbody>
-<tr><td><code>items</code></td><td>Slides visible at once (default 1; <code>1.15</code> lets the next one peek)</td></tr>
-<tr><td><code>dots</code>, <code>counter</code>, <code>no-arrows</code></td><td>The position buttons (or thumbnails), "1 / 5", hide the arrows</td></tr>
-<tr><td><code>loop</code>, <code>autoplay</code></td><td>Next at the end returns to the first; move on by itself every n milliseconds</td></tr>
-<tr><td><code>index</code>, <code>count</code>, <code>next()</code>, <code>prev()</code>, <code>goTo(i)</code>, <code>play()</code>, <code>pause()</code></td><td>Control it from code; <code>index</code> is the first visible slide</td></tr>
-<tr><td><code>xo-carousel-change</code></td><td>Fires with <code>{ index, count }</code></td></tr>
-</tbody></table>
-<p>Not included on purpose: crossfade and 3D styles, an endless loop made of cloned slides, and a continuously scrolling logo strip. They need a different mechanism than scroll snap, and the last two are bad for people who use a keyboard or a screen reader; a CSS animation does the logo strip well.</p>
-
-<h2>In a generated form</h2>
-<p><code>&lt;xo-form&gt;</code> draws a control for any field with a <code>widget</code> hint that is a tag name: <code>xo-combobox</code>, <code>xo-tags</code>, <code>xo-richtext</code>, or your own element built on <code>XoControl</code>.</p>
-<xo-tabs label="Widgets" class="code-tabs">
-  <section xo-tab="xoong.hints.json"><pre data-lang="json"><code>{
-  <span class="tok-a">"fields"</span>: {
-    <span class="tok-a">"Page.topics"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-combobox"</span> },
-    <span class="tok-a">"Page.keywords"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-tags"</span> },
-    <span class="tok-a">"Page.role"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-combobox"</span> }
-  }
-}</code></pre></section>
-  <section xo-tab="OpenAPI"><pre data-lang="json"><code><span class="tok-a">"keywords"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"array"</span>, <span class="tok-a">"items"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span> }, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-tags"</span> }</code></pre></section>
-</xo-tabs>
-
-<h2>Build your own control</h2>
-<p>A control that takes part in forms extends <code>XoControl</code>. It gets a value, validity, <code>dirty</code>, <code>touched</code>, <code>name</code> and <code>disabled</code>, and talks to the form binder through <code>ElementInternals</code>. You only write the rendering and call <code>userInput()</code> when the person changes something.</p>
-<xo-tabs label="XoControl" class="code-tabs">
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-k">import</span> { XoControl, define, html } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
-
-<span class="tok-k">class</span> RatingStars <span class="tok-k">extends</span> XoControl {
-  render() {
-    <span class="tok-k">return</span> html<span class="tok-s">`${[1, 2, 3, 4, 5].map((n) =&gt; html`</span>
-      &lt;button type=<span class="tok-s">"button"</span> aria-pressed=${() =&gt; String(<span class="tok-k">this</span>.value &gt;= n)} @click=${() =&gt; <span class="tok-k">this</span>.userInput(n)}&gt;★&lt;/button&gt;<span class="tok-s">`)}`</span>;
-  }
-}
-define(<span class="tok-s">'rating-stars'</span>, RatingStars);</code></pre></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">form</span> <span class="tok-a">xo-submit</span>=<span class="tok-s">"updateReview"</span>&gt;
-  &lt;<span class="tok-t">rating-stars</span> <span class="tok-a">name</span>=<span class="tok-s">"rating"</span>&gt;&lt;/<span class="tok-t">rating-stars</span>&gt;
-  &lt;<span class="tok-t">button</span>&gt;Save&lt;/<span class="tok-t">button</span>&gt;
-&lt;/<span class="tok-t">form</span>&gt;</code></pre></section>
-</xo-tabs>
-<nav class="pager" aria-label="Pages"><a rel="prev" href="forms.html"><small>Previous</small><span>Forms</span></a><a rel="next" href="richtext.html"><small>Next</small><span>Rich text</span></a></nav>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="styling.html"><small>Previous</small><span>Styling</span></a><a rel="next" href="tabs.html"><small>Next</small><span>Tabs</span></a></nav>
     </main>
   </div>
   <footer class="foot">
@@ -350,6 +97,5 @@ define(<span class="tok-s">'rating-stars'</span>, RatingStars);</code></pre></se
       <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
     </div>
   </footer>
-  <xo-toast></xo-toast>
 </body>
 </html>

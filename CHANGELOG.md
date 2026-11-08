@@ -3,6 +3,15 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.21 (accessibility checks with axe-core)
+
+breaking: none.
+
+* Added: axe-core (dev dependency, `tools/axe.mjs`) runs over every docs page in Calm and Ember, light and dark, and over open states (menus, dialogs, confirm, the rich text More menu, a form with validation errors and a toast) under the strict CSP. Zero violations are required.
+* Fixed (found by axe): the rich text More menu gave toggles `aria-pressed` on `menuitem`s; they are now `menuitemcheckbox` with `aria-checked`. Toolbar symbols (`1.`, `B`) are drawn by CSS from `data-face`, so the accessible name is the caption alone (WCAG 2.5.3).
+* Fixed: the rich text box showed an outline when a toolbar button had the focus as well as the button's own; the box ring now shows only while the editor has the focus.
+* Docs site: Controls is a group with a page each (overview, tabs, menu and tooltip, combobox and tags, carousel, your own control); contrast of muted text and code comments raised to 4.5:1.
+
 ## 0.0.20 (one cache key per query)
 
 breaking: none.

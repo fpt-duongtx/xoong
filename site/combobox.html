@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Combobox and tags · xoong</title>
+  <meta name="description" content="Pick from a list you can filter, or type free tags: form controls.">
+  <meta property="og:title" content="Combobox and tags · xoong">
+  <meta property="og:description" content="Pick from a list you can filter, or type free tags: form controls.">
+  <meta property="og:image" content="brand/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="src/site.css">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/page-combobox.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="calm">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html" aria-current="page">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main id="main">
+
+<h1>Combobox and tags</h1>
+<p>Both are form controls: <code>name</code>, <code>required</code>, <code>disabled</code>, <code>value</code>, validity, <code>dirty</code> and <code>touched</code>, and they work in <code>&lt;form xo-submit&gt;</code> like a native field. The value is a string, or an array with <code>multiple</code> and for tags. Options come from <code>&lt;option&gt;</code> children, from <code>el.options</code>, or from the schema's <code>enum</code>. <code>creatable</code> lets people add a value that is not in the list; <code>remote</code> leaves filtering to you through the <code>xo-search</code> event.</p>
+<xo-tabs label="xo-combobox and xo-tags" class="code-tabs example">
+  <section xo-tab="Preview"><div class="demo">
+    <div class="split">
+      <xo-combobox id="demo-author" name="author" label="Author" placeholder="Choose an author">
+        <option value="1">Ada Lovelace</option>
+        <option value="2">Grace Hopper</option>
+        <option value="3">Barbara Liskov</option>
+      </xo-combobox>
+      <xo-combobox id="demo-topics" name="topics" label="Topics (several, new allowed)" multiple creatable>
+        <option value="web">Web</option>
+        <option value="data" selected>Data</option>
+        <option value="design">Design</option>
+      </xo-combobox>
+      <xo-tags id="demo-tags" name="keywords" label="Keywords" placeholder="Type and press Enter"></xo-tags>
+    </div>
+    <p class="hint">Values: <output id="combo-out"></output></p>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"split"</span>&gt;
+  &lt;<span class="tok-t">xo-combobox</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-author"</span> <span class="tok-a">name</span>=<span class="tok-s">"author"</span> <span class="tok-a">label</span>=<span class="tok-s">"Author"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Choose an author"</span>&gt;
+    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"1"</span>&gt;Ada Lovelace&lt;/<span class="tok-t">option</span>&gt;
+    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"2"</span>&gt;Grace Hopper&lt;/<span class="tok-t">option</span>&gt;
+    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"3"</span>&gt;Barbara Liskov&lt;/<span class="tok-t">option</span>&gt;
+  &lt;/<span class="tok-t">xo-combobox</span>&gt;
+  &lt;<span class="tok-t">xo-combobox</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-topics"</span> <span class="tok-a">name</span>=<span class="tok-s">"topics"</span> <span class="tok-a">label</span>=<span class="tok-s">"Topics (several, new allowed)"</span> <span class="tok-a">multiple</span> <span class="tok-a">creatable</span>&gt;
+    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"web"</span>&gt;Web&lt;/<span class="tok-t">option</span>&gt;
+    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"data"</span> <span class="tok-a">selected</span>&gt;Data&lt;/<span class="tok-t">option</span>&gt;
+    &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"design"</span>&gt;Design&lt;/<span class="tok-t">option</span>&gt;
+  &lt;/<span class="tok-t">xo-combobox</span>&gt;
+  &lt;<span class="tok-t">xo-tags</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-tags"</span> <span class="tok-a">name</span>=<span class="tok-s">"keywords"</span> <span class="tok-a">label</span>=<span class="tok-s">"Keywords"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Type and press Enter"</span>&gt;&lt;/<span class="tok-t">xo-tags</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;
+&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Values: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"combo-out"</span>&gt;&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The combobox page: both are form controls, `value` is a string, or an array with `multiple` and for tags.</span>
+<span class="tok-k">const</span> $ = (selector) =&gt; document.querySelector(selector);
+<span class="tok-k">const</span> report = () =&gt; {
+  $(<span class="tok-s">'#combo-out'</span>).textContent = JSON.stringify({ author: $(<span class="tok-s">'#demo-author'</span>).value, topics: $(<span class="tok-s">'#demo-topics'</span>).value, keywords: $(<span class="tok-s">'#demo-tags'</span>).value });
+};
+<span class="tok-k">for</span> (<span class="tok-k">const</span> id <span class="tok-k">of</span> [<span class="tok-s">'#demo-author'</span>, <span class="tok-s">'#demo-topics'</span>, <span class="tok-s">'#demo-tags'</span>]) $(id).addEventListener(<span class="tok-s">'change'</span>, report);
+report();</code></pre></section>
+</xo-tabs>
+<p>Keys: ArrowDown and ArrowUp open and move (the focus stays in the input, <code>aria-activedescendant</code> follows), Enter picks, Escape closes, Backspace on an empty field removes the last chip. In tags, Enter or a comma adds the typed text. Enter never submits the form while the list is open.</p>
+
+<h2>In a generated form</h2>
+<p><code>&lt;xo-form&gt;</code> draws a control for any field with a <code>widget</code> hint that is a tag name: <code>xo-combobox</code>, <code>xo-tags</code>, <code>xo-richtext</code>, or your own element built on <code>XoControl</code>.</p>
+<xo-tabs label="Widgets" class="code-tabs">
+  <section xo-tab="xoong.hints.json"><pre data-lang="json"><code>{
+  <span class="tok-a">"fields"</span>: {
+    <span class="tok-a">"Page.topics"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-combobox"</span> },
+    <span class="tok-a">"Page.keywords"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-tags"</span> },
+    <span class="tok-a">"Page.role"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-combobox"</span> }
+  }
+}</code></pre></section>
+  <section xo-tab="OpenAPI"><pre data-lang="json"><code><span class="tok-a">"keywords"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"array"</span>, <span class="tok-a">"items"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span> }, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-tags"</span> }</code></pre></section>
+</xo-tabs>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="menu.html"><small>Previous</small><span>Menu and tooltip</span></a><a rel="next" href="carousel.html"><small>Next</small><span>Carousel</span></a></nav>
+    </main>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

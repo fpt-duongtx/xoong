@@ -7,10 +7,11 @@ import { join, extname } from 'node:path';
 import { build, CSP } from '../src/build.js';
 import { sync } from '../src/commands.js';
 import { launchChromium } from '../../../tools/browser.mjs';
+import { axe } from '../../../tools/axe.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'controls', 'richtext', 'styling', 'demo', 'brand'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'demo', 'brand'];
 const DOCS = PAGES.filter((n) => !['index', 'brand'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
@@ -146,18 +147,25 @@ describe('documentation site', () => {
     clean();
   });
 
-  it('controls: tabs, menu and combobox/tags report their changes', async () => {
-    await open('controls');
+  it('controls: tabs, menu and combobox/tags report their changes, one page each', async () => {
+    await open('tabs');
     expect(await text('#tabs-out')).toBe('seo');
     await page.click('#demo-tabs [role=tab]:text-is("Social")');
     expect(await text('#tabs-out')).not.toBe('seo');
+    await open('menu');
     await page.click('#demo-menu [xo-menu-trigger]');
     await page.click('#demo-menu button:text-is("Duplicate")');
     expect(await text('#menu-out')).toBe('Duplicate');
+    await open('combobox');
     await page.fill('#demo-tags input', 'alpha');
     await page.keyboard.press('Enter');
     expect(await text('#combo-out')).toContain('alpha');
-    // carousel: slides from data are counted once (not nested), Next moves, the autoplay one has its pause button
+    clean();
+  });
+
+  it('controls: the carousel on its own page', async () => {
+    await open('carousel');
+    // slides from data are counted once (not nested), Next moves, the autoplay one has its pause button
     await page.waitForSelector('xo-carousel[label="People"] .xo-carousel-track > article');
     expect(await page.$$eval('xo-carousel[label="People"] .xo-carousel-track > article', (els) => els.length)).toBe(6);
     expect(await page.$$('xo-carousel[label="People"] .xo-carousel-track .xo-carousel-track')).toHaveLength(0);
@@ -202,5 +210,67 @@ describe('documentation site', () => {
     await page.fill('.xo-table input[type=search]', 'radia');
     await page.waitForFunction(() => document.querySelector('.xo-table tbody td:nth-child(2)')?.textContent === 'Radia Perlman');
     clean();
+  });
+
+  describe('accessibility (axe-core, WCAG 2.0 and 2.1 A and AA)', () => {
+    const scan = async (label) => {
+      const found = await axe(page);
+      expect(found, label).toEqual([]);
+    };
+    const scheme = async (colorScheme, palette) => {
+      await page.emulateMedia({ colorScheme });
+      await page.evaluate((p) => { document.documentElement.dataset.palette = p; }, palette);
+    };
+    afterAll(async () => { await page?.emulateMedia({ colorScheme: 'light' }); });
+
+    it('every page, in Calm and light', async () => {
+      for (const name of PAGES) {
+        await open(name);
+        await page.waitForTimeout(300); // demos finish rendering
+        await scan(name);
+      }
+    });
+
+    it('every page in Ember and dark, the other colour sets of the same tokens', async () => {
+      for (const name of PAGES) {
+        await open(name);
+        await scheme('dark', 'ember');
+        await page.waitForTimeout(300);
+        await scan(`${name} (ember, dark)`);
+      }
+      await scheme('light', 'calm');
+    });
+
+    it('open states: a menu list, a dialog, the rich text More menu, the confirm dialog', async () => {
+      await open('menu');
+      await page.click('#demo-menu [xo-menu-trigger]');
+      await scan('menu open');
+      await page.keyboard.press('Escape');
+      await open('demo');
+      await page.waitForSelector('.xo-table td');
+      await page.click('button:text-is("Add person")');
+      await scan('dialog open');
+      await page.keyboard.press('Escape');
+      await page.click('.xo-table tbody tr:first-child button:text-is("Delete")');
+      await page.waitForSelector('dialog[open]');
+      await scan('confirm open');
+      await page.keyboard.press('Escape');
+      await open('richtext');
+      await page.$eval('.resizable', (el) => { el.style.width = '420px'; });
+      await page.waitForFunction(() => document.querySelector('#demo-editor [role=toolbar]')?.dataset.size === 'compact');
+      await page.click('#demo-editor [data-tool=more]');
+      await scan('richtext more menu');
+      await open('forms');
+      await page.waitForSelector('.xo-form .xo-submit');
+      await page.click('.xo-form .xo-submit');
+      await page.waitForSelector('.xo-form [aria-invalid="true"]');
+      await scan('form with validation errors');
+      await page.fill('.xo-form [name=name]', 'Test Person');
+      await page.fill('.xo-form [name=email]', 'ada@example.org');
+      await page.click('.xo-form .xo-submit');
+      await page.waitForSelector('.xo-toast:not([hidden])');
+      await scan('form with a server error and a toast');
+      clean();
+    });
   });
 });

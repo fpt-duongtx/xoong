@@ -32,7 +32,7 @@
   --surface: light-dark(#fffdf8, #201d1a);
   --broth: light-dark(#eee8da, #29251f);
   --text: light-dark(#2b2623, #eee8dc);
-  --muted: light-dark(#6f685f, #a39b8f);
+  --muted: light-dark(#675f56, #a39b8f);
   --line: light-dark(#e3dccb, #38332c);
   --herb: light-dark(#5b8a6b, #8cc3a0);
   --sesame: light-dark(#e6c783, #e9cf8e);
@@ -68,7 +68,7 @@ body { margin: 0; font: 1.0625rem/1.65 var(--font); -webkit-font-smoothing: anti
 img, svg { max-width: 100%; }
 a { color: var(--ember-deep); text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; }
 a:hover { color: var(--ember); }
-:focus-visible { outline: 3px solid var(--ember); outline-offset: 3px; border-radius: 6px; }
+@layer xoong.base { :focus-visible { outline: 3px solid var(--ember); outline-offset: 3px; border-radius: 6px; } } /* in the framework's layer: a control that draws its own ring (rich text, combobox) is not outlined twice */
 ::selection { background: var(--ember); color: #fff; }
 h1, h2, h3 { font-weight: 800; letter-spacing: -0.03em; line-height: 1.12; margin: 0; text-wrap: balance; }
 h2 { font-size: clamp(1.7rem, 3.4vw, 2.4rem); margin-bottom: 0.6rem; }
@@ -120,7 +120,7 @@ pre { position: relative; margin: 0; padding: 1rem 1.2rem; overflow-x: auto; fon
 pre code { font: inherit; background: none; padding: 0; }
 pre .copy { position: absolute; inset-block-start: 0.4rem; inset-inline-end: 0.4rem; padding: 0.1rem 0.5rem; font-size: 0.75rem; opacity: 0.7; border-radius: 999px; }
 pre .copy:hover, pre .copy:focus-visible { opacity: 1; }
-.tok-c { color: light-dark(#8a8176, #8d7f72); font-style: italic; }
+.tok-c { color: light-dark(#6a6258, #a99b8d); font-style: italic; }
 .tok-s { color: light-dark(#2f6f48, #8fe0a8); }
 .tok-k { color: var(--ember-deep); }
 .tok-t { color: var(--ember-deep); }
@@ -134,7 +134,7 @@ pre .copy:hover, pre .copy:focus-visible { opacity: 1; }
 .window .bar i:nth-child(2) { background: #f5c04a; } .window .bar i:nth-child(3) { background: #6fcf8e; }
 .window .bar span { margin-inline-start: 0.6rem; }
 .window pre { padding: 1.2rem 1.3rem 1.4rem; }
-.window .tok-t, .window .tok-k { color: #ff9068; } .window .tok-a, .window .tok-n { color: #f5c04a; } .window .tok-s { color: #8fe0a8; } .window .tok-c { color: #8d7f72; } .window .tok-i { color: #c9b6ff; }
+.window .tok-t, .window .tok-k { color: #ff9068; } .window .tok-a, .window .tok-n { color: #f5c04a; } .window .tok-s { color: #8fe0a8; } .window .tok-c { color: #a99b8d; } .window .tok-i { color: #c9b6ff; }
 .recipe pre, .head + pre { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-top: 0.8rem; box-shadow: var(--shadow); }
 
 /* code tabs: <xo-tabs>, the framework's own element, in the brand */
@@ -199,7 +199,7 @@ section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
 .prose h2:first-child { margin-top: 0; }
 .logo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
 .tile { border: 1px solid var(--line); border-radius: var(--radius); min-height: 14rem; display: grid; place-items: center; padding: 2rem; position: relative; box-shadow: var(--shadow); }
-.tile small { position: absolute; inset-inline-start: 1rem; bottom: 0.8rem; font: 600 0.74rem/1 var(--mono); opacity: 0.7; }
+.tile small { position: absolute; inset-inline-start: 1rem; bottom: 0.8rem; font: 600 0.74rem/1 var(--mono); }
 .tile > img { width: 7.5rem; height: 7.5rem; }
 .tile.on-rice { background: #f7f4ec; color: #2b2623; } .tile.on-soot { background: #2b2623; color: #f7f3ea; } .tile.on-ember { background: #df8a6a; color: #2b2623; } .tile.on-broth { background: #f7e6dc; color: #2b2623; }
 .lockup { display: inline-flex; align-items: center; gap: 0.9rem; }
@@ -221,7 +221,7 @@ section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
 .t-display { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.055em; line-height: 1; }
 .t-mono { font-family: var(--mono); font-size: 1.1rem; }
 .dodont { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
-.dodont .card .no.bad { color: #b42318; background: light-dark(#fde4e1, #3a1613); }
+.dodont .card .no.bad { color: light-dark(#b42318, #ff9d94); background: light-dark(#fde4e1, #3a1613); }
 .dodont ul { margin: 0.4rem 0 0; padding-inline-start: 1.2rem; color: var(--muted); }
 .dl { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 1rem; }
 .dl .btn { padding: 0.7rem 1.1rem; font-size: 0.92rem; }
