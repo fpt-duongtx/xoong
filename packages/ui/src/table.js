@@ -15,6 +15,8 @@
  *     <button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>
  * - filters="q:Search,status": a search box per field, with an optional label (the label is the placeholder and the accessible name).
  * - columns="publishedAt:Published:datetime": a third part formats the cell (date, datetime, time, relative, number, localized).
+ * - cards: in a narrow pane every row is drawn as a card (a theme does it: the table gets the class `xo-cards`); every cell has `data-label` with its column's label,
+ *   the first column (or `title="field"`) is the card title (`data-title`), `status="field"` marks the status cell (`data-status`).
  * - empty="No results" (or a child `<template slot="empty">`): shown when the list is empty and not loading.
  * - page-sizes="10,25,50": a rows-per-page choice next to the "1–3 of 5" range text.
  * - page-size: sets `limit` and shows Previous/Next, which change `offset`. Needs a `total` field in the response.
@@ -55,9 +57,11 @@ defineTemplate('xo-table', (el, { host }) => {
   const tickRow = selectable ? '<td><input type="checkbox" xo-select aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td>' : '';
   const head = columns.map((c) => `<th scope="col">${sortable ? `<button type="button" xo-param="sort~=${esc(c.field)}">${esc(c.label)}</button>` : esc(c.label)}</th>`).join('');
   const cellText = (c) => (['date', 'datetime', 'time', 'relative'].includes(c.fmt) ? `<time datetime="{${esc(c.field)}}">{${esc(c.field)} | ${c.fmt}}</time>` : c.fmt ? `{${esc(c.field)} | ${esc(c.fmt)}}` : `{${esc(c.field)}}`);
-  const cells = columns.map((c) => `<td>${cellOf.get(c.field) ?? cellText(c)}</td>`).join('');
+  const titleField = el.getAttribute('title') || columns[0]?.field; // the card title of the narrow layout
+  const statusField = el.getAttribute('status');
+  const cells = columns.map((c) => `<td data-label="${esc(c.label)}"${c.field === titleField ? ' data-title' : ''}${c.field === statusField ? ' data-status' : ''}>${cellOf.get(c.field) ?? cellText(c)}</td>`).join('');
   const box = document.createElement('div');
-  box.className = 'xo-table';
+  box.className = el.hasAttribute('cards') ? 'xo-table xo-cards' : 'xo-table'; // `cards`: rows become cards in a narrow pane (the theme draws them)
   const search = filters.map((f) => `<input type="search" xo-param="${esc(f.field)}" placeholder="${esc(f.label)}" aria-label="${esc(f.label)}">`).join('');
   const bar = bulk.length ? `<div class="xo-bulk" xo-if="$selectedCount"><span xo-t="xoong.table.selected">{$selectedCount} selected</span>${bulk.join('')}</div>` : '';
   box.innerHTML = `${bar}${search ? `<div class="xo-filters">${search}</div>` : ''}<table>

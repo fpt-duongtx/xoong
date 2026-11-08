@@ -64,6 +64,14 @@
     <a href="richtext.html">Rich text</a>
     <a href="theme-builder.html" aria-current="page">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
     <a href="tabs.html">Tabs</a>
@@ -92,6 +100,14 @@
       <a href="richtext.html">Rich text</a>
       <a href="theme-builder.html" aria-current="page">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
       <a href="tabs.html">Tabs</a>
@@ -201,7 +217,7 @@
           </div>
           <div id="theme-preview" class="theme-preview">
             <div class="toolbar"><label class="search grow"><span class="xo-visually-hidden">Search</span><svg class="icon " aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search people"></label><div class="chips"><button class="chip" aria-pressed="true">Everyone</button><button class="chip" aria-pressed="false">Admins</button></div><button class="primary"><svg class="icon " aria-hidden="true"><use href="#i-plus"/></svg>Add person</button></div>
-            <div class="table-frame"><table class="std"><thead><tr><th>Name</th><th>E-mail</th><th>Role</th><th><span class="xo-visually-hidden">Actions</span></th></tr></thead><tbody><tr><td class="primary-cell">Ada Lovelace</td><td class="muted">ada@example.org</td><td><span class="badge">admin</span></td><td class="cell-actions"><button class="sm">Edit</button></td></tr><tr><td class="primary-cell">Grace Hopper</td><td class="muted">grace@example.org</td><td><span class="badge warn">editor</span></td><td class="cell-actions"><button class="sm">Edit</button></td></tr><tr><td class="primary-cell">Edsger Dijkstra</td><td class="muted">edsger@example.org</td><td><span class="badge ok">viewer</span></td><td class="cell-actions"><button class="sm">Edit</button></td></tr></tbody></table></div>
+            <div class="table-frame"><div class="table-wrap" tabindex="0"><table class="std"><thead><tr><th>Name</th><th>E-mail</th><th>Role</th><th><span class="xo-visually-hidden">Actions</span></th></tr></thead><tbody><tr><td class="primary-cell">Ada Lovelace</td><td class="muted">ada@example.org</td><td><span class="badge">admin</span></td><td class="cell-actions"><button class="sm">Edit</button></td></tr><tr><td class="primary-cell">Grace Hopper</td><td class="muted">grace@example.org</td><td><span class="badge warn">editor</span></td><td class="cell-actions"><button class="sm">Edit</button></td></tr><tr><td class="primary-cell">Edsger Dijkstra</td><td class="muted">edsger@example.org</td><td><span class="badge ok">viewer</span></td><td class="cell-actions"><button class="sm">Edit</button></td></tr></tbody></table></div></div>
             <div class="theme-grid">
               <div class="panel">
                 <div class="field"><label for="p-name">Name</label><input id="p-name" value="Ada Lovelace"><span class="hint">As shown in the list.</span></div>
@@ -224,7 +240,7 @@
 
       <h2 id="contrast">3. Check the contrast</h2>
       <div id="contrast-summary" class="notice ok"><svg class="icon " aria-hidden="true"><use href="#i-info"/></svg><p></p></div>
-      <div class="table-frame"><table class="std"><thead><tr><th>Scheme</th><th>Pair</th><th>Ratio</th><th>Needs</th><th>Result</th></tr></thead><tbody id="contrast-body"></tbody></table></div>
+      <div class="table-frame"><div class="table-wrap" tabindex="0"><table class="std"><thead><tr><th>Scheme</th><th>Pair</th><th>Ratio</th><th>Needs</th><th>Result</th></tr></thead><tbody id="contrast-body"></tbody></table></div></div>
 
       <h2 id="get-theme">4. Download</h2>
       <label class="check"><input type="checkbox" id="t-layer"> Put the theme in its own CSS layer (<code>xoong-theme</code>, after the xoong layers)</label>

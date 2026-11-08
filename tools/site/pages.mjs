@@ -1,6 +1,7 @@
 // The content of the documentation site. `npm run site` writes site/*.html from this file; the architecture test fails when they differ.
 import { readFileSync } from 'node:fs';
 import { tabs, example, callout, code, codeCard, mark, art } from './lib.mjs';
+import { architecturePages } from './architecture.mjs';
 
 /** The inside of a page of the design kit (design/brand-kit/<file>): its content column with the icon sprite it uses; the crumbs are made by the layout. */
 const kit = (file) => {
@@ -309,7 +310,7 @@ await setLocale('vi');`]])}
 <thead><tr><th>Package</th><th>What it is</th><th>Budget</th></tr></thead>
 <tbody>
 <tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.6 KB</td></tr>
-<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>17.2 KB</td></tr>
+<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>17.4 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
 <tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialog, toast, router</td><td>10 KB</td></tr>
 <tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags</td><td>9.5 KB</td></tr>
@@ -641,6 +642,8 @@ ${tabs('Shell', [['HTML', 'html', `
   <main>...</main>
 </body>`]])}`,
   },
+  // ------------------------------------------------------------------------------------------------------------------------------
+  ...architecturePages,
   // ------------------------------------------------------------------------------------------------------------------------------
   {
     file: 'controls.html', section: 'docs', group: 'Controls', nav: 'Overview', title: 'Controls',

@@ -106,6 +106,8 @@
   .xo-table :where(th button) { all: unset; cursor: pointer; font: inherit; }
   .xo-table :where(th button:focus-visible) { outline: var(--xo-focus); }
   .xo-table :where(tbody tr:last-child td) { border-bottom: 0; }
+  .xo-table tbody { transition: opacity 0.15s ease; }
+  xo-view[data-refreshing] .xo-table tbody { opacity: 0.6; } /* the rows of the last result stay while the next loads: no collapse, no jump */
   .xo-table .xo-actions { text-align: end; white-space: nowrap; } /* a table cell stays a cell (display: flex dropped its border) */
   .xo-table .xo-actions > * + * { margin-inline-start: var(--xo-space-2); }
   .xo-bulk { display: flex; align-items: center; gap: var(--xo-space-2); padding: var(--xo-space-2); background: var(--xo-color-bg); border-bottom: 1px solid var(--xo-color-border); }

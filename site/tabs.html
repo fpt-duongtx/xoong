@@ -64,6 +64,14 @@
     <a href="richtext.html">Rich text</a>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
     <a href="tabs.html" aria-current="page">Tabs</a>
@@ -92,6 +100,14 @@
       <a href="richtext.html">Rich text</a>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
       <a href="tabs.html" aria-current="page">Tabs</a>
@@ -133,14 +149,14 @@ document.querySelector(<span class="tok-s">'#demo-tabs'</span>).addEventListener
   document.querySelector(<span class="tok-s">'#tabs-out'</span>).textContent = e.detail.value;
 });</code></pre></section>
 </xo-tabs>
-<table class="props">
+<div class="table-wrap" tabindex="0"><table class="props">
 <thead><tr><th>API</th><th>What it does</th></tr></thead>
 <tbody>
 <tr><td><code>value</code>, <code>tabs.select(key)</code></td><td>Select a tab by key (its <code>id</code>, or its position)</td></tr>
 <tr><td><code>xo-tab-change</code></td><td>Fires with <code>{ value }</code></td></tr>
 <tr><td><code>xo-reveal</code></td><td>A form fires it when an invalid field is on another tab; the tab is selected first</td></tr>
 <tr><td><code>data-invalid</code></td><td>Set on a tab whose panel has an <code>aria-invalid</code> control</td></tr>
-</tbody></table>
+</tbody></table></div>
 
 <nav class="pager" aria-label="Pages"><a rel="prev" href="controls.html"><small>Previous</small><span>Overview</span></a><a rel="next" href="menu.html"><small>Next</small><span>Menu and tooltip</span></a></nav>
     </main>

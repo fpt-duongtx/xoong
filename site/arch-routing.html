@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Router and page lifecycle · xoong</title>
+  <meta name="description" content="How &lt;xo-router&gt; turns templates into routes, the steps of a navigation, layouts, history, the unsaved-changes guard and the link to views.">
+  <meta property="og:title" content="Router and page lifecycle · xoong">
+  <meta property="og:description" content="How &lt;xo-router&gt; turns templates into routes, the steps of a navigation, layouts, history, the unsaved-changes guard and the link to views.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Router</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html" aria-current="page">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html" aria-current="page">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Router</span></div>
+
+<h1>Router and page lifecycle</h1>
+<p class="lead"><code>&lt;xo-router&gt;</code> is a History-API router written in markup. Routes and layouts are templates that stay inert until they match, so a view inside a route starts, and fetches, only when its route is shown.</p>
+<p>Public sites can skip all of this: one HTML file per page needs no router, and prerenders well. The router is for apps with a persistent shell, such as an admin (<a href="https://github.com/fpt-duongtx/xoong/blob/main/docs/decisions/0008-spa-router.md">decision record 0008</a>).</p>
+
+<h2 id="routes-are-templates">Routes are templates</h2>
+<xo-tabs label="A router" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-router</span> <span class="tok-a">base</span>=<span class="tok-s">"/admin"</span> <span class="tok-a">base-links</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-layout</span>=<span class="tok-s">"shell"</span>&gt;
+    &lt;<span class="tok-t">nav</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/users"</span>&gt;Users&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">nav</span>&gt;
+    &lt;<span class="tok-t">main</span> <span class="tok-a">xo-outlet</span>&gt;&lt;/<span class="tok-t">main</span>&gt;
+  &lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-route</span>=<span class="tok-s">"/users"</span> <span class="tok-a">layout</span>=<span class="tok-s">"shell"</span> <span class="tok-a">title</span>=<span class="tok-s">"Users"</span>&gt;...&lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-route</span>=<span class="tok-s">"/users/:id"</span> <span class="tok-a">layout</span>=<span class="tok-s">"shell"</span> <span class="tok-a">title</span>=<span class="tok-s">"User"</span> <span class="tok-a">description</span>=<span class="tok-s">"One user"</span>&gt;
+    &lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getUser"</span> <span class="tok-a">p-id</span>=<span class="tok-s">":id"</span>&gt;...&lt;/<span class="tok-t">xo-view</span>&gt;
+  &lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-route</span>=<span class="tok-s">"*"</span>&gt;Not found&lt;/<span class="tok-t">template</span>&gt;
+&lt;/<span class="tok-t">xo-router</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { router } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+<span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+
+<span class="tok-c">// after the router has started (it starts once the page is parsed)</span>
+router.guard(<span class="tok-k">async</span> (to, <span class="tok-k">from</span>) =&gt; ((<span class="tok-k">await</span> loggedIn()) ? <span class="tok-k">true</span> : <span class="tok-s">'/login'</span>));   <span class="tok-c">// true, false, or a path to go to instead</span>
+router.beforeNavigate((to, <span class="tok-k">from</span>) =&gt; !editing || window.confirm(<span class="tok-s">'Leave?'</span>));   <span class="tok-c">// false: stay where you are</span>
+<span class="tok-k">await</span> router.navigate(<span class="tok-s">'/users/3'</span>, { replace: <span class="tok-k">true</span> });                        <span class="tok-c">// resolves true when it happened</span>
+router.current;   <span class="tok-c">// { path, params, query, url, route }</span>
+
+configure({ api, onUnauthorized: () =&gt; router.navigate(<span class="tok-s">'/login'</span>) });          <span class="tok-c">// a 401 sends the person to log in</span></code></pre></section>
+</xo-tabs>
+<ul>
+<li>When the router starts (once the page is parsed) it reads its direct child <code>&lt;template&gt;</code> elements: <code>xo-layout="name"</code> declares a layout, <code>xo-route="/path"</code> a route. A route may name a <code>layout</code>, and a layout may name an outer <code>layout</code>.</li>
+<li>A route path has static segments and <code>:params</code>. <code>*</code> matches anything and is the not-found route. When several match, the most specific wins: static segments rank above parameters, and parameters above <code>*</code>. A trailing slash is ignored, parameters are URL-decoded, and a malformed escape such as <code>%zz</code> is kept as written instead of throwing.</li>
+<li>A <em>location</em> is <code>{ path, params, query, url, route }</code>: <code>path</code> is without the <code>base</code>, <code>url</code> is as the address bar shows it.</li>
+<li><code>xoong check</code> reports a route without a path or declared twice (XO260), an undeclared layout (XO261), a layout without <code>xo-outlet</code> (XO262), and a <code>p-x=":name"</code> that the route does not have (XO263).</li>
+</ul>
+
+<h2 id="the-steps-of-a-navigation">The steps of a navigation</h2>
+<p>Four things start a navigation: the first load (which replaces the current history entry), a click on a link, Back or Forward, and <code>router.navigate(path)</code>. A click is taken only when it is a plain left click on an <code>&lt;a href&gt;</code> that goes to the same origin and inside <code>base</code>, has no <code>target</code> (other than <code>_self</code>), no <code>download</code> and no <code>rel="external"</code>, and is not a jump to an anchor of the current page. Everything else stays the browser's.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the steps of one navigation">
+<svg class="dg dg-sm" viewBox="0 0 570 650" role="img" aria-labelledby="rt-steps-t rt-steps-d">
+<title id="rt-steps-t">The steps of one navigation</title>
+<desc id="rt-steps-d">A navigation starts from a link click, Back or Forward, or router.navigate(). Step 1: if the new location has the same path and query as the current one, nothing is done. Step 2: the vetoes run, which are the beforeNavigate hooks and the built-in check that asks first when a form has unsaved changes. Step 3: the guards run; each returns true, false, or a path to redirect to. A veto or a guard that returns false stops here: the URL is put back, and a Back or Forward is undone with history.go. Step 4: the history is written with pushState or replaceState and a position. Step 5: the layouts are kept or replaced and the route template is cloned. Step 6: after the render, the title, the description, aria-current, the focus and the scroll are set, and the xo-navigate event fires.</desc>
+<defs><marker id="rt-steps-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="36">Trigger</text><text class="dg-sub" x="170" y="56">link, Back/Forward, router.navigate()</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="100" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="122">Same place?</text><text class="dg-sub" x="170" y="142">same path and query: nothing to do</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="186" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="208">Vetoes</text><text class="dg-sub" x="170" y="228">beforeNavigate() hooks;</text><text class="dg-sub" x="170" y="244">a form with unsaved changes asks first</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="288" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="310">Guards</text><text class="dg-sub" x="170" y="330">guard() hooks: true, false,</text><text class="dg-sub" x="170" y="346">or a path to redirect to</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="390" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="412">History</text><text class="dg-sub" x="170" y="432">pushState or replaceState, with a position</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="476" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="498">Render</text><text class="dg-sub" x="170" y="518">keep shared layouts, clone the route template</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="562" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="584">After</text><text class="dg-sub" x="170" y="604">title, description, aria-current, focus,</text><text class="dg-sub" x="170" y="620">scroll, then the xo-navigate event</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-err" x="390" y="186" width="170" height="176" rx="8"/><text class="dg-t" x="475" y="251">Stay</text><text class="dg-sub" x="475" y="271">URL put back;</text><text class="dg-sub" x="475" y="287">Back/Forward undone</text><text class="dg-sub" x="475" y="303">with history.go()</text></g>
+<path class="dg-line" d="M170 72 L170 100" marker-end="url(#rt-steps-a)"/>
+<path class="dg-line" d="M170 158 L170 186" marker-end="url(#rt-steps-a)"/>
+<path class="dg-line" d="M170 260 L170 288" marker-end="url(#rt-steps-a)"/>
+<path class="dg-line" d="M170 362 L170 390" marker-end="url(#rt-steps-a)"/>
+<path class="dg-line" d="M170 448 L170 476" marker-end="url(#rt-steps-a)"/>
+<path class="dg-line" d="M170 534 L170 562" marker-end="url(#rt-steps-a)"/>
+<path class="dg-line" d="M330 223 L390 223" marker-end="url(#rt-steps-a)"/>
+<text class="dg-lab" x="360" y="210">false</text>
+<path class="dg-line" d="M330 325 L390 325" marker-end="url(#rt-steps-a)"/>
+<text class="dg-lab" x="360" y="312">false</text>
+</svg>
+</div>
+<p class="hint">One navigation. A newer navigation that starts while a veto or guard is still waiting takes over, and the older one stops.</p>
+</figure>
+<ol>
+<li><strong>Same place.</strong> The same path and query as now does nothing (<code>navigate()</code> resolves <code>false</code>). If only the hash differs, there is no render: the page scrolls to the element with that id.</li>
+<li><strong>Vetoes.</strong> The <code>beforeNavigate()</code> hooks run in the order they were added. The router adds one of its own at start, which asks first when a form has unsaved changes. The first <code>false</code> stops the navigation. They are skipped on the first load.</li>
+<li><strong>Guards.</strong> The <code>guard()</code> hooks may be async. <code>false</code> cancels. A string is a redirect: a new navigation to that path that replaces the entry, up to ten in a row, after which the router throws an error that says a guard keeps redirecting. Guards also run on the first load, so a login redirect works for a deep link.</li>
+<li><strong>Cancelled or vetoed.</strong> For Back and Forward the address bar has already moved, and the platform cannot stop that. The router stores a position in <code>history.state</code> and puts the address back with <code>history.go(-delta)</code>, so the history stays as it was, forward entries included. Where the position is unknown (an entry something else created) it falls back to <code>pushState</code>, which drops the forward entries.</li>
+<li><strong>History.</strong> <code>pushState</code> for a link or <code>navigate()</code>, <code>replaceState</code> for a redirect, the first load and <code>{ replace: true }</code>. The scroll position of the entry being left is saved, and <code>history.scrollRestoration</code> is set to <code>manual</code>.</li>
+<li><strong>Render</strong>, next section.</li>
+<li><strong>After.</strong> The route's <code>title</code> becomes <code>document.title</code> and its <code>description</code> the description meta tag. Every <code>&lt;a href&gt;</code> on the page gets <code>aria-current="page"</code> when it points at this path, or <code>aria-current="true"</code> when it points at a parent section. Except on the first load, the focus moves to the outlet (it is given <code>tabindex="-1"</code>), and the page scrolls: to the top for a new page, to the anchor if there is one, to the saved position on Back or Forward. Last, <code>xo-navigate</code> fires with <code>{ to, from }</code>.</li>
+</ol>
+<p>A navigation that starts while an earlier one is still waiting in a veto or guard takes over; the older one stops quietly.</p>
+
+<h2 id="layouts-and-rendering">Layouts and rendering</h2>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the elements the router builds">
+<svg class="dg dg-sm" viewBox="0 0 560 350" role="img" aria-labelledby="rt-layout-t rt-layout-d">
+<title id="rt-layout-t">The elements the router builds</title>
+<desc id="rt-layout-d">Nested frames. The outer frame is the xo-router element, whose templates stay inert. Inside it is a div with class xo-router-root. Inside that is a div with class xo-layout, which is the layout named shell and stays while only the route changes. The layout holds a nav on the left, and on the right the element marked xo-outlet. In the outlet is the route content, cloned from the route template, where views start and fetch.</desc>
+<defs><marker id="rt-layout-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<rect class="dg-zone" x="10" y="10" width="540" height="330" rx="12"/><text class="dg-zlab" x="24" y="28">xo-router: its templates stay inert</text>
+<rect class="dg-zone" x="30" y="44" width="500" height="280" rx="12"/><text class="dg-zlab" x="44" y="62">div.xo-router-root</text>
+<rect class="dg-zone" x="50" y="78" width="460" height="230" rx="12"/><text class="dg-zlab" x="64" y="96">div.xo-layout (shell): stays between routes</text>
+<g class="dg-node"><rect class="dg-box" x="70" y="112" width="120" height="170" rx="8"/><text class="dg-t" x="130" y="182">nav</text><text class="dg-sub" x="130" y="202">links with</text><text class="dg-sub" x="130" y="218">aria-current</text></g>
+<rect class="dg-zone" x="210" y="112" width="280" height="170" rx="12"/><text class="dg-zlab" x="224" y="130">main[xo-outlet]</text>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="230" y="146" width="240" height="120" rx="8"/><text class="dg-t" x="350" y="191">Route content</text><text class="dg-sub" x="350" y="211">cloned from template[xo-route]</text><text class="dg-sub" x="350" y="227">views start and fetch now</text></g>
+</svg>
+</div>
+<p class="hint">Between two routes that use the same layout, only the content of the outlet is replaced; the layout and its nav stay.</p>
+</figure>
+<p>For a route, the router builds the chain of layouts, outermost first. It keeps the layouts that the previous route also had, and replaces the rest. Each layout is a <code>div.xo-layout</code> filled from its template; its <code>xo-outlet</code> element is where the next layout, or the route, goes. The route's template is cloned into the innermost outlet with <code>replaceChildren</code>, which is the moment views inside it start and fetch. Leaving a route removes its content, which stops its views: their effects are disposed and their queries released (a request still running is cancelled).</p>
+<p>Content that <code>xoong render</code> wrote into the router earlier is removed at start and drawn again, so a prerendered page and the live page end up the same.</p>
+<p>Because the cache outlives the views, coming back to a list shows its data at once if the query is still held (<code>gcTime</code>, five minutes by default) and refetches it when it is older than <code>staleTime</code> (30 seconds by default).</p>
+
+<h2 id="base-links-and-history">Base, links and history</h2>
+<ul>
+<li><code>base="/admin"</code> is the part of the address that is not the route. Routes are written without it.</li>
+<li><code>base-links</code> makes a root-relative link inside the router relative to the base: <code>href="/users"</code> means <code>/admin/users</code>, so the same screens can be mounted under any base. After each navigation the <code>href</code> is rewritten to the real address, so hover and "open in a new tab" show it; a link added later is resolved on click. <code>rel="external"</code> or a <code>target</code> leave the app.</li>
+<li>The server must answer every path under <code>base</code> with the app's HTML (<code>xoong dev --spa</code>, or <code>"spa": true</code> in <code>xoong.config.json</code>).</li>
+</ul>
+
+<h2 id="the-unsaved-changes-guard">The unsaved-changes guard</h2>
+<p>A form that has a form model announces itself: it fires <code>xo-dirty</code> with <code>{ dirty }</code> each time that changes (see <a href="arch-forms.html">Forms flow</a>). The router listens at the document and keeps the set of dirty forms (forms that are no longer in the page are dropped). The built-in veto asks a question when the set is not empty. The question is the form's own <code>xo-guard</code> text, else "You have unsaved changes. Leave this page?" (the key <code>xoong.guard.leave</code>). <code>xo-guard="off"</code> on a form leaves it out. Closing the tab asks through <code>beforeunload</code>.</p>
+<p>How the question looks is not the router's business. It calls the confirm function that <code>@xoong/data/view</code> holds: the browser's <code>confirm()</code> by default, a native modal <code>&lt;dialog&gt;</code> once <code>@xoong/ui</code> is imported, or your own after <code>setConfirm(fn)</code>. The same function answers <code>xo-confirm</code>.</p>
+
+<h2 id="how-routes-and-views-meet">How routes and views meet</h2>
+<ul>
+<li><strong>Route params.</strong> The router tells <code>&lt;xo-view&gt;</code> how to read them (<code>setParamSource</code>). <code>p-id=":id"</code> takes <code>id</code> from the current location when the view starts. A view that starts before the router has (the order elements were defined) waits until the router is ready.</li>
+<li><strong>Query params.</strong> <code>p-id="?id"</code> reads the page URL. A view with <code>url-params="status,q"</code> keeps those params in the query string, and the router carries the write (<code>setUrlSync</code>): it updates the address, adds a history entry for a click and replaces it for typing, and does not render the route again. Back and Forward over such a change do render the route again, and the new views read their params from the URL.</li>
+<li><strong>Authentication.</strong> A 401 is the data layer's to detect and the router's to answer: <code>configure({ onUnauthorized: () =&gt; router.navigate("/login") })</code>. Guards are plain functions, not markup, so there is one way to write one.</li>
+<li><strong>Prerendering.</strong> <code>xoong render page.html --url /users/7</code> renders the route of that URL, with its title and description. See <a href="arch-build.html">Build and delivery</a>.</li>
+</ul>
+<p>Not yet: nested routers, route-level data loading hooks, per-route code splitting, and relative paths in <code>navigate()</code>.</p>
+
+<h2 id="where-to-look-in-the-code">Where to look in the code</h2>
+<ul>
+<li><code>packages/ui/src/router.js</code>: the whole router</li>
+<li><code>packages/data/src/view.js</code>: <code>setParamSource</code>, <code>setConfirm</code>, <code>p-*</code> params, <code>url-params</code></li>
+<li><code>packages/data/src/url-state.js</code>: the query-string hook the router replaces</li>
+<li><code>packages/cli/src/check.js</code>: XO260 to XO263</li>
+<li><code>docs/admin.md</code>: the router in use, hosting and SEO</li>
+</ul>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="arch-rendering.html"><small>Previous</small><span>Rendering</span></a><a rel="next" href="arch-build.html"><small>Next</small><span>Build and delivery</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#routes-are-templates" aria-current="true">Routes are templates</a></li><li><a href="#the-steps-of-a-navigation">The steps of a navigation</a></li><li><a href="#layouts-and-rendering">Layouts and rendering</a></li><li><a href="#base-links-and-history">Base, links and history</a></li><li><a href="#the-unsaved-changes-guard">The unsaved-changes guard</a></li><li><a href="#how-routes-and-views-meet">How routes and views meet</a></li><li><a href="#where-to-look-in-the-code">Where to look in the code</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

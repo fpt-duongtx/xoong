@@ -65,6 +65,14 @@
     <a href="richtext.html" aria-current="page">Rich text</a>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
     <a href="tabs.html">Tabs</a>
@@ -93,6 +101,14 @@
       <a href="richtext.html" aria-current="page">Rich text</a>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
       <a href="tabs.html">Tabs</a>
@@ -161,14 +177,14 @@ document.querySelector(<span class="tok-s">'#reset'</span>).addEventListener(<sp
 
 <h2 id="what-the-value-may-contain">What the value may contain</h2>
 <p><code>sanitizeHtml()</code> runs on every input, paste, drop and <code>value</code> set. Everything else is unwrapped (its text stays); scripts, styles, frames and the like are removed with their content, and no attribute outside this table survives (no <code>style</code>, <code>class</code>, <code>on*</code>).</p>
-<table class="props">
+<div class="table-wrap" tabindex="0"><table class="props">
 <thead><tr><th>Allowed</th><th>Notes</th></tr></thead>
 <tbody>
 <tr><td><code>p</code> <code>h2</code> <code>h3</code> <code>blockquote</code> <code>ul</code> <code>ol</code> <code>li</code> <code>br</code></td><td><code>h1</code> becomes <code>h2</code>, <code>h4</code> to <code>h6</code> become <code>h3</code>, <code>div</code> becomes <code>p</code></td></tr>
 <tr><td><code>strong</code> <code>em</code> <code>u</code></td><td><code>b</code> and <code>i</code> are mapped</td></tr>
 <tr><td><code>a</code> with <code>href</code></td><td>Only <code>http</code>, <code>https</code>, <code>mailto</code>, <code>tel</code>; <code>rel="noopener noreferrer"</code> is added</td></tr>
 <tr><td><code>img</code> with <code>src</code>, <code>alt</code></td><td><code>src</code> must be http(s) or a relative URL; no <code>data:</code>, no <code>javascript:</code></td></tr>
-</tbody></table>
+</tbody></table></div>
 <aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p>The client is never a trust boundary. The same function is exported as <code>@xoong/richtext/sanitize</code> so your <strong>server</strong> can sanitise on save as well.</p></aside>
 
 <h2 id="media">Media</h2>

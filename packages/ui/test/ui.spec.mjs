@@ -288,3 +288,59 @@ describe('<xo-form> with fields it cannot generate', () => {
     expect(seen.join('\n')).not.toMatch(/tags/); // optional: no noise
   });
 });
+
+describe('a view keeps the previous result while the next one loads', () => {
+  it('sorting does not empty the table: the old rows stay (data-refreshing, $refreshing) until the new ones arrive; an error clears them', async () => {
+    let release;
+    const gate = () => new Promise((r) => { release = r; });
+    const sleep = () => new Promise((r) => setTimeout(r, 30));
+    let mode = 'ok';
+    const api = mockApi(table, {
+      listUsers: async ({ query }) => {
+        if (query.sort) { await gate(); if (mode === 'fail') return respond(500, { error: { code: 'down', message: 'Down' } }); return { items: [{ id: 2, name: 'Zed' }, { id: 1, name: 'Ada' }] }; }
+        return { items: [{ id: 1, name: 'Ada' }, { id: 2, name: 'Zed' }] };
+      },
+    });
+    screen = await mount('<xo-view id="v" get="listUsers"><p id="l" xo-if="$loading">loading</p><p id="r" xo-if="$refreshing">refreshing</p><xo-table sortable columns="name"></xo-table></xo-view>', { api });
+    await screen.settle();
+    const names = () => screen.texts('tbody td');
+    expect(names()).toEqual(['Ada', 'Zed']);
+    screen.$('th button').click(); // not screen.click: that waits for the requests to settle
+    await sleep();
+    expect(names()).toEqual(['Ada', 'Zed']); // still there while the sorted list is on its way
+    expect(screen.$('#v').hasAttribute('data-refreshing')).toBe(true);
+    expect(screen.$('#r')).not.toBeNull();
+    expect(screen.$('#l')).toBeNull(); // $loading is for "nothing to show yet"
+    release();
+    await screen.settle();
+    expect(names()).toEqual(['Zed', 'Ada']);
+    expect(screen.$('#v').hasAttribute('data-refreshing')).toBe(false);
+    mode = 'fail';
+    screen.$('th button').click(); // sort the other way, and the request fails
+    await sleep();
+    release();
+    await screen.settle();
+    expect(names()).toEqual([]); // an error does not keep showing the old rows
+  });
+});
+
+describe('xo-table cards', () => {
+  it('every cell carries its column label; cards, title and status mark the narrow layout', async () => {
+    const api = mockApi(table, { listUsers: () => ({ items: [{ id: 1, name: 'Ada', email: 'ada@x.test', role: 'admin' }] }) });
+    screen = await mount('<xo-view get="listUsers"><xo-table cards title="email" status="role" columns="name,email:E-mail,role:Role"><button xo-click="x">Go</button></xo-table></xo-view>', { api });
+    await screen.settle();
+    expect(screen.$('.xo-table').classList.contains('xo-cards')).toBe(true);
+    const cells = [...screen.$$('tbody td[data-label]')];
+    expect(cells.map((c) => c.dataset.label)).toEqual(['name', 'E-mail', 'Role']);
+    expect(cells.map((c) => [c.hasAttribute('data-title'), c.hasAttribute('data-status')])).toEqual([[false, false], [true, false], [false, true]]);
+    expect(screen.$('td.xo-actions')).not.toBeNull();
+  });
+
+  it('without cards the table is as before, the first column is the title by default', async () => {
+    const api = mockApi(table, { listUsers: () => ({ items: [{ id: 1, name: 'Ada' }] }) });
+    screen = await mount('<xo-view get="listUsers"><xo-table columns="name"></xo-table></xo-view>', { api });
+    await screen.settle();
+    expect(screen.$('.xo-table').classList.contains('xo-cards')).toBe(false);
+    expect(screen.$('tbody td').hasAttribute('data-title')).toBe(true);
+  });
+});

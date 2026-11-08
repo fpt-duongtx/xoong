@@ -691,3 +691,10 @@ button[aria-pressed="true"]:not(.chip, [role="tab"], .xo-seg button) { backgroun
 .xo-stepper button .icon, .xo-input-wrap .icon, .xo-copyfield .icon { --xo-icon: 18px; }
 
 .xo-avatar { color: color-mix(in srgb, var(--xo-color-accent-strong) 55%, var(--xo-color-text)); }
+
+/* ---- demo helpers for admin-patterns.html (site-only) ---- */
+.stack { display: grid; gap: 20px; } .two { display: grid; gap: 24px; align-items: start; }
+.pane-390 { width: 390px; max-width: 100%; border: 1px dashed var(--xo-color-control-border); padding: 8px; border-radius: 8px; }
+.media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 12px; } .media-tile { display: grid; gap: 6px; height: auto; padding: 8px; justify-items: stretch; text-align: left; font-weight: 500; font-size: 13px; } .media-thumb { display: block; aspect-ratio: 4 / 3; border-radius: 6px; background: linear-gradient(135deg, var(--xo-color-accent-soft), var(--xo-color-subtle)); }
+.xo-copyfield.slug .prefix { max-width: 7.5rem; } .hit-demo button.icon-only::before { outline: 1px dashed var(--xo-color-accent); }
+.path { font: 12px var(--xo-font-mono); }

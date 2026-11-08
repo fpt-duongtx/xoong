@@ -3,6 +3,15 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
+## 0.0.29 (Mist, table cards)
+
+breaking: none.
+
+* Fixed: sorting, paging or filtering a table (any change of a view's parameters) no longer empties it while the next result loads, which made the page collapse and jump. The previous result stays on screen, dimmed (`xo-view[data-refreshing]`), until the new one arrives; an error clears it. New variable `$refreshing` (a request runs and the old result is shown); `$loading` now means "a request runs and there is nothing to show yet", so a skeleton shows only on the first load.
+* Added: `<xo-table cards>`: rows become cards in a narrow pane (a theme draws them: the table gets `xo-cards`). Every cell now carries `data-label` (its column's label); the first column, or `title="field"`, is the card title (`data-title`); `status="field"` marks the status cell (`data-status`).
+* Docs site and design kit: the Mist look (the Rainlet design system: tokens verbatim, a derived dark, Be Vietnam Pro, the xoong lockup), the Mist/Calm/Ember palette menu with a link to the theme builder page, the kit's component standard in one cascade layer (`xoong-standard`). The kit is in `design/brand-kit` (see `MIST.md` there for the token map, the load order and what the Rainlet admin can drop).
+* Tests: the carousel peek test no longer depends on how a browser re-snaps after a layout change.
+
 ## 0.0.28 (options from the API)
 
 breaking: none.

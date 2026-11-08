@@ -44,9 +44,9 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 - `get`: "/path" (GET /path), "GET /path", or an operationId. Path params come from `p-<name>` attributes:
   `<xo-view get="/users/{id}" p-id="42">`; `p-id="?id"` reads ?id= from the page URL. JS: `view.params = { id: 7 }`.
 - `{path}` reads a field of the current item (`.` = the item, `a.b` nested), then the view's `p-*` params.
-  Variables: `$loading`, `$error` (`status`, `code`, `detail`, `retryAfterS`), `$index`, `$stream`/`$streaming` (event-stream call). Text is escaped;
+  Variables: `$loading`, `$refreshing` (old data), `$error` (`status`, `code`, `detail`), `$index`, `$stream`/`$streaming` (event stream). Text is escaped;
   `javascript:` URLs become about:blank; `on*`, `srcdoc` are not interpolated.
-- `xo-each="path"` repeats the element per item (keyed by entity id). `xo-if="path"` / `xo-if="!path"` (empty array = false).
+- `xo-each="path"` repeats the element per item (keyed by entity id). `xo-if="path"` / `xo-if="!path"` (empty array: false).
 - `xo-click="OP"` calls one; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; `xo-keep` keeps them). `xo-body="path"`: a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each applies at once; undone on failure.

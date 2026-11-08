@@ -24,6 +24,8 @@
  *   xo-param="name"    on an <input>/<select>: set the view param `name` to its value as it changes (empty removes it).
  *   xo-param="k=v"     on click, set a view param and refetch: `k=v`, `k+=n`, `k-=n` (never below 0),
  *                     `k~=v` (toggle between `v` and `-v`, for sorting). `{path}` in v is resolved.
+ * Variables: `$loading` (a request runs and there is nothing to show yet), `$refreshing` (a request runs and the previous result is still on screen,
+ *   for example while a sort or a page loads: the view does not collapse), `$error`.
  *   xo-refresh        on click, fetch this view's data again ("Try again" after an error, a refresh button).
  * Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
  */
@@ -196,7 +198,15 @@ class XoView extends XoElement {
       this.#params.value = { ...initial, ...this.#params.peek() };
     }
     const q = signal(/** @type {any} */ (null));
-    const root = () => q.value?.root.value;
+    // While the next query of this view loads (a sort, a page, a filter), the previous result stays on screen: the page does not collapse
+    // and jump. `$refreshing` says it is the old data; `$loading` is only for "nothing to show yet". An error clears it.
+    /** @type {any} */ let last;
+    let lastRef = '';
+    const root = () => {
+      const r = q.value?.root.value;
+      if (r !== undefined) return (last = r);
+      return q.value?.status.value === 'loading' ? last : undefined;
+    };
     // The view's own params (p-*) are visible to everything inside it: {sid} works in xo-click/xo-submit.
     /** @type {Scope} */
     const paramsScope = { value: () => this.#params.value };
@@ -205,7 +215,8 @@ class XoView extends XoElement {
       value: root,
       parent: paramsScope,
       vars: {
-        $loading: () => q.value?.status.value === 'loading',
+        $loading: () => q.value?.status.value === 'loading' && root() === undefined,
+        $refreshing: () => q.value?.status.value === 'loading' && root() !== undefined,
         // Events of the latest streamed call (an operation that answers with server-sent events), and whether it still runs.
         $stream: () => this.#stream.value,
         $streaming: () => this.#streaming.value,
@@ -230,6 +241,7 @@ class XoView extends XoElement {
     this.replaceChildren(...this.#tpl.map((n) => n.cloneNode(true)));
     const ctx = { client, lookup, host: this };
     for (const child of [...this.childNodes]) bindNode(child, scope, ctx, this.#bound);
+    this.#bound.push(effect(() => { this.toggleAttribute('data-refreshing', !!scope.vars?.$refreshing()); })); // for CSS: the old data is on screen while the new loads
 
     // Select the query and keep it observed while connected.
     let current = null;
@@ -238,6 +250,7 @@ class XoView extends XoElement {
       const params = this.#params.value;
       current?.release();
       current = null;
+      if (ref !== lastRef) { last = undefined; lastRef = ref ?? ''; } // another operation: the old result is not this view's
       q.value = null;
       this.clearSelection(); // other rows are on screen now
       if (!ref) return;

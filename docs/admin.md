@@ -135,6 +135,10 @@ tests see plain markup).
 
 Other children (typically buttons) form the actions cell. For layouts the table cannot express, write the table by hand with `xo-each`; it composes with everything else.
 
+### Narrow panes: `cards`
+
+`<xo-table cards>` asks the theme to draw each row as a card when the table's own box is narrow (a container query, not the screen). The table only provides the hooks: the frame gets the class `xo-cards`, every `td` has `data-label` (the column label, also handy in tests), the first column (or `title="field"`) is the card title (`data-title`) and `status="field"` marks the status cell (`data-status`); the select and actions cells are recognised by their own markup. The Mist skin in `design/brand-kit/css/mist.css` is an example.
+
 ## Forms: `<form xo-submit>` and `<xo-form>`
 
 Design and reasons: [ADR-0009](decisions/0009-forms-from-the-api-schema.md). Short version: a **model** (a typed draft of the record, the baseline it came

@@ -64,6 +64,14 @@
     <a href="richtext.html">Rich text</a>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
     <a href="tabs.html">Tabs</a>
@@ -92,6 +100,14 @@
       <a href="richtext.html">Rich text</a>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
       <a href="tabs.html">Tabs</a>
@@ -146,7 +162,7 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
 
 </xo-tabs>
-<table class="props">
+<div class="table-wrap" tabindex="0"><table class="props">
 <thead><tr><th>Attribute</th><th>What it does</th></tr></thead>
 <tbody>
 <tr><td><code>columns</code></td><td><code>field</code>, <code>field:Label</code> or <code>field:Label:format</code>, comma separated</td></tr>
@@ -155,7 +171,7 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
 <tr><td><code>selectable</code></td><td>A checkbox per row; <code>slot="bulk"</code> buttons run once per ticked row</td></tr>
 <tr><td><code>page-size</code></td><td>Sets <code>limit</code> and shows Previous and Next (<code>offset</code>)</td></tr>
 <tr><td><code>empty</code></td><td>The text shown when there are no rows</td></tr>
-</tbody></table>
+</tbody></table></div>
 
 <h2 id="your-own-markup">Your own markup</h2>
 <p>When a table is not the right shape, write the markup. <code>xo-each</code> repeats an element for each item, <code>xo-if</code> shows it conditionally, <code>{name}</code> reads a field, and <code>xo-param</code> sets a query parameter and refetches (the button for the current value gets <code>aria-current</code>). Text is always escaped.</p>
@@ -240,7 +256,7 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
 
 <h2 id="actions">Actions</h2>
 <p>A button with <code>xo-click</code> calls an operation by name (or as <code>METHOD /path</code>). <code>{id}</code> and other path parameters come from the row. After it succeeds, the queries it affects are refetched. These attributes shape the call:</p>
-<table class="props">
+<div class="table-wrap" tabindex="0"><table class="props">
 <thead><tr><th>Attribute</th><th>What it does</th></tr></thead>
 <tbody>
 <tr><td><code>xo-confirm="Delete {name}?"</code></td><td>Asks first, in a native dialog</td></tr>
@@ -248,7 +264,7 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
 <tr><td><code>xo-with="role=admin"</code></td><td>Adds fields to the request body</td></tr>
 <tr><td><code>xo-optimistic="role=admin"</code></td><td>Applies the change at once, undone if the call fails</td></tr>
 <tr><td><code>xo-selected</code></td><td>Runs once per ticked row (or sends the ticked ids in one request)</td></tr>
-</tbody></table>
+</tbody></table></div>
 
 <h2 id="errors-and-loading">Errors and loading</h2>
 <p>A running call sets <code>aria-busy</code> on the button. A failure becomes one error type with <code>status</code>, <code>code</code> and <code>detail</code> (from <code>application/problem+json</code>, <code>{ error: { code, message } }</code> or <code>{ detail }</code>), shown by <code>&lt;xo-toast&gt;</code> or by <code>$error</code> in your markup. Listen for <code>xo-done</code> and <code>xo-error</code> to react in code.</p>

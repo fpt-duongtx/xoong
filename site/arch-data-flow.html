@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data flow · xoong</title>
+  <meta name="description" content="How a read and a write travel from the OpenAPI document through the client, the query cache and the entity store to the DOM.">
+  <meta property="og:title" content="Data flow · xoong">
+  <meta property="og:description" content="How a read and a write travel from the OpenAPI document through the client, the query cache and the entity store to the DOM.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Data flow</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html" aria-current="page">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html" aria-current="page">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Data flow</span></div>
+
+<h1>Data flow</h1>
+<p class="lead">A screen reads through one road: the OpenAPI document, a generated table, one client, a query cache, a shared entity store, and the scope of <code>&lt;xo-view&gt;</code>. A write travels back along the same road and refreshes what it touches.</p>
+
+<h2 id="the-road-from-spec-to-screen">The road from spec to screen</h2>
+<p>Nothing in the browser knows OpenAPI. <code>xoong sync</code> reads the document once, at development time, and writes a small table that the client uses at run time.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: from the OpenAPI document to the DOM">
+<svg class="dg dg-sm" viewBox="0 0 560 676" role="img" aria-labelledby="df-road-t df-road-d">
+<title id="df-road-t">The road from the OpenAPI document to the DOM</title>
+<desc id="df-road-d">Two stages. At build time, in Node: the OpenAPI document goes into xoong sync, which writes operations.json, api.d.ts and xoong.html-data.json. In the browser: configure() creates the one client from operations.json; the client keeps a query cache with one query per operation and canonical parameters; queries normalise responses into the entity store, which holds one signal per record; an xo-view reads its query and the store to build its scope with the variables $loading, $error and the items; effects write only the DOM nodes that read a changed signal.</desc>
+<defs><marker id="df-road-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<rect class="dg-zone" x="8" y="8" width="544" height="196" rx="12"/><text class="dg-zlab" x="22" y="26">Build time (Node)</text>
+<g class="dg-node"><rect class="dg-box" x="100" y="34" width="360" height="58" rx="8"/><text class="dg-t" x="280" y="56">OpenAPI document</text><text class="dg-sub" x="280" y="76">your backend's contract</text></g>
+<g class="dg-node"><rect class="dg-box" x="100" y="118" width="360" height="74" rx="8"/><text class="dg-t" x="280" y="140">xoong sync</text><text class="dg-sub" x="280" y="160">writes .xoong/operations.json,</text><text class="dg-sub" x="280" y="176">api.d.ts and xoong.html-data.json</text></g>
+<path class="dg-line" d="M280 92 L280 118" marker-end="url(#df-road-a)"/>
+<rect class="dg-zone" x="8" y="224" width="544" height="444" rx="12"/><text class="dg-zlab" x="22" y="242">In the browser</text>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="100" y="250" width="360" height="58" rx="8"/><text class="dg-t" x="280" y="272">configure({ api, baseUrl, ... })</text><text class="dg-sub" x="280" y="292">creates the one client: requests, retries, errors</text></g>
+<g class="dg-node"><rect class="dg-box" x="100" y="336" width="360" height="58" rx="8"/><text class="dg-t" x="280" y="358">Query cache</text><text class="dg-sub" x="280" y="378">one query per operation + canonical params</text></g>
+<g class="dg-node"><rect class="dg-box" x="100" y="422" width="360" height="58" rx="8"/><text class="dg-t" x="280" y="444">Entity store</text><text class="dg-sub" x="280" y="464">one signal per record: User#1, User#2</text></g>
+<g class="dg-node"><rect class="dg-box" x="100" y="508" width="360" height="58" rx="8"/><text class="dg-t" x="280" y="530">xo-view scope</text><text class="dg-sub" x="280" y="550">$loading, $error, items, p-* params</text></g>
+<g class="dg-node"><rect class="dg-box" x="100" y="594" width="360" height="58" rx="8"/><text class="dg-t" x="280" y="616">DOM</text><text class="dg-sub" x="280" y="636">only nodes that read a signal update</text></g>
+<path class="dg-line" d="M280 192 L280 250" marker-end="url(#df-road-a)"/>
+<text class="dg-lab dg-start" x="292" y="227">operations.json</text>
+<path class="dg-line" d="M280 308 L280 336" marker-end="url(#df-road-a)"/>
+<text class="dg-lab dg-start" x="292" y="323">query(op, params)</text>
+<path class="dg-line" d="M280 394 L280 422" marker-end="url(#df-road-a)"/>
+<text class="dg-lab dg-start" x="292" y="409">normalize(response)</text>
+<path class="dg-line" d="M280 480 L280 508" marker-end="url(#df-road-a)"/>
+<text class="dg-lab dg-start" x="292" y="495">denormalize (tracked)</text>
+<path class="dg-line" d="M280 566 L280 594" marker-end="url(#df-road-a)"/>
+<text class="dg-lab dg-start" x="292" y="581">effects</text>
+</svg>
+</div>
+<p class="hint">One road for every read. The arrows are the direction the data travels; a change in the store travels the last two arrows again, without a request.</p>
+</figure>
+<p>The rest of this page follows the road from the top, then the write path, live updates and errors.</p>
+
+<h2 id="sync-what-the-generated-files-hold">Sync: what the generated files hold</h2>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>File (in <code>.xoong/</code>)</th><th>What it is for</th></tr></thead>
+<tbody>
+<tr><td><code>operations.json</code></td><td>The runtime table. Per operation: <code>id</code>, <code>method</code>, <code>path</code> template, the names of its <code>query</code> parameters, whether it has a <code>body</code>, the request schema (<code>bodySchema</code>, used by <a href="arch-forms.html">forms</a>), and a <code>response</code> descriptor that says where entities sit in the answer. Plus the <code>entities</code>: which schemas are records and which property is their id.</td></tr>
+<tr><td><code>api.d.ts</code></td><td>TypeScript types for every operation, so <code>createClient&lt;Operations&gt;()</code> checks names, params and bodies. JavaScript users never load it.</td></tr>
+<tr><td><code>xoong.html-data.json</code></td><td>Completion and hover for <code>xo-*</code> names and your operation names in editors. See <a href="arch-tooling.html">Tooling</a>.</td></tr>
+</tbody></table></div>
+<xo-tabs label="Generated and loaded" class="example">
+  <section xo-tab="operations.json (trimmed)"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"version"</span>: <span class="tok-n">1</span>,
+  <span class="tok-a">"operations"</span>: {
+    <span class="tok-a">"listUsers"</span>: {
+      <span class="tok-a">"id"</span>: <span class="tok-s">"listUsers"</span>, <span class="tok-a">"method"</span>: <span class="tok-s">"GET"</span>, <span class="tok-a">"path"</span>: <span class="tok-s">"/users"</span>,
+      <span class="tok-a">"query"</span>: [<span class="tok-s">"limit"</span>, <span class="tok-s">"sort"</span>],
+      <span class="tok-a">"response"</span>: { <span class="tok-a">"t"</span>: <span class="tok-s">"object"</span>, <span class="tok-a">"props"</span>: { <span class="tok-a">"items"</span>: { <span class="tok-a">"t"</span>: <span class="tok-s">"array"</span>, <span class="tok-a">"items"</span>: { <span class="tok-a">"t"</span>: <span class="tok-s">"entity"</span>, <span class="tok-a">"name"</span>: <span class="tok-s">"User"</span>, <span class="tok-a">"replace"</span>: <span class="tok-k">true</span> } } } }
+    },
+    <span class="tok-a">"updateUser"</span>: {
+      <span class="tok-a">"id"</span>: <span class="tok-s">"updateUser"</span>, <span class="tok-a">"method"</span>: <span class="tok-s">"PATCH"</span>, <span class="tok-a">"path"</span>: <span class="tok-s">"/users/{id}"</span>,
+      <span class="tok-a">"body"</span>: <span class="tok-k">true</span>,
+      <span class="tok-a">"bodySchema"</span>: { <span class="tok-a">"t"</span>: <span class="tok-s">"object"</span>, <span class="tok-a">"props"</span>: { <span class="tok-a">"name"</span>: { <span class="tok-a">"t"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"minLength"</span>: <span class="tok-n">2</span> }, <span class="tok-a">"email"</span>: { <span class="tok-a">"t"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"format"</span>: <span class="tok-s">"email"</span> } }, <span class="tok-a">"required"</span>: [<span class="tok-s">"name"</span>] },
+      <span class="tok-a">"response"</span>: { <span class="tok-a">"t"</span>: <span class="tok-s">"entity"</span>, <span class="tok-a">"name"</span>: <span class="tok-s">"User"</span>, <span class="tok-a">"replace"</span>: <span class="tok-k">true</span> }
+    }
+  },
+  <span class="tok-a">"entities"</span>: { <span class="tok-a">"User"</span>: { <span class="tok-a">"id"</span>: <span class="tok-s">"id"</span> } }
+}</code></pre></section>
+  <section xo-tab="main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
+<span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };
+
+configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span>, streamUrl: <span class="tok-s">'/api/events'</span> });</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npx xoong sync openapi.json <span class="tok-a">--hints</span> xoong.hints.json</code></pre></section>
+</xo-tabs>
+<p>An operation is named by its <code>operationId</code>. Without one, sync builds a name from the method and path. A schema is an <strong>entity</strong> when it has a property named <code>id</code>, or one named by <code>x-xoong-id</code> in the document, or by a hints file (<code>idNames</code>, or <code>schemas.X.id</code>); an id may be several properties (a composite id). A response that uses the entity's own schema is stored by <em>replacing</em> the record (<code>replace: true</code> above); several schemas that share one entity through a hint merge field by field, because projections carry fewer fields. <code>xoong doctor</code> lists what the document leaves unclear, with a fix for each.</p>
+
+<h2 id="the-client">The client</h2>
+<p><code>configure()</code> makes the one app-wide client (<code>createClient()</code>); <code>getClient()</code> returns it. Everything that talks to the API goes through it. A request is built like this:</p>
+<ul>
+<li>The path template is filled from params and every value is URL-encoded; a missing path parameter throws and names it. Only the query names the operation declares are sent; an array repeats the name.</li>
+<li><code>headers()</code> is called per request (it may be async: auth tokens). <code>credentials</code> is passed to <code>fetch</code>. The body is JSON, or <code>FormData</code> as it is for multipart operations.</li>
+<li>Only GET is retried: on a network failure or a 502, 503 or 504, up to <code>retry</code> times (2), waiting <code>retryDelay</code> milliseconds (300) doubled each time. A write is never retried, so it cannot run twice. Fields that hints declare as idempotency keys get a fresh UUID per call.</li>
+<li><code>204</code> answers <code>null</code>. A hint <code>unwrap: "data"</code> reads <code>{ code, message, data }</code> envelopes as <code>data</code>.</li>
+</ul>
+<p>A failure is always a <code>XoongError</code> with <code>status</code> (0 for a network failure), <code>title</code>, <code>detail</code>, <code>code</code>, <code>retryAfterS</code> and <code>fields</code>. It is built from <code>application/problem+json</code>, <code>{ error: { code, message, fields } }</code>, FastAPI-style <code>{ detail: [{ loc, msg }] }</code> or <code>{ errors: [{ pointer, detail }] }</code>. A 401 calls <code>onUnauthorized</code>, then every failure calls <code>onError</code>.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Option</th><th>Default</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>api</code></td><td>required</td><td>the contents of <code>operations.json</code></td></tr>
+<tr><td><code>baseUrl</code>, <code>headers</code>, <code>credentials</code>, <code>fetch</code></td><td></td><td>where and how requests go out</td></tr>
+<tr><td><code>staleTime</code></td><td>30000 ms</td><td>how long a GET result counts as fresh</td></tr>
+<tr><td><code>gcTime</code></td><td>300000 ms</td><td>how long a query that nothing watches is kept</td></tr>
+<tr><td><code>retry</code>, <code>retryDelay</code></td><td>2, 300 ms</td><td>GET retries and the first delay</td></tr>
+<tr><td><code>evictEntities</code></td><td>true</td><td>drop records no cached query reaches when a query is collected</td></tr>
+<tr><td><code>invalidate</code></td><td>none</td><td>extra rules: mutation id to the operation ids to refresh</td></tr>
+<tr><td><code>onError</code>, <code>onUnauthorized</code>, <code>streamUrl</code></td><td></td><td>global error handler, 401 handler, the server-sent events endpoint</td></tr>
+</tbody></table></div>
+
+<h2 id="the-query-cache">The query cache</h2>
+<p>A read is a <em>query</em>. Its key is the operation id plus the canonical params: keys sorted, empty values dropped, every value as its text in the URL. So the same data is the same query, however you ask for it, and a developer never writes a key.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: one read as a sequence">
+<svg class="dg dg-md" viewBox="0 0 600 391" role="img" aria-labelledby="df-read-t df-read-d">
+<title id="df-read-t">One read</title>
+<desc id="df-read-d">Four participants: the xo-view, the query cache, the entity store and the backend API. 1. The view asks the cache for its query and retains it. 2. The cache sets loading, so the view sees $loading true. 3. The cache sends GET /users?limit=10 to the API. 4. The API answers 200 with JSON. 5. The cache normalises the response into the store, upserting User#1 and the other records. 6. The cache sets success, so $loading becomes false. 7. The view reads the records from the store, tracked, and draws them.</desc>
+<defs><marker id="df-read-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="8" y="10" width="134" height="38" rx="8"/><text class="dg-t" x="75" y="29">xo-view</text></g>
+<g class="dg-node"><rect class="dg-box" x="158" y="10" width="134" height="38" rx="8"/><text class="dg-t" x="225" y="29">Query cache</text></g>
+<g class="dg-node"><rect class="dg-box" x="308" y="10" width="134" height="38" rx="8"/><text class="dg-t" x="375" y="29">Entity store</text></g>
+<g class="dg-node"><rect class="dg-box" x="458" y="10" width="134" height="38" rx="8"/><text class="dg-t" x="525" y="29">Backend API</text></g>
+<path class="dg-life" d="M75 48 L75 385"/>
+<path class="dg-life" d="M225 48 L225 385"/>
+<path class="dg-life" d="M375 48 L375 385"/>
+<path class="dg-life" d="M525 48 L525 385"/>
+<path class="dg-line" d="M75 87 L225 87" marker-end="url(#df-read-a)"/>
+<text class="dg-sub dg-lab" x="150" y="75">query(op, params).retain()</text>
+<path class="dg-line dg-dash" d="M225 132 L75 132" marker-end="url(#df-read-a)"/>
+<text class="dg-sub dg-lab" x="150" y="120">$loading = true</text>
+<path class="dg-line" d="M225 177 L525 177" marker-end="url(#df-read-a)"/>
+<text class="dg-sub dg-lab" x="375" y="165">GET /users?limit=10</text>
+<path class="dg-line dg-dash" d="M525 222 L225 222" marker-end="url(#df-read-a)"/>
+<text class="dg-sub dg-lab" x="375" y="210">200 JSON</text>
+<path class="dg-line" d="M225 267 L375 267" marker-end="url(#df-read-a)"/>
+<text class="dg-sub dg-lab" x="300" y="255">upsert User#1, User#2</text>
+<path class="dg-line dg-dash" d="M225 312 L75 312" marker-end="url(#df-read-a)"/>
+<text class="dg-sub dg-lab" x="150" y="300">$loading = false</text>
+<path class="dg-line" d="M75 357 L375 357" marker-end="url(#df-read-a)"/>
+<text class="dg-sub dg-lab" x="225" y="345">read records (tracked)</text>
+</svg>
+</div>
+<p class="hint">A read, top to bottom. Dashed arrows are answers or signal updates.</p>
+</figure>
+<xo-tabs label="One query" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> a = client.query(<span class="tok-s">'listUsers'</span>, { limit: <span class="tok-n">10</span> });
+<span class="tok-k">const</span> b = client.query(<span class="tok-s">'GET /users'</span>, { limit: <span class="tok-s">'10'</span> });
+a === b;   <span class="tok-c">// true: both are the query  listUsers:{"limit":"10"}</span></code></pre></section>
+</xo-tabs>
+<p>A query holds signals: <code>status</code> (<code>idle</code>, <code>loading</code>, <code>success</code> or <code>error</code>), <code>error</code>, the normalised <code>root</code> and <code>data</code>, a computed value that fills the records back in. It also holds the rules of its life:</p>
+<ul>
+<li><strong>Deduplicated.</strong> Two views of the same query share one request.</li>
+<li><strong>Observed.</strong> A view calls <code>retain()</code> when it starts and <code>release()</code> when its params change or it goes away. Retaining fetches the query if it is not fresh (older than <code>staleTime</code>). While a refetch runs, the old data stays on screen and <code>$loading</code> is true.</li>
+<li><strong>Cancelled.</strong> When the last observer lets go while the request is running, the request is aborted. That is not an error; the query returns to its previous state.</li>
+<li><strong>Collected.</strong> A query nobody watches is dropped after <code>gcTime</code>. Coming back before that shows the cached data at once.</li>
+</ul>
+
+<h2 id="the-entity-store">The entity store</h2>
+<p>When a response arrives, the response descriptor tells <code>normalize()</code> where the records are. Each record goes into the store once, under <code>Name#id</code>, and the query keeps a reference (<code>{ $ref: "User#1" }</code>) in its place. Every record is one signal. A GET response is only one of four ways a record gets in:</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: four ways data enters the store">
+<svg class="dg dg-md" viewBox="0 0 600 300" role="img" aria-labelledby="df-entry-t df-entry-d">
+<title id="df-entry-t">Four ways data enters the entity store</title>
+<desc id="df-entry-d">Four sources on the left all write into the one entity store in the middle: a GET response fetched by a query, a mutation response, client.seed() with data the server already has, and a stream event (patch, upsert or delete). The store feeds three readers on the right: xo-view, derived() and a pristine form, which follows its record.</desc>
+<defs><marker id="df-entry-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="200" height="58" rx="8"/><text class="dg-t" x="110" y="36">GET response</text><text class="dg-sub" x="110" y="56">a query fetches</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="84" width="200" height="58" rx="8"/><text class="dg-t" x="110" y="106">Mutation response</text><text class="dg-sub" x="110" y="126">client.mutate()</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="154" width="200" height="58" rx="8"/><text class="dg-t" x="110" y="176">client.seed()</text><text class="dg-sub" x="110" y="196">data the server already has</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="224" width="200" height="58" rx="8"/><text class="dg-t" x="110" y="246">Stream event</text><text class="dg-sub" x="110" y="266">patch, upsert, delete</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="255" y="84" width="125" height="116" rx="8"/><text class="dg-t" x="317.5" y="127">Entity store</text><text class="dg-sub" x="317.5" y="147">one signal</text><text class="dg-sub" x="317.5" y="163">per record</text></g>
+<g class="dg-node"><rect class="dg-box" x="425" y="34" width="175" height="58" rx="8"/><text class="dg-t" x="512.5" y="56">xo-view</text><text class="dg-sub" x="512.5" y="76">reads through its query</text></g>
+<g class="dg-node"><rect class="dg-box" x="425" y="124" width="175" height="58" rx="8"/><text class="dg-t" x="512.5" y="146">derived()</text><text class="dg-sub" x="512.5" y="166">computed over all(name)</text></g>
+<g class="dg-node"><rect class="dg-box" x="425" y="214" width="175" height="58" rx="8"/><text class="dg-t" x="512.5" y="236">a pristine form</text><text class="dg-sub" x="512.5" y="256">follows its record</text></g>
+<path class="dg-line" d="M210 43 L255 100" marker-end="url(#df-entry-a)"/>
+<path class="dg-line" d="M210 113 L255 128" marker-end="url(#df-entry-a)"/>
+<path class="dg-line" d="M210 183 L255 156" marker-end="url(#df-entry-a)"/>
+<path class="dg-line" d="M210 253 L255 184" marker-end="url(#df-entry-a)"/>
+<path class="dg-line" d="M380 110 L425 63" marker-end="url(#df-entry-a)"/>
+<path class="dg-line" d="M380 142 L425 153" marker-end="url(#df-entry-a)"/>
+<path class="dg-line" d="M380 174 L425 243" marker-end="url(#df-entry-a)"/>
+</svg>
+</div>
+<p class="hint">Whatever the source, a record is stored once, so every reader of that record updates.</p>
+</figure>
+<xo-tabs label="Normalised" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> q = client.query(<span class="tok-s">'listUsers'</span>, { limit: <span class="tok-n">10</span> });
+<span class="tok-k">await</span> q.fetch();
+q.root.peek();                 <span class="tok-c">// { items: [{ $ref: 'User#1' }, { $ref: 'User#2' }], total: 2 }</span>
+client.store.read(<span class="tok-s">'User#1'</span>);   <span class="tok-c">// { id: 1, name: 'Ada', email: '...' }  (a tracked read)</span>
+q.data.peek();                 <span class="tok-c">// the same list with the records filled in</span></code></pre></section>
+</xo-tabs>
+<p>The effect is sharing: a list, a detail page and a dashboard that show <code>User#1</code> read the same signal, so one change reaches all of them. Reading the data (<code>denormalize</code>) resolves the references; a reference to a deleted record drops out of lists instead of leaving a hole. A union is stored under the right entity when the members can be told apart (a discriminator, a fixed tag value, or a property only one member has); otherwise the value stays inline and <code>xoong doctor</code> reports it (XO160).</p>
+<p><code>derived(({ all, get }) =&gt; ...)</code> is a <code>computed</code> over the store: <code>all("Order")</code> is every <em>loaded</em> order, from any query, and the result recomputes when one of them or the set changes. It never fetches; fetching is declared on a view.</p>
+<p>One caveat. When a query is collected, records that no remaining cached query reaches (following nested references) are dropped, and a screen still reading them sees them as deleted. So a screen should show its data through a query. Turn it off with <code>evictEntities: false</code>.</p>
+
+<h2 id="the-view-and-the-dom">The view and the DOM</h2>
+<p><code>&lt;xo-view get&gt;</code> picks its query in an effect over its <code>get</code> attribute and its params (the <code>p-*</code> attributes, <code>xo-param</code>, the URL). When either changes, it releases the old query and retains the new one. Its scope has <code>$loading</code> (status is <code>loading</code>), <code>$error</code> (the <code>XoongError</code>), the response fields (<code>items</code>), and the params, so <code>{id}</code> works in an action. Text bindings read the scope inside effects, so only the nodes whose values changed are written. <a href="arch-rendering.html">Rendering</a> shows how.</p>
+<xo-tabs label="A read and a write on one screen" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listUsers"</span> <span class="tok-a">p-limit</span>=<span class="tok-s">"10"</span>&gt;
+  &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$loading"</span> <span class="tok-a">aria-busy</span>=<span class="tok-s">"true"</span>&gt;Loading…&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$error"</span> <span class="tok-a">role</span>=<span class="tok-s">"alert"</span>&gt;<span class="tok-i">{$error.code}</span>: <span class="tok-i">{$error.detail}</span>&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">ul</span>&gt;
+    &lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;
+      <span class="tok-i">{name}</span>
+      &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"POST /users/<span class="tok-i">{id}</span>/disable"</span> <span class="tok-a">xo-optimistic</span>=<span class="tok-s">"status=disabled"</span>&gt;Disable&lt;/<span class="tok-t">button</span>&gt;
+    &lt;/<span class="tok-t">li</span>&gt;
+  &lt;/<span class="tok-t">ul</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+</xo-tabs>
+
+<h2 id="the-write-path">The write path</h2>
+<p>A write is <code>xo-click</code> on a button or <code>xo-submit</code> on a form. Both end in <code>client.mutate(op, params, body)</code>.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: one write as a sequence">
+<svg class="dg dg-lg" viewBox="0 0 720 563" role="img" aria-labelledby="df-write-t df-write-d">
+<title id="df-write-t">One write</title>
+<desc id="df-write-d">Five participants: the xo-click button, client.mutate, the entity store, the query cache and the backend API. 1. The button calls mutate with the operation, params and body. 2. With xo-optimistic, mutate puts a provisional patch in the store. 3. Mutate sends POST /users/1/disable to the API. 4. The API answers 200 with the updated User. 5. Mutate normalises the response into the store, upserting User#1. 6. Mutate invalidates every cached query whose path overlaps /users/1/disable. 7. The query cache refetches GET /users, if something is watching it. 8. The API answers with the list. 9. Mutate resolves and the xo-done event fires. A note says that on failure the optimistic patch is undone, a XoongError is thrown and xo-error fires.</desc>
+<defs><marker id="df-write-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="8" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="72" y="29">xo-click</text></g>
+<g class="dg-node"><rect class="dg-box" x="152" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="216" y="29">client.mutate</text></g>
+<g class="dg-node"><rect class="dg-box" x="296" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="360" y="29">Entity store</text></g>
+<g class="dg-node"><rect class="dg-box" x="440" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="504" y="29">Query cache</text></g>
+<g class="dg-node"><rect class="dg-box" x="584" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="648" y="29">Backend API</text></g>
+<path class="dg-life" d="M72 48 L72 557"/>
+<path class="dg-life" d="M216 48 L216 557"/>
+<path class="dg-life" d="M360 48 L360 557"/>
+<path class="dg-life" d="M504 48 L504 557"/>
+<path class="dg-life" d="M648 48 L648 557"/>
+<path class="dg-line" d="M72 87 L216 87" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="144" y="75">mutate(op, params, body)</text>
+<path class="dg-line" d="M216 147 L360 147" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="288" y="120">xo-optimistic:</text>
+<text class="dg-sub dg-lab" x="288" y="135">provisional patch</text>
+<path class="dg-line" d="M216 192 L648 192" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="432" y="180">POST /users/1/disable</text>
+<path class="dg-line dg-dash" d="M648 237 L216 237" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="432" y="225">200 + User</text>
+<path class="dg-line" d="M216 282 L360 282" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="288" y="270">upsert User#1</text>
+<path class="dg-line" d="M216 342 L504 342" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="360" y="315">invalidate paths that overlap</text>
+<text class="dg-sub dg-lab" x="360" y="330">/users/1/disable</text>
+<path class="dg-line" d="M504 387 L648 387" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="576" y="375">refetch GET /users</text>
+<path class="dg-line dg-dash" d="M648 432 L504 432" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="576" y="420">200 list</text>
+<path class="dg-line dg-dash" d="M216 477 L72 477" marker-end="url(#df-write-a)"/>
+<text class="dg-sub dg-lab" x="144" y="465">resolves, xo-done</text>
+<g class="dg-node"><rect class="dg-box dg-k-soft" x="12" y="501" width="696" height="36" rx="8"/><text class="dg-t" x="360" y="519">On failure: patch undone, XoongError thrown, xo-error fires</text></g>
+</svg>
+</div>
+<p class="hint">A write, top to bottom. Invalidation is by path; only queries that something is watching refetch at once.</p>
+</figure>
+<ol>
+<li><strong>The handler.</strong> It ignores a second click while one call is running (and sets <code>aria-busy</code>). <code>xo-confirm</code> asks first. Path and query params come from the scope: the current item first, then the view's <code>p-*</code> params. The body is the form model's result, the form's fields, <code>xo-body</code> (a record from the scope), plus <code>xo-with</code> fields; <code>xo-selected</code> runs once per ticked row or sends the ticked ids in one request.</li>
+<li><strong>Optimistic update.</strong> With <code>xo-optimistic="status=disabled"</code> (or the <code>optimistic</code> option), the patch is applied to loaded records at once. If the call fails, only the fields that still hold the provisional value are put back, so a newer change from the server or another screen is never erased.</li>
+<li><strong>The response</strong> is normalised into the store, so every screen that shows the record updates. The call resolves with the denormalised result.</li>
+<li><strong>Invalidation.</strong> Every cached query whose path overlaps the mutation's path is marked stale, and refetched now if something is watching it. Two paths overlap when one is a prefix of the other, segment by segment.</li>
+<li><strong>Events.</strong> The view's host fires <code>xo-done</code> with the result, and <code>xo-notice</code> when the button has a <code>xo-notice</code> message (shown by <code>&lt;xo-toast&gt;</code>).</li>
+</ol>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Cached query</th><th>After <code>POST /users/1/disable</code></th></tr></thead>
+<tbody>
+<tr><td><code>GET /users</code></td><td>refreshed (a prefix of the mutation's path)</td></tr>
+<tr><td><code>GET /users/1</code></td><td>refreshed, unless the response was that very record: it was just rewritten, so it is marked fresh instead</td></tr>
+<tr><td><code>GET /users/1/posts</code></td><td>kept (neither path is a prefix of the other)</td></tr>
+<tr><td><code>GET /users/2</code></td><td>kept (differs at a segment)</td></tr>
+</tbody></table></div>
+<p>The rule is by path, so it needs no declaration. When it is not enough, name the extra queries once: <code>configure({ invalidate: { shipOrder: ["getDashboard"] } })</code>. Those are refreshed whatever their path.</p>
+<xo-tabs label="From JavaScript" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">await</span> client.mutate(<span class="tok-s">'updateUser'</span>, { id: <span class="tok-n">1</span> }, { name: <span class="tok-s">'Ada L.'</span> }, {
+  optimistic: [{ $ref: <span class="tok-s">'User#1'</span>, patch: { name: <span class="tok-s">'Ada L.'</span> } }],
+});</code></pre></section>
+</xo-tabs>
+<p>A deleted record is not removed from the store by a <code>DELETE</code> call: the lists that contained it refetch and no longer name it. Only a stream <code>delete</code> event removes a record at once.</p>
+
+<h2 id="server-known-data-seed">Server-known data: seed</h2>
+<p>When the server already has the answer (it rendered the page), put it in the cache instead of asking again. The server writes the JSON into the page as <code>&lt;script type="application/json"&gt;</code> (not code, so a strict CSP allows it), one module script calls <code>client.seed(op, params, data)</code>, and the data is stored like any response, entities included. A view that asks for the same operation and params shows it at once and makes no request until it is stale.</p>
+<xo-tabs label="Seed" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// main.js: the server wrote the answer into the page as &lt;script type="application/json" id="seed-users"&gt;</span>
+<span class="tok-k">const</span> data = JSON.parse(document.getElementById(<span class="tok-s">'seed-users'</span>).textContent);
+getClient().seed(<span class="tok-s">'listUsers'</span>, { limit: <span class="tok-n">10</span> }, data);
+<span class="tok-c">// a view with get="listUsers" p-limit="10" shows it at once and makes no request until it is stale</span></code></pre></section>
+</xo-tabs>
+
+<h2 id="live-updates">Live updates</h2>
+<p>With <code>streamUrl</code> set and <code>live</code> on a view, the client opens one server-sent events connection, shared by all live views and closed when the last one goes away. It is loaded lazily, so an app without live views never pays for it. Each message is one JSON event, applied to the <em>store</em>, not to a view: every screen showing that record updates.</p>
+<xo-tabs label="Events" class="example">
+  <section xo-tab="JSON"><pre data-lang="json" tabindex="0"><code>{ <span class="tok-a">"type"</span>: <span class="tok-s">"patch"</span>,  <span class="tok-a">"entity"</span>: <span class="tok-s">"User"</span>, <span class="tok-a">"id"</span>: <span class="tok-s">"42"</span>, <span class="tok-a">"path"</span>: <span class="tok-s">"/email"</span>, <span class="tok-a">"value"</span>: <span class="tok-s">"a@b.c"</span>, <span class="tok-a">"version"</span>: <span class="tok-n">17</span> }
+{ <span class="tok-a">"type"</span>: <span class="tok-s">"upsert"</span>, <span class="tok-a">"entity"</span>: <span class="tok-s">"User"</span>, <span class="tok-a">"id"</span>: <span class="tok-s">"42"</span>, <span class="tok-a">"value"</span>: { <span class="tok-a">"id"</span>: <span class="tok-n">42</span>, <span class="tok-a">"name"</span>: <span class="tok-s">"Ada"</span> }, <span class="tok-a">"version"</span>: <span class="tok-n">18</span> }
+{ <span class="tok-a">"type"</span>: <span class="tok-s">"delete"</span>, <span class="tok-a">"entity"</span>: <span class="tok-s">"User"</span>, <span class="tok-a">"id"</span>: <span class="tok-s">"42"</span>, <span class="tok-a">"version"</span>: <span class="tok-n">19</span> }
+{ <span class="tok-a">"type"</span>: <span class="tok-s">"resync"</span> }</code></pre></section>
+</xo-tabs>
+<ul>
+<li><code>patch</code> changes one field, addressed by a JSON Pointer (<code>/email</code>); it is ignored if the record is not loaded. <code>upsert</code> merges fields into the record, or creates it. <code>delete</code> removes it.</li>
+<li><code>version</code> must rise per record. An event with a version at or below the last applied one is dropped, and a delete keeps its version so a late event cannot bring the record back.</li>
+<li><code>resync</code> forgets the versions and marks every cached query stale. So does a reconnect after an interruption: events may have been missed, so what is on screen is refetched. Replay by <code>Last-Event-ID</code> is the browser's <code>EventSource</code> doing its job; the client adds no replay of its own.</li>
+</ul>
+
+<h2 id="when-something-fails">When something fails</h2>
+<ul>
+<li><strong>A read fails</strong> (after the retries): the query's status is <code>error</code>, <code>$error</code> holds the <code>XoongError</code>, any earlier data stays, and <code>onError</code> runs. <code>xo-refresh</code> on a button fetches again.</li>
+<li><strong>A write fails:</strong> the optimistic patch is undone, <code>onError</code> runs, and the view's host fires <code>xo-error</code> with the error. <code>&lt;xo-toast&gt;</code> listens for it. In a form, <code>error.fields</code> are put on the fields they name (see <a href="arch-forms.html">Forms flow</a>).</li>
+<li><strong>A screen mistake</strong> (an unknown operation name in <code>get</code>) is not an API failure: it is logged with <code>console.error</code> together with the closest valid name, <code>xo-error</code> fires, and the rest of the screen keeps working.</li>
+</ul>
+
+<h2 id="where-to-look-in-the-code">Where to look in the code</h2>
+<ul>
+<li><code>packages/cli/src/openapi.js</code>: the analysis behind <code>sync</code>: entities, response descriptors, request schemas</li>
+<li><code>packages/data/src/client.js</code>: request building, retries, <code>XoongError</code>, queries, <code>mutate</code>, <code>seed</code>, <code>stream</code></li>
+<li><code>packages/data/src/invalidate.js</code>: the path-overlap rule</li>
+<li><code>packages/data/src/store.js</code>: normalisation, the entity signals, stream events, optimistic updates, eviction</li>
+<li><code>packages/data/src/stream.js, default.js</code>: the SSE connection and its sharing</li>
+<li><code>packages/data/src/view.js</code>: <code>&lt;xo-view&gt;</code>, scope variables, the action handlers</li>
+<li><code>docs/data-layer.md</code>: the longer design notes (parts of it, such as per-view <code>stale</code> and the gateway, are not built)</li>
+</ul>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="arch-overview.html"><small>Previous</small><span>Layers</span></a><a rel="next" href="arch-forms.html"><small>Next</small><span>Forms flow</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#the-road-from-spec-to-screen" aria-current="true">The road from spec to screen</a></li><li><a href="#sync-what-the-generated-files-hold">Sync: what the generated files hold</a></li><li><a href="#the-client">The client</a></li><li><a href="#the-query-cache">The query cache</a></li><li><a href="#the-entity-store">The entity store</a></li><li><a href="#the-view-and-the-dom">The view and the DOM</a></li><li><a href="#the-write-path">The write path</a></li><li><a href="#server-known-data-seed">Server-known data: seed</a></li><li><a href="#live-updates">Live updates</a></li><li><a href="#when-something-fails">When something fails</a></li><li><a href="#where-to-look-in-the-code">Where to look in the code</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

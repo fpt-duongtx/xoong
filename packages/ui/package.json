@@ -1,6 +1,6 @@
 {
   "name": "@xoong/ui",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "xoong admin set: xoong.css design tokens, <xo-table>, <xo-form>, <xo-dialog>. Depends only on @xoong/core and @xoong/data.",
   "type": "module",
   "main": "src/index.js",

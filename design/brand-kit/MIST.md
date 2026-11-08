@@ -58,3 +58,16 @@ Once xoong releases this kit, the Rainlet admin can stop carrying its own copy o
 
 What stays admin-only: sidebar and topbar shell, page header and Guide panel, the editors (blocks, rich-text chrome), media library, page tree and drag and drop, savebar, the Rainlet logo set.
 Rule: tokens come from `mist-tokens.css`; a Mist component that exists in xoong is used from xoong, not re-implemented. Change a shared look upstream, once.
+
+## Rainlet widgets (docs/widget-classes.md of the rainlet repo) -> shared classes
+| Rainlet | Use from xoong (css/mist.css, demo: admin-patterns.html) |
+|---|---|
+| `.rl-locale`, `.rl-crop-shapes`, `.rl-preview-scale` (groups of `button[aria-pressed]`) | add `class="xo-seg"` to the group; `.rl-locale-badge` -> `.xo-seg__badge` (`data-state="invalid|missing"`, own "!" glyph, `[hidden]` wins) |
+| `dialog.rl-media`, `dialog.rl-crop` | `dialog.xo-modal` with `.xo-modal__head` (title + close), `.xo-modal__body` (scrolls), `.xo-modal__foot` (actions, primary last); `--wide`, `--full`; full screen under 768px |
+| `.rl-form`, `.rl-fields`, `.rl-prose` | `.xo-form` / `.xo-fields` (20px between fields, 6px label to control), `.xo-prose` (720px); tab panels follow the same rhythm |
+| `.rl-primary` | `button.primary` |
+| `.rl-row-actions`, icon-only buttons | `button.icon-only` (40px, small 32px) with the 44px hit area built in |
+| chips | `.xo-chip` (combobox/tags), `.chip` (filters) |
+| tables under 768px | `.xo-cards` on the table frame + `data-label` on every `td` (`data-title`, `data-status`, `td.cell-actions`): row cards, container-query based |
+| `--rl-*` custom properties | the Rainlet tokens in `mist-tokens.css` (`--accent-strong`, `--accent-tint`, `--sunken`, `--text-2`, `--line-strong`, `--ok`, `--ok-bg`, `--warn`, `--warn-bg`, `--danger-bg`, `--shadow-float`, `--r-lg`) and `--xo-control-height` (40px) |
+Stays in rainlet: the Page editor pane layout, the crop box and handles, the media tile grid, the preview zoom, `rl-slug`/`rl-image` internals.

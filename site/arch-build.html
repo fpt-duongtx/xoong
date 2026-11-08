@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build and delivery · xoong</title>
+  <meta name="description" content="How xoong dev serves your app, what xoong build changes, the strict CSP model, prerendering with @xoong/ssr, and the size budgets the tests guard.">
+  <meta property="og:title" content="Build and delivery · xoong">
+  <meta property="og:description" content="How xoong dev serves your app, what xoong build changes, the strict CSP model, prerendering with @xoong/ssr, and the size budgets the tests guard.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Build and delivery</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html" aria-current="page">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html" aria-current="page">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Build and delivery</span></div>
+
+<h1>Build and delivery</h1>
+<p class="lead">There are three ways to run a xoong app: serve it with <code>xoong dev</code> while you work, ship the static files that <code>xoong build</code> writes, or prerender public pages. The runtime needs no bundler in any of them.</p>
+
+<h2 id="development-xoong-dev">Development: xoong dev</h2>
+<p><code>xoong dev</code> is <code>@xoong/server</code> wired to your folder. One web-standard handler does all of it, and file access is injected, so the handler imports no Node module.</p>
+<xo-tabs label="Config and commands" class="example">
+  <section xo-tab="xoong.config.json"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"port"</span>: <span class="tok-n">5173</span>,
+  <span class="tok-a">"proxy"</span>: { <span class="tok-a">"/api"</span>: <span class="tok-s">"http://localhost:8080"</span> },
+  <span class="tok-a">"spa"</span>: <span class="tok-k">false</span>,
+  <span class="tok-a">"allowedHosts"</span>: [],
+  <span class="tok-a">"packages"</span>: [<span class="tok-s">"rainlet"</span>]
+}</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npx xoong dev                          <span class="tok-c"># development: static, proxy, TypeScript stripping</span>
+npx xoong build <span class="tok-a">--out</span> dist             <span class="tok-c"># strict-CSP static output</span>
+npx xoong build <span class="tok-a">--out</span> dist <span class="tok-a">--base</span> /admin <span class="tok-a">--include</span> data <span class="tok-a">--include</span> img
+npx xoong render index.html <span class="tok-a">--api</span> http://localhost:8080 <span class="tok-a">--out</span> dist/index.html</code></pre></section>
+</xo-tabs>
+<ul>
+<li><strong>Static files and packages.</strong> It serves the project folder and finds the installed <code>@xoong/*</code> packages (and any listed in <code>packages</code>), serving them under <code>/@xoong/core</code>, <code>/@xoong/data</code> and so on. It injects an <em>import map</em> into each HTML page that has none, so <code>import "@xoong/data"</code> works in the browser without a bundler. Your own packages resolve through their <code>exports</code> map (conditions, subpaths, wildcards); entries under <code>./server</code> are never served.</li>
+<li><strong>TypeScript.</strong> A <code>.ts</code> file is stripped of its types when it is requested, by <code>amaro</code>. Only erasable syntax works: no <code>enum</code>, <code>namespace</code> or parameter properties, and the error message says so. Import local TypeScript with the <code>.ts</code> extension.</li>
+<li><strong>Proxy.</strong> A prefix in <code>proxy</code> (or <code>--proxy /api=http://localhost:8080</code>) is forwarded to its upstream, so there is no CORS in development. It matches whole segments (<code>/api</code> does not match <code>/apix</code>), longest prefix first. Bodies stream both ways, so server-sent events pass through unbuffered and a closed tab stops the upstream read. An unreachable upstream answers 502 with the reason.</li>
+<li><strong>Safety.</strong> Files come only from under the root; paths that escape it are refused. Dot folders are refused too, except <code>.xoong</code> and <code>.well-known</code>, so <code>.env</code> and <code>.git</code> are never served. The <code>Host</code> header must be <code>localhost</code>, <code>127.0.0.1</code>, <code>::1</code> or in <code>allowedHosts</code>, which blocks DNS-rebinding pages.</li>
+<li><code>--spa</code> answers any path without a file extension with <code>index.html</code>, for an app with a router. Files are sent with <code>cache-control: no-cache</code>.</li>
+</ul>
+<p>Not yet: live reload and SCSS compilation.</p>
+
+<h2 id="release-xoong-build">Release: xoong build</h2>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: what xoong build does">
+<svg class="dg dg-sm" viewBox="0 0 570 480" role="img" aria-labelledby="bd-build-t bd-build-d">
+<title id="bd-build-t">What xoong build does</title>
+<desc id="bd-build-d">Every HTML page under the root is the start. The build follows what each page references: scripts, stylesheets and images, the modules the scripts import, CSS urls, and any files named with --include. Installed @xoong packages are found in node_modules and copied to the same URLs the dev server uses. It then rewrites bare imports to URLs, strips TypeScript, drops the import map and applies the --base prefix. It warns about anything the strict policy would block: an inline script, a style attribute, an inline style element. The result is the dist folder: the files you wrote, plus build-report.json.</desc>
+<defs><marker id="bd-build-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="36">HTML pages</text><text class="dg-sub" x="170" y="56">every .html file under --root</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="100" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="122">Follow references</text><text class="dg-sub" x="170" y="142">script, link, img; module imports;</text><text class="dg-sub" x="170" y="158">CSS url(); --include files</text></g>
+<g class="dg-node"><rect class="dg-box" x="390" y="100" width="170" height="74" rx="8"/><text class="dg-t" x="475" y="122">Installed packages</text><text class="dg-sub" x="475" y="142">@xoong/* from</text><text class="dg-sub" x="475" y="158">node_modules</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="202" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="224">Rewrite</text><text class="dg-sub" x="170" y="244">bare imports to URLs, TypeScript stripped,</text><text class="dg-sub" x="170" y="260">import map dropped, --base prefix</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="304" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="326">Warn</text><text class="dg-sub" x="170" y="346">what a strict policy blocks: inline script,</text><text class="dg-sub" x="170" y="362">style attribute, style element</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="406" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="428">dist/</text><text class="dg-sub" x="170" y="448">your files, rewritten, plus build-report.json</text></g>
+<path class="dg-line" d="M170 72 L170 100" marker-end="url(#bd-build-a)"/>
+<path class="dg-line" d="M170 174 L170 202" marker-end="url(#bd-build-a)"/>
+<path class="dg-line" d="M170 276 L170 304" marker-end="url(#bd-build-a)"/>
+<path class="dg-line" d="M170 378 L170 406" marker-end="url(#bd-build-a)"/>
+<path class="dg-line" d="M390 137 L330 137" marker-end="url(#bd-build-a)"/>
+</svg>
+</div>
+<p class="hint">No bundling and no minifying: each file in the output is the file you wrote, with its imports rewritten.</p>
+</figure>
+<ul>
+<li><strong>Input.</strong> Every <code>.html</code> file under <code>--root</code> (not <code>node_modules</code>, not dot folders, not the output folder). From each page it follows <code>&lt;script src&gt;</code>, <code>&lt;link href&gt;</code>, <code>&lt;img src&gt;</code> and the like, then the imports of each script, then the <code>url()</code> and <code>@import</code> of each stylesheet. Links to other pages are left as they are.</li>
+<li><strong>Rewrite.</strong> A bare import such as <code>"@xoong/data"</code> becomes a URL (the same one the dev server uses), so the page needs <em>no import map</em>; the import map in your HTML is dropped. <code>.ts</code> is stripped and written as <code>.js</code>. <code>--base /admin</code> prefixes every root-absolute URL, for an app served under a path. Imports are found by scanning for <code>import</code> and <code>export ... from</code> with a string, and dynamic <code>import("...")</code>; what cannot be seen that way (a <code>fetch()</code> of a data file, an image named only in JavaScript) is added with <code>--include &lt;file-or-folder&gt;</code>.</li>
+<li><strong>Warnings, not failures.</strong> The build tells you about an inline <code>&lt;script&gt;</code>, a <code>style=""</code> attribute and an inline <code>&lt;style&gt;</code> (the policy blocks them), an import it cannot resolve, and a file that is referenced but missing. It prints the total size, with gzip, and the policy the output is meant to run under.</li>
+<li><strong>Output.</strong> Nothing is bundled and nothing is minified: every file is the one you wrote, readable in the browser's tools. <code>build-report.json</code> lists each file's bytes and gzip size, the warnings and the policy. Any static host works; send the policy as a header.</li>
+</ul>
+
+<h2 id="the-csp-model">The CSP model</h2>
+<p>The runtime runs under this policy, with no <code>unsafe-eval</code> and no <code>unsafe-inline</code>:</p>
+<pre data-lang="bash" tabindex="0"><code>Content-Security-Policy: default-src <span class="tok-s">'none'</span>; script-src <span class="tok-s">'self'</span>; style-src <span class="tok-s">'self'</span>; connect-src <span class="tok-s">'self'</span>; img-src <span class="tok-s">'self'</span> data:; font-src <span class="tok-s">'self'</span>; base-uri <span class="tok-s">'none'</span>; form-action <span class="tok-s">'self'</span></code></pre>
+<ul>
+<li><strong>No code from strings.</strong> The runtime never calls <code>eval</code>, <code>new Function</code> or <code>setTimeout</code> with a string. Interpolation, <code>xo-if</code>, <code>xo-each</code>, formats and validation rules are plain code walking data.</li>
+<li><strong>No inline style.</strong> It never creates a <code>&lt;style&gt;</code> element and never writes a <code>style=""</code> attribute. Where a value must reach the style (a custom property from <code>style:--x=${...}</code>, the position of a popup), it uses the CSS object model, which the policy allows. <code>xoong.css</code> is an external file and the generated markup uses classes only.</li>
+<li><strong>No inline handlers.</strong> Event listeners are added with <code>addEventListener</code>. Interpolating data into an <code>on*</code> attribute is refused.</li>
+<li><strong>Data is not code.</strong> <code>&lt;script type="application/json"&gt;</code>, the way to hand the page its first data (<code>client.seed</code>), is not executed, so the policy allows it.</li>
+<li><strong>One exception, in development.</strong> The dev server injects an <em>inline</em> import map, which <code>script-src 'self'</code> blocks. So never ship the dev server's HTML. The output of <code>xoong build</code> has no import map. Nonce-based policies work as well: nothing in the runtime needs a nonce.</li>
+</ul>
+<p>It is tested, not only claimed. <code>packages/cli/test/build.test.mjs</code> builds the admin example and serves it in real Chromium with exactly this policy, and fails on any <code>securitypolicyviolation</code>; a second test shows the policy really is enforced there (an inline script is blocked). The documentation site you are reading is built and tested the same way, under <code>/xoong</code>.</p>
+
+<h2 id="prerendering-with-xoong-ssr">Prerendering with @xoong/ssr</h2>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: prerendering a page">
+<svg class="dg dg-sm" viewBox="0 0 570 480" role="img" aria-labelledby="bd-render-t bd-render-d">
+<title id="bd-render-t">Prerendering a page</title>
+<desc id="bd-render-d">The input is a public page, or a route chosen with --url. xoong render, or renderPage(), runs the real xo-view runtime on a happy-dom document and sends GET requests to the backend API. It waits until no request is pending, for at most ten seconds. The output is HTML that already shows the data; each top-level xo-view keeps its original markup in a template element with data-xo-template. In the browser, the view draws again from that template, with the same result, and then becomes live and interactive.</desc>
+<defs><marker id="bd-render-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="36">Page HTML</text><text class="dg-sub" x="170" y="56">a public page, or a route with --url</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="100" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="122">xoong render / renderPage()</text><text class="dg-sub" x="170" y="142">the real xo-view runtime</text><text class="dg-sub" x="170" y="158">on a happy-dom document</text></g>
+<g class="dg-node"><rect class="dg-box" x="390" y="100" width="170" height="58" rx="8"/><text class="dg-t" x="475" y="122">Backend API</text><text class="dg-sub" x="475" y="142">public data</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="218" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="240">Wait</text><text class="dg-sub" x="170" y="260">until nothing is loading, up to 10 s</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="304" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="326">HTML with the data</text><text class="dg-sub" x="170" y="346">each top-level xo-view keeps its markup in</text><text class="dg-sub" x="170" y="362">template[data-xo-template]</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-ok" x="10" y="406" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="428">Browser</text><text class="dg-sub" x="170" y="448">the view draws again from the template:</text><text class="dg-sub" x="170" y="464">same result, then live and interactive</text></g>
+<path class="dg-line" d="M170 72 L170 100" marker-end="url(#bd-render-a)"/>
+<path class="dg-line" d="M170 174 L170 218" marker-end="url(#bd-render-a)"/>
+<path class="dg-line" d="M170 276 L170 304" marker-end="url(#bd-render-a)"/>
+<path class="dg-line" d="M170 378 L170 406" marker-end="url(#bd-render-a)"/>
+<path class="dg-line" d="M330 137 L390 129" marker-end="url(#bd-render-a)"/>
+<text class="dg-lab" x="360" y="124">GET</text>
+</svg>
+</div>
+<p class="hint">There is no hydration step: the browser simply draws again from the saved markup, so there is nothing to mismatch.</p>
+</figure>
+<ul>
+<li><strong>The same runtime.</strong> <code>renderPage(html, { operations, baseUrl })</code> runs the real <code>&lt;xo-view&gt;</code> (and <code>@xoong/ui</code>) on a happy-dom document, so the syntax has one implementation and the output matches what the browser draws. The page's own scripts and stylesheets are neither run nor fetched.</li>
+<li><strong>Output.</strong> HTML that already shows the data, for crawlers, for people without JavaScript, and for the first paint. In the browser the view draws again from the saved template. A router page rendered with <code>--url</code> has that route's content, <code>&lt;title&gt;</code> and description; the router replaces it with the same page when it starts.</li>
+<li><strong>Public pages only.</strong> The data is as fresh as the last render, and personalised pages would need the visitor's credentials. Use <code>headers</code> only for service credentials. Personalised pages stay drawn in the browser.</li>
+<li><strong>Things to know.</strong> Pages render one after another, because the DOM globals are process-wide, and the first render installs <code>window</code> and <code>document</code> on <code>globalThis</code> for the rest of the process: prerender in a build script or a separate process, not inside a server that detects browsers by <code>typeof window</code>. A page whose API calls fail still renders its <code>$error</code> branches; pass <code>failOnError: true</code> to make that an error, or <code>onError</code> to observe it. A page whose data does not finish loading within <code>timeoutMs</code> (10 s) fails instead of rendering half.</li>
+<li><strong>Not yet:</strong> request-time rendering inside <code>xoong dev</code> or <code>@xoong/server</code>, caching and revalidation policy, and rendering the first state of <code>live</code> views. <code>xoong build</code> does not call the prerenderer: run <code>xoong render</code> for each public page.</li>
+</ul>
+
+<h2 id="size-budgets-and-what-the-tests-guard">Size budgets and what the tests guard</h2>
+<p>The size of a runtime package is a tested promise. <code>test/architecture.test.mjs</code> measures the gzip size of each package's source <em>with comments removed</em> and fails when it passes its budget. It is a regression guard, not the shipped size (that is the files themselves, which are not minified). A budget sits 5 to 10 percent above the measured value, and raising one needs a reason in the commit. The roadmap's target of single-digit kilobytes applies to the minified size, which has not been measured yet.</p>
+<xo-tabs label="Budgets, in KB gzip" class="example">
+  <section xo-tab="test/architecture.test.mjs"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> budgetKb = { core: <span class="tok-n">5.6</span>, data: <span class="tok-n">17.2</span>, forms: <span class="tok-n">9.5</span>, i18n: <span class="tok-n">5</span>, ui: <span class="tok-n">10</span>, controls: <span class="tok-n">9.5</span>, richtext: <span class="tok-n">8.5</span> };</code></pre></section>
+</xo-tabs>
+<p>The tests that keep the architecture honest:</p>
+<ul>
+<li><strong>Architecture test:</strong> zero runtime dependencies and the import direction (see <a href="arch-overview.html">Overview</a>), the size budgets, MIT licence everywhere, and that the generated documentation pages equal what the generator writes.</li>
+<li><strong><code>llms.txt</code> cannot drift:</strong> it stays within about 3,000 tokens (estimated as length divided by 3.8), mentions only commands the CLI has, and documents exactly the <code>xo-*</code> names xoong defines. The runtime must handle each of them.</li>
+<li><strong>Build test:</strong> the strict-CSP run above. <strong>Coverage:</strong> the suite runs with thresholds (statements 88, branches 79, functions 88, lines 92 overall; <code>core</code> stricter) that sit just under the measured values, so a drop fails the build.</li>
+<li><strong>Pack test:</strong> the tarballs that projects install contain what a package needs and nothing else.</li>
+</ul>
+
+<h2 id="where-to-look-in-the-code">Where to look in the code</h2>
+<ul>
+<li><code>packages/cli/src/dev.js</code>: <code>xoong dev</code> and <code>xoong.config.json</code></li>
+<li><code>packages/server/src/handler.js, node.js</code>: the handler, the proxy, the import map, <code>findPackages</code>, type stripping, the Host check</li>
+<li><code>packages/cli/src/build.js</code>: <code>xoong build</code> and the <code>CSP</code> constant</li>
+<li><code>packages/ssr/src/render.js</code>: <code>renderPage</code></li>
+<li><code>docs/security.md</code>: the policy and what the runtime refuses or escapes</li>
+<li><code>docs/server.md</code>: the server design, including what is not built</li>
+<li><code>test/architecture.test.mjs</code>: the budgets and the dependency rules</li>
+</ul>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="arch-routing.html"><small>Previous</small><span>Router</span></a><a rel="next" href="arch-tooling.html"><small>Next</small><span>Tooling and tests</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#development-xoong-dev" aria-current="true">Development: xoong dev</a></li><li><a href="#release-xoong-build">Release: xoong build</a></li><li><a href="#the-csp-model">The CSP model</a></li><li><a href="#prerendering-with-xoong-ssr">Prerendering with @xoong/ssr</a></li><li><a href="#size-budgets-and-what-the-tests-guard">Size budgets and what the tests guard</a></li><li><a href="#where-to-look-in-the-code">Where to look in the code</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

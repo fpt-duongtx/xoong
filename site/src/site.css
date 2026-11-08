@@ -116,4 +116,48 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 .notice .ic { --xo-icon: 1.25rem; margin-top: 0.15rem; }
 .notice.info .ic { color: var(--xo-color-accent); }
 .notice.warn .ic { color: color-mix(in srgb, var(--xo-color-warning) 35%, var(--xo-color-text)); }
+
+/* the diagrams of the Architecture pages (tools/site/architecture.css) */
+/*
+ * The diagrams of the Architecture pages (tools/site/architecture.mjs): inline SVG drawn with the page's own colour tokens, so they follow the
+ * light and dark palettes. Every class starts with dg-. All text uses --text (4.5:1 on every fill below); no colour is written out.
+ * A diagram never shrinks below a readable size: on a narrow screen its frame scrolls sideways (the frame is focusable for keyboards).
+ */
+
+.dg-fig { margin: 1.4rem 0 2rem; }
+.dg-scroll { overflow-x: auto; padding: 0.5rem; border: 1px solid var(--line); border-radius: var(--radius, 8px); background: var(--surface); }
+.dg-scroll:focus-visible { outline: 3px solid var(--ember-deep); outline-offset: 2px; }
+.dg-fig > .hint { margin: 0.5rem 0 0; max-width: var(--measure, 44rem); }
+
+.dg { display: block; width: 100%; height: auto; margin-inline: auto; }
+.dg-sm { min-width: 26rem; max-width: 35rem; }
+.dg-md { min-width: 32rem; max-width: 43rem; }
+.dg-lg { min-width: 38rem; max-width: 50rem; }
+
+/* text: the font of the page */
+.dg text { font-family: inherit; fill: var(--text); dominant-baseline: central; text-anchor: middle; }
+.dg .dg-t { font-size: 15px; font-weight: 700; }
+.dg .dg-sub { font-size: 13px; font-weight: 400; }
+.dg .dg-start { text-anchor: start; }
+.dg .dg-end { text-anchor: end; }
+.dg .dg-lab { font-size: 13px; font-weight: 600; stroke: var(--surface); stroke-width: 5px; paint-order: stroke; stroke-linejoin: round; }
+.dg .dg-zlab { font-size: 13px; font-weight: 700; fill: var(--muted); text-anchor: start; }
+.dg .dg-note-text { font-size: 13px; font-weight: 600; }
+
+/* boxes */
+.dg .dg-box { fill: var(--broth); stroke: var(--line-strong); stroke-width: 1.5px; }
+.dg .dg-k-core { fill: var(--ember-soft); stroke: var(--ember-deep); }
+.dg .dg-k-ok { fill: color-mix(in srgb, var(--herb, var(--ok)) 22%, var(--surface)); stroke: var(--herb, var(--ok)); }
+.dg .dg-k-err { fill: color-mix(in srgb, var(--danger) 14%, var(--surface)); stroke: var(--danger); }
+.dg .dg-k-soft { fill: var(--surface); stroke-dasharray: 5 4; }
+.dg .dg-note { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.5px; stroke-dasharray: 5 4; }
+
+/* zones: a dashed frame around boxes that belong together */
+.dg .dg-zone { fill: none; stroke: var(--line-strong); stroke-width: 1.5px; stroke-dasharray: 3 5; }
+
+/* arrows */
+.dg .dg-line { fill: none; stroke: var(--line-strong); stroke-width: 2px; }
+.dg .dg-dash { stroke-dasharray: 6 5; }
+.dg .dg-head { fill: var(--line-strong); stroke: none; }
+.dg .dg-life { fill: none; stroke: var(--line-strong); stroke-width: 1.5px; stroke-dasharray: 2 6; }
 }

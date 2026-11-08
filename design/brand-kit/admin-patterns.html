@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin patterns · xoong</title>
+  <meta name="description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta name="theme-color" content="#f7f4ec">
+  <meta property="og:title" content="xoong · One pot. Whole app.">
+  <meta property="og:description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta property="og:image" content="assets/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/mist/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/mist-tokens.css">
+  <link rel="stylesheet" href="css/xoong/xoong.css">
+  <link rel="stylesheet" href="css/xoong/controls.css">
+  <link rel="stylesheet" href="css/xoong/richtext.css">
+  <link rel="stylesheet" href="css/brand.css">
+  <link rel="stylesheet" href="css/xo-map.css">
+  <link rel="stylesheet" href="css/controls.css">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/states.css">
+  <link rel="stylesheet" href="css/controls-new.css">
+  <link rel="stylesheet" href="css/shell.css">
+  <link rel="stylesheet" href="css/xo-map.css">
+  <script src="js/palette.js"></script>
+  <link rel="stylesheet" href="css/mist.css">
+</head>
+<body class="shell-page">
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" class="sprite">
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
+  <symbol id="i-heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+  <symbol id="i-paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
+  <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+  <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
+  <symbol id="i-underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
+  <symbol id="i-list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
+  <symbol id="i-list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
+  <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
+  <symbol id="i-success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
+</svg>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/mist/xoong-lockup-dark.svg"><img src="assets/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="docs.html">Docs sample</a>
+        <a href="brand.html">Brand</a>
+        <button class="palette-toggle" type="button" aria-pressed="false" title="Switch colour palette"><span>Mist</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Admin patterns</span></span></summary><nav aria-label="Documentation">
+    <h2>Start</h2><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Overview</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Install</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>How it works</a>
+    <h2>Guides</h2><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Data and tables</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Forms</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Rich text</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Styling</a>
+    <h2>Controls</h2><a href="components.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Standard</a><a href="controls-demo.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>All controls</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Tabs</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Menu and tooltip</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Carousel</a><a href="icons.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Icons</a>
+    <h2>Brand</h2><a href="brand.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Brand kit</a><a href="states.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>States</a><a href="theme-builder.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Theme builder</a>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+    <h2>Start</h2><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Overview</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Install</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>How it works</a>
+    <h2>Guides</h2><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Data and tables</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Forms</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Rich text</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Styling</a>
+    <h2>Controls</h2><a href="components.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Standard</a><a href="controls-demo.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>All controls</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Tabs</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Menu and tooltip</a><a href="docs.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Carousel</a><a href="icons.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Icons</a>
+    <h2>Brand</h2><a href="brand.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Brand kit</a><a href="states.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>States</a><a href="theme-builder.html"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg>Theme builder</a>
+  </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="docs.html">Controls</a><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg><span>Admin patterns</span></div>
+      <h1>Admin patterns</h1>
+      <p class="lede">What the Rainlet admin asked for, in the shared Mist look so it can delete its own copies: a segmented group for any <code>button[aria-pressed]</code>, the modal, the form rhythm, the 44px hit area and tables that become cards on a narrow pane. Classes are in <code>css/mist.css</code>.</p>
+
+      <h2 id="segmented">Segmented group</h2><p>Add <code>class="xo-seg"</code> to any group of <code>button[aria-pressed]</code>: the language switcher, the crop shapes and the preview scale. The language badge is <code>.xo-seg__badge</code> with its own glyph (never colour alone); <code>[hidden]</code> always wins.</p><div class="example"><div class="preview"><div class="stack">
+        <div><span class="hint">Language switcher</span><br><div class="xo-seg" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true" aria-label="English">EN</button><button type="button" data-lang="vi" aria-pressed="false" aria-label="Vietnamese · missing translation">VI <span class="xo-seg__badge" data-state="missing" aria-hidden="true">!</span></button><button type="button" data-lang="zh" aria-pressed="false" aria-label="Chinese">ZH</button><button type="button" data-lang="ru" aria-pressed="false" aria-label="Russian · invalid">RU <span class="xo-seg__badge" data-state="invalid" aria-hidden="true">!</span></button></div></div>
+        <div><span class="hint">Crop shapes</span><br><div class="xo-seg" role="group" aria-label="Crop shape"><button type="button" aria-pressed="true">Free</button><button type="button" aria-pressed="false">16:9</button><button type="button" aria-pressed="false">4:3</button><button type="button" aria-pressed="false">1:1</button></div></div>
+        <div><span class="hint">Preview scale</span><br><div class="xo-seg" role="group" aria-label="Preview scale"><button type="button" aria-pressed="true">Fit</button><button type="button" aria-pressed="false">50%</button><button type="button" aria-pressed="false">75%</button><button type="button" aria-pressed="false">100%</button></div></div></div></div></div>
+
+      <h2 id="modal">Modal</h2><p><code>dialog.xo-modal</code> with <code>.xo-modal__head</code> (title and a close button), <code>.xo-modal__body</code> (scrolls) and <code>.xo-modal__foot</code> (actions, primary last). <code>--wide</code> and <code>--full</code> widen it; under 768px it is full screen.</p><div class="example"><div class="preview"><div class="dialog-stage"><dialog class="xo-modal" open><div class="xo-modal__head"><h2>Choose an image</h2><button class="icon-only ghost" type="button" aria-label="Close"><svg class="icon " aria-hidden="true"><use href="#i-close"/></svg></button></div><div class="xo-modal__body"><div class="media-grid"><button class="media-tile" type="button"><span class="media-thumb"></span>sunrise.webp</button><button class="media-tile" type="button"><span class="media-thumb"></span>harbour.webp</button><button class="media-tile" type="button"><span class="media-thumb"></span>street.webp</button><button class="media-tile" type="button"><span class="media-thumb"></span>market.webp</button><button class="media-tile" type="button"><span class="media-thumb"></span>olive.webp</button><button class="media-tile" type="button"><span class="media-thumb"></span>bridge.webp</button></div></div><div class="xo-modal__foot"><button type="button" class="grow"><svg class="icon " aria-hidden="true"><use href="#i-plus"/></svg>Upload</button><button type="button">Cancel</button><button type="button" class="primary">Choose</button></div></dialog></div></div></div>
+
+      <h2 id="rhythm">Form rhythm</h2><p>20px between fields, 6px from label to control and from control to hint or error; tab panels follow the same rhythm. Put <code>.xo-fields</code> (or <code>.xo-form</code>) on the block; a prose form keeps <code>.xo-prose</code> (720px).</p><div class="example"><div class="preview"><div class="xo-fields xo-prose"><div class="field"><label for="a1">Title</label><input id="a1" value="Greece Golden Visa"><span class="hint">Shown in the sitemap and the browser tab.</span></div><div class="field"><label for="a2">Slug</label><div class="xo-copyfield slug"><input class="prefix" value="/programs/" readonly aria-label="Prefix" tabindex="-1"><input id="a2" value="greece"></div></div><div class="field"><label for="a3">Contact e-mail</label><input id="a3" value="hello@" aria-invalid="true"><span class="error"><svg class="icon " aria-hidden="true"><use href="#i-error"/></svg>Enter a full e-mail address.</span></div></div></div></div>
+
+      <h2 id="hit">Icon-only buttons: 40px, 44px hit area</h2><p>The button is 40px (32px small); an invisible 44px target (36/44 around the small one) stays inside the row. The dashed outline shows the target.</p><div class="example"><div class="preview"><div class="row-inline gap-lg hit-demo"><button class="icon-only" aria-label="Edit"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg></button><button class="icon-only ghost" aria-label="Delete"><svg class="icon " aria-hidden="true"><use href="#i-trash"/></svg></button><button class="icon-only sm" aria-label="Move up"><svg class="icon " aria-hidden="true"><use href="#i-arrow-up"/></svg></button><button class="icon-only sm ghost" aria-label="Remove"><svg class="icon " aria-hidden="true"><use href="#i-close"/></svg></button></div></div></div>
+
+      <h2 id="cards">Tables on a narrow pane: row cards</h2><p>Under 768px (of the table box) the header hides and every row becomes a card: title and status on the first line, labelled values below, actions last; selected rows keep the tint and the 3px bar. Every <code>td</code> needs <code>data-label</code>; <code>data-title</code> marks the title cell and <code>data-status</code> the status cell.</p><div class="example"><div class="preview"><div class="two"><div><span class="hint">Wide (table)</span><div class="table-frame xo-cards"><table class="std"><thead><tr><th class="select"><input type="checkbox" aria-label="Select all"></th><th>Page</th><th>Status</th><th>Updated</th><th><span class="xo-visually-hidden">Actions</span></th></tr></thead><tbody><tr><td class="select"><input type="checkbox" aria-label="Select Home"></td><td data-title data-label="Page"><span class="primary-cell">Home</span><br><span class="muted path">/</span></td><td data-status data-label="Status"><span class="badge ok">Published</span></td><td data-label="Updated" class="muted">2 hours ago</td><td class="cell-actions"><button class="icon-only ghost sm" aria-label="Edit Home"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg></button><button class="icon-only ghost sm" aria-label="More actions"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr><tr aria-selected="true"><td class="select"><input type="checkbox" aria-label="Select Greece Golden Visa" checked></td><td data-title data-label="Page"><span class="primary-cell">Greece Golden Visa</span><br><span class="muted path">/programs/greece</span></td><td data-status data-label="Status"><span class="badge warn">Draft</span></td><td data-label="Updated" class="muted">3 days ago</td><td class="cell-actions"><button class="icon-only ghost sm" aria-label="Edit Greece Golden Visa"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg></button><button class="icon-only ghost sm" aria-label="More actions"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr><tr><td class="select"><input type="checkbox" aria-label="Select About us"></td><td data-title data-label="Page"><span class="primary-cell">About us</span><br><span class="muted path">/about</span></td><td data-status data-label="Status"><span class="badge">Scheduled</span></td><td data-label="Updated" class="muted">5 hours ago</td><td class="cell-actions"><button class="icon-only ghost sm" aria-label="Edit About us"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg></button><button class="icon-only ghost sm" aria-label="More actions"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr></tbody></table></div></div><div><span class="hint">Narrow pane (390px)</span><div class="pane-390"><div class="table-frame xo-cards"><table class="std"><thead><tr><th class="select"><input type="checkbox" aria-label="Select all"></th><th>Page</th><th>Status</th><th>Updated</th><th><span class="xo-visually-hidden">Actions</span></th></tr></thead><tbody><tr><td class="select"><input type="checkbox" aria-label="Select Home"></td><td data-title data-label="Page"><span class="primary-cell">Home</span><br><span class="muted path">/</span></td><td data-status data-label="Status"><span class="badge ok">Published</span></td><td data-label="Updated" class="muted">2 hours ago</td><td class="cell-actions"><button class="icon-only ghost sm" aria-label="Edit Home"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg></button><button class="icon-only ghost sm" aria-label="More actions"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr><tr aria-selected="true"><td class="select"><input type="checkbox" aria-label="Select Greece Golden Visa" checked></td><td data-title data-label="Page"><span class="primary-cell">Greece Golden Visa</span><br><span class="muted path">/programs/greece</span></td><td data-status data-label="Status"><span class="badge warn">Draft</span></td><td data-label="Updated" class="muted">3 days ago</td><td class="cell-actions"><button class="icon-only ghost sm" aria-label="Edit Greece Golden Visa"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg></button><button class="icon-only ghost sm" aria-label="More actions"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr><tr><td class="select"><input type="checkbox" aria-label="Select About us"></td><td data-title data-label="Page"><span class="primary-cell">About us</span><br><span class="muted path">/about</span></td><td data-status data-label="Status"><span class="badge">Scheduled</span></td><td data-label="Updated" class="muted">5 hours ago</td><td class="cell-actions"><button class="icon-only ghost sm" aria-label="Edit About us"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg></button><button class="icon-only ghost sm" aria-label="More actions"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr></tbody></table></div></div></div></div></div></div>
+    </main>
+    <aside class="rail" aria-label="On this page"><h2>On this page</h2><ol><li><a href="#segmented" aria-current="true">Segmented group</a></li><li><a href="#modal">Modal</a></li><li><a href="#rhythm">Form rhythm</a></li><li><a href="#hit">Hit area</a></li><li><a href="#cards">Table cards</a></li></ol></aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/mist/xoong-lockup-dark.svg"><img src="assets/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="docs.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

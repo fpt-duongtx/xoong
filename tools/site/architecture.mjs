@@ -100,26 +100,26 @@ function sequence({ id, label, title, desc, caption, parts, msgs, col = 150, siz
 // ---- 1. overview ----------------------------------------------------------------------------------------------------------------------
 
 const overviewLayers = diagram({
-  id: 'ov-layers', label: 'Diagram: the runtime packages as layers', w: 590, h: 372, size: 'sm',
+  id: 'ov-layers', label: 'Diagram: the runtime packages as layers', w: 640, h: 372, size: 'md',
   title: 'The runtime packages as layers',
   desc: 'At the bottom is @xoong/core. On the left, directly above it, is @xoong/data. On the right, directly above core, are @xoong/controls and @xoong/richtext, which import only core. Above data sit @xoong/forms and @xoong/i18n, which import core and data. At the top is @xoong/ui, which imports forms, data and core. Every arrow points downward, from a package to a package it imports: nothing imports upward.',
   caption: 'The runtime packages. An arrow means "imports"; a package may also import packages further down (ui imports data and core directly). Nothing imports upward.',
   draw(d) {
-    const ui = d.box(10, 14, 280, '@xoong/ui', 'table, form, dialog, toast, router');
-    const forms = d.box(10, 108, 135, '@xoong/forms', 'model, binder');
-    const i18n = d.box(155, 108, 135, '@xoong/i18n', 'xo-t, t()');
-    const data = d.box(10, 202, 280, '@xoong/data', 'client, cache, store, xo-view');
-    const controls = d.box(305, 202, 135, '@xoong/controls', 'tabs, menu, combobox');
-    const richtext = d.box(445, 202, 135, '@xoong/richtext', 'xo-richtext');
-    const core = d.box(10, 296, 570, '@xoong/core', 'signals, html templates, XoElement, XoControl', { kind: 'core' });
+    const ui = d.box(10, 14, 260, '@xoong/ui', 'table, form, dialog, toast, router');
+    const forms = d.box(10, 108, 125, '@xoong/forms', 'model, binder');
+    const i18n = d.box(145, 108, 125, '@xoong/i18n', 'xo-t, t()');
+    const data = d.box(10, 202, 260, '@xoong/data', 'client, cache, store, xo-view');
+    const controls = d.box(290, 202, 165, '@xoong/controls', 'tabs, menu, combobox');
+    const richtext = d.box(465, 202, 165, '@xoong/richtext', 'xo-richtext');
+    const core = d.box(10, 296, 620, '@xoong/core', 'signals, html templates, XoElement, XoControl', { kind: 'core' });
     d.line([[forms.cx, ui.b], [forms.cx, forms.y]]);
     d.line([[forms.cx, forms.b], [forms.cx, data.y]]);
     d.line([[i18n.cx, i18n.b], [i18n.cx, data.y]]);
     d.line([[data.cx, data.b], [data.cx, core.y]]);
     d.line([[controls.cx, controls.b], [controls.cx, core.y]]);
     d.line([[richtext.cx, richtext.b], [richtext.cx, core.y]]);
-    d.text(310, 40, 'An arrow means "imports".', 'dg-start');
-    d.text(310, 60, 'Nothing imports upward.', 'dg-start');
+    d.text(300, 40, 'An arrow means "imports".', 'dg-start');
+    d.text(300, 60, 'Nothing imports upward.', 'dg-start');
   },
 });
 
@@ -236,7 +236,7 @@ const dataRoad = diagram({
   id: 'df-road', label: 'Diagram: from the OpenAPI document to the DOM', w: 560, h: 676, size: 'sm',
   title: 'The road from the OpenAPI document to the DOM',
   desc: 'Two stages. At build time, in Node: the OpenAPI document goes into xoong sync, which writes operations.json, api.d.ts and xoong.html-data.json. In the browser: configure() creates the one client from operations.json; the client keeps a query cache with one query per operation and canonical parameters; queries normalise responses into the entity store, which holds one signal per record; an xo-view reads its query and the store to build its scope with the variables $loading, $error and the items; effects write only the DOM nodes that read a changed signal.',
-  caption: 'One road for every read. The arrows are the direction the data travels; a change in the store travels the last three arrows again without a request.',
+  caption: 'One road for every read. The arrows are the direction the data travels; a change in the store travels the last two arrows again, without a request.',
   draw(d) {
     d.zone(8, 8, 544, 196, 'Build time (Node)');
     const spec = d.box(100, 34, 360, 'OpenAPI document', 'your backend\'s contract');
@@ -262,14 +262,14 @@ const dataEntry = diagram({
   desc: 'Four sources on the left all write into the one entity store in the middle: a GET response fetched by a query, a mutation response, client.seed() with data the server already has, and a stream event (patch, upsert or delete). The store feeds three readers on the right: xo-view, derived() and a pristine form, which follows its record.',
   caption: 'Whatever the source, a record is stored once, so every reader of that record updates.',
   draw(d) {
-    const s1 = d.box(10, 14, 190, 'GET response', 'a query fetches');
-    const s2 = d.box(10, 84, 190, 'Mutation response', 'client.mutate()');
-    const s3 = d.box(10, 154, 190, 'client.seed()', 'data the server already has');
-    const s4 = d.box(10, 224, 190, 'Stream event', 'patch, upsert, delete');
-    const store = d.box(250, 84, 130, 'Entity store', ['one signal', 'per record'], { kind: 'core', bh: 116 });
-    const r1 = d.box(430, 34, 160, 'xo-view', 'reads through its query');
-    const r2 = d.box(430, 124, 160, 'derived()', 'computed over all(name)');
-    const r3 = d.box(430, 214, 160, 'a pristine form', 'follows its record');
+    const s1 = d.box(10, 14, 200, 'GET response', 'a query fetches');
+    const s2 = d.box(10, 84, 200, 'Mutation response', 'client.mutate()');
+    const s3 = d.box(10, 154, 200, 'client.seed()', 'data the server already has');
+    const s4 = d.box(10, 224, 200, 'Stream event', 'patch, upsert, delete');
+    const store = d.box(255, 84, 125, 'Entity store', ['one signal', 'per record'], { kind: 'core', bh: 116 });
+    const r1 = d.box(425, 34, 175, 'xo-view', 'reads through its query');
+    const r2 = d.box(425, 124, 175, 'derived()', 'computed over all(name)');
+    const r3 = d.box(425, 214, 175, 'a pristine form', 'follows its record');
     [[s1, 100], [s2, 128], [s3, 156], [s4, 184]].forEach(([s, y]) => d.line([[s.r, s.cy], [store.x, y]]));
     d.line([[store.r, 110], [r1.x, r1.cy]]);
     d.line([[store.r, 142], [r2.x, r2.cy]]);
@@ -295,7 +295,7 @@ const readSeq = sequence({
 });
 
 const writeSeq = sequence({
-  id: 'df-write', label: 'Diagram: one write as a sequence', col: 136, size: 'lg',
+  id: 'df-write', label: 'Diagram: one write as a sequence', col: 144, size: 'lg',
   title: 'One write',
   desc: 'Five participants: the xo-click button, client.mutate, the entity store, the query cache and the backend API. 1. The button calls mutate with the operation, params and body. 2. With xo-optimistic, mutate puts a provisional patch in the store. 3. Mutate sends POST /users/1/disable to the API. 4. The API answers 200 with the updated User. 5. Mutate normalises the response into the store, upserting User#1. 6. Mutate invalidates every cached query whose path overlaps /users/1/disable. 7. The query cache refetches GET /users, if something is watching it. 8. The API answers with the list. 9. Mutate resolves and the xo-done event fires. A note says that on failure the optimistic patch is undone, a XoongError is thrown and xo-error fires.',
   caption: 'A write, top to bottom. Invalidation is by path; only queries that something is watching refetch at once.',
@@ -428,6 +428,7 @@ ${tabs('Generated and loaded', [['operations.json (trimmed)', 'json', OPERATIONS
 
 <h2>The query cache</h2>
 <p>A read is a <em>query</em>. Its key is the operation id plus the canonical params: keys sorted, empty values dropped, every value as its text in the URL. So the same data is the same query, however you ask for it, and a developer never writes a key.</p>
+${readSeq}
 ${tabs('One query', [['JavaScript', 'js', KEYS_JS]])}
 <p>A query holds signals: ${c('status')} (${c('idle')}, ${c('loading')}, ${c('success')} or ${c('error')}), ${c('error')}, the normalised ${c('root')} and ${c('data')}, a computed value that fills the records back in. It also holds the rules of its life:</p>
 <ul>
@@ -438,7 +439,8 @@ ${tabs('One query', [['JavaScript', 'js', KEYS_JS]])}
 </ul>
 
 <h2>The entity store</h2>
-<p>When a response arrives, the response descriptor tells ${c('normalize()')} where the records are. Each record goes into the store once, under ${c('Name#id')}, and the query keeps a reference (${c('{ $ref: "User#1" }')}) in its place. Every record is one signal.</p>
+<p>When a response arrives, the response descriptor tells ${c('normalize()')} where the records are. Each record goes into the store once, under ${c('Name#id')}, and the query keeps a reference (${c('{ $ref: "User#1" }')}) in its place. Every record is one signal. A GET response is only one of four ways a record gets in:</p>
+${dataEntry}
 ${tabs('Normalised', [['JavaScript', 'js', STORE_JS]])}
 <p>The effect is sharing: a list, a detail page and a dashboard that show ${c('User#1')} read the same signal, so one change reaches all of them. Reading the data (${c('denormalize')}) resolves the references; a reference to a deleted record drops out of lists instead of leaving a hole. A union is stored under the right entity when the members can be told apart (a discriminator, a fixed tag value, or a property only one member has); otherwise the value stays inline and ${c('xoong doctor')} reports it (XO160).</p>
 <p>${c('derived(({ all, get }) => ...)')} is a ${c('computed')} over the store: ${c('all("Order")')} is every <em>loaded</em> order, from any query, and the result recomputes when one of them or the set changes. It never fetches; fetching is declared on a view.</p>
@@ -535,17 +537,17 @@ const formsSubmit = diagram({
   draw(d) {
     const a = d.box(10, 14, 280, 'touchAll()', 'every error becomes visible');
     const b = d.box(10, 104, 280, 'validate()', ['schema rules, custom rules,', 'async rules (awaited)']);
-    const r1 = d.box(360, 104, 200, 'Invalid: nothing is sent', ['xo-reveal, focus first field;', 'then xo-invalid fires'], { kind: 'err' });
+    const r1 = d.box(350, 104, 210, 'Invalid: nothing sent', ['xo-reveal, then focus;', 'then xo-invalid fires'], { kind: 'err' });
     const c = d.box(10, 210, 280, 'normalize(draft)', 'only request-schema fields; emptyAs');
-    const m = d.box(10, 300, 280, 'client.mutate(op, params, body)', 'optimistic, request, normalise, invalidate');
+    const m = d.box(10, 300, 280, 'client.mutate(op, params, body)', 'optimistic, send, normalise, invalidate');
     const ok = d.box(10, 404, 280, 'Success', ['edit: saved record = new baseline', 'create: the form resets'], { kind: 'ok' });
-    const r2 = d.box(360, 292, 200, 'Failure', ['error.fields land on their', 'paths; detail as a summary'], { kind: 'err' });
+    const r2 = d.box(350, 292, 210, 'Failure', ['error.fields land on their', 'paths; detail as a summary'], { kind: 'err' });
     d.line([[a.cx, a.b], [a.cx, b.y]]);
     d.line([[b.cx, b.b], [b.cx, c.y]], { label: 'valid', at: [158, 194], anchor: 'start' });
     d.line([[b.r, b.cy], [r1.x, r1.cy]], { label: 'invalid', at: [325, b.cy - 13] });
     d.line([[c.cx, c.b], [c.cx, m.y]]);
     d.line([[m.cx, m.b], [m.cx, ok.y]], { label: 'ok', at: [158, 389], anchor: 'start' });
-    d.line([[m.r, m.cy], [r2.x, r2.cy]], { label: 'XoongError', at: [325, m.cy - 13] });
+    d.line([[m.r, m.cy], [r2.x, r2.cy]], { label: 'error', at: [320, m.cy - 13] });
   },
 });
 
@@ -1029,7 +1031,7 @@ const buildSteps = diagram({
   draw(d) {
     const pages = d.box(10, 14, 320, 'HTML pages', 'every .html file under --root');
     const follow = d.box(10, 100, 320, 'Follow references', ['script, link, img; module imports;', 'CSS url(); --include files']);
-    const pkgs = d.box(390, 100, 170, 'Installed packages', ['@xoong/* from node_modules,', 'same URLs as in dev']);
+    const pkgs = d.box(390, 100, 170, 'Installed packages', ['@xoong/* from', 'node_modules']);
     const rewrite = d.box(10, 202, 320, 'Rewrite', ['bare imports to URLs, TypeScript stripped,', 'import map dropped, --base prefix']);
     const warn = d.box(10, 304, 320, 'Warn', ['what a strict policy blocks: inline script,', 'style attribute, style element']);
     const out = d.box(10, 406, 320, 'dist/', 'your files, rewritten, plus build-report.json', { kind: 'core' });
@@ -1148,3 +1150,141 @@ ${files([
 ])}
 `,
 };
+
+// ---- 7. tooling -----------------------------------------------------------------------------------------------------------------------
+
+const toolEngine = diagram({
+  id: 'tl-engine', label: 'Diagram: one check engine, three front ends', w: 590, h: 290, size: 'sm',
+  title: 'One check engine, three front ends',
+  desc: 'Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants.',
+  caption: 'A new rule is written once and appears in every front end with the same message and the same fix.',
+  draw(d) {
+    const i1 = d.box(10, 14, 200, 'operations.json', 'from xoong sync', { bh: 74 });
+    const i2 = d.box(10, 104, 200, 'syntax.js', 'every xo-* name', { bh: 74 });
+    const i3 = d.box(10, 194, 200, 'Your files', 'HTML, JS, TS', { bh: 74 });
+    const eng = d.box(250, 54, 150, 'check engine', ['checkHtml()', 'checkScript()', 'codes XO2xx'], { kind: 'core', bh: 190 });
+    const o1 = d.box(432, 14, 150, 'xoong check', 'CLI and CI', { bh: 74 });
+    const o2 = d.box(432, 104, 150, 'xoong-lsp', ['diagnostics,', 'completion, hover'], { bh: 74 });
+    const o3 = d.box(432, 194, 150, 'xoong-mcp', ['tools: check,', 'explain_error'], { bh: 74 });
+    [[i1, 100], [i2, 150], [i3, 200]].forEach(([b, y]) => d.line([[b.r, b.cy], [eng.x, y]]));
+    [[o1, 100], [o2, 150], [o3, 200]].forEach(([b, y]) => d.line([[eng.r, y], [b.x, b.cy]]));
+  },
+});
+
+const testLayers = diagram({
+  id: 'tl-tests', label: 'Diagram: the layers of tests', w: 560, h: 330, size: 'sm',
+  title: 'The layers of tests',
+  desc: 'Four layers of tests, from the cheapest to the most realistic. Unit tests run in Node and cover signals, the store, the client, the form model, the CLI and the OpenAPI analysis. Screen tests run in happy-dom with mount and mockApi on a real DOM and a fake network. Real-browser tests drive Chromium for templates, the router, controls, the strict-CSP build and a two-tab end-to-end run. Documentation site tests build the site under a project path and check the CSP, axe, focus indicators and sideways scroll at 390 pixels.',
+  caption: 'Four layers. Cheap and fast on top, realistic at the bottom; each catches what the one above cannot.',
+  draw(d) {
+    d.box(10, 14, 540, 'Unit tests (Node)', 'signals, store, client, form model, CLI, OpenAPI analysis');
+    d.box(10, 94, 540, 'Screen tests (happy-dom)', 'mount() and mockApi(): a real DOM, a fake network');
+    d.box(10, 174, 540, 'Real-browser tests (Chromium)', 'templates, router, controls, strict-CSP build, two-tab end to end', { kind: 'soft' });
+    d.box(10, 254, 540, 'Documentation site tests', 'built under /xoong with the CSP: axe, focus indicators, 390 px', { kind: 'core' });
+  },
+});
+
+const CHECK_OUT = `
+users.html:3:13  error XO201  unknown operation "POST /user/{id}/disable" (closest: "POST /users/{id}/disable")
+    fix: Use "POST /users/{id}/disable"
+
+1 files, 1 errors, 0 warnings`;
+
+const MCP_CONFIG = `
+{ "mcpServers": { "xoong": { "command": "npx", "args": ["xoong-mcp"] } } }`;
+
+const EDITOR_CONFIG = `
+{ "html.customData": ["./.xoong/xoong.html-data.json"] }`;
+
+const TEST_JS = `
+import { mount, mockApi } from '@xoong/test';
+import table from '../.xoong/operations.json' with { type: 'json' };
+
+const api = mockApi(table, { listUsers: () => [{ id: 1, name: 'Ada' }] });   // keyed by operationId or "METHOD /path"
+const screen = await mount('<xo-view get="/users"><li xo-each=".">{name}</li></xo-view>', { api });
+
+screen.texts('li');            // ['Ada']
+await screen.click('button');  // clicks, then waits until no request is pending
+await screen.push({ type: 'patch', entity: 'User', id: 1, path: '/name', value: 'Ada L.', version: 2 });
+api.callsOf('listUsers');      // what the app really asked for
+api.unhandled;                 // [] means nothing unexpected was called`;
+
+const tooling = {
+  file: 'arch-tooling.html', section: 'docs', group: 'Architecture', nav: 'Tooling and tests', title: 'Tooling and tests',
+  description: 'The check engine behind xoong check, the language server and the MCP server, the test helpers, the layers of tests, and how this site is generated.',
+  body: `
+<h1>Tooling and tests</h1>
+<p class="lead">The tools exist so that a mistake is caught where it is made, with a message that contains the fix. One rule engine serves the command line, the editor and AI assistants, and the tests run the real framework with only the network replaced.</p>
+
+<h2>One check engine</h2>
+${toolEngine}
+<p>${c('xoong check <files or folders>')} lints screens against your API. The engine is ${c('checkHtml(source, table, file)')} for HTML and ${c('checkScript(source, table, file)')} for JavaScript and TypeScript. It parses HTML with ${c('parse5')} and keeps exact line and column. In scripts it reads the HTML inside ${c('html`...`')} templates and the operation named in a string passed to ${c('client.load')}, ${c('query')}, ${c('mutate')} or ${c('stream')}, on something that looks like a client (${c('client')}, ${c('apiClient')}, ${c('getClient()')}, ${c('xo')}); a name built at run time is not checked. It knows your operations from ${c('operations.json')} and the framework's names from ${c('syntax.js')}.</p>
+<p>Every finding has a stable code, a place, a message and a fix. The output, and the process exit code (1 when there is an error), are the same in the terminal and in CI:</p>
+${tabs('xoong check', [['Terminal', 'bash', CHECK_OUT]])}
+<table>
+<thead><tr><th>Codes</th><th>What they catch</th></tr></thead>
+<tbody>
+<tr><td>XO201 to XO204</td><td>an unknown operation (with the closest name), ${c('xo-click')} on a GET, ${c('get')} on a non-GET, a read or write method on the wrong kind of operation in JavaScript</td></tr>
+<tr><td>XO210, XO251 to XO253</td><td>a missing ${c('p-*')} for a path parameter; ${c('<xo-table>')} outside a view, or sorting, paging and filters that the operation has no query parameters for</td></tr>
+<tr><td>XO220, XO221, XO252, XO254, XO255</td><td>${c('xo-submit')} not on a form, an empty ${c('xo-each')} or ${c('xo-if')}, a ${c('<xo-form>')} with nothing it can draw or that can never satisfy the server, ${c('xo-selected')} or ${c('xo-select')} in the wrong place</td></tr>
+<tr><td>XO230</td><td>an ${c('xo-*')} element or attribute that xoong does not define (usually a typo, with the closest name)</td></tr>
+<tr><td>XO240, XO241</td><td>a button or link without an accessible name; ${c('xo-click')} on something a keyboard cannot reach</td></tr>
+<tr><td>XO260 to XO263</td><td>route paths, layouts, outlets and route parameters</td></tr>
+</tbody></table>
+<p>${c('xoong doctor openapi.json')} is the same idea for the document: ${c('XO1xx')} codes for what limits xoong, such as a missing ${c('operationId')} (XO110), no identity property (so records are not shared), an unresolved ${c('$ref')} (XO150), a union that cannot be told apart (XO160, XO161) or no documented errors (XO130). Warnings for one code are cut off after five unless you pass ${c('--all')}. ${c('xoong sync')} also reports the errors.</p>
+
+<h2>Editors: html-data and the language server</h2>
+<ul>
+<li><strong>${c('xoong.html-data.json')}.</strong> ${c('xoong sync')} writes it next to ${c('operations.json')}. Point VS Code's ${c('html.customData')} at it once and you get completion and hover for every ${c('xo-*')} element and attribute, and your real operation names inside ${c('xo-click')}, ${c('xo-submit')}, ${c('get')} and ${c('op')}. It needs no extension.</li>
+<li><strong>${c('xoong-lsp')}.</strong> A language server over stdio. It finds ${c('.xoong/operations.json')} from the workspace folder upwards and re-reads it when it changes. It offers diagnostics (the findings above, as you type), completion, hover, and a code action "use the closest operation". The message handling is a pure function of a message (${c('createLanguageServer')}), so it is tested without a process.</li>
+</ul>
+${tabs('Editor setup', [['VS Code settings', 'json', EDITOR_CONFIG]])}
+<p>Not yet: a VS Code extension, lint presets for ESLint and Stylelint, and SARIF output.</p>
+
+<h2>For AI assistants: llms.txt and the MCP server</h2>
+<p>${c('llms.txt')}, at the root of the repository and on this site, is the whole public API in about 1,800 tokens, with the rules an assistant must follow. A test keeps it honest: it must stay under the budget, name only commands that exist, and mention exactly the ${c('xo-*')} names the code defines.</p>
+<p>${c('xoong-mcp')} is a Model Context Protocol server: JSON-RPC 2.0 over stdio with one message per line, written without an SDK. It has five tools, which make a loop: ${c('get_spec')} (the ${c('llms.txt')}), ${c('list_operations')} (the real names from ${c('operations.json')}), write the screen, ${c('check')} (HTML or script source in, findings out), fix from the message; ${c('explain_error')} says what a code means; ${c('search_docs')} searches a docs folder. A test makes sure ${c('explain_error')} covers every code that ${c('check')} can print. A ${c('scaffold')} tool is not built yet.</p>
+${tabs('MCP', [['Settings', 'json', MCP_CONFIG]])}
+
+<h2>@xoong/test</h2>
+<p>A screen test renders real markup, with the real data layer, against a fake network. That is the only seam: <strong>mock the network, never the data layer</strong>, because the cache, the store and invalidation are part of what you are testing.</p>
+<ul>
+<li>${c('mockApi(table, handlers)')} builds a ${c('fetch')} replacement from ${c('operations.json')}. It matches the method and the path, and calls your handler with ${c('{ params, query, body }')}. Return data (answered 200) or ${c('respond(status, body)')}. An operation without a handler answers 404 and is listed in ${c('api.unhandled')}. ${c('api.calls')}, ${c('callsOf(id)')} and ${c('on(id, handler)')} are there too.</li>
+<li>${c('mount(html, { api })')} configures the real client with that ${c('fetch')} (no retries, queries kept for ever) and a fake ${c('EventSource')}, renders the markup into a div, and waits until everything has settled. The ${c('screen')} has ${c('$')}, ${c('$$')}, ${c('text')}, ${c('texts')}, ${c('click')}, ${c('submit')}, ${c('push(event)')} for live events, ${c('settle')}, ${c('errors')} (the ${c('xo-error')} events seen) and ${c('unmount')}.</li>
+<li>"Settled" means no request in flight, checked twice a tick apart, which is why there is no ${c('await')} roulette.</li>
+</ul>
+${tabs('A screen test', [['JavaScript', 'js', TEST_JS]])}
+
+<h2>The test strategy</h2>
+${testLayers}
+<table>
+<thead><tr><th>Layer</th><th>How it runs</th><th>What it is for</th></tr></thead>
+<tbody>
+<tr><td>Unit</td><td>${c('*.test.mjs')}, Node</td><td>pure logic: signals, the store and normalisation, the client (cache, invalidation, retry, errors, streams), the form model, the OpenAPI analysis, the CLI. The corpus tool also runs real-world OpenAPI documents through the analysis and checks that the generated types compile.</td></tr>
+<tr><td>Screens</td><td>${c('*.spec.mjs')}, happy-dom</td><td>${c('mount')} and ${c('mockApi')} flows: rendering, actions, errors, live updates, forms. Fast, and measured for coverage. Many cover the same behaviour as the real-browser tests, so each environment checks the other.</td></tr>
+<tr><td>Real browser</td><td>${c('*.test.mjs')} that launch Chromium through Playwright (Firefox or WebKit with ${c('XOONG_BROWSER')})</td><td>what happy-dom cannot do: layout, focus, native ${c('<dialog>')} and popover details, templates against a fake backend over HTTP and server-sent events, the strict-CSP build, and an end-to-end run of ${c('xoong dev')} with two tabs seeing a live update.</td></tr>
+<tr><td>Docs site</td><td>one test that builds ${c('site/')} under ${c('/xoong')}</td><td>every page loads under the strict policy with no violation or error; axe (WCAG 2.0 and 2.1, A and AA) finds nothing on any page in four palette and light or dark combinations; a tab through five main pages measures every focus indicator against what surrounds it (3:1, WCAG 1.4.11), which axe cannot do; no page scrolls sideways at 390 px; menus and dialogs are checked in their open state.</td></tr>
+<tr><td>Architecture</td><td>${c('test/architecture.test.mjs')}</td><td>the promises of the design (see <a href="arch-overview.html">Overview</a> and <a href="arch-build.html">Build and delivery</a>).</td></tr>
+</tbody></table>
+<p>The runner is Vitest with two projects, ${c('logic')} (Node) and ${c('screens')} (happy-dom). There is also a first-attempt-correctness benchmark in ${c('tools/benchmark')}: four tasks, scored by a script, to check that an assistant with only ${c('llms.txt')} writes working screens. It has a first small measurement and is not a rate.</p>
+
+<h2>This site is generated</h2>
+<p>The pages of this documentation are JavaScript objects (${c('file')}, ${c('group')}, ${c('title')}, ${c('body')}) in ${c('tools/site/')}. ${c('npm run site')} writes ${c('site/*.html')} from them with one layout function; the architecture test fails when a page on disk differs from what the generator writes. The generator makes the "On this page" list from the ${c('h2')} headings, highlights code while it writes the page, and shows each live example's markup both as the running preview and as the code tab, so the two cannot drift apart. Some pages come from the design kit in ${c('design/brand-kit')}. The diagrams on these Architecture pages are inline SVG with a title and a text description, drawn with the page's own colour tokens so they follow the palette and dark mode. The built site is served by the same strict policy as any xoong app, and the site test above checks it.</p>
+
+<h2>Where to look in the code</h2>
+${files([
+  ['packages/cli/src/check.js', 'the rules and their codes'],
+  ['packages/cli/src/openapi.js', 'the analysis and the ' + c('doctor') + ' problems'],
+  ['packages/cli/src/html-data.js', 'the editor data, written by ' + c('sync')],
+  ['packages/lsp/src/server.js, cli.js', 'the language server and its stdio framing'],
+  ['packages/mcp/src/server.js', 'the five tools and ' + c('EXPLANATIONS')],
+  ['packages/test/src/index.js', c('mockApi') + ' and ' + c('mount')],
+  ['vitest.config.mjs', 'the two projects and the coverage thresholds'],
+  ['tools/axe.mjs, tools/focus.mjs, tools/browser.mjs', 'the accessibility and browser helpers'],
+  ['tools/site.mjs, tools/site/', 'the site generator'],
+  ['docs/testing.md, docs/ai-integration.md, docs/editor-integration.md', 'the longer notes'],
+])}
+`,
+};
+
+export const architecturePages = [overview, dataFlow, forms, rendering, routing, build, tooling];

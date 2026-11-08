@@ -64,6 +64,14 @@
     <a href="richtext.html">Rich text</a>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
     <a href="tabs.html">Tabs</a>
@@ -92,6 +100,14 @@
       <a href="richtext.html">Rich text</a>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
       <a href="tabs.html">Tabs</a>
@@ -201,7 +217,7 @@ xo-carousel .xo-carousel-next { grid-column: <span class="tok-n">3</span>; grid-
 xo-carousel .xo-carousel-dots { grid-column: <span class="tok-n">2</span>; grid-row: <span class="tok-n">2</span>; justify-self: center; }
 xo-carousel .xo-carousel-count { grid-column: <span class="tok-n">2</span>; grid-row: <span class="tok-n">2</span>; justify-self: end; }</code></pre></section>
 </xo-tabs>
-<table class="props">
+<div class="table-wrap" tabindex="0"><table class="props">
 <thead><tr><th>API</th><th>What it does</th></tr></thead>
 <tbody>
 <tr><td><code>items</code></td><td>Slides visible at once (default 1; <code>1.15</code> lets the next one peek)</td></tr>
@@ -209,7 +225,7 @@ xo-carousel .xo-carousel-count { grid-column: <span class="tok-n">2</span>; grid
 <tr><td><code>loop</code>, <code>autoplay</code></td><td>Next at the end returns to the first; move on by itself every n milliseconds</td></tr>
 <tr><td><code>index</code>, <code>count</code>, <code>next()</code>, <code>prev()</code>, <code>goTo(i)</code>, <code>play()</code>, <code>pause()</code></td><td>Control it from code; <code>index</code> is the first visible slide</td></tr>
 <tr><td><code>xo-carousel-change</code></td><td>Fires with <code>{ index, count }</code></td></tr>
-</tbody></table>
+</tbody></table></div>
 <p>Not included on purpose: crossfade and 3D styles, an endless loop made of cloned slides, and a continuously scrolling logo strip. They need a different mechanism than scroll snap, and the last two are bad for people who use a keyboard or a screen reader; a CSS animation does the logo strip well.</p>
 
 <nav class="pager" aria-label="Pages"><a rel="prev" href="combobox.html"><small>Previous</small><span>Combobox and tags</span></a><a rel="next" href="own-control.html"><small>Next</small><span>Your own control</span></a></nav>

@@ -63,6 +63,14 @@
     <a href="richtext.html">Rich text</a>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
     <h2>Controls</h2>
     <a href="controls.html">Overview</a>
     <a href="tabs.html">Tabs</a>
@@ -91,6 +99,14 @@
       <a href="richtext.html">Rich text</a>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
       <h2>Controls</h2>
       <a href="controls.html">Overview</a>
       <a href="tabs.html">Tabs</a>
@@ -238,10 +254,10 @@
 <div class="example">
   <div class="example-head"><div role="tablist"><button role="tab" aria-selected="true" tabindex="0">Preview</button><button role="tab" aria-selected="false" tabindex="-1">HTML</button></div><div class="actions-end"><button class="ghost icon-only sm" aria-label="Copy the code" title="Copy"><svg class="icon " aria-hidden="true"><use href="#i-copy"/></svg></button></div></div>
   <div class="preview"><xo-view get="listPeople">
-      <div class="xo-table"><!--xo-if--><div class="xo-filters"><input type="search" xo-param="name" placeholder="Search by name" aria-label="Search by name"></div><table>
+      <div class="xo-table"><!--xo-if--><div class="xo-filters"><input type="search" xo-param="name" placeholder="Search by name" aria-label="Search by name"></div><div class="table-wrap" tabindex="0"><table>
   <thead><tr><th scope="col"><input type="checkbox" xo-select="all:items" aria-label="Select all rows" xo-t="aria-label:xoong.table.selectAll"></th><th scope="col"><button type="button" xo-param="sort~=name">name</button></th><th scope="col"><button type="button" xo-param="sort~=email">E-mail</button></th><th scope="col"><button type="button" xo-param="sort~=role">role</button></th><th scope="col"><span class="xo-visually-hidden" xo-t="xoong.table.actions">Actions</span></th></tr></thead>
   <tbody><!--xo-each--><tr><td><input type="checkbox" xo-select="" aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td><td>Ada Lovelace</td><td>ada@example.org</td><td><span class="badge">admin</span></td><td class="xo-actions"><button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button></td></tr><tr><td><input type="checkbox" xo-select="" aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td><td>Grace Hopper</td><td>grace@example.org</td><td><span class="badge">editor</span></td><td class="xo-actions"><button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button></td></tr><tr><td><input type="checkbox" xo-select="" aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td><td>Edsger Dijkstra</td><td>edsger@example.org</td><td><span class="badge">viewer</span></td><td class="xo-actions"><button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button></td></tr><tr><td><input type="checkbox" xo-select="" aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td><td>Barbara Liskov</td><td>barbara@example.org</td><td><span class="badge">editor</span></td><td class="xo-actions"><button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button></td></tr><tr><td><input type="checkbox" xo-select="" aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td><td>Donald Knuth</td><td>donald@example.org</td><td><span class="badge">viewer</span></td><td class="xo-actions"><button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button></td></tr><!--/xo-each--></tbody>
-</table>
+</table></div>
 <!--xo-if-->
 <nav class="xo-pager" aria-label="Pagination" xo-t="aria-label:xoong.table.pagination">
   <!--xo-if--><span class="xo-range" xo-t="xoong.table.range">1–5 of 8</span>

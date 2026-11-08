@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rendering model · xoong</title>
+  <meta name="description" content="Signals, html templates, XoElement and XoControl, why xoong uses the Light DOM without a virtual DOM, and how xo-view expands your markup.">
+  <meta property="og:title" content="Rendering model · xoong">
+  <meta property="og:description" content="Signals, html templates, XoElement and XoControl, why xoong uses the Light DOM without a virtual DOM, and how xo-view expands your markup.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Rendering</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html" aria-current="page">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html" aria-current="page">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Rendering</span></div>
+
+<h1>Rendering model</h1>
+<p class="lead">xoong draws nothing twice. A change to a signal wakes the few effects that read it, and each effect writes one DOM node. There is no virtual DOM to diff and no tree to re-render.</p>
+
+<h2 id="signals">Signals</h2>
+<p>All of reactivity is five functions in <code>@xoong/core</code>.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: how a signal change reaches the DOM">
+<svg class="dg dg-sm" viewBox="0 0 590 360" role="img" aria-labelledby="rn-graph-t rn-graph-d">
+<title id="rn-graph-t">How a signal change reaches the DOM</title>
+<desc id="rn-graph-d">Two signals, first and last, feed a computed value, full, which is calculated lazily and cached. Two effects read the computed value: one writes a text node and one writes the class attribute. Each effect updates only its own DOM node. A separate box notes that batch groups several writes so that the effects run once, at the end.</desc>
+<defs><marker id="rn-graph-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="170" height="58" rx="8"/><text class="dg-t" x="95" y="36">first</text><text class="dg-sub" x="95" y="56">signal("Ada")</text></g>
+<g class="dg-node"><rect class="dg-box" x="200" y="14" width="170" height="58" rx="8"/><text class="dg-t" x="285" y="36">last</text><text class="dg-sub" x="285" y="56">signal("Lovelace")</text></g>
+<g class="dg-node"><rect class="dg-box" x="95" y="104" width="190" height="58" rx="8"/><text class="dg-t" x="190" y="126">full</text><text class="dg-sub" x="190" y="146">computed(): lazy, cached</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="194" width="170" height="58" rx="8"/><text class="dg-t" x="95" y="216">effect</text><text class="dg-sub" x="95" y="236">sets node.data</text></g>
+<g class="dg-node"><rect class="dg-box" x="200" y="194" width="170" height="58" rx="8"/><text class="dg-t" x="285" y="216">effect</text><text class="dg-sub" x="285" y="236">sets class attribute</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="284" width="360" height="58" rx="8"/><text class="dg-t" x="190" y="306">DOM</text><text class="dg-sub" x="190" y="326">a text node and an attribute change; nothing else</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-soft" x="398" y="104" width="180" height="74" rx="8"/><text class="dg-t" x="488" y="126">batch(fn)</text><text class="dg-sub" x="488" y="146">groups writes: effects</text><text class="dg-sub" x="488" y="162">run once at the end</text></g>
+<path class="dg-line" d="M95 72 L95 88 L150 88 L150 104" marker-end="url(#rn-graph-a)"/>
+<path class="dg-line" d="M285 72 L285 88 L230 88 L230 104" marker-end="url(#rn-graph-a)"/>
+<path class="dg-line" d="M150 162 L150 178 L95 178 L95 194" marker-end="url(#rn-graph-a)"/>
+<path class="dg-line" d="M230 162 L230 178 L285 178 L285 194" marker-end="url(#rn-graph-a)"/>
+<path class="dg-line" d="M95 252 L95 284" marker-end="url(#rn-graph-a)"/>
+<path class="dg-line" d="M285 252 L285 284" marker-end="url(#rn-graph-a)"/>
+</svg>
+</div>
+<p class="hint">A write to a signal marks what read it. Only the effects that depend on it re-run, and each writes one node.</p>
+</figure>
+<ul>
+<li><code>signal(v)</code> holds a value. Read it with <code>.value</code> (tracked) or <code>.peek()</code> (not tracked); write with <code>.value =</code> or <code>.update(fn)</code>. Writing a value that is the same by <code>Object.is</code> does nothing.</li>
+<li><code>computed(fn)</code> is a derived value. It is lazy (it runs when read), cached until a signal it read changes, and lets go of its sources when nothing watches it.</li>
+<li><code>effect(fn)</code> runs now and again when a signal it read changes. It may return a cleanup function. It returns a function that disposes it. An effect is for side effects: <strong>never fetch in one</strong>. Declare the read on a view instead.</li>
+<li><code>batch(fn)</code> groups writes. Outside a batch each write flushes the effects it affects at once; inside, they flush once when the outermost batch ends.</li>
+<li><code>untracked(fn)</code> reads without subscribing.</li>
+</ul>
+<p>Two safety nets: an effect that keeps writing a signal it reads is stopped after 10,000 rounds with an error that says so, and when an effect throws, the others still run; the errors are raised together afterwards.</p>
+<xo-tabs label="Signals" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { signal, computed, effect, batch } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
+
+<span class="tok-k">const</span> first = signal(<span class="tok-s">'Ada'</span>);
+<span class="tok-k">const</span> last = signal(<span class="tok-s">'Lovelace'</span>);
+<span class="tok-k">const</span> full = computed(() =&gt; first.value + <span class="tok-s">' '</span> + last.value);   <span class="tok-c">// lazy, cached</span>
+
+<span class="tok-k">const</span> stop = effect(() =&gt; { document.title = full.value; });     <span class="tok-c">// runs now, and again when full changes</span>
+
+batch(() =&gt; { first.value = <span class="tok-s">'Augusta'</span>; last.value = <span class="tok-s">'King'</span>; });   <span class="tok-c">// one run of the effect, not two</span>
+stop();                                                           <span class="tok-c">// a returned function disposes it</span></code></pre></section>
+</xo-tabs>
+
+<h2 id="templates">Templates</h2>
+<p><code>html</code> is a tagged template. The strings of one call site are parsed once into a <code>&lt;template&gt;</code> and cloned for each render; the values are bound to the cloned nodes. The bindings are the whole language:</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>You write</th><th>It does</th></tr></thead>
+<tbody>
+<tr><td><code>${() =&gt; x.value}</code> as a child</td><td>An effect owns that spot. A function is reactive; a plain value is written once. Arrays, nodes and nested <code>html</code> results work.</td></tr>
+<tr><td><code>class=${() =&gt; ...}</code></td><td>A reactive attribute. <code>null</code> or <code>false</code> removes it; <code>true</code> sets it empty.</td></tr>
+<tr><td><code>?hidden=${() =&gt; ...}</code></td><td>A boolean attribute (<code>toggleAttribute</code>).</td></tr>
+<tr><td><code>.value=${v}</code></td><td>A DOM property, with its case kept.</td></tr>
+<tr><td><code>@click=${fn}</code></td><td>An event listener, removed on dispose.</td></tr>
+<tr><td><code>style:--age=${() =&gt; ...}</code></td><td>A custom property set through the CSS object model, so it works under a strict CSP that blocks <code>style=""</code>.</td></tr>
+</tbody></table></div>
+<p>An attribute value must be exactly one expression. Text mixed with <code>${}</code> inside an attribute is an error with a message that says so. When a reactive child function runs again, its region is cleared and drawn again; reusing rows by key is what <code>xo-each</code> does in <code>&lt;xo-view&gt;</code>.</p>
+
+<h2 id="xoelement">XoElement</h2>
+<p><code>XoElement</code> is the base class of every xoong element. <code>static props</code> lists typed properties; each becomes an observed attribute (<code>maxItems</code> is <code>max-items</code>) and a signal.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Type</th><th>From the attribute</th></tr></thead>
+<tbody>
+<tr><td><code>String</code></td><td>its text, <code>""</code> when absent</td></tr>
+<tr><td><code>Number</code></td><td><code>Number(text)</code>, 0 when absent</td></tr>
+<tr><td><code>Boolean</code></td><td>true when present, unless it is <code>"false"</code></td></tr>
+</tbody></table></div>
+<ul>
+<li>Reading <code>this.name</code> inside a template function or an effect is tracked, so the right nodes update when the attribute changes. The flow is one way: an attribute sets the property; setting the property from code does not write the attribute back. A property set before the element was upgraded is kept.</li>
+<li>Implement <code>render()</code> only when the element <em>owns</em> its content: it is drawn into the element, replacing the children. To enhance HTML that is already there (server-rendered, or written by you), implement <code>connected()</code> instead. <code>ready()</code> resolves when the parser has reached the end of the document, for children that may not exist yet.</li>
+<li><code>this.effect(fn)</code> is an effect that is disposed when the element is removed. <code>emit(name, detail)</code> fires a bubbling, composed <code>CustomEvent</code>.</li>
+<li><code>define(tag, class)</code> registers the element (once; calling it again is harmless) and installs the property accessors.</li>
+</ul>
+<xo-tabs label="An element" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { XoElement, html, define } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
+
+<span class="tok-k">class</span> UserCard <span class="tok-k">extends</span> XoElement {
+  static props = { name: String, age: Number, vip: Boolean };   <span class="tok-c">// attributes name, age, vip</span>
+
+  render() {                                                    <span class="tok-c">// this element owns its content</span>
+    <span class="tok-k">return</span> html<span class="tok-s">`
+      &lt;h3 class=${() =&gt; (this.vip ? 'vip' : '')}&gt;${() =&gt; this.name}&lt;/h3&gt;
+      &lt;p ?hidden=${() =&gt; !this.age}&gt;Age ${() =&gt; this.age}&lt;/p&gt;
+      &lt;button @click=${() =&gt; this.emit('card-open', { name: this.name })}&gt;Open&lt;/button&gt;
+      &lt;div style:--age=${() =&gt; this.age}&gt;&lt;/div&gt;`</span>;
+  }
+}
+define(<span class="tok-s">'user-card'</span>, UserCard);</code></pre></section>
+</xo-tabs>
+
+<h2 id="xocontrol">XoControl</h2>
+<p><code>XoControl</code> extends <code>XoElement</code> for things that act like a form field: the rich text editor, the combobox, a tag input, your own image picker. It makes the element a form-associated custom element through <code>ElementInternals</code>, so it behaves like a native input in a <code>&lt;form&gt;</code>.</p>
+<ul>
+<li><strong>Value.</strong> <code>value</code> may be anything; <code>serialize(value)</code> says what the form submits (a string, a file, <code>FormData</code>, or nothing). It appears in <code>FormData</code> and resets with the form.</li>
+<li><strong>Two ways to set it.</strong> <code>setValue(v)</code> (and the <code>value</code> property) is like <code>input.value = x</code>: no events, and the form model is not told. <code>userInput(v)</code> is for the person's change: it sets the value and fires <code>input</code>, which is what the form model listens for. <code>userChange()</code> fires <code>change</code>.</li>
+<li><strong>State as signals:</strong> <code>dirty</code> (against the initial value), <code>pristine</code>, <code>touched</code> (focus left the control), <code>valid</code>. They are mirrored as the attributes <code>data-dirty</code>, <code>data-touched</code> and <code>data-invalid</code>, so CSS can use them. <code>markPristine()</code> makes the current value the new baseline.</li>
+<li><strong>Validation.</strong> <code>required</code>, your <code>validate(value)</code> hook (return a message, or <code>""</code>), <code>setCustomValidity()</code>, <code>checkValidity()</code> and <code>reportValidity()</code>, passed on to the browser through <code>internals.setValidity</code>. A disabled <code>fieldset</code> disables it.</li>
+<li>Where <code>ElementInternals</code> is missing (older DOMs, happy-dom) the control keeps its own value, validity and state; it only does not appear in a native <code>FormData</code>. <code>&lt;xo-form&gt;</code> and the form binder read controls through these properties, so tests in happy-dom work.</li>
+</ul>
+<xo-tabs label="A control" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { XoControl, html, define } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
+
+<span class="tok-k">class</span> StarRating <span class="tok-k">extends</span> XoControl {
+  static props = { ...XoControl.props, max: Number };
+  render() {
+    <span class="tok-k">return</span> html<span class="tok-s">`&lt;button type="button" @click=${() =&gt; this.userInput(Number(this.value) + 1)}&gt;+&lt;/button&gt;`</span>;
+  }
+  validate(value) { <span class="tok-k">return</span> Number(value) &gt; <span class="tok-k">this</span>.max ? <span class="tok-s">'Too many stars'</span> : <span class="tok-s">''</span>; }   <span class="tok-c">// '' means valid</span>
+}
+define(<span class="tok-s">'star-rating'</span>, StarRating);</code></pre></section>
+</xo-tabs>
+
+<h2 id="why-light-dom-and-why-no-virtual-dom">Why Light DOM, and why no virtual DOM</h2>
+<ul>
+<li><strong>Light DOM.</strong> Elements draw into the ordinary document. Your global CSS and tokens reach them; <code>querySelector</code>, axe and analytics see what the person sees; a form control participates in forms without a bridge. The cost is that collisions are possible: xoong answers with a tag prefix, cascade layers and <code>xoong check</code>, not walls. See <a href="styling.html">Styling</a>.</li>
+<li><strong>No virtual DOM.</strong> A binding points at one node. When a signal changes, the effects that read it write that node: there is no second tree to build and compare. So an update touches only the node that reads the signal and leaves the rest of the page alone, including content that you or the person put there.</li>
+<li><strong>Same markup on the server.</strong> Because the DOM is the output, prerendering produces plain HTML and the browser needs no hydration step. See <a href="arch-build.html">Build and delivery</a>.</li>
+</ul>
+
+<h2 id="how-xo-view-expands-your-markup">How xo-view expands your markup</h2>
+<p><code>&lt;xo-view&gt;</code> is the one element that reads markup as a language. It takes its children as a template, draws a copy, and binds the copy.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the life of an xo-view">
+<svg class="dg dg-sm" viewBox="0 0 560 520" role="img" aria-labelledby="rn-view-t rn-view-d">
+<title id="rn-view-t">The life of an xo-view</title>
+<desc id="rn-view-d">Six steps, top to bottom. 1. connected: the view waits until the page is parsed. 2. start: it saves its markup once and reads its p-* params. 3. draw: it clones the markup and binds every node. 4. select the query: an effect over get and the params releases the old query and retains the new one. 5. live: when params, the store or the query status change, only the bound nodes update. 6. disconnected: the effects are disposed, the query is released and the stream is closed.</desc>
+<defs><marker id="rn-view-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="60" y="14" width="440" height="58" rx="8"/><text class="dg-t" x="280" y="36">connected</text><text class="dg-sub" x="280" y="56">waits until the page is parsed</text></g>
+<g class="dg-node"><rect class="dg-box" x="60" y="100" width="440" height="58" rx="8"/><text class="dg-t" x="280" y="122">start</text><text class="dg-sub" x="280" y="142">saves the markup once, reads p-* params</text></g>
+<path class="dg-line" d="M280 72 L280 100" marker-end="url(#rn-view-a)"/>
+<g class="dg-node"><rect class="dg-box" x="60" y="186" width="440" height="58" rx="8"/><text class="dg-t" x="280" y="208">draw</text><text class="dg-sub" x="280" y="228">clones the markup, binds every node</text></g>
+<path class="dg-line" d="M280 158 L280 186" marker-end="url(#rn-view-a)"/>
+<g class="dg-node"><rect class="dg-box" x="60" y="272" width="440" height="58" rx="8"/><text class="dg-t" x="280" y="294">select the query</text><text class="dg-sub" x="280" y="314">effect over get + params: release, retain</text></g>
+<path class="dg-line" d="M280 244 L280 272" marker-end="url(#rn-view-a)"/>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="60" y="358" width="440" height="58" rx="8"/><text class="dg-t" x="280" y="380">live</text><text class="dg-sub" x="280" y="400">a change updates only the bound nodes</text></g>
+<path class="dg-line" d="M280 330 L280 358" marker-end="url(#rn-view-a)"/>
+<g class="dg-node"><rect class="dg-box" x="60" y="444" width="440" height="58" rx="8"/><text class="dg-t" x="280" y="466">disconnected</text><text class="dg-sub" x="280" y="486">effects disposed, query released, stream closed</text></g>
+<path class="dg-line" d="M280 416 L280 444" marker-end="url(#rn-view-a)"/>
+</svg>
+</div>
+<p class="hint">The markup is kept as a template and drawn from it, so a view that is disconnected and connected again starts from the same source.</p>
+</figure>
+<xo-tabs label="Before and after" class="example">
+  <section xo-tab="You write"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listUsers"</span>&gt;
+  &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$loading"</span>&gt;Loading…&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/users/<span class="tok-i">{id}</span>"</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">li</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+  <section xo-tab="In the DOM"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listUsers"</span>&gt;
+  <span class="tok-c">&lt;!--xo-if--&gt;</span>
+  <span class="tok-c">&lt;!--xo-each--&gt;</span>
+  &lt;<span class="tok-t">li</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/users/1"</span>&gt;Ada&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">li</span>&gt;
+  &lt;<span class="tok-t">li</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/users/2"</span>&gt;Cy&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">li</span>&gt;
+  <span class="tok-c">&lt;!--/xo-each--&gt;</span>
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+</xo-tabs>
+<ul>
+<li><strong>Text.</strong> A text node with <code>{path}</code> gets one effect that sets its <code>data</code>. It is a text node, never HTML, so the data cannot inject markup. Missing values are empty; objects are shown as JSON; <code>{publishedAt | datetime}</code> formats with <code>Intl</code>.</li>
+<li><strong>Attributes.</strong> An attribute with <code>{path}</code> gets an effect that calls <code>setAttribute</code>. Interpolating into <code>on*</code> or <code>srcdoc</code> is refused (the attribute is removed and a message is logged). In a URL attribute (<code>href</code>, <code>src</code>, <code>action</code>, ...) any scheme other than relative, <code>http</code>, <code>https</code>, <code>mailto</code> or <code>tel</code> becomes <code>about:blank</code>, even when hidden with whitespace.</li>
+<li><strong><code>xo-each</code>.</strong> The element is the row template, bracketed by two comment markers. Rows are keyed by the entity reference (<code>User#1</code>) or, for plain values, by position, so a row is reused when its item moves and removed (its effects disposed) when its item goes. A deleted entity drops out. Inside a row, <code>$index</code>, <code>$n</code> (from 1) and <code>$i0</code>, <code>$i1</code> (one per nesting level) are available.</li>
+<li><strong><code>xo-if</code>.</strong> A comment marker stands where the element would be; the element is created and bound when the condition becomes true, and unbound and removed when it becomes false. <code>xo-if="!path"</code> negates, an empty array is false, and <code>xo-if="type=image"</code> or <code>status!=draft</code> compares with a literal.</li>
+<li><strong>Scope.</strong> <code>{name}</code> is looked up from the current item outwards to the view's root and its <code>p-*</code> params, so <code>{id}</code> in a row finds the row's <code>id</code> first. <code>{.}</code> is the item itself, <code>$loading</code>, <code>$error</code> and the like are variables of the view.</li>
+<li><strong>Template tags.</strong> <code>&lt;xo-table&gt;</code> and <code>&lt;xo-form&gt;</code> are not elements that draw themselves. They are expanders: before binding, each is replaced by the plain markup it describes, which is then bound like your own. If one throws (an unknown operation), a comment records it, <code>xo-error</code> fires, and the rest of the view still works.</li>
+<li><strong>Actions</strong> (<code>xo-click</code>, <code>xo-submit</code>, <code>xo-param</code>, <code>xo-refresh</code>, <code>xo-add</code>, ...) add event listeners on the element; see <a href="arch-data-flow.html">Data flow</a>.</li>
+<li><strong>Starting again.</strong> The markup is kept; every start clones it. A view that is disconnected and connected again starts from the same source, and a prerendered view, which keeps its original markup in a <code>&lt;template data-xo-template&gt;</code>, starts from that instead of its rendered rows.</li>
+</ul>
+
+<h2 id="where-to-look-in-the-code">Where to look in the code</h2>
+<ul>
+<li><code>packages/core/src/signals.js</code>: signals, computed, effects, batch</li>
+<li><code>packages/core/src/html.js</code>: template parsing and bindings</li>
+<li><code>packages/core/src/element.js</code>: <code>XoElement</code>, <code>define</code></li>
+<li><code>packages/core/src/control.js</code>: <code>XoControl</code></li>
+<li><code>packages/data/src/view.js</code>: <code>&lt;xo-view&gt;</code>: <code>bindNode</code>, <code>bindEach</code>, <code>bindIf</code>, the scope lookup</li>
+<li><code>docs/decisions/0002-light-dom-only.md</code>: why Light DOM</li>
+</ul>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="arch-forms.html"><small>Previous</small><span>Forms flow</span></a><a rel="next" href="arch-routing.html"><small>Next</small><span>Router</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#signals" aria-current="true">Signals</a></li><li><a href="#templates">Templates</a></li><li><a href="#xoelement">XoElement</a></li><li><a href="#xocontrol">XoControl</a></li><li><a href="#why-light-dom-and-why-no-virtual-dom">Why Light DOM, and why no virtual DOM</a></li><li><a href="#how-xo-view-expands-your-markup">How xo-view expands your markup</a></li><li><a href="#where-to-look-in-the-code">Where to look in the code</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

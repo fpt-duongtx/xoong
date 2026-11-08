@@ -39,7 +39,7 @@ test('the original markup is kept in a template, so the browser can render it ag
 
 test('xo-table is rendered by the same runtime that runs in the browser', async () => {
   const html = await renderPage(page('<xo-view get="/users"><xo-table columns="name"></xo-table></xo-view>'), { operations, fetch: api() });
-  assert.match(html, /<table>[\s\S]*<td>Bob<\/td>/);
+  assert.match(html, /<table>[\s\S]*<td[^>]*>Bob<\/td>/);
 });
 
 test('pages render one after another with their own data, and a stuck request times out with a clear error', async () => {

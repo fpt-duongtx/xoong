@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Architecture overview · xoong</title>
+  <meta name="description" content="The packages of xoong, what each one owns, the rule that keeps them apart, and what runs when.">
+  <meta property="og:title" content="Architecture overview · xoong">
+  <meta property="og:description" content="The packages of xoong, what each one owns, the rule that keeps them apart, and what runs when.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Layers</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html" aria-current="page">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html" aria-current="page">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Layers</span></div>
+
+<h1>Architecture overview</h1>
+<p class="lead">xoong is a stack of small packages. Each owns one job and imports only packages below it. The ones that run in the browser import nothing from outside xoong.</p>
+
+<h2 id="the-layers">The layers</h2>
+<p>The runtime is seven packages, plus <code>xoong</code>, one package that re-exports the common ones. They are plain ES modules with no build step: the browser loads the files you installed.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the runtime packages as layers">
+<svg class="dg dg-md" viewBox="0 0 640 372" role="img" aria-labelledby="ov-layers-t ov-layers-d">
+<title id="ov-layers-t">The runtime packages as layers</title>
+<desc id="ov-layers-d">At the bottom is @xoong/core. On the left, directly above it, is @xoong/data. On the right, directly above core, are @xoong/controls and @xoong/richtext, which import only core. Above data sit @xoong/forms and @xoong/i18n, which import core and data. At the top is @xoong/ui, which imports forms, data and core. Every arrow points downward, from a package to a package it imports: nothing imports upward.</desc>
+<defs><marker id="ov-layers-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="260" height="58" rx="8"/><text class="dg-t" x="140" y="36">@xoong/ui</text><text class="dg-sub" x="140" y="56">table, form, dialog, toast, router</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="108" width="125" height="58" rx="8"/><text class="dg-t" x="72.5" y="130">@xoong/forms</text><text class="dg-sub" x="72.5" y="150">model, binder</text></g>
+<g class="dg-node"><rect class="dg-box" x="145" y="108" width="125" height="58" rx="8"/><text class="dg-t" x="207.5" y="130">@xoong/i18n</text><text class="dg-sub" x="207.5" y="150">xo-t, t()</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="202" width="260" height="58" rx="8"/><text class="dg-t" x="140" y="224">@xoong/data</text><text class="dg-sub" x="140" y="244">client, cache, store, xo-view</text></g>
+<g class="dg-node"><rect class="dg-box" x="290" y="202" width="165" height="58" rx="8"/><text class="dg-t" x="372.5" y="224">@xoong/controls</text><text class="dg-sub" x="372.5" y="244">tabs, menu, combobox</text></g>
+<g class="dg-node"><rect class="dg-box" x="465" y="202" width="165" height="58" rx="8"/><text class="dg-t" x="547.5" y="224">@xoong/richtext</text><text class="dg-sub" x="547.5" y="244">xo-richtext</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="296" width="620" height="58" rx="8"/><text class="dg-t" x="320" y="318">@xoong/core</text><text class="dg-sub" x="320" y="338">signals, html templates, XoElement, XoControl</text></g>
+<path class="dg-line" d="M72.5 72 L72.5 108" marker-end="url(#ov-layers-a)"/>
+<path class="dg-line" d="M72.5 166 L72.5 202" marker-end="url(#ov-layers-a)"/>
+<path class="dg-line" d="M207.5 166 L207.5 202" marker-end="url(#ov-layers-a)"/>
+<path class="dg-line" d="M140 260 L140 296" marker-end="url(#ov-layers-a)"/>
+<path class="dg-line" d="M372.5 260 L372.5 296" marker-end="url(#ov-layers-a)"/>
+<path class="dg-line" d="M547.5 260 L547.5 296" marker-end="url(#ov-layers-a)"/>
+<text class="dg-sub dg-start" x="300" y="40">An arrow means "imports".</text>
+<text class="dg-sub dg-start" x="300" y="60">Nothing imports upward.</text>
+</svg>
+</div>
+<p class="hint">The runtime packages. An arrow means "imports"; a package may also import packages further down (ui imports data and core directly). Nothing imports upward.</p>
+</figure>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Package</th><th>Owns</th></tr></thead>
+<tbody>
+<tr><td><code>@xoong/core</code></td><td><code>signal</code>, <code>computed</code>, <code>effect</code>, <code>batch</code>, <code>untracked</code>; the <code>html</code> template tag; <code>XoElement</code> and <code>XoControl</code>; <code>define</code>; the <code>text()</code> hook that packages use to ask for words; the list of <code>xo-*</code> names (<code>syntax.js</code>) that the tools check against.</td></tr>
+<tr><td><code>@xoong/data</code></td><td>The client (<code>configure</code>, <code>getClient</code>, <code>createClient</code>), the query cache, the entity store, <code>derived</code>, the live-update stream, <code>XoongError</code>, and <code>&lt;xo-view&gt;</code> (the <code>@xoong/data/view</code> entry).</td></tr>
+<tr><td><code>@xoong/forms</code></td><td>The request-schema model, the form model (<code>createForm</code>) and the DOM binder (<code>attach</code>).</td></tr>
+<tr><td><code>@xoong/ui</code></td><td><code>&lt;xo-table&gt;</code>, <code>&lt;xo-form&gt;</code>, <code>&lt;xo-dialog&gt;</code>, <code>&lt;xo-toast&gt;</code>, <code>&lt;xo-router&gt;</code> with the <code>router</code> object, the confirm dialog, and <code>xoong.css</code>.</td></tr>
+<tr><td><code>@xoong/i18n</code></td><td><code>xo-t</code>, <code>t()</code>, <code>configureI18n</code>, the message format, locale-aware formats.</td></tr>
+<tr><td><code>@xoong/controls</code></td><td><code>&lt;xo-tabs&gt;</code>, <code>&lt;xo-menu&gt;</code>, <code>&lt;xo-combobox&gt;</code>, <code>&lt;xo-tags&gt;</code>, <code>&lt;xo-carousel&gt;</code>, the <code>xo-tooltip</code> attribute.</td></tr>
+<tr><td><code>@xoong/richtext</code></td><td><code>&lt;xo-richtext&gt;</code> and the HTML sanitiser it uses.</td></tr>
+<tr><td><code>xoong</code></td><td>One name to install: re-exports core, data, <code>data/view</code> and ui, and carries the <code>xoong</code> command.</td></tr>
+</tbody></table></div>
+
+<h2 id="the-dependency-rule">The dependency rule</h2>
+<p>A runtime package may import only the packages in its row below, and nothing else: no npm package, no Node built-in. This is checked on every test run by <code>test/architecture.test.mjs</code>, which reads each <code>package.json</code> and each source file.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Package</th><th>May import</th></tr></thead>
+<tbody>
+<tr><td><code>core</code></td><td>nothing</td></tr>
+<tr><td><code>data</code>, <code>controls</code>, <code>richtext</code></td><td><code>core</code></td></tr>
+<tr><td><code>forms</code>, <code>i18n</code></td><td><code>core</code>, <code>data</code></td></tr>
+<tr><td><code>ui</code></td><td><code>core</code>, <code>data</code>, <code>forms</code></td></tr>
+</tbody></table></div>
+<p>The same test also fails when <code>data</code> imports something from <code>core</code> that is not one of its public entries (<code>@xoong/core</code>, <code>/signals</code>, <code>/closest</code>, <code>/syntax</code>), when a runtime package imports tooling (<code>cli</code>, <code>server</code>, <code>mcp</code>, <code>test</code>), and when a pure-logic module touches <code>document</code> or <code>window</code> while it loads. That last rule keeps <code>signals.js</code> and everything in <code>data</code> except <code>view.js</code> importable from plain Node, which is how the tools and the prerenderer reuse them.</p>
+<p>How does a lower package use a higher one, then? It does not: the higher package <strong>registers</strong> itself into a seam the lower one provides. Importing <code>@xoong/forms</code> calls <code>setFormEngine()</code>; importing <code>@xoong/i18n</code> calls <code>setTranslator()</code>, <code>setTextProvider()</code> and <code>setLocaleSource()</code>; the router calls <code>setParamSource()</code> and <code>setUrlSync()</code>; <code>@xoong/ui</code> calls <code>setConfirm()</code>. Without the higher package the lower one still works, with a plain default (English text, the browser's <code>confirm()</code>, the History API directly).</p>
+<xo-tabs label="A seam" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// packages/forms/src/index.js: forms import data, so data cannot import forms.</span>
+<span class="tok-c">// forms registers itself, and every &lt;form xo-submit&gt; then uses the form model.</span>
+<span class="tok-k">import</span> { setFormEngine } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data/view'</span>;
+<span class="tok-k">import</span> { attach as attachForm } <span class="tok-k">from</span> <span class="tok-s">'./form-dom.js'</span>;
+setFormEngine({ attach: attachForm });</code></pre></section>
+</xo-tabs>
+
+<h2 id="the-tooling">The tooling</h2>
+<p>Tooling runs in Node (or a test runner) and is allowed to have dependencies: <code>@xoong/cli</code> uses <code>parse5</code> and <code>yaml</code>, <code>@xoong/server</code> uses <code>amaro</code> to strip TypeScript types, <code>@xoong/ssr</code> uses <code>happy-dom</code>. None of it ships to the browser.</p>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the tooling packages">
+<svg class="dg dg-sm" viewBox="0 0 590 376" role="img" aria-labelledby="ov-tooling-t ov-tooling-d">
+<title id="ov-tooling-t">The tooling packages</title>
+<desc id="ov-tooling-d">The xoong command (@xoong/cli) is used by the language server (xoong-lsp) and the MCP server (xoong-mcp), which both import it. The command imports @xoong/server for the dev server and the build. It loads @xoong/ssr only when you run xoong render, shown as a dashed arrow. @xoong/ssr imports the runtime packages. @xoong/test, the test helpers, also imports the runtime packages.</desc>
+<defs><marker id="ov-tooling-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="20" y="14" width="170" height="58" rx="8"/><text class="dg-t" x="105" y="36">xoong-mcp</text><text class="dg-sub" x="105" y="56">@xoong/mcp</text></g>
+<g class="dg-node"><rect class="dg-box" x="210" y="14" width="170" height="58" rx="8"/><text class="dg-t" x="295" y="36">xoong-lsp</text><text class="dg-sub" x="295" y="56">@xoong/lsp</text></g>
+<g class="dg-node"><rect class="dg-box" x="115" y="110" width="170" height="58" rx="8"/><text class="dg-t" x="200" y="132">xoong command</text><text class="dg-sub" x="200" y="152">@xoong/cli</text></g>
+<g class="dg-node"><rect class="dg-box" x="420" y="110" width="160" height="58" rx="8"/><text class="dg-t" x="500" y="132">test helpers</text><text class="dg-sub" x="500" y="152">@xoong/test</text></g>
+<g class="dg-node"><rect class="dg-box" x="20" y="206" width="170" height="58" rx="8"/><text class="dg-t" x="105" y="228">@xoong/server</text><text class="dg-sub" x="105" y="248">handler, Node adapters</text></g>
+<g class="dg-node"><rect class="dg-box" x="210" y="206" width="170" height="58" rx="8"/><text class="dg-t" x="295" y="228">@xoong/ssr</text><text class="dg-sub" x="295" y="248">prerender</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="20" y="302" width="560" height="58" rx="8"/><text class="dg-t" x="300" y="324">Runtime packages</text><text class="dg-sub" x="300" y="344">core, data, forms, ui, ...</text></g>
+<path class="dg-line" d="M105 72 L105 91 L150 91 L150 110" marker-end="url(#ov-tooling-a)"/>
+<path class="dg-line" d="M295 72 L295 91 L250 91 L250 110" marker-end="url(#ov-tooling-a)"/>
+<path class="dg-line" d="M150 168 L150 187 L105 187 L105 206" marker-end="url(#ov-tooling-a)"/>
+<path class="dg-line dg-dash" d="M250 168 L250 187 L295 187 L295 206" marker-end="url(#ov-tooling-a)"/>
+<text class="dg-lab dg-start" x="304" y="181">xoong render only</text>
+<path class="dg-line" d="M295 264 L295 302" marker-end="url(#ov-tooling-a)"/>
+<path class="dg-line" d="M500 168 L500 302" marker-end="url(#ov-tooling-a)"/>
+</svg>
+</div>
+<p class="hint">The tooling packages. Dashed: loaded only when needed. They run in Node or in a test runner, never in the browser.</p>
+</figure>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Package</th><th>Owns</th></tr></thead>
+<tbody>
+<tr><td><code>@xoong/cli</code></td><td>The <code>xoong</code> command: <code>sync</code>, <code>doctor</code>, <code>new</code>, <code>check</code>, <code>render</code>, <code>build</code>, <code>dev</code>, <code>i18n extract</code>, <code>i18n check</code>. Also the OpenAPI analysis and the <code>xoong check</code> rule engine.</td></tr>
+<tr><td><code>@xoong/server</code></td><td>One web-standard handler, <code>(Request) =&gt; Promise&lt;Response&gt;</code>: static files, API proxy, import map, TypeScript stripping. <code>@xoong/server/node</code> adds the Node file reader and HTTP server. It imports no other xoong package.</td></tr>
+<tr><td><code>@xoong/ssr</code></td><td><code>renderPage()</code>: prerender a page with its data, using the real <code>&lt;xo-view&gt;</code> on a happy-dom document.</td></tr>
+<tr><td><code>@xoong/test</code></td><td><code>mockApi()</code> and <code>mount()</code> for screen tests.</td></tr>
+<tr><td><code>@xoong/lsp</code>, <code>@xoong/mcp</code></td><td>The same checks as <code>xoong check</code>, for editors and for AI assistants.</td></tr>
+</tbody></table></div>
+<p>The stream gateway described in older design notes is not built yet. The server package today does static files, proxy, import map and type stripping.</p>
+
+<h2 id="three-contracts">Three contracts</h2>
+<p><strong>Light DOM.</strong> Elements draw into the ordinary DOM, so your CSS, your tests, axe and the browser's own tools see exactly what the person sees. There is no Shadow DOM (<a href="https://github.com/fpt-duongtx/xoong/blob/main/docs/decisions/0002-light-dom-only.md">decision record 0002</a>).</p>
+<p><strong>Plain CSS.</strong> xoong ships design tokens as custom properties (<code>--xo-color-*</code>, <code>--xo-radius</code>, ...) and a few class names. You write CSS. See <a href="styling.html">Styling</a>.</p>
+<p><strong>OpenAPI.</strong> Operation names, URLs, query parameters, entity identity, request schemas and error shapes come from your OpenAPI document. If the document cannot say something, <code>xoong doctor</code> tells you what to add, or a hints file says it for you without editing the backend's document. See <a href="arch-data-flow.html">Data flow</a>.</p>
+
+<h2 id="what-runs-when">What runs when</h2>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>When</th><th>Where</th><th>What</th></tr></thead>
+<tbody>
+<tr><td>Development, once per API change</td><td>Node</td><td><code>xoong sync</code> reads the OpenAPI document (a file or a URL; YAML, JSON, Swagger 2.0) and writes <code>.xoong/operations.json</code>, <code>api.d.ts</code> and <code>xoong.html-data.json</code>.</td></tr>
+<tr><td>Development</td><td>Node</td><td><code>xoong dev</code> serves the files, proxies the API and strips types; <code>xoong check</code> and the language server lint screens.</td></tr>
+<tr><td>Release</td><td>Node</td><td><code>xoong build</code> writes static, strict-CSP output; <code>xoong render</code> prerenders public pages.</td></tr>
+<tr><td>Always</td><td>Browser</td><td>All runtime packages. <code>operations.json</code> is plain JSON that your <code>main.js</code> imports. Nothing in the browser reads OpenAPI.</td></tr>
+</tbody></table></div>
+<p>A screen at runtime: the HTML arrives; the browser upgrades each <code>xo-*</code> element whose package you imported; <code>&lt;xo-view&gt;</code> waits until the page is parsed, then asks the client for its operation; the answer lands in the store; effects write exactly the DOM nodes that read it. There is no hydration step and no tree re-render. The next pages follow each part: <a href="arch-data-flow.html">data</a>, <a href="arch-forms.html">forms</a>, <a href="arch-rendering.html">rendering</a>, <a href="arch-routing.html">routing</a>, <a href="arch-build.html">build</a>, <a href="arch-tooling.html">tooling</a>.</p>
+
+<h2 id="where-to-look-in-the-code">Where to look in the code</h2>
+<ul>
+<li><code>test/architecture.test.mjs</code>: the dependency rule, import direction, size budgets, licence, <code>llms.txt</code> limits</li>
+<li><code>packages/*/package.json</code>: the declared dependencies of each package</li>
+<li><code>packages/forms/src/index.js, packages/i18n/src/index.js</code>: the registration seams in action</li>
+<li><code>packages/core/src/syntax.js</code>: the names of every <code>xo-*</code> element and attribute</li>
+<li><code>docs/decisions/</code>: the decision records (0001 to 0010)</li>
+</ul>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="styling.html"><small>Previous</small><span>Styling</span></a><a rel="next" href="arch-data-flow.html"><small>Next</small><span>Data flow</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#the-layers" aria-current="true">The layers</a></li><li><a href="#the-dependency-rule">The dependency rule</a></li><li><a href="#the-tooling">The tooling</a></li><li><a href="#three-contracts">Three contracts</a></li><li><a href="#what-runs-when">What runs when</a></li><li><a href="#where-to-look-in-the-code">Where to look in the code</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

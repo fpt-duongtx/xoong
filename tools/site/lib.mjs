@@ -119,7 +119,9 @@ ${side.replace(/^/gm, '    ')}
   // every h2 gets an id, and the right-hand rail lists them ("On this page")
   const used = new Set();
   const heads = [];
-  const bodyHtml = page.body.replace(/<h2>(.*?)<\/h2>/g, (_, inner) => {
+  // a table that is wider than the column scrolls inside its own frame (focusable, so the keyboard can scroll it)
+  const framed = page.body.replace(/(<div class="table-wrap"[^>]*>\s*)?(<table\b[\s\S]*?<\/table>)/g, (m, wrap, table) => (wrap ? m : `<div class="table-wrap" tabindex="0">${table}</div>`));
+  const bodyHtml = framed.replace(/<h2>(.*?)<\/h2>/g, (_, inner) => {
     const plain = inner.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, '');
     let id = plain.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
     for (let n = 2; used.has(id); n++) id = `${id.replace(/-\d+$/, '')}-${n}`;

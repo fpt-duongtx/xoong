@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tooling and tests · xoong</title>
+  <meta name="description" content="The check engine behind xoong check, the language server and the MCP server, the test helpers, the layers of tests, and how this site is generated.">
+  <meta property="og:title" content="Tooling and tests · xoong">
+  <meta property="og:description" content="The check engine behind xoong check, the language server and the MCP server, the test helpers, the layers of tests, and how this site is generated.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Tooling and tests</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html" aria-current="page">Tooling and tests</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html" aria-current="page">Tooling and tests</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Tooling and tests</span></div>
+
+<h1>Tooling and tests</h1>
+<p class="lead">The tools exist so that a mistake is caught where it is made, with a message that contains the fix. One rule engine serves the command line, the editor and AI assistants, and the tests run the real framework with only the network replaced.</p>
+
+<h2 id="one-check-engine">One check engine</h2>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: one check engine, three front ends">
+<svg class="dg dg-sm" viewBox="0 0 590 290" role="img" aria-labelledby="tl-engine-t tl-engine-d">
+<title id="tl-engine-t">One check engine, three front ends</title>
+<desc id="tl-engine-d">Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants.</desc>
+<defs><marker id="tl-engine-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="44">operations.json</text><text class="dg-sub" x="110" y="64">from xoong sync</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="104" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="134">syntax.js</text><text class="dg-sub" x="110" y="154">every xo-* name</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="194" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="224">Your files</text><text class="dg-sub" x="110" y="244">HTML, JS, TS</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="250" y="54" width="150" height="190" rx="8"/><text class="dg-t" x="325" y="126">check engine</text><text class="dg-sub" x="325" y="146">checkHtml()</text><text class="dg-sub" x="325" y="162">checkScript()</text><text class="dg-sub" x="325" y="178">codes XO2xx</text></g>
+<g class="dg-node"><rect class="dg-box" x="432" y="14" width="150" height="74" rx="8"/><text class="dg-t" x="507" y="44">xoong check</text><text class="dg-sub" x="507" y="64">CLI and CI</text></g>
+<g class="dg-node"><rect class="dg-box" x="432" y="104" width="150" height="74" rx="8"/><text class="dg-t" x="507" y="126">xoong-lsp</text><text class="dg-sub" x="507" y="146">diagnostics,</text><text class="dg-sub" x="507" y="162">completion, hover</text></g>
+<g class="dg-node"><rect class="dg-box" x="432" y="194" width="150" height="74" rx="8"/><text class="dg-t" x="507" y="216">xoong-mcp</text><text class="dg-sub" x="507" y="236">tools: check,</text><text class="dg-sub" x="507" y="252">explain_error</text></g>
+<path class="dg-line" d="M210 51 L250 100" marker-end="url(#tl-engine-a)"/>
+<path class="dg-line" d="M210 141 L250 150" marker-end="url(#tl-engine-a)"/>
+<path class="dg-line" d="M210 231 L250 200" marker-end="url(#tl-engine-a)"/>
+<path class="dg-line" d="M400 100 L432 51" marker-end="url(#tl-engine-a)"/>
+<path class="dg-line" d="M400 150 L432 141" marker-end="url(#tl-engine-a)"/>
+<path class="dg-line" d="M400 200 L432 231" marker-end="url(#tl-engine-a)"/>
+</svg>
+</div>
+<p class="hint">A new rule is written once and appears in every front end with the same message and the same fix.</p>
+</figure>
+<p><code>xoong check &lt;files or folders&gt;</code> lints screens against your API. The engine is <code>checkHtml(source, table, file)</code> for HTML and <code>checkScript(source, table, file)</code> for JavaScript and TypeScript. It parses HTML with <code>parse5</code> and keeps exact line and column. In scripts it reads the HTML inside <code>html`...`</code> templates and the operation named in a string passed to <code>client.load</code>, <code>query</code>, <code>mutate</code> or <code>stream</code>, on something that looks like a client (<code>client</code>, <code>apiClient</code>, <code>getClient()</code>, <code>xo</code>); a name built at run time is not checked. It knows your operations from <code>operations.json</code> and the framework's names from <code>syntax.js</code>.</p>
+<p>Every finding has a stable code, a place, a message and a fix. The output, and the process exit code (1 when there is an error), are the same in the terminal and in CI:</p>
+<xo-tabs label="xoong check" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>users.html:3:13  error XO201  unknown operation <span class="tok-s">"POST /user/{id}/disable"</span> (closest: <span class="tok-s">"POST /users/{id}/disable"</span>)
+    fix: Use <span class="tok-s">"POST /users/{id}/disable"</span>
+
+1 files, 1 errors, 0 warnings</code></pre></section>
+</xo-tabs>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Codes</th><th>What they catch</th></tr></thead>
+<tbody>
+<tr><td>XO201 to XO204</td><td>an unknown operation (with the closest name), <code>xo-click</code> on a GET, <code>get</code> on a non-GET, a read or write method on the wrong kind of operation in JavaScript</td></tr>
+<tr><td>XO210, XO251 to XO253</td><td>a missing <code>p-*</code> for a path parameter; <code>&lt;xo-table&gt;</code> outside a view, or sorting, paging and filters that the operation has no query parameters for</td></tr>
+<tr><td>XO220, XO221, XO252, XO254, XO255</td><td><code>xo-submit</code> not on a form, an empty <code>xo-each</code> or <code>xo-if</code>, a <code>&lt;xo-form&gt;</code> with nothing it can draw or that can never satisfy the server, <code>xo-selected</code> or <code>xo-select</code> in the wrong place</td></tr>
+<tr><td>XO230</td><td>an <code>xo-*</code> element or attribute that xoong does not define (usually a typo, with the closest name)</td></tr>
+<tr><td>XO240, XO241</td><td>a button or link without an accessible name; <code>xo-click</code> on something a keyboard cannot reach</td></tr>
+<tr><td>XO260 to XO263</td><td>route paths, layouts, outlets and route parameters</td></tr>
+</tbody></table></div>
+<p><code>xoong doctor openapi.json</code> is the same idea for the document: <code>XO1xx</code> codes for what limits xoong, such as a missing <code>operationId</code> (XO110), no identity property (so records are not shared), an unresolved <code>$ref</code> (XO150), a union that cannot be told apart (XO160, XO161) or no documented errors (XO130). Warnings for one code are cut off after five unless you pass <code>--all</code>. <code>xoong sync</code> also reports the errors.</p>
+
+<h2 id="editors-html-data-and-the-language-server">Editors: html-data and the language server</h2>
+<ul>
+<li><strong><code>xoong.html-data.json</code>.</strong> <code>xoong sync</code> writes it next to <code>operations.json</code>. Point VS Code's <code>html.customData</code> at it once and you get completion and hover for every <code>xo-*</code> element and attribute, and your real operation names inside <code>xo-click</code>, <code>xo-submit</code>, <code>get</code> and <code>op</code>. It needs no extension.</li>
+<li><strong><code>xoong-lsp</code>.</strong> A language server over stdio. It finds <code>.xoong/operations.json</code> from the workspace folder upwards and re-reads it when it changes. It offers diagnostics (the findings above, as you type), completion, hover, and a code action "use the closest operation". The message handling is a pure function of a message (<code>createLanguageServer</code>), so it is tested without a process.</li>
+</ul>
+<xo-tabs label="Editor setup" class="example">
+  <section xo-tab="VS Code settings"><pre data-lang="json" tabindex="0"><code>{ <span class="tok-a">"html.customData"</span>: [<span class="tok-s">"./.xoong/xoong.html-data.json"</span>] }</code></pre></section>
+</xo-tabs>
+<p>Not yet: a VS Code extension, lint presets for ESLint and Stylelint, and SARIF output.</p>
+
+<h2 id="for-ai-assistants-llms-txt-and-the-mcp-server">For AI assistants: llms.txt and the MCP server</h2>
+<p><code>llms.txt</code>, at the root of the repository and on this site, is the whole public API in about 1,800 tokens, with the rules an assistant must follow. A test keeps it honest: it must stay under the budget, name only commands that exist, and mention exactly the <code>xo-*</code> names the code defines.</p>
+<p><code>xoong-mcp</code> is a Model Context Protocol server: JSON-RPC 2.0 over stdio with one message per line, written without an SDK. It has five tools, which make a loop: <code>get_spec</code> (the <code>llms.txt</code>), <code>list_operations</code> (the real names from <code>operations.json</code>), write the screen, <code>check</code> (HTML or script source in, findings out), fix from the message; <code>explain_error</code> says what a code means; <code>search_docs</code> searches a docs folder. A test makes sure <code>explain_error</code> covers every code that <code>check</code> can print. A <code>scaffold</code> tool is not built yet.</p>
+<xo-tabs label="MCP" class="example">
+  <section xo-tab="Settings"><pre data-lang="json" tabindex="0"><code>{ <span class="tok-a">"mcpServers"</span>: { <span class="tok-a">"xoong"</span>: { <span class="tok-a">"command"</span>: <span class="tok-s">"npx"</span>, <span class="tok-a">"args"</span>: [<span class="tok-s">"xoong-mcp"</span>] } } }</code></pre></section>
+</xo-tabs>
+
+<h2 id="xoong-test">@xoong/test</h2>
+<p>A screen test renders real markup, with the real data layer, against a fake network. That is the only seam: <strong>mock the network, never the data layer</strong>, because the cache, the store and invalidation are part of what you are testing.</p>
+<ul>
+<li><code>mockApi(table, handlers)</code> builds a <code>fetch</code> replacement from <code>operations.json</code>. It matches the method and the path, and calls your handler with <code>{ params, query, body }</code>. Return data (answered 200) or <code>respond(status, body)</code>. An operation without a handler answers 404 and is listed in <code>api.unhandled</code>. <code>api.calls</code>, <code>callsOf(id)</code> and <code>on(id, handler)</code> are there too.</li>
+<li><code>mount(html, { api })</code> configures the real client with that <code>fetch</code> (no retries, queries kept for ever) and a fake <code>EventSource</code>, renders the markup into a div, and waits until everything has settled. The <code>screen</code> has <code>$</code>, <code>$$</code>, <code>text</code>, <code>texts</code>, <code>click</code>, <code>submit</code>, <code>push(event)</code> for live events, <code>settle</code>, <code>errors</code> (the <code>xo-error</code> events seen) and <code>unmount</code>.</li>
+<li>"Settled" means no request in flight, checked twice a tick apart, which is why there is no <code>await</code> roulette.</li>
+</ul>
+<xo-tabs label="A screen test" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { mount, mockApi } <span class="tok-k">from</span> <span class="tok-s">'@xoong/test'</span>;
+<span class="tok-k">import</span> table <span class="tok-k">from</span> <span class="tok-s">'../.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };
+
+<span class="tok-k">const</span> api = mockApi(table, { listUsers: () =&gt; [{ id: <span class="tok-n">1</span>, name: <span class="tok-s">'Ada'</span> }] });   <span class="tok-c">// keyed by operationId or "METHOD /path"</span>
+<span class="tok-k">const</span> screen = <span class="tok-k">await</span> mount(<span class="tok-s">'&lt;xo-view get="/users"&gt;&lt;li xo-each="."&gt;{name}&lt;/li&gt;&lt;/xo-view&gt;'</span>, { api });
+
+screen.texts(<span class="tok-s">'li'</span>);            <span class="tok-c">// ['Ada']</span>
+<span class="tok-k">await</span> screen.click(<span class="tok-s">'button'</span>);  <span class="tok-c">// clicks, then waits until no request is pending</span>
+<span class="tok-k">await</span> screen.push({ type: <span class="tok-s">'patch'</span>, entity: <span class="tok-s">'User'</span>, id: <span class="tok-n">1</span>, path: <span class="tok-s">'/name'</span>, value: <span class="tok-s">'Ada L.'</span>, version: <span class="tok-n">2</span> });
+api.callsOf(<span class="tok-s">'listUsers'</span>);      <span class="tok-c">// what the app really asked for</span>
+api.unhandled;                 <span class="tok-c">// [] means nothing unexpected was called</span></code></pre></section>
+</xo-tabs>
+
+<h2 id="the-test-strategy">The test strategy</h2>
+<figure class="dg-fig">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the layers of tests">
+<svg class="dg dg-sm" viewBox="0 0 560 330" role="img" aria-labelledby="tl-tests-t tl-tests-d">
+<title id="tl-tests-t">The layers of tests</title>
+<desc id="tl-tests-d">Four layers of tests, from the cheapest to the most realistic. Unit tests run in Node and cover signals, the store, the client, the form model, the CLI and the OpenAPI analysis. Screen tests run in happy-dom with mount and mockApi on a real DOM and a fake network. Real-browser tests drive Chromium for templates, the router, controls, the strict-CSP build and a two-tab end-to-end run. Documentation site tests build the site under a project path and check the CSP, axe, focus indicators and sideways scroll at 390 pixels.</desc>
+<defs><marker id="tl-tests-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="540" height="58" rx="8"/><text class="dg-t" x="280" y="36">Unit tests (Node)</text><text class="dg-sub" x="280" y="56">signals, store, client, form model, CLI, OpenAPI analysis</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="94" width="540" height="58" rx="8"/><text class="dg-t" x="280" y="116">Screen tests (happy-dom)</text><text class="dg-sub" x="280" y="136">mount() and mockApi(): a real DOM, a fake network</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-soft" x="10" y="174" width="540" height="58" rx="8"/><text class="dg-t" x="280" y="196">Real-browser tests (Chromium)</text><text class="dg-sub" x="280" y="216">templates, router, controls, strict-CSP build, two-tab end to end</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="254" width="540" height="58" rx="8"/><text class="dg-t" x="280" y="276">Documentation site tests</text><text class="dg-sub" x="280" y="296">built under /xoong with the CSP: axe, focus indicators, 390 px</text></g>
+</svg>
+</div>
+<p class="hint">Four layers. Cheap and fast on top, realistic at the bottom; each catches what the one above cannot.</p>
+</figure>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Layer</th><th>How it runs</th><th>What it is for</th></tr></thead>
+<tbody>
+<tr><td>Unit</td><td><code>*.test.mjs</code>, Node</td><td>pure logic: signals, the store and normalisation, the client (cache, invalidation, retry, errors, streams), the form model, the OpenAPI analysis, the CLI. The corpus tool also runs real-world OpenAPI documents through the analysis and checks that the generated types compile.</td></tr>
+<tr><td>Screens</td><td><code>*.spec.mjs</code>, happy-dom</td><td><code>mount</code> and <code>mockApi</code> flows: rendering, actions, errors, live updates, forms. Fast, and measured for coverage. Many cover the same behaviour as the real-browser tests, so each environment checks the other.</td></tr>
+<tr><td>Real browser</td><td><code>*.test.mjs</code> that launch Chromium through Playwright (Firefox or WebKit with <code>XOONG_BROWSER</code>)</td><td>what happy-dom cannot do: layout, focus, native <code>&lt;dialog&gt;</code> and popover details, templates against a fake backend over HTTP and server-sent events, the strict-CSP build, and an end-to-end run of <code>xoong dev</code> with two tabs seeing a live update.</td></tr>
+<tr><td>Docs site</td><td>one test that builds <code>site/</code> under <code>/xoong</code></td><td>every page loads under the strict policy with no violation or error; axe (WCAG 2.0 and 2.1, A and AA) finds nothing on any page in four palette and light or dark combinations; a tab through five main pages measures every focus indicator against what surrounds it (3:1, WCAG 1.4.11), which axe cannot do; no page scrolls sideways at 390 px; menus and dialogs are checked in their open state.</td></tr>
+<tr><td>Architecture</td><td><code>test/architecture.test.mjs</code></td><td>the promises of the design (see <a href="arch-overview.html">Overview</a> and <a href="arch-build.html">Build and delivery</a>).</td></tr>
+</tbody></table></div>
+<p>The runner is Vitest with two projects, <code>logic</code> (Node) and <code>screens</code> (happy-dom). There is also a first-attempt-correctness benchmark in <code>tools/benchmark</code>: four tasks, scored by a script, to check that an assistant with only <code>llms.txt</code> writes working screens. It has a first small measurement and is not a rate.</p>
+
+<h2 id="this-site-is-generated">This site is generated</h2>
+<p>The pages of this documentation are JavaScript objects (<code>file</code>, <code>group</code>, <code>title</code>, <code>body</code>) in <code>tools/site/</code>. <code>npm run site</code> writes <code>site/*.html</code> from them with one layout function; the architecture test fails when a page on disk differs from what the generator writes. The generator makes the "On this page" list from the <code>h2</code> headings, highlights code while it writes the page, and shows each live example's markup both as the running preview and as the code tab, so the two cannot drift apart. Some pages come from the design kit in <code>design/brand-kit</code>. The diagrams on these Architecture pages are inline SVG with a title and a text description, drawn with the page's own colour tokens so they follow the palette and dark mode. The built site is served by the same strict policy as any xoong app, and the site test above checks it.</p>
+
+<h2 id="where-to-look-in-the-code">Where to look in the code</h2>
+<ul>
+<li><code>packages/cli/src/check.js</code>: the rules and their codes</li>
+<li><code>packages/cli/src/openapi.js</code>: the analysis and the <code>doctor</code> problems</li>
+<li><code>packages/cli/src/html-data.js</code>: the editor data, written by <code>sync</code></li>
+<li><code>packages/lsp/src/server.js, cli.js</code>: the language server and its stdio framing</li>
+<li><code>packages/mcp/src/server.js</code>: the five tools and <code>EXPLANATIONS</code></li>
+<li><code>packages/test/src/index.js</code>: <code>mockApi</code> and <code>mount</code></li>
+<li><code>vitest.config.mjs</code>: the two projects and the coverage thresholds</li>
+<li><code>tools/axe.mjs, tools/focus.mjs, tools/browser.mjs</code>: the accessibility and browser helpers</li>
+<li><code>tools/site.mjs, tools/site/</code>: the site generator</li>
+<li><code>docs/testing.md, docs/ai-integration.md, docs/editor-integration.md</code>: the longer notes</li>
+</ul>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="arch-build.html"><small>Previous</small><span>Build and delivery</span></a><a rel="next" href="controls.html"><small>Next</small><span>Overview</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#one-check-engine" aria-current="true">One check engine</a></li><li><a href="#editors-html-data-and-the-language-server">Editors: html-data and the language server</a></li><li><a href="#for-ai-assistants-llms-txt-and-the-mcp-server">For AI assistants: llms.txt and the MCP server</a></li><li><a href="#xoong-test">@xoong/test</a></li><li><a href="#the-test-strategy">The test strategy</a></li><li><a href="#this-site-is-generated">This site is generated</a></li><li><a href="#where-to-look-in-the-code">Where to look in the code</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

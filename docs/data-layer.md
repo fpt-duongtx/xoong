@@ -132,6 +132,10 @@ Everything that talks to the API goes through the one client that `configure()` 
 * **Reads share the cache.** A list read with `<xo-view get>` or `client.query()` refreshes by itself after a mutation whose path overlaps it, and records are shared by entity id.
 * **Data the server already has** goes in with `client.seed(operation, params, data)`: the server writes the JSON into the page (a `<script type="application/json">` is not code, so a strict CSP allows it), one module script calls `seed` (params are matched by their text in the URL, so `1` and `"1"` are the same query), and a view that asks for the same operation and params shows it at once and makes no request until it is stale (`staleTime`). The API stays the contract for everything else.
 
+### While the next result loads
+
+A view keeps showing the previous result while the next query of the same view loads (a sort, a page, a filter), so the page does not collapse and jump. `$refreshing` is true then (and the element has `data-refreshing`, which the default CSS uses to dim the table rows); `$loading` is true only when there is nothing to show yet, so a skeleton appears on the first load, not on every sort. An error clears the old rows. A view that changes to another operation starts empty.
+
 ## 8. Declarative call syntax (Draft)
 
 ```html

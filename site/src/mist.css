@@ -157,4 +157,68 @@ xo-menu [role="separator"], .menu-panel hr { margin: 4px 8px; border: 0; border-
 h1, h2, h3, .hero h1, .page-head h1, .eyebrow { font-family: var(--f-brand); }
 .card h3, .recipe h3, .band strong { font-family: var(--f-brand); }
 
+/* ======== Admin patterns asked by the Rainlet dev (docs/widget-classes.md): form rhythm, segmented groups, modal, hit area, table cards ======== */
+:root { --xo-field-gap: 6px; --xo-form-gap: 20px; }
+.field { margin: 0 0 var(--xo-form-gap); }
+.xo-form, .xo-fields { display: grid; gap: var(--xo-form-gap); align-content: start; }
+.xo-form .field, .xo-fields .field, .xo-form .xo-field, .xo-fields .xo-field { margin: 0; }
+.xo-prose { max-width: 720px; }
+xo-tabs > [role="tabpanel"] { padding-top: var(--xo-form-gap); }
+[hidden] { display: none !important; }
+
+/* icon-only buttons: the visible button stays 40px (32px small), the hit area is 44px */
+button.icon-only { position: relative; }
+button.icon-only::before { content: ""; position: absolute; inset: -2px; }
+button.icon-only.sm::before { inset: -6px; }
+
+/* any group of button[aria-pressed] can be the Mist segmented control: add class xo-seg to the group */
+.xo-seg { align-items: center; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.xo-seg button { flex: none; white-space: nowrap; }
+.xo-seg__badge { display: inline-grid; place-items: center; flex: none; width: 16px; height: 16px; border-radius: 50%; font: 700 11px/1 var(--xo-font); color: color-mix(in srgb, var(--xo-color-warning) 40%, var(--xo-color-text)); background: color-mix(in srgb, var(--xo-color-warning) 22%, var(--xo-color-surface)); }
+.xo-seg__badge[data-state="invalid"] { color: var(--xo-color-danger); background: color-mix(in srgb, var(--xo-color-danger) 14%, var(--xo-color-surface)); }
+
+/* modal: dialog.xo-modal > .xo-modal__head + .xo-modal__body + .xo-modal__foot (media picker, crop, add block) */
+dialog.xo-modal { padding: 0; width: min(40rem, calc(100vw - 2rem)); max-height: min(90vh, 52rem); color: var(--xo-color-text); background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--radius); box-shadow: var(--xo-shadow-pop); overflow: hidden; }
+dialog.xo-modal[open] { display: flex; flex-direction: column; }
+dialog.xo-modal--wide { width: min(60rem, calc(100vw - 2rem)); } dialog.xo-modal--full { width: min(96rem, calc(100vw - 2rem)); }
+dialog.xo-modal::backdrop { background: color-mix(in srgb, #1f2a33 45%, transparent); }
+.xo-modal__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 12px 20px; border-bottom: 1px solid var(--xo-color-border); }
+.xo-modal__head h2 { margin: 0; padding: 0; border: 0; font: 600 18px/1.3 var(--f-brand); letter-spacing: -.005em; }
+.xo-modal__body { flex: 1; min-height: 0; padding: 20px; overflow: auto; }
+.xo-modal__foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--xo-color-border); }
+.xo-modal__foot .grow { margin-right: auto; }
+@media (max-width: 47.99rem) { dialog.xo-modal, dialog.xo-modal--wide, dialog.xo-modal--full { width: 100vw; max-width: 100vw; height: 100dvh; max-height: none; border: 0; border-radius: 0; } }
+
+/* tables under 768px become row cards. Class xo-cards on the table frame (xo-table adds it when it has the `cards` attribute); every td has data-label
+   (xo-table writes it from the column label); td[data-title] is the card title, td[data-status] the status badge, the actions cell is td.cell-actions or td > .xo-actions.
+   A container query: it follows the width of the table's own box, not the window, so it also works in a narrow pane. */
+.xo-cards { container-type: inline-size; }
+@container (max-width: 47.99rem) {
+  .xo-cards table, .xo-cards tbody, .xo-cards tr, .xo-cards td { display: block; }
+  .xo-cards thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .xo-cards tbody tr { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 16px; border-bottom: 1px solid var(--xo-color-border); background: none; box-shadow: none; }
+  .xo-cards tbody tr:last-child { border-bottom: 0; }
+  .xo-cards tbody tr:hover td, .xo-cards tbody tr td { height: auto; padding: 0; border: 0; background: none; box-shadow: none; }
+  .xo-cards td[data-label]::before { content: attr(data-label); display: block; font: 600 12px/1.4 var(--xo-font); color: var(--xo-color-muted); }
+  .xo-cards td[data-title] { grid-column: 1; font-weight: 600; }
+  .xo-cards td[data-title]::before, .xo-cards td[data-status]::before { display: none; }
+  .xo-cards td.select, .xo-cards td:has(> input[type="checkbox"]:only-child) { grid-column: 1 / -1; width: auto; padding-bottom: 6px; }
+  .xo-cards td.select::before, .xo-cards td:has(> input[type="checkbox"]:only-child)::before { display: none; }
+  .xo-cards td[data-status] { grid-column: 2; grid-row: 2; justify-self: end; align-self: start; }
+  .xo-cards td:not([data-title], [data-status], .select, .cell-actions, :has(> .xo-actions), :has(> input[type="checkbox"]:only-child)) { grid-column: 1 / -1; display: flex; gap: 8px; align-items: baseline; }
+  .xo-cards td:not([data-title], [data-status], .select, .cell-actions, :has(> .xo-actions), :has(> input[type="checkbox"]:only-child))::before { flex: 0 0 6.5rem; }
+  .xo-cards td.cell-actions, .xo-cards td:has(> .xo-actions) { grid-column: 1 / -1; width: auto; text-align: left; padding-top: 6px; }
+  .xo-cards tbody tr[aria-selected="true"], .xo-cards tbody tr:has(input[type="checkbox"]:checked) { background: var(--xo-color-accent-soft); box-shadow: inset 3px 0 0 var(--xo-color-accent); }
+}
+
+/* static carousel sketch on states.html (same Mist look as the xo-carousel parts) */
+.carousel .arrow { width: 40px; height: 40px; border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); background: var(--xo-color-surface); color: var(--xo-color-text); box-shadow: none; font-weight: 500; }
+.carousel .arrow:hover { background: var(--xo-color-subtle); transform: none; box-shadow: none; } .carousel .arrow:active { background: var(--xo-color-border); transform: none; box-shadow: none; }
+.carousel .arrow[disabled] { opacity: 1; color: var(--xo-color-muted); background: var(--xo-color-subtle); border-color: var(--xo-color-border); }
+.carousel .dots button { width: 8px; height: 8px; border: 0; background: var(--xo-color-control-border); }
+.carousel .dots button[aria-current="true"] { width: 24px; background: var(--xo-color-accent); }
+.carousel .count { font: 600 13px/1 var(--xo-font); color: var(--xo-color-muted); }
+.thumbs button { border: 0; border-radius: var(--xo-radius); box-shadow: inset 0 0 0 1px var(--xo-color-border); }
+.thumbs button[aria-current="true"] { box-shadow: none; outline: 2px solid var(--xo-color-accent); outline-offset: 2px; }
+
 }
