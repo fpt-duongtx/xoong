@@ -114,6 +114,8 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     <xo-combobox name="a" label="Author" multiple creatable options-op="listAuthors"><option value="1">Ada</option></xo-combobox>   <xo-tags name="kw"></xo-tags>
     <xo-carousel items="3" dots counter loop autoplay="5000"><article>..</article></xo-carousel>
     <xo-richtext name="body" media></xo-richtext>   (`@xoong/richtext`: sanitised HTML; cancelable `xo-pick-media`, then `e.detail.insert({ src, alt })`)
+  Also: xo-switch, xo-date, xo-time, xo-slider, xo-stepper, xo-password, xo-copy, xo-file, xo-image, xo-chart, xo-accordion, xo-popover, xo-command,
+  xo-theme-toggle, xo-consent (`xo-consent-open` on a button shows it again): `docs/controls.md`.
   Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags: string or array (`multiple`);
   `remote` + `xo-search`, `el.options = [...]`, or `options-op` (+ `option-value`/`option-label`). `xo-tooltip="text"` describes any element.
 

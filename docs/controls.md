@@ -91,6 +91,29 @@ the control replaces the row editor:
 
 or `x-xoong-widget: xo-tags` in the OpenAPI document.
 
+## More controls
+
+Each is its own entry point (`@xoong/controls/accordion`, ...) and is registered by `import '@xoong/controls'`. Form controls are `XoControl`s: `name`, `value`, `required`, `disabled`, validity, dirty/touched, reset.
+
+| Element | What it is | Value / events |
+|---|---|---|
+| `<xo-switch name label checked size="sm" busy>` | One setting on or off (ARIA switch) | boolean; `input`, `change` |
+| `<xo-date name label min max range week-start>` | Date field with a calendar popover; typing works; arrows, PageUp/Down, Home/End, Escape | `YYYY-MM-DD`, with `range` `{ start, end }`; `change` |
+| `<xo-time name label step min max>` | Hour and minute selects | `HH:mm`; `change` |
+| `<xo-slider name label min max step labels>` | Native range with the filled track; `labels="Low,Medium,High"` for screen readers | number; `input`, `change` |
+| `<xo-stepper name label min max step>` | Number with minus/plus, spinbutton semantics, clamped | number; `change` |
+| `<xo-password name label autocomplete>` | Password field with a show/hide button (`aria-pressed`) | string |
+| `<xo-copy value label>` | Read-only value with Copy, then "Copied" | `copied` |
+| `<xo-file name accept max-size multiple hint>` | Drop zone and file input, thumbnail, Remove, `el.progress = 0.4` | `File` (array with `multiple`); `xo-file-reject` `{ file, reason }` |
+| `<xo-accordion single>` | Native `<details>` as an accordion; arrows move between summaries | `xo-accordion-change` |
+| `<xo-popover anchor label>` | Panel opened by the button before it; Escape and outside click close it | `open()`, `close()`; `xo-popover-open`, `xo-popover-close` |
+| `<xo-command shortcut label>` | Command palette (Ctrl/Cmd+K): children are the commands (`data-group`, `data-value`) | `xo-command-run` `{ value, label }` |
+| `<xo-chart type="bar\|line" label unit data>` | Bar or line chart from data, plus a table of the same numbers; bars are focusable | `el.rows = [...]` |
+| `<xo-consent categories storage>` | Cookie consent bar that remembers the choice; `xo-consent-open` on any element shows it again | `el.choices`; `xo-consent` |
+| `<xo-theme-toggle storage>` | Light/dark switch: sets `data-theme` on `<html>`, saved, follows the system until chosen | `xo-theme-change` `{ theme }` |
+
+Put this in the `<head>` before the first paint so the saved theme does not flash: `try { const t = localStorage.getItem('xoong-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch {}`
+
 ## `<xo-image>`
 
 An image that loads lazily, keeps its space and has a placeholder and an error state. `alt` is required (`alt=""` for decoration; `xoong check` warns, XO242).

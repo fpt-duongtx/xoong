@@ -130,7 +130,7 @@
 <p class="lead">xoong is a stack of small packages. Each owns one job and imports only packages below it. The ones that run in the browser import nothing from outside xoong.</p>
 
 <h2 id="the-layers">The layers</h2>
-<p>The runtime is seven packages, plus <code>xoong</code>, one package that re-exports the common ones. They are plain ES modules with no build step: the browser loads the files you installed.</p>
+<p>The runtime is seven packages, plus <code>@xoong/xoong</code>, one package that re-exports the common ones. They are plain ES modules with no build step: the browser loads the files you installed.</p>
 <figure class="dg-fig">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the runtime packages as layers">
 <svg class="dg dg-md" viewBox="0 0 640 372" role="img" aria-labelledby="ov-layers-t ov-layers-d">
@@ -166,7 +166,7 @@
 <tr><td><code>@xoong/i18n</code></td><td><code>xo-t</code>, <code>t()</code>, <code>configureI18n</code>, the message format, locale-aware formats.</td></tr>
 <tr><td><code>@xoong/controls</code></td><td><code>&lt;xo-tabs&gt;</code>, <code>&lt;xo-menu&gt;</code>, <code>&lt;xo-combobox&gt;</code>, <code>&lt;xo-tags&gt;</code>, <code>&lt;xo-carousel&gt;</code>, the <code>xo-tooltip</code> attribute.</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td><code>&lt;xo-richtext&gt;</code> and the HTML sanitiser it uses.</td></tr>
-<tr><td><code>xoong</code></td><td>One name to install: re-exports core, data, <code>data/view</code> and ui, and carries the <code>xoong</code> command.</td></tr>
+<tr><td><code>@xoong/xoong</code></td><td>One name to install: re-exports core, data, <code>data/view</code> and ui, and carries the <code>xoong</code> command.</td></tr>
 </tbody></table></div>
 
 <h2 id="the-dependency-rule">The dependency rule</h2>

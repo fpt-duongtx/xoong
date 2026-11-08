@@ -33,6 +33,12 @@ describe('packages named in xoong.config.json', () => {
     });
   });
 
+  it('the umbrella @xoong/xoong is an installed xoong package, with its /view and /ui subpaths', async () => {
+    const found = await findPackages(process.cwd());
+    expect(found['@xoong/xoong'].prefix).toBe('/@xoong/xoong');
+    expect(Object.keys(found['@xoong/xoong'].exports)).toEqual(expect.arrayContaining(['.', './view', './ui']));
+  });
+
   it('the dev handler serves an exports subpath as its file', async () => {
     const root = await project();
     const handler = await createDevHandler({ root, packages: ['rainlet'] });

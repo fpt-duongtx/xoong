@@ -44,11 +44,11 @@ async function packageDirOf(entry, name) {
 
 /**
  * Find installed @xoong/* packages from `from` and describe how to serve them to the browser.
- * URL prefixes: @xoong/core -> /@xoong/core; the unscoped umbrella `xoong` -> /vendor/xoong.
+ * URL prefixes: @xoong/core -> /@xoong/core; the umbrella @xoong/xoong -> /@xoong/xoong, like every scoped package.
  * @param {string} from  a folder inside the project
  * @param {string[]} names
  */
-export async function findPackages(from, names = ['@xoong/core', '@xoong/data', '@xoong/forms', '@xoong/i18n', '@xoong/controls', '@xoong/richtext', '@xoong/ui', 'xoong'], extra = []) {
+export async function findPackages(from, names = ['@xoong/core', '@xoong/data', '@xoong/forms', '@xoong/i18n', '@xoong/controls', '@xoong/richtext', '@xoong/ui', '@xoong/xoong'], extra = []) {
   const require = createRequire(join(resolve(from), 'noop.js'));
   const xoong = new Set(names);
   names = [...names, ...extra.filter((n) => !xoong.has(n))];

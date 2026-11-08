@@ -3,12 +3,15 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
-## 0.0.40 (theme toggle)
+## 0.0.40 (theme toggle, six more controls)
 
 breaking: none.
 
 * Added: `<xo-theme-toggle>` in `@xoong/controls` (`@xoong/controls/theme-toggle`): a button that sets `data-theme` light or dark on `<html>`, saves the choice, follows the system until chosen, fires `xo-theme-change`.
 * The documentation site has the toggle in its header (light/dark, remembered, the logo follows).
+* Added in `@xoong/controls` (one entry point each): `<xo-accordion>`, `<xo-popover>`, `<xo-consent>` (+ `xo-consent-open`), `<xo-file>` (drop zone, type and size checks, thumbnails, progress), `<xo-command>` (Ctrl/Cmd+K palette), `<xo-chart>` (bar/line with a table fallback). Reference table in `docs/controls.md`.
+* Fixed: `xoong build` and the dev server treat `@xoong/xoong` (and `/view`, `/ui`) as an installed xoong package (it was still looking for the unscoped `xoong`).
+* Budgets: controls 22.5 KB, core 5.8, i18n 5.6 (the English catalog of the new controls), llms.txt ~3,150 tokens, each for the new controls.
 * Kit ux/live-demos taken (two live demo pages, `demo-pages.css`, icons; not part of the site or `mist.css`).
 
 ## 0.0.39 (xo-image style)

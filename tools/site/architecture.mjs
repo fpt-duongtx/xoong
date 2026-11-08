@@ -160,7 +160,7 @@ const overview = {
 <p class="lead">xoong is a stack of small packages. Each owns one job and imports only packages below it. The ones that run in the browser import nothing from outside xoong.</p>
 
 <h2>The layers</h2>
-<p>The runtime is seven packages, plus ${c('xoong')}, one package that re-exports the common ones. They are plain ES modules with no build step: the browser loads the files you installed.</p>
+<p>The runtime is seven packages, plus ${c('@xoong/xoong')}, one package that re-exports the common ones. They are plain ES modules with no build step: the browser loads the files you installed.</p>
 ${overviewLayers}
 <table>
 <thead><tr><th>Package</th><th>Owns</th></tr></thead>
@@ -172,7 +172,7 @@ ${overviewLayers}
 <tr><td>${c('@xoong/i18n')}</td><td>${c('xo-t')}, ${c('t()')}, ${c('configureI18n')}, the message format, locale-aware formats.</td></tr>
 <tr><td>${c('@xoong/controls')}</td><td>${c('<xo-tabs>')}, ${c('<xo-menu>')}, ${c('<xo-combobox>')}, ${c('<xo-tags>')}, ${c('<xo-carousel>')}, the ${c('xo-tooltip')} attribute.</td></tr>
 <tr><td>${c('@xoong/richtext')}</td><td>${c('<xo-richtext>')} and the HTML sanitiser it uses.</td></tr>
-<tr><td>${c('xoong')}</td><td>One name to install: re-exports core, data, ${c('data/view')} and ui, and carries the ${c('xoong')} command.</td></tr>
+<tr><td>${c('@xoong/xoong')}</td><td>One name to install: re-exports core, data, ${c('data/view')} and ui, and carries the ${c('xoong')} command.</td></tr>
 </tbody></table>
 
 <h2>The dependency rule</h2>

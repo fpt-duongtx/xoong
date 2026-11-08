@@ -8,7 +8,13 @@
     ".": {
       "default": "./src/index.js"
     },
+    "./accordion": "./src/accordion.js",
     "./carousel": "./src/carousel.js",
+    "./chart": "./src/chart.js",
+    "./command": "./src/command.js",
+    "./consent": "./src/consent.js",
+    "./file": "./src/file.js",
+    "./popover": "./src/popover.js",
     "./combobox": "./src/combobox.js",
     "./copy": "./src/copy.js",
     "./date": "./src/date.js",
