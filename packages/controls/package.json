@@ -12,6 +12,7 @@
     "./combobox": "./src/combobox.js",
     "./controls.css": "./src/controls.css",
     "./menu": "./src/menu.js",
+    "./switch": "./src/switch.js",
     "./tabs": "./src/tabs.js",
     "./tooltip": "./src/tooltip.js"
   },
