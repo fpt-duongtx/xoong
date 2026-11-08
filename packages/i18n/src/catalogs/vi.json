@@ -1,4 +1,12 @@
 {
+  "xoong.carousel.choose": "Chọn một slide",
+  "xoong.carousel.goto": "Đến slide {n}",
+  "xoong.carousel.next": "Slide tiếp theo",
+  "xoong.carousel.pause": "Tạm dừng tự động chuyển slide",
+  "xoong.carousel.play": "Bật tự động chuyển slide",
+  "xoong.carousel.previous": "Slide trước",
+  "xoong.carousel.slide": "{n} trên {count}",
+  "xoong.carousel.slides": "Các slide",
   "xoong.confirm.cancel": "Hủy",
   "xoong.confirm.ok": "Xác nhận",
   "xoong.controls.create": "Thêm \"{value}\"",

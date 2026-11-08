@@ -157,6 +157,14 @@ describe('documentation site', () => {
     await page.fill('#demo-tags input', 'alpha');
     await page.keyboard.press('Enter');
     expect(await text('#combo-out')).toContain('alpha');
+    // carousel: slides from data are counted once (not nested), Next moves, the autoplay one has its pause button
+    await page.waitForSelector('xo-carousel[label="People"] .xo-carousel-track > article');
+    expect(await page.$$eval('xo-carousel[label="People"] .xo-carousel-track > article', (els) => els.length)).toBe(6);
+    expect(await page.$$('xo-carousel[label="People"] .xo-carousel-track .xo-carousel-track')).toHaveLength(0);
+    expect(await text('xo-carousel[label="Services"] .xo-carousel-count')).toBe('1 / 5');
+    await page.click('xo-carousel[label="Services"] .xo-carousel-next');
+    await page.waitForFunction(() => document.querySelector('xo-carousel[label="Services"] .xo-carousel-count').textContent === '2 / 5');
+    expect(await page.isVisible('xo-carousel[label="What people say"] .xo-carousel-toggle')).toBe(true);
     clean();
   });
 

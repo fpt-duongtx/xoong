@@ -308,3 +308,15 @@ footer.foot p { margin: 0; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .m-steam { opacity: 1; }
 }
+
+/* ---------- carousel demos ---------- */
+.service-cards { --xo-carousel-items: 1; }
+@media (min-width: 40rem) { .service-cards { --xo-carousel-items: 2; } }
+@media (min-width: 60rem) { .service-cards { --xo-carousel-items: 3; --xo-carousel-gap: 1.5rem; } }
+.service-cards article { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.2rem; display: grid; align-content: start; gap: 0.35rem; }
+.service-cards article h3 { margin: 0; font-size: 1.05rem; }
+.service-cards article p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.banner blockquote { margin: 0; padding: 1.5rem 1.75rem; background: var(--ember-soft); border-radius: var(--radius); }
+.banner blockquote p { margin: 0 0 0.5rem; font-size: 1.2rem; font-weight: 600; letter-spacing: -0.01em; }
+.banner blockquote footer { color: var(--muted); font-size: 0.9rem; }
+xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radius: var(--xo-radius); aspect-ratio: 21 / 9; object-fit: cover; }

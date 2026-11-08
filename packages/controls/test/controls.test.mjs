@@ -18,6 +18,9 @@ const PAGE = `<!doctype html><html><head><link rel="stylesheet" href="/@xoong/co
 <div style="overflow:hidden;height:60px;padding:10px"><xo-combobox id="cb" name="person" label="Person" multiple><option value="1">Ada</option><option value="2">Grace</option><option value="3">Barbara</option></xo-combobox></div>
 <xo-tags id="tg" name="kw" label="Keywords"></xo-tags>
 <xo-tabs label="Page"><section xo-tab="One"><input id="in1"></section><section xo-tab="Two" id="two"><input id="in2"></section></xo-tabs>
+<xo-carousel id="car" label="Cards" items="3" counter dots style="display:block;width:600px;margin-top:20px">
+  <article><a href="#a">One</a></article><article><a href="#b">Two</a></article><article><a href="#c">Three</a></article><article><a href="#d">Four</a></article><article><a href="#e">Five</a></article>
+</xo-carousel>
 <script type="module">import '@xoong/controls'; window.ready = true;</script></body></html>`;
 
 beforeAll(async () => {
@@ -115,5 +118,64 @@ describe('controls in a browser', () => {
     await page.click('#cb [role=option]');
     expect(await page.$eval('#cb', (el) => el.value)).toEqual(['1', '2']);
     expect(errors).toEqual([]);
+  });
+
+  describe('carousel', () => {
+    const state = () => page.evaluate(() => {
+      const el = document.querySelector('#car');
+      const track = el.querySelector('.xo-carousel-track');
+      return {
+        index: el.index, scroll: Math.round(track.scrollLeft), count: el.querySelector('.xo-carousel-count').textContent,
+        inert: [...track.children].map((c) => c.inert), width: [...track.children].map((c) => Math.round(c.getBoundingClientRect().width)),
+        prev: el.querySelector('.xo-carousel-prev').disabled, next: el.querySelector('.xo-carousel-next').disabled, dots: el.querySelectorAll('.xo-carousel-dots button').length,
+      };
+    });
+    const settled = (index) => page.waitForFunction((i) => { const el = document.querySelector('#car'); const t = el.querySelector('.xo-carousel-track'); return el.index === i && Math.abs(t.scrollLeft - (t.children[i].offsetLeft - t.children[0].offsetLeft)) < 3; }, index);
+
+    it('shows three cards at once, one position per slide that can lead, and keeps the hidden ones out of reach', async () => {
+      const s = await state();
+      expect(s.width.every((w) => w > 180 && w < 200)).toBe(true); // (600 - 2 gaps of 16) / 3
+      expect(s.inert).toEqual([false, false, false, true, true]);
+      expect(s.dots).toBe(3); // 5 slides, 3 visible: slide 1, 2 or 3 can be the first
+      expect(s.count).toBe('1 / 5');
+      expect([s.prev, s.next]).toEqual([true, false]);
+    });
+
+    it('Next scrolls one slide and snaps; the slide that came into view is reachable, the one that left is not', async () => {
+      await page.click('#car .xo-carousel-next');
+      await settled(1);
+      await page.waitForFunction(() => document.querySelector('#car .xo-carousel-track').children[0].inert); // the slide that left is put out of reach when the scroll ends
+      const s = await state();
+      expect(s.count).toBe('2 / 5');
+      expect(s.inert).toEqual([true, false, false, false, true]);
+      expect(s.prev).toBe(false);
+    });
+
+    it('swiping (a scroll by the person) updates the position; at the end Next is off', async () => {
+      await page.$eval('#car .xo-carousel-track', (t) => { t.style.scrollBehavior = 'auto'; t.scrollLeft = t.scrollWidth; });
+      await page.waitForFunction(() => document.querySelector('#car').index === 2 && document.querySelector('#car .xo-carousel-track').children[1].inert);
+      const s = await state();
+      expect(s.count).toBe('3 / 5');
+      expect([s.prev, s.next]).toEqual([false, true]);
+      expect(s.inert).toEqual([true, true, false, false, false]);
+    });
+
+    it('the arrow keys on the scroll area move, and a card peeks when items is fractional', async () => {
+      await page.$eval('#car .xo-carousel-track', (t) => { t.scrollLeft = 0; });
+      await page.waitForFunction(() => document.querySelector('#car').index === 0);
+      await page.focus('#car .xo-carousel-track');
+      await page.keyboard.press('ArrowRight');
+      await settled(1);
+      await page.$eval('#car', (el) => el.setAttribute('items', '1.25'));
+      await page.waitForFunction(() => document.querySelector('#car .xo-carousel-dots').children.length === 5);
+      const s = await state();
+      expect(s.dots).toBe(5); // one slide in view: every slide can lead
+      expect(s.inert[2]).toBe(true); // two ahead: out of view
+      await page.$eval('#car', (el) => el.goTo(0));
+      await settled(0);
+      expect((await state()).inert.slice(0, 3)).toEqual([false, false, true]); // the second one peeks and stays usable
+      await page.$eval('#car', (el) => el.setAttribute('items', '3'));
+      expect(errors).toEqual([]);
+    });
   });
 });

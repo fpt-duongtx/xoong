@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.19 (carousel)
+
+breaking: none.
+
+* Added: `<xo-carousel>` in `@xoong/controls` (also `@xoong/controls/carousel`; each control now has its own entry point). Slides in a scroll container with CSS scroll snap, the WAI-ARIA carousel pattern, `items` (several at a time, fractional to peek, `--xo-carousel-items` in CSS), `dots` (or thumbnails from `data-thumb`), `counter`, `no-arrows`, `loop`, `autoplay` (pause button, pause on hover and focus, off under reduced motion), slides out of view are `inert`, slides from `xo-each` in an `xo-view`. Covers cards, banners, testimonials, peek sliders and galleries; crossfade, 3D, cloned endless loops and logo tickers are not included on purpose.
+* Controls size budget raised 7 to 9.5 KB for it.
+
 ## 0.0.18 (building blocks for widget packages)
 
 breaking: none.

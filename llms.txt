@@ -106,22 +106,23 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 
 ## Languages (`import '@xoong/i18n'`; flat JSON catalogs, ICU-subset messages)
     <h1 xo-t="home.title">Welcome</h1>   <input xo-t="placeholder:k; aria-label:k2" placeholder="Search" aria-label="Search">
-  The written text is the default; in an xo-view `{name}` comes from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}` reads `{en, vi}`.
+  The written text is the default; in an xo-view `{name}` comes from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}`: `{en, vi}`.
 
 ## Controls (`import '@xoong/controls'`)
     <xo-tabs label="Page"><section xo-tab="General">...</section><section xo-tab="SEO" id="seo">...</section></xo-tabs>
     <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><a href="/x">Open</a></xo-menu>  (`value` on menu and items: choice menu, `xo-menu-select`)
     <xo-combobox name="a" label="Author" multiple creatable><option value="1">Ada</option></xo-combobox>   <xo-tags name="kw"></xo-tags>
-    <xo-richtext name="body" media></xo-richtext>   (`@xoong/richtext`: sanitised HTML value; `xo-pick-media` is cancelable, call `e.detail.insert({ src, alt })`)
-  Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags: string, or array with `multiple`;
-  `remote` + `xo-search`, or `el.options = [...]`. `xo-tooltip="text"` describes any element (icon buttons need aria-label).
+    <xo-carousel items="3" dots counter loop autoplay="5000"><article>..</article></xo-carousel>
+    <xo-richtext name="body" media></xo-richtext>   (`@xoong/richtext`: sanitised HTML; cancelable `xo-pick-media`, then `e.detail.insert({ src, alt })`)
+  Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags: string or array (`multiple`);
+  `remote` + `xo-search`, or `el.options = [...]`. `xo-tooltip="text"` describes any element.
 
 ## Live updates (server-sent events)
 JSON per message: {type:"patch", entity:"User", id:42, path:"/status", value:"x", version:7} | {type:"upsert", entity, id, value, version} |
 {type:"delete", entity, id, version} | {type:"resync"}. `version` must increase per entity.
 
 ## Errors
-Failures become XoongError (problem+json, `{ error: { code, message, retry_after_s, fields } }`, `{ detail }`).
+Failures become XoongError (problem+json, `{ error: { code, message, fields } }`, `{ detail }`).
 
 ## Testing (Vitest)
     const api = mockApi(operations, { listUsers: () => [{ id: 1, name: 'Ada' }] });
@@ -130,4 +131,4 @@ Failures become XoongError (problem+json, `{ error: { code, message, retry_after
     expect(screen.texts('li')).toEqual([...]); expect(api.unhandled).toEqual([]);
 
 ## Limits today (tell the user, no workarounds)
-Swagger 2.0: `sync` converts it (basic; exotic: `npx swagger2openapi`). No request-time SSR (prerender: `xoong render --url`), no WebSocket.
+Swagger 2.0: converted by `sync` (basic). No request-time SSR (prerender: `xoong render --url`), no WebSocket.

@@ -88,6 +88,31 @@ the control replaces the row editor:
 
 or `x-xoong-widget: xo-tags` in the OpenAPI document.
 
+## `<xo-carousel>`
+
+A row of slides you move through: cards, a banner, testimonials, a gallery. The slides are its children.
+
+```html
+<xo-carousel label="Services" items="3" counter>
+  <article>...</article>
+  <article>...</article>
+</xo-carousel>
+```
+
+It is built on the platform: the slides sit in a scroll container with CSS scroll snap, so touch swiping, the wheel, momentum and keyboard scrolling are the browser's own, and the buttons only ask the container to scroll. It follows the WAI-ARIA carousel pattern: a region with `aria-roledescription="carousel"`, slides as groups ("2 of 5"), labelled previous and next buttons, and, when it plays by itself, a pause button, a pause while the pointer or the focus is inside and no movement under `prefers-reduced-motion`. Slides completely out of view are `inert`, so Tab never lands on something that is not on screen; a slide that peeks stays usable.
+
+| Form | How |
+|---|---|
+| Cards, several at a time | `items="3"`, or `--xo-carousel-items` in CSS with media queries; `counter`; the gap is `--xo-carousel-gap` |
+| Banner, testimonials | one slide (the default), `dots`, `autoplay="6000"`, `loop` |
+| Peek | `items="1.15"` |
+| Gallery with thumbnails | `dots`, and `data-thumb="url"` on a slide gives that picture to its button |
+| Slides from data | `xo-each` on the slide, inside an `<xo-view>`; the carousel follows its children |
+
+`index` is the first visible slide; `next()`, `prev()`, `goTo(i)`, `play()` and `pause()` move it, and `xo-carousel-change` fires with `{ index, count }`. Keys on the scroll area: Left and Right, Home and End. `no-arrows` hides the arrows; `loop` makes Next at the end return to the first slide (a rewind, not a copy of the slides).
+
+Not included on purpose: crossfade and 3D styles, an endless loop made of cloned slides, and a continuously scrolling logo strip. They need a different mechanism than scroll snap, and the last two are hard for keyboard and screen reader users (a CSS animation does the logo strip well). Style `.xo-carousel-track`, `.xo-carousel-controls`, `.xo-carousel-dots`, `.xo-carousel-count`.
+
 ## Building elements for your own package
 
 The pieces a package of widgets (a media library, a block editor) usually needs:

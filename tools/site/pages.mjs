@@ -282,7 +282,7 @@ await setLocale('vi');`]])}
 <tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>16.5 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
 <tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialog, toast, router</td><td>10 KB</td></tr>
-<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags</td><td>7 KB</td></tr>
+<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags</td><td>9.5 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
 <tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5 KB</td></tr>
 <tr><td><code>@xoong/cli</code></td><td><code>sync</code>, <code>check</code>, <code>dev</code>, <code>build</code>, <code>render</code>, <code>i18n</code></td><td>tools</td></tr>
@@ -547,6 +547,73 @@ ${example({
   extra: [['JavaScript', 'js', { file: 'site/src/page-controls.js' }]],
 })}
 <p>Keys: ArrowDown and ArrowUp open and move (the focus stays in the input, <code>aria-activedescendant</code> follows), Enter picks, Escape closes, Backspace on an empty field removes the last chip. In tags, Enter or a comma adds the typed text. Enter never submits the form while the list is open.</p>
+
+<h2>Carousel</h2>
+<p><code>&lt;xo-carousel&gt;</code> is a row of slides, its children, that you move through. It is made on the platform: the slides sit in a scroll container with CSS scroll snap, so touch swiping, the wheel and momentum are the browser's own, and the buttons only ask it to scroll. It follows the WAI-ARIA carousel pattern, and a slide that is out of view cannot be reached with Tab. These are the forms it covers, one element each:</p>
+
+<h3>Cards, several at a time</h3>
+<p><code>items</code> sets how many are visible; set <code>--xo-carousel-items</code> in CSS to change it with the screen width. <code>counter</code> shows the position, and the arrows stop at the ends (or wrap with <code>loop</code>).</p>
+${example({
+  label: 'xo-carousel with cards',
+  preview: `
+<xo-carousel class="service-cards" label="Services" counter>
+  <article class="card"><h3>Digestive check</h3><p>Advice on stomach, bowel and liver symptoms.</p><a href="#book">Book</a></article>
+  <article class="card"><h3>Painless endoscopy</h3><p>Stomach and bowel, with sedation.</p><a href="#book">Book</a></article>
+  <article class="card"><h3>H. pylori test</h3><p>A sample taken during the endoscopy.</p><a href="#book">Book</a></article>
+  <article class="card"><h3>Abdominal ultrasound</h3><p>Done together with the doctor.</p><a href="#book">Book</a></article>
+  <article class="card"><h3>Health packages</h3><p>Checks with offers.</p><a href="#book">Book</a></article>
+</xo-carousel>`,
+  extra: [['CSS', 'css', `
+.service-cards { --xo-carousel-items: 1; }
+@media (min-width: 40rem) { .service-cards { --xo-carousel-items: 2; } }
+@media (min-width: 60rem) { .service-cards { --xo-carousel-items: 3; --xo-carousel-gap: 1.5rem; } }`]],
+})}
+
+<h3>A banner or testimonials, moving by itself</h3>
+<p>One slide at a time with <code>dots</code> and <code>autoplay</code> (milliseconds). It adds a pause button, pauses while the pointer or the focus is inside, does not run under <code>prefers-reduced-motion</code>, and the slides are announced politely only when it is not moving.</p>
+${example({
+  label: 'xo-carousel as a banner',
+  preview: `
+<xo-carousel class="banner" label="What people say" dots autoplay="6000" loop>
+  <blockquote><p>The form just worked: validation, errors and the draft came from the OpenAPI document.</p><footer>Ada, platform team</footer></blockquote>
+  <blockquote><p>We deleted our table component and kept the markup.</p><footer>Grace, admin app</footer></blockquote>
+  <blockquote><p>Strict CSP on day one, no exceptions to write.</p><footer>Barbara, security</footer></blockquote>
+</xo-carousel>`,
+})}
+
+<h3>A gallery with thumbnails</h3>
+<p>A slide with <code>data-thumb</code> gives its picture to the button that goes to it, in place of a dot. Keys on the picture area: Left and Right, Home and End.</p>
+${example({
+  label: 'xo-carousel as a gallery',
+  preview: `
+<xo-carousel label="Gallery" dots>
+  <img src="img/gallery-1.svg" alt="Clay hills" data-thumb="img/gallery-1.svg">
+  <img src="img/gallery-2.svg" alt="Green valley" data-thumb="img/gallery-2.svg">
+  <img src="img/gallery-3.svg" alt="Night over the ridge" data-thumb="img/gallery-3.svg">
+</xo-carousel>`,
+})}
+
+<h3>Slides from data</h3>
+<p>The slides can come from the data layer: put <code>xo-each</code> on the slide. The carousel follows its children as they arrive and change.</p>
+${example({
+  label: 'xo-carousel with data',
+  preview: `
+<xo-view get="listPeople" p-limit="6">
+  <xo-carousel class="service-cards" label="People" items="2" counter no-arrows>
+    <article class="card" xo-each="items"><h3>{name}</h3><p>{email}</p><span class="badge">{role}</span></article>
+  </xo-carousel>
+</xo-view>`,
+})}
+<table class="props">
+<thead><tr><th>API</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>items</code></td><td>Slides visible at once (default 1; <code>1.15</code> lets the next one peek)</td></tr>
+<tr><td><code>dots</code>, <code>counter</code>, <code>no-arrows</code></td><td>The position buttons (or thumbnails), "1 / 5", hide the arrows</td></tr>
+<tr><td><code>loop</code>, <code>autoplay</code></td><td>Next at the end returns to the first; move on by itself every n milliseconds</td></tr>
+<tr><td><code>index</code>, <code>count</code>, <code>next()</code>, <code>prev()</code>, <code>goTo(i)</code>, <code>play()</code>, <code>pause()</code></td><td>Control it from code; <code>index</code> is the first visible slide</td></tr>
+<tr><td><code>xo-carousel-change</code></td><td>Fires with <code>{ index, count }</code></td></tr>
+</tbody></table>
+<p>Not included on purpose: crossfade and 3D styles, an endless loop made of cloned slides, and a continuously scrolling logo strip. They need a different mechanism than scroll snap, and the last two are bad for people who use a keyboard or a screen reader; a CSS animation does the logo strip well.</p>
 
 <h2>In a generated form</h2>
 <p><code>&lt;xo-form&gt;</code> draws a control for any field with a <code>widget</code> hint that is a tag name: <code>xo-combobox</code>, <code>xo-tags</code>, <code>xo-richtext</code>, or your own element built on <code>XoControl</code>.</p>

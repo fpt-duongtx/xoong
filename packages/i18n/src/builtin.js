@@ -1,6 +1,14 @@
 // The English catalog of xoong's own strings: the starting point for translators. A test keeps it identical to the defaults written in the source
 // (regenerate with: xoong i18n extract packages/core/src packages/forms/src packages/ui/src packages/controls/src packages/richtext/src).
 export const builtin = {
+  "xoong.carousel.choose": "Choose a slide",
+  "xoong.carousel.goto": "Go to slide {n}",
+  "xoong.carousel.next": "Next slide",
+  "xoong.carousel.pause": "Pause automatic slide show",
+  "xoong.carousel.play": "Start automatic slide show",
+  "xoong.carousel.previous": "Previous slide",
+  "xoong.carousel.slide": "{n} of {count}",
+  "xoong.carousel.slides": "Slides",
   "xoong.confirm.cancel": "Cancel",
   "xoong.confirm.ok": "Confirm",
   "xoong.controls.create": "Add \"{value}\"",
