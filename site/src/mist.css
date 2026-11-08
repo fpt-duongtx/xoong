@@ -238,4 +238,16 @@ summary.button::-webkit-details-marker { display: none; }
 summary.button::marker { content: ""; }
 details[open] > summary.button { background: var(--xo-color-subtle); }
 
+/* header tools (Palette menu + theme toggle): same family as the buttons (8px radius, 40px), not the old pill with a dark-ringed dot */
+header.top nav xo-menu.palette { margin-inline-start: 8px; }
+header.top nav xo-menu.palette > button[xo-menu-trigger] { min-height: 40px; padding: 0 12px; gap: 8px; border-radius: var(--xo-radius); border: 1px solid var(--xo-color-control-border); background: var(--xo-color-surface); color: var(--xo-color-text); font: 500 14px/1 var(--font); box-shadow: none; }
+header.top nav xo-menu.palette > button[xo-menu-trigger]:hover { background: var(--xo-color-subtle); }
+header.top nav xo-menu.palette .dot { width: 10px; height: 10px; border: 0; background: var(--xo-color-accent); box-shadow: 0 0 0 3px var(--xo-color-accent-soft); }
+header.top nav xo-theme-toggle { margin-inline-start: 4px; }
+header.top nav > a { font: 500 14px/1 var(--font); padding: 11px 12px; border-radius: var(--xo-radius); color: var(--xo-color-text-2); }
+header.top nav > a:hover { background: var(--xo-color-subtle); color: var(--xo-color-text); }
+header.top nav > a[aria-current="page"] { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); font-weight: 600; }
+header.top nav xo-theme-toggle > button.icon-only[aria-pressed] { background: transparent; border-color: transparent; color: var(--xo-color-text-2); }
+header.top nav xo-theme-toggle > button.icon-only[aria-pressed]:hover { background: var(--xo-color-subtle); color: var(--xo-color-text); }
+
 }

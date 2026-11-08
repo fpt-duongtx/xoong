@@ -26,11 +26,6 @@ xo-tabs.example .preview { overflow-x: auto; }
 xo-tabs.example pre { position: relative; }
 .ic { display: inline-block; width: var(--xo-icon, 1.15rem); height: var(--xo-icon, 1.15rem); background: currentColor; -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; vertical-align: -0.2em; flex: none; }
 
-/* the palette menu in the header */
-xo-menu.palette { margin-inline-start: 0.35rem; }
-xo-menu.palette > button { border-radius: 999px; background: transparent; font-size: 0.85rem; }
-xo-menu.palette .dot { width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--ember); border: 1px solid var(--soot); }
-header.top nav > a { color: var(--text); text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 999px; font-weight: 600; font-size: 0.95rem; }
 header.top nav > a:hover { background: var(--broth); }
 header.top nav > a[aria-current="page"] { background: var(--ember-soft); color: var(--ember-deep); }
 

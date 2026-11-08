@@ -1363,6 +1363,47 @@
     font-size: 13px;
     color: var(--xo-color-text-2);
   }
+  .xo-chart { margin: 0; }
+  .xo-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .xo-chart .grid { stroke: var(--xo-color-border); stroke-width: 1; }
+  .xo-chart .axis { fill: var(--xo-color-text-2); font-size: 11px; font-family: inherit; }
+  .xo-chart .bar { fill: var(--xo-color-accent); }
+  .xo-chart .bar:hover, .xo-chart .bar:focus-visible { fill: var(--xo-color-accent-strong); }
+  .xo-chart .line { fill: none; stroke: var(--xo-color-accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .xo-chart .area { fill: var(--xo-color-accent-soft); stroke: none; }
+  .xo-chart .dot { fill: var(--xo-color-surface); stroke: var(--xo-color-accent); stroke-width: 2; }
+  .xo-chart__legend { display: flex; gap: 16px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--xo-color-text-2); }
+  .xo-chart__legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--xo-color-accent); margin-right: 6px; }
+  .xo-chart__legend li + li i { background: var(--xo-color-border-strong, var(--xo-color-control-border)); }
+  .xo-feed { list-style: none; margin: 0; padding: 0; display: grid; }
+  .xo-feed li { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--xo-color-border); }
+  .xo-feed li:first-child { border-top: 0; padding-top: 0; }
+  .xo-feed__text { min-width: 0; font-size: 14px; color: var(--xo-color-text); }
+  .xo-feed__text span { display: block; font-size: 13px; color: var(--xo-color-text-2); }
+  .xo-feed time { font-size: 13px; color: var(--xo-color-text-2); white-space: nowrap; }
+  .xo-dropzone { display: grid; place-items: center; gap: 6px; text-align: center; padding: 28px 16px; border: 1.5px dashed var(--xo-color-control-border); border-radius: calc(var(--xo-radius) + 2px); color: var(--xo-color-text-2); background: var(--xo-color-subtle); cursor: pointer; }
+  .xo-dropzone:hover, .xo-dropzone[data-over] { border-color: var(--xo-color-accent); background: var(--xo-color-accent-soft); color: var(--xo-color-text); }
+  .xo-dropzone:focus-within { outline: var(--xo-focus); outline-offset: 2px; }
+  .xo-dropzone .icon { --xo-icon: 24px; }
+  .xo-dropzone input { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; }
+  .xo-dropzone { position: relative; }
+  .xo-notify { position: relative; }
+  .xo-notify__dot { position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--xo-color-danger); box-shadow: 0 0 0 2px var(--xo-color-surface); }
+  .xo-notify__dot[hidden] { display: none; }
+  .xo-popover { position: absolute; z-index: 30; top: calc(100% + 8px); right: 0; width: min(340px, calc(100vw - 32px)); padding: 8px; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: calc(var(--xo-radius) + 2px); box-shadow: var(--xo-shadow-pop); }
+  .xo-popover[hidden] { display: none; }
+  .xo-popover__head { display: flex; justify-content: space-between; align-items: center; padding: 8px 8px 10px; font-weight: 600; font-size: 14px; }
+  .xo-popover .xo-feed li { padding: 10px 8px; border-radius: var(--xo-radius); }
+  .xo-popover .xo-feed li:first-child { padding-top: 10px; }
+  .xo-popover .xo-feed li:hover { background: var(--xo-color-subtle); }
+  .xo-consent { position: fixed; z-index: 50; inset-inline: 16px; inset-block-end: 16px; max-width: 560px; margin-inline: auto 0; padding: 18px; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: 16px; box-shadow: var(--xo-shadow-pop); display: grid; gap: 12px; }
+  .xo-consent[hidden] { display: none; }
+  .xo-consent p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--xo-color-text-2); }
+  .xo-consent p b { color: var(--xo-color-text); }
+  .xo-consent .row-inline { justify-content: flex-end; }
+  xo-theme-toggle { display: inline-flex; }
+  xo-theme-toggle > button.icon-only[aria-pressed] { background: transparent; border-color: transparent; color: var(--xo-color-text-2); }
+  xo-theme-toggle > button.icon-only[aria-pressed]:hover { background: var(--xo-color-subtle); color: var(--xo-color-text); }
 
   /* ---- skin ---- */
   :root { --shadow-sm: 0 1px 2px color-mix(in srgb, var(--xo-color-text) 6%, transparent); --shadow-float: 0 12px 32px color-mix(in srgb, var(--xo-color-text) 14%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 8%, transparent); --xo-shadow-pop: var(--shadow-float); --xo-shadow-raised: none; --xo-focus: 2px solid var(--xo-color-accent); --xo-focus-thin: 2px solid var(--xo-color-accent); }
