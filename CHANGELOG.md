@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.38 (xo-image)
+
+breaking: none.
+
+* Added: `<xo-image>` in `@xoong/controls` (`@xoong/controls/image`): lazy and async by default, space reserved from `width`/`height` or `ratio`, `fit`, `position`, `srcset`/`sizes`, `priority` for the image above the fold, a loading state, a one-time `fallback` and an error state with the alt text (`data-state`). `xoong check` rule XO242: an `<xo-image>` needs `alt` (an empty alt is allowed).
+
 ## 0.0.37 (fixes from the admin screens)
 
 breaking: none.

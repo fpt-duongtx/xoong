@@ -91,6 +91,27 @@ the control replaces the row editor:
 
 or `x-xoong-widget: xo-tags` in the OpenAPI document.
 
+## `<xo-image>`
+
+An image that loads lazily, keeps its space and has a placeholder and an error state. `alt` is required (`alt=""` for decoration; `xoong check` warns, XO242).
+
+```html
+<xo-image src="/img/cover.jpg" alt="The harbour at dusk" width="1200" height="800"></xo-image>
+<xo-image src="{cover.url}" alt="{cover.alt}" ratio="16/9" fit="cover" fallback="/img/none.svg"
+          srcset="/s.jpg 480w, /l.jpg 1200w" sizes="(min-width: 60rem) 50vw, 100vw"></xo-image>
+<xo-image src="/hero.jpg" alt="" priority></xo-image>
+```
+
+| You want | Use |
+|---|---|
+| No layout jump | `width` + `height`, or `ratio="16/9"`: the box is sized before the picture arrives |
+| Lazy loading | the default (`loading="lazy"`, `decoding="async"`); `priority` for the one image above the fold (eager, high fetch priority) |
+| Responsive sources | `srcset` and `sizes`, passed to the img |
+| How it fills the box | `fit="cover"` (default) or `contain`; `position="top"` |
+| A broken image | `fallback="/img/none.svg"` is tried once, then the alt text is shown in the box |
+
+`data-state` is `empty`, `loading`, `loaded` or `error`; style it, for example `xo-image[data-state="loading"]` is the skeleton. A `src` that changes (in an `<xo-view>`) loads again. `load` and `error` are re-fired on the element (they do not bubble). Fit and position are set with the custom properties `--xo-image-fit` and `--xo-image-position`, through the CSS object model, so a strict CSP is fine.
+
 ## `<xo-carousel>`
 
 A row of slides you move through: cards, a banner, testimonials, a gallery. The slides are its children.

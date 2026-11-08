@@ -1,6 +1,6 @@
 {
   "name": "@xoong/lsp",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "Language server for xoong screens: the same diagnostics as `xoong check`, completion of operation names and xo-* attributes, hover docs. Any editor that speaks LSP.",
   "type": "module",
   "bin": {
@@ -22,8 +22,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@xoong/cli": "0.0.37",
-    "@xoong/core": "0.0.37"
+    "@xoong/cli": "0.0.38",
+    "@xoong/core": "0.0.38"
   },
   "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
   "repository": {

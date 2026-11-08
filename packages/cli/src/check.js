@@ -11,6 +11,7 @@
  *   XO222 <form xo-submit> outside an <xo-view> (it never binds)
  *   XO221 empty xo-each / xo-if / xo-body expression
  *   XO230 unknown xo-* attribute or element (with the closest match)
+ *   XO242 <xo-image> without an alt attribute (alt="" is a decorative image)
  *   XO240 button/link triggered by xo-click has no accessible name
  *   XO241 xo-click on a non-interactive element (not reachable by keyboard)
  *   XO250 <xo-table sortable|page-size> but the view's operation lacks the query parameters (sort | limit, offset)
@@ -108,6 +109,7 @@ export function checkHtml(source, table, file = '<input>') {
           }
         }
       }
+      if (tag === 'xo-image' && attr(node, 'alt') === undefined) report('warn', 'XO242', node, undefined, '<xo-image> has no alt attribute', 'Describe the image in alt, or write alt="" when it is decorative');
       if (tag === 'xo-table') {
         const op = view && attr(view, 'get') ? ops.get((v => (v.startsWith('/') ? `GET ${v}` : v.replace(/\s+/g, ' ')))(attr(view, 'get').value.trim())) : undefined;
         if (!view || !attr(view, 'get')) report('error', 'XO251', node, undefined, '<xo-table> is not inside an <xo-view get="...">', 'Wrap it: <xo-view get="/things"><xo-table ...></xo-table></xo-view>');

@@ -11,3 +11,4 @@ import './slider.js';
 import './stepper.js';
 import './password.js';
 import './copy.js';
+import './image.js';

@@ -127,6 +127,12 @@ describe('xoong check: admin set', () => {
     expect(found('<xo-view get="/tags"><xo-table columns="a" page-size="5"></xo-table></xo-view>')).toEqual(['XO250']);
   });
 
+  it('XO242: an xo-image needs alt (an empty alt is allowed)', () => {
+    expect(found('<xo-image src="/a.jpg"></xo-image>')).toEqual(['XO242']);
+    expect(found('<xo-image src="/a.jpg" alt=""></xo-image>')).toEqual([]);
+    expect(found('<xo-image src="/a.jpg" alt="Harbour"></xo-image>')).toEqual([]);
+  });
+
   it('XO222: a submit form needs an <xo-view>', () => {
     expect(found('<form xo-submit="POST /users"></form>')).toEqual(['XO222']);
     expect(found('<xo-view><form xo-submit="POST /users"></form></xo-view>')).toEqual([]);
