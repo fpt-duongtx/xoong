@@ -18,14 +18,6 @@
 .xo-panel__title { margin: 0; font-size: 15px; font-weight: 600; color: var(--xo-color-text); }
 .xo-panel__sub { margin: 2px 0 0; font-size: 13px; color: var(--xo-color-text-2); }
 
-.xo-kpi { display: grid; gap: 6px; }
-.xo-kpi__label { font-size: 13px; color: var(--xo-color-text-2); }
-.xo-kpi__value { font-size: 28px; font-weight: 600; line-height: 1.1; letter-spacing: -.01em; color: var(--xo-color-text); font-variant-numeric: tabular-nums; }
-.xo-kpi__delta { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; color: color-mix(in srgb, var(--xo-color-success) 55%, var(--xo-color-text)); }
-.xo-kpi__delta[data-trend="down"] { color: var(--xo-color-danger); }
-.xo-kpi__delta .icon { --xo-icon: 14px; }
-.xo-kpi__spark { width: 100%; height: 32px; margin-top: 4px; color: var(--xo-color-accent); }
-.xo-kpi__spark path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 
 /* chart: a figure with an SVG, a legend and a data table fallback */
 

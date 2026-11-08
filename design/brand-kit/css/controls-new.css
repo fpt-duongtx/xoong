@@ -896,3 +896,33 @@ xo-file progress::-moz-progress-bar { background: var(--xo-color-accent); }
 .xo-file-list li { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); background: var(--xo-color-surface); font-size: 14px; }
 .xo-file-list li img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex: none; }
 .xo-file-list li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- the real elements of 0.0.42: xo-stat, xo-spinner, xo-progress, xo-inline-edit, xo-textarea, xo-range-slider ---- */
+/* stat tile: the host of xo-stat has class xo-kpi */
+.xo-kpi { display: grid; gap: 6px; }
+.xo-kpi__label { font-size: 13px; color: var(--xo-color-text-2); }
+.xo-kpi__value { font-size: 28px; font-weight: 600; line-height: 1.1; letter-spacing: -.01em; color: var(--xo-color-text); font-variant-numeric: tabular-nums; }
+.xo-kpi__delta { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; color: color-mix(in srgb, var(--xo-color-success) 55%, var(--xo-color-text)); }
+.xo-kpi__delta[data-good="false"], .xo-kpi__delta[data-trend="down"] { color: var(--xo-color-danger); }
+.xo-kpi__delta .ic, .xo-kpi__delta .icon { --xo-icon: 14px; width: 14px; height: 14px; }
+.xo-kpi__spark { display: block; width: 100%; height: 32px; margin-top: 4px; color: var(--xo-color-accent); }
+.xo-kpi__spark path { fill: none; stroke: currentcolor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+/* spinner */
+.xo-spinner { display: inline-block; box-sizing: border-box; animation: xo-spinner .8s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .xo-spinner { animation-duration: 2.4s; }
+}
+/* progress without a value: a bar that slides back and forth */
+xo-progress[data-state="indeterminate"] .xo-progress > i, .xo-progress[data-state="indeterminate"] > i { animation: xo-progress-slide 1.4s ease-in-out infinite; }
+@keyframes xo-progress-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  xo-progress[data-state="indeterminate"] .xo-progress > i, .xo-progress[data-state="indeterminate"] > i { animation: none; opacity: .45; }
+}
+/* inline edit */
+.xo-inline-edit__text { min-width: 0; overflow-wrap: anywhere; }
+.xo-inline-edit input { width: min(100%, 28ch); min-width: 12ch; height: 36px; min-height: 0; padding: 0 10px; font: inherit; color: var(--xo-color-text); background: var(--xo-color-surface); border: 1px solid var(--xo-color-accent); border-radius: var(--xo-radius); outline: var(--xo-focus); }
+.xo-inline-edit .xo-inline-edit__text + button { opacity: .7; }
+.xo-inline-edit:hover .xo-inline-edit__text + button, .xo-inline-edit .xo-inline-edit__text + button:focus-visible { opacity: 1; }
