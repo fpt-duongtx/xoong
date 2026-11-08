@@ -61,18 +61,18 @@ function html(src) {
 export const highlight = (lang, src) => (lang === 'html' ? html(src) : RULES[lang] ? run(src, RULES[lang]) : esc(src));
 
 // ---- blocks ---------------------------------------------------------------------------------------------------------------------
-export const code = (lang, src) => `<pre data-lang="${lang}"><code>${highlight(lang, dedent(src))}</code></pre>`;
+export const code = (lang, src) => `<pre data-lang="${lang}" tabindex="0"><code>${highlight(lang, dedent(src))}</code></pre>`;
 
 const LANG_LABEL = { html: 'HTML', js: 'JavaScript', css: 'CSS', json: 'JSON', bash: 'Terminal' };
 
 /** Code tabs. Each tab is [label, lang, source] or [label, lang, { file }] to show a file of the repository. */
-export const tabs = (label, items) => `<xo-tabs label="${esc(label)}" class="code-tabs">
+export const tabs = (label, items) => `<xo-tabs label="${esc(label)}" class="example">
 ${items.map(([name, lang, src]) => `  <section xo-tab="${esc(name)}">${code(lang, typeof src === 'object' ? readFileSync(join(root, src.file), 'utf8') : src)}</section>`).join('\n')}
 </xo-tabs>`;
 
 /** A live example: Preview first (the markup really runs), then the markup and any extra files as tabs. */
-export const example = ({ label, preview, extra = [], note = '' }) => `<xo-tabs label="${esc(label)}" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+export const example = ({ label, preview, extra = [], note = '' }) => `<xo-tabs label="${esc(label)}" class="example">
+  <section xo-tab="Preview"><div class="preview">
 ${dedent(preview).replace(/^/gm, '    ')}
   </div>${note}</section>
   <section xo-tab="HTML">${code('html', preview)}</section>
@@ -115,16 +115,33 @@ export function layout({ pages, page }) {
 ${side.replace(/^/gm, '    ')}
   </nav></details>
 `;
+  // every h2 gets an id, and the right-hand rail lists them ("On this page")
+  const used = new Set();
+  const heads = [];
+  const bodyHtml = page.body.replace(/<h2>(.*?)<\/h2>/g, (_, inner) => {
+    const plain = inner.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, '');
+    let id = plain.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+    for (let n = 2; used.has(id); n++) id = `${id.replace(/-\d+$/, '')}-${n}`;
+    used.add(id); heads.push({ id, text: plain });
+    return `<h2 id="${id}">${inner}</h2>`;
+  });
+  const rail = heads.length > 1 ? `    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol>${heads.map((h, n) => `<li><a href="#${h.id}"${n === 0 ? ' aria-current="true"' : ''}>${esc(h.text)}</a></li>`).join('')}</ol>
+    </aside>
+` : '';
+  const crumbs = !page.group ? '' : `<div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>${esc(page.group)}</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>${esc(page.nav)}</span></div>`;
   const body = page.group
-    ? `${menu}  <div class="layout">
+    ? `${menu}  <div class="shell${rail ? '' : ' no-rail'}">
     <nav class="side" aria-label="Documentation">
 ${side.replace(/^/gm, '      ')}
     </nav>
-    <main id="main">
-${page.body}
+    <main class="content" id="main">
+      ${crumbs}
+${bodyHtml}
 ${pager}
     </main>
-  </div>`
+${rail}  </div>`
     : `  <main id="main">
 ${page.body}
   </main>`;
@@ -142,11 +159,18 @@ ${page.body}
   <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-  <link rel="stylesheet" href="/@xoong/controls/controls.css">${page.richtext ? '\n  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">' : ''}
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}
 </head>
-<body>
+<body${page.group ? ' class="shell-page"' : ''}>
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home">${mark()}<span class="word">xoong</span></a>

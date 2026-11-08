@@ -14,11 +14,17 @@
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/demo.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -62,7 +68,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -83,15 +89,16 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Guides</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Forms</span></div>
 
 <h1>Forms</h1>
 <p class="lead">A form is a <code>&lt;form xo-submit&gt;</code> inside an <code>xo-view</code>. The request schema of the operation gives each field its type, its limits and its errors, and the record fills the fields.</p>
 
-<h2>Generated from the schema</h2>
+<h2 id="generated-from-the-schema">Generated from the schema</h2>
 <p><code>&lt;xo-form op="createPerson"&gt;</code> (inside an <code>&lt;xo-view&gt;</code>) draws every field of the request body: text, e-mail, a select for the enum, and the rich widgets chosen by the schema (<code>x-xoong-widget</code> in OpenAPI, or a hint). Submit it empty to see the validation messages, then add a person with an address that is already used (<code>ada@example.org</code>) to see a server error. The list refreshes by itself after a successful save.</p>
-<xo-tabs label="xo-form" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-form" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <div class="split">
       <xo-view><xo-form op="createPerson" submit="Add person"></xo-form></xo-view>
       <xo-view get="listPeople" p-sort="-id" p-limit="5">
@@ -100,14 +107,14 @@
       </xo-view>
     </div>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"split"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"split"</span>&gt;
   &lt;<span class="tok-t">xo-view</span>&gt;&lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add person"</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;
   &lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span> <span class="tok-a">p-sort</span>=<span class="tok-s">"-id"</span> <span class="tok-a">p-limit</span>=<span class="tok-s">"5"</span>&gt;
     &lt;<span class="tok-t">h3</span>&gt;Newest people&lt;/<span class="tok-t">h3</span>&gt;
     &lt;<span class="tok-t">ul</span> <span class="tok-a">class</span>=<span class="tok-s">"people"</span>&gt;&lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;&lt;<span class="tok-t">strong</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">strong</span>&gt;&lt;<span class="tok-t">br</span>&gt;&lt;<span class="tok-t">small</span>&gt;<span class="tok-i">{email}</span>&lt;/<span class="tok-t">small</span>&gt;&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;
   &lt;/<span class="tok-t">xo-view</span>&gt;
 &lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
-  <section xo-tab="OpenAPI"><pre data-lang="json"><code><span class="tok-a">"PersonInput"</span>: {
+  <section xo-tab="OpenAPI"><pre data-lang="json" tabindex="0"><code><span class="tok-a">"PersonInput"</span>: {
   <span class="tok-a">"type"</span>: <span class="tok-s">"object"</span>,
   <span class="tok-a">"required"</span>: [<span class="tok-s">"name"</span>, <span class="tok-s">"email"</span>],
   <span class="tok-a">"properties"</span>: {
@@ -119,7 +126,7 @@
     <span class="tok-a">"bio"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span>, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-richtext"</span> }
   }
 }</code></pre></section>
-  <section xo-tab="Hints"><pre data-lang="json"><code>{
+  <section xo-tab="Hints"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"fields"</span>: {
     <span class="tok-a">"PersonInput.name"</span>: { <span class="tok-a">"label"</span>: <span class="tok-s">"Full name"</span>, <span class="tok-a">"hint"</span>: <span class="tok-s">"2 to 40 characters"</span>, <span class="tok-a">"order"</span>: <span class="tok-n">1</span> },
     <span class="tok-a">"PersonInput.bio"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-richtext"</span> }
@@ -127,10 +134,10 @@
 }</code></pre></section>
 </xo-tabs>
 
-<h2>Written by hand</h2>
+<h2 id="written-by-hand">Written by hand</h2>
 <p>For a layout of your own, write the form. <code>name</code> is a path (<code>title.en</code>, <code>items[0].x</code>). The record fills the fields, errors appear after blur or submit, and <code>$form</code> tells the markup what is going on: <code>dirty</code>, <code>valid</code>, <code>submitting</code>, <code>errors['email']</code>. Put sections in <code>&lt;xo-tabs&gt;</code>: when a field on another tab is invalid, that tab opens before the focus moves there.</p>
-<xo-tabs label="A hand-written form" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="A hand-written form" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-view get="getPerson" p-id="1">
       <form xo-submit="updatePerson" xo-notice="Saved">
         <xo-tabs label="Person">
@@ -162,7 +169,7 @@
       </form>
     </xo-view>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getPerson"</span> <span class="tok-a">p-id</span>=<span class="tok-s">"1"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getPerson"</span> <span class="tok-a">p-id</span>=<span class="tok-s">"1"</span>&gt;
   &lt;<span class="tok-t">form</span> <span class="tok-a">xo-submit</span>=<span class="tok-s">"updatePerson"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Saved"</span>&gt;
     &lt;<span class="tok-t">xo-tabs</span> <span class="tok-a">label</span>=<span class="tok-s">"Person"</span>&gt;
       &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"General"</span>&gt;
@@ -196,10 +203,10 @@
 </xo-tabs>
 <p>Clear the name or type a single letter, go to another tab and press Save: the first invalid field is revealed, and nothing is sent until the form is valid. The leave guard of <code>&lt;xo-router&gt;</code> uses the same <code>dirty</code> state.</p>
 
-<h2>Rows you can add, move and remove</h2>
+<h2 id="rows-you-can-add-move-and-remove">Rows you can add, move and remove</h2>
 <p>An array of values or objects is edited with <code>xo-each</code> over the draft. <code>xo-add</code> appends a row, <code>xo-remove</code> removes one, <code>xo-move</code> moves it (the focus follows the row), and <code>xo-drag</code> on a handle lets a pointer drag it onto another row of the same list.</p>
-<xo-tabs label="Array rows" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="Array rows" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-view get="getPerson" p-id="2">
       <form xo-submit="updatePerson" xo-notice="Saved">
         <fieldset>
@@ -217,7 +224,7 @@
       </form>
     </xo-view>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getPerson"</span> <span class="tok-a">p-id</span>=<span class="tok-s">"2"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getPerson"</span> <span class="tok-a">p-id</span>=<span class="tok-s">"2"</span>&gt;
   &lt;<span class="tok-t">form</span> <span class="tok-a">xo-submit</span>=<span class="tok-s">"updatePerson"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Saved"</span>&gt;
     &lt;<span class="tok-t">fieldset</span>&gt;
       &lt;<span class="tok-t">legend</span>&gt;Keywords&lt;/<span class="tok-t">legend</span>&gt;
@@ -236,10 +243,10 @@
 
 </xo-tabs>
 
-<h2>Your own rules</h2>
+<h2 id="your-own-rules">Your own rules</h2>
 <p>Schema rules always apply. Add rules the schema cannot express by path, with the loaded record at hand; a rule returns an empty string when the value is fine, or the message. Rules may be asynchronous, for example to ask the server whether a slug is free.</p>
-<xo-tabs label="Rules" class="code-tabs">
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-k">const</span> form = document.querySelector(<span class="tok-s">'form'</span>);
+<xo-tabs label="Rules" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> form = document.querySelector(<span class="tok-s">'form'</span>);
 
 form.rules = {
   email: (value) =&gt; (value.endsWith(<span class="tok-s">'@example.org'</span>) ? <span class="tok-s">''</span> : <span class="tok-s">'Use a company address'</span>),
@@ -250,6 +257,10 @@ form.serialize = (draft, body) =&gt; ({ ...body, name: body.name.trim() }); <spa
 <p>On an invalid submit the form fires a cancelable <code>xo-reveal</code> event with the path, so tabs and collapsed sections can open before the focus moves, then <code>xo-invalid</code>.</p>
 <nav class="pager" aria-label="Pages"><a rel="prev" href="data.html"><small>Previous</small><span>Data and tables</span></a><a rel="next" href="richtext.html"><small>Next</small><span>Rich text</span></a></nav>
     </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#generated-from-the-schema" aria-current="true">Generated from the schema</a></li><li><a href="#written-by-hand">Written by hand</a></li><li><a href="#rows-you-can-add-move-and-remove">Rows you can add, move and remove</a></li><li><a href="#your-own-rules">Your own rules</a></li></ol>
+    </aside>
   </div>
   <footer class="foot">
     <div class="wrap">

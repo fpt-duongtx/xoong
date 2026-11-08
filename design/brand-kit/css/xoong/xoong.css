@@ -1,0 +1,125 @@
+/*
+ * xoong.css: design tokens and the default look of the admin set. Plain CSS, no build step.
+ *
+ *   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+ *
+ * Everything lives in cascade layers, so your own unlayered CSS always wins without specificity fights.
+ * Change the look by overriding the custom properties on :root (or on any element, for a region):
+ *
+ *   :root { --xo-color-accent: #0a7; --xo-radius: 0; }
+ */
+@layer xoong.tokens, xoong.base, xoong.components;
+
+@layer xoong.tokens {
+  :root {
+    color-scheme: light dark;
+    --xo-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --xo-font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --xo-text: 1rem;
+    --xo-text-small: 0.875rem;
+    --xo-space-1: 0.25rem;
+    --xo-space-2: 0.5rem;
+    --xo-space-3: 1rem;
+    --xo-space-4: 1.5rem;
+    --xo-radius: 0.375rem;
+    --xo-form-max-width: 28rem; /* generated forms; `none` for editors that should use the whole width */
+
+    --xo-color-bg: light-dark(#f7f8fa, #14161a);
+    --xo-color-surface: light-dark(#fff, #1d2026);
+    --xo-color-text: light-dark(#1b1f27, #e8eaee);
+    --xo-color-muted: light-dark(#5b6472, #9aa3b2);
+    --xo-color-border: light-dark(#d9dde4, #343a46);
+    --xo-color-accent: light-dark(#2457d6, #7aa2ff);
+    --xo-color-accent-text: light-dark(#fff, #0d1117);
+    --xo-color-danger: light-dark(#b42318, #ff8a80);
+    --xo-focus: 2px solid var(--xo-color-accent);
+  }
+}
+
+@layer xoong.base {
+  :where(body) { margin: 0; font: var(--xo-text) / 1.5 var(--xo-font); color: var(--xo-color-text); background: var(--xo-color-bg); }
+  :where(h1, h2, h3) { line-height: 1.25; }
+  :where(a) { color: var(--xo-color-accent); }
+  :where(:focus-visible) { outline: var(--xo-focus); outline-offset: 2px; }
+  :where(button) {
+    font: inherit; padding: var(--xo-space-1) var(--xo-space-3); cursor: pointer;
+    color: var(--xo-color-text); background: var(--xo-color-surface);
+    border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius);
+  }
+  :where(button:hover) { border-color: var(--xo-color-accent); }
+  :where(button[aria-busy="true"]) { opacity: 0.6; cursor: progress; }
+  :where(input, select, textarea) {
+    font: inherit; padding: var(--xo-space-1) var(--xo-space-2); color: inherit; background: var(--xo-color-surface);
+    border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius);
+  }
+  :where([aria-invalid="true"]) { border-color: var(--xo-color-danger); }
+  .xo-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
+@layer xoong.components {
+  /*
+   * Admin shell: put class="xo-admin" on <body> (or on <xo-router> itself) and give the layout a <header>, a <nav> and a <main xo-outlet>.
+   * Both the plain page and the router form work:
+   *
+   *   <body class="xo-admin">                                  <body>
+   *     <header>..</header><nav>..</nav><main>..</main>          <xo-router class="xo-admin">
+   *   </body>                                                      <template xo-layout="shell"><header>..</header><nav>..</nav><main xo-outlet></main></template> ...
+   *
+   * The router's wrapper elements (<xo-router>, .xo-router-root, .xo-layout) do not generate boxes (display: contents), so the layout's
+   * header, nav and main are grid items of the shell. Nested layouts (a <main> inside the outlet) are not touched by these rules.
+   */
+  xo-router, .xo-router-root, .xo-layout { display: contents; }
+  .xo-admin, xo-router.xo-admin { display: grid; min-height: 100vh; grid-template: "header header" auto "nav main" 1fr / 14rem 1fr; }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > header { grid-area: header; padding: var(--xo-space-2) var(--xo-space-4); background: var(--xo-color-surface); border-bottom: 1px solid var(--xo-color-border); }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav { grid-area: nav; padding: var(--xo-space-3); background: var(--xo-color-surface); border-right: 1px solid var(--xo-color-border); }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav :where(a) { display: block; padding: var(--xo-space-1) var(--xo-space-2); border-radius: var(--xo-radius); text-decoration: none; color: inherit; }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav :where(a[aria-current="page"]) { background: var(--xo-color-bg); font-weight: 600; }
+  :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > main { grid-area: main; padding: var(--xo-space-4); min-width: 0; }
+  @media (max-width: 40rem) {
+    .xo-admin, xo-router.xo-admin { grid-template: "header" auto "nav" auto "main" 1fr / 1fr; }
+    :is(.xo-admin, .xo-admin > xo-router, .xo-admin > .xo-router-root, .xo-admin > xo-router > .xo-router-root, .xo-admin > .xo-router-root > .xo-layout, .xo-admin > xo-router > .xo-router-root > .xo-layout) > nav { border-right: 0; border-bottom: 1px solid var(--xo-color-border); }
+  }
+
+  .xo-table { overflow-x: auto; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
+  .xo-table table { width: 100%; border-collapse: collapse; }
+  .xo-table :where(th, td) { padding: var(--xo-space-2) var(--xo-space-3); text-align: start; border-bottom: 1px solid var(--xo-color-border); }
+  .xo-table :where(th) { font-size: var(--xo-text-small); color: var(--xo-color-muted); font-weight: 600; }
+  .xo-table :where(th button) { all: unset; cursor: pointer; font: inherit; }
+  .xo-table :where(th button:focus-visible) { outline: var(--xo-focus); }
+  .xo-table :where(tbody tr:last-child td) { border-bottom: 0; }
+  .xo-table .xo-actions { display: flex; gap: var(--xo-space-2); justify-content: flex-end; }
+  .xo-bulk { display: flex; align-items: center; gap: var(--xo-space-2); padding: var(--xo-space-2); background: var(--xo-color-bg); border-bottom: 1px solid var(--xo-color-border); }
+  .xo-filters { display: flex; flex-wrap: wrap; gap: var(--xo-space-2); padding: var(--xo-space-2); border-bottom: 1px solid var(--xo-color-border); }
+  .xo-toast { position: fixed; inset-block-end: var(--xo-space-4); inset-inline-end: var(--xo-space-4); max-width: 24rem; margin: 0; padding: var(--xo-space-2) var(--xo-space-3); color: var(--xo-color-danger); background: var(--xo-color-surface); border: 1px solid var(--xo-color-danger); border-radius: var(--xo-radius); }
+  .xo-toast[hidden] { display: none; }
+  .xo-pager { display: flex; gap: var(--xo-space-2); justify-content: flex-end; padding: var(--xo-space-2); }
+
+  .xo-form { display: grid; gap: var(--xo-space-3); max-width: var(--xo-form-max-width); }
+  .xo-object, .xo-array, .xo-group { margin: 0; padding: var(--xo-space-3); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); display: grid; gap: var(--xo-space-3); }
+  .xo-group { border: 0; padding: 0; }
+  .xo-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }
+  .xo-row-actions, .xo-array-add { display: flex; gap: var(--xo-space-2); flex-wrap: wrap; }
+  .xo-row-title { font-weight: 600; }
+  .xo-handle { cursor: grab; user-select: none; padding: 0 var(--xo-space-1); opacity: .6; align-self: center; }
+  .xo-row.xo-dragging { opacity: .5; }
+  .xo-row.xo-drop { outline: 2px dashed var(--xo-color-accent, currentColor); outline-offset: 2px; }
+  .xo-hint { color: var(--xo-color-muted); font-size: var(--xo-text-small); }
+  .xo-object, .xo-array { margin: 0; padding: var(--xo-space-3); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); display: grid; gap: var(--xo-space-3); }
+  .xo-group { margin: 0; padding: 0; border: 0; display: grid; gap: var(--xo-space-3); }
+  .xo-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }
+  .xo-row-actions, .xo-array-add { display: flex; gap: var(--xo-space-2); flex-wrap: wrap; }
+  .xo-hint { color: var(--xo-color-muted); font-size: var(--xo-text-small); }
+  .xo-field { display: grid; gap: var(--xo-space-1); }
+  .xo-field:has(input[type="checkbox"]) { display: flex; align-items: center; gap: var(--xo-space-2); }
+  .xo-error { color: var(--xo-color-danger); font-size: var(--xo-text-small); }
+  .xo-form > .xo-submit { justify-self: start; color: var(--xo-color-accent-text); background: var(--xo-color-accent); border-color: transparent; }
+
+  .xo-confirm { max-width: 26rem; padding: var(--xo-space-4); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
+  .xo-confirm::backdrop { background: rgb(0 0 0 / 0.45); }
+  .xo-confirm-actions { display: flex; gap: var(--xo-space-2); justify-content: flex-end; margin-top: var(--xo-space-3); }
+  .xo-confirm-ok { color: var(--xo-color-accent-text); background: var(--xo-color-danger); border-color: transparent; }
+  .xo-toast-action { margin-inline-start: var(--xo-space-2); }
+  .xo-toast-status { color: var(--xo-color-text); border-color: var(--xo-color-border); }
+  xo-dialog > dialog { padding: var(--xo-space-4); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
+  xo-dialog > dialog::backdrop { background: rgb(0 0 0 / 0.45); }
+}

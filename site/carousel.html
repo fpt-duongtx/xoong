@@ -13,11 +13,18 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/demo.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -61,7 +68,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -82,15 +89,16 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Carousel</span></div>
 
 <h1>Carousel</h1>
 <p><code>&lt;xo-carousel&gt;</code> is a row of slides, its children, that you move through. It is made on the platform: the slides sit in a scroll container with CSS scroll snap, so touch swiping, the wheel and momentum are the browser's own, and the buttons only ask it to scroll. It follows the WAI-ARIA carousel pattern, and a slide that is out of view cannot be reached with Tab. These are the forms it covers, one element each:</p>
 
-<h2>Cards, several at a time</h2>
+<h2 id="cards-several-at-a-time">Cards, several at a time</h2>
 <p><code>items</code> sets how many are visible; set <code>--xo-carousel-items</code> in CSS to change it with the screen width. <code>counter</code> shows the position, and the arrows stop at the ends (or wrap with <code>loop</code>).</p>
-<xo-tabs label="xo-carousel with cards" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-carousel with cards" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-carousel class="service-cards" label="Services" counter>
       <article class="card"><h3>Digestive check</h3><p>Advice on stomach, bowel and liver symptoms.</p><a href="#book">Book</a></article>
       <article class="card"><h3>Painless endoscopy</h3><p>Stomach and bowel, with sedation.</p><a href="#book">Book</a></article>
@@ -99,29 +107,29 @@
       <article class="card"><h3>Health packages</h3><p>Checks with offers.</p><a href="#book">Book</a></article>
     </xo-carousel>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"service-cards"</span> <span class="tok-a">label</span>=<span class="tok-s">"Services"</span> <span class="tok-a">counter</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"service-cards"</span> <span class="tok-a">label</span>=<span class="tok-s">"Services"</span> <span class="tok-a">counter</span>&gt;
   &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Digestive check&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Advice on stomach, bowel and liver symptoms.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
   &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Painless endoscopy&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Stomach and bowel, with sedation.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
   &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;H. pylori test&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;A sample taken during the endoscopy.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
   &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Abdominal ultrasound&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Done together with the doctor.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
   &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;Health packages&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;Checks with offers.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#book"</span>&gt;Book&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
 &lt;/<span class="tok-t">xo-carousel</span>&gt;</code></pre></section>
-  <section xo-tab="CSS"><pre data-lang="css"><code>.service-cards { <span class="tok-a">--xo-carousel-items</span>: <span class="tok-n">1</span>; }
+  <section xo-tab="CSS"><pre data-lang="css" tabindex="0"><code>.service-cards { <span class="tok-a">--xo-carousel-items</span>: <span class="tok-n">1</span>; }
 <span class="tok-k">@media</span> (min-width: <span class="tok-n">40rem</span>) { .service-cards { <span class="tok-a">--xo-carousel-items</span>: <span class="tok-n">2</span>; } }
 <span class="tok-k">@media</span> (min-width: <span class="tok-n">60rem</span>) { .service-cards { <span class="tok-a">--xo-carousel-items</span>: <span class="tok-n">3</span>; <span class="tok-a">--xo-carousel-gap</span>: <span class="tok-n">1.5rem</span>; } }</code></pre></section>
 </xo-tabs>
 
-<h2>A banner or testimonials, moving by itself</h2>
+<h2 id="a-banner-or-testimonials-moving-by-itself">A banner or testimonials, moving by itself</h2>
 <p>One slide at a time with <code>dots</code> and <code>autoplay</code> (milliseconds). It adds a pause button, pauses while the pointer or the focus is inside, does not run under <code>prefers-reduced-motion</code>, and the slides are announced politely only when it is not moving.</p>
-<xo-tabs label="xo-carousel as a banner" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-carousel as a banner" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-carousel class="banner" label="What people say" dots autoplay="6000" loop>
       <blockquote><p>The form just worked: validation, errors and the draft came from the OpenAPI document.</p><footer>Ada, platform team</footer></blockquote>
       <blockquote><p>We deleted our table component and kept the markup.</p><footer>Grace, admin app</footer></blockquote>
       <blockquote><p>Strict CSP on day one, no exceptions to write.</p><footer>Barbara, security</footer></blockquote>
     </xo-carousel>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"banner"</span> <span class="tok-a">label</span>=<span class="tok-s">"What people say"</span> <span class="tok-a">dots</span> <span class="tok-a">autoplay</span>=<span class="tok-s">"6000"</span> <span class="tok-a">loop</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"banner"</span> <span class="tok-a">label</span>=<span class="tok-s">"What people say"</span> <span class="tok-a">dots</span> <span class="tok-a">autoplay</span>=<span class="tok-s">"6000"</span> <span class="tok-a">loop</span>&gt;
   &lt;<span class="tok-t">blockquote</span>&gt;&lt;<span class="tok-t">p</span>&gt;The form just worked: validation, errors and the draft came from the OpenAPI document.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">footer</span>&gt;Ada, platform team&lt;/<span class="tok-t">footer</span>&gt;&lt;/<span class="tok-t">blockquote</span>&gt;
   &lt;<span class="tok-t">blockquote</span>&gt;&lt;<span class="tok-t">p</span>&gt;We deleted our table component and kept the markup.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">footer</span>&gt;Grace, admin app&lt;/<span class="tok-t">footer</span>&gt;&lt;/<span class="tok-t">blockquote</span>&gt;
   &lt;<span class="tok-t">blockquote</span>&gt;&lt;<span class="tok-t">p</span>&gt;Strict CSP on day one, no exceptions to write.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">footer</span>&gt;Barbara, security&lt;/<span class="tok-t">footer</span>&gt;&lt;/<span class="tok-t">blockquote</span>&gt;
@@ -129,17 +137,17 @@
 
 </xo-tabs>
 
-<h2>A gallery with thumbnails</h2>
+<h2 id="a-gallery-with-thumbnails">A gallery with thumbnails</h2>
 <p>A slide with <code>data-thumb</code> gives its picture to the button that goes to it, in place of a dot. Keys on the picture area: Left and Right, Home and End.</p>
-<xo-tabs label="xo-carousel as a gallery" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-carousel as a gallery" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-carousel label="Gallery" dots>
       <img src="img/gallery-1.svg" alt="Clay hills" data-thumb="img/gallery-1.svg">
       <img src="img/gallery-2.svg" alt="Green valley" data-thumb="img/gallery-2.svg">
       <img src="img/gallery-3.svg" alt="Night over the ridge" data-thumb="img/gallery-3.svg">
     </xo-carousel>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">label</span>=<span class="tok-s">"Gallery"</span> <span class="tok-a">dots</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">label</span>=<span class="tok-s">"Gallery"</span> <span class="tok-a">dots</span>&gt;
   &lt;<span class="tok-t">img</span> <span class="tok-a">src</span>=<span class="tok-s">"img/gallery-1.svg"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Clay hills"</span> <span class="tok-a">data-thumb</span>=<span class="tok-s">"img/gallery-1.svg"</span>&gt;
   &lt;<span class="tok-t">img</span> <span class="tok-a">src</span>=<span class="tok-s">"img/gallery-2.svg"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Green valley"</span> <span class="tok-a">data-thumb</span>=<span class="tok-s">"img/gallery-2.svg"</span>&gt;
   &lt;<span class="tok-t">img</span> <span class="tok-a">src</span>=<span class="tok-s">"img/gallery-3.svg"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Night over the ridge"</span> <span class="tok-a">data-thumb</span>=<span class="tok-s">"img/gallery-3.svg"</span>&gt;
@@ -147,27 +155,27 @@
 
 </xo-tabs>
 
-<h2>Slides from data</h2>
+<h2 id="slides-from-data">Slides from data</h2>
 <p>The slides can come from the data layer: put <code>xo-each</code> on the slide. The carousel follows its children as they arrive and change.</p>
-<xo-tabs label="xo-carousel with data" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-carousel with data" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-view get="listPeople" p-limit="6">
       <xo-carousel class="service-cards" label="People" items="2" counter no-arrows>
         <article class="card" xo-each="items"><h3>{name}</h3><p>{email}</p><span class="badge">{role}</span></article>
       </xo-carousel>
     </xo-view>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span> <span class="tok-a">p-limit</span>=<span class="tok-s">"6"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span> <span class="tok-a">p-limit</span>=<span class="tok-s">"6"</span>&gt;
   &lt;<span class="tok-t">xo-carousel</span> <span class="tok-a">class</span>=<span class="tok-s">"service-cards"</span> <span class="tok-a">label</span>=<span class="tok-s">"People"</span> <span class="tok-a">items</span>=<span class="tok-s">"2"</span> <span class="tok-a">counter</span> <span class="tok-a">no-arrows</span>&gt;
     &lt;<span class="tok-t">article</span> <span class="tok-a">class</span>=<span class="tok-s">"card"</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;<span class="tok-i">{email}</span>&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
   &lt;/<span class="tok-t">xo-carousel</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
 
 </xo-tabs>
-<h2>Arrows at the sides</h2>
+<h2 id="arrows-at-the-sides">Arrows at the sides</h2>
 <p>The arrows, dots and counter are children of the carousel's controls row. To lay them out another way, make the row and the arrows' box transparent to layout (<code>display: contents</code>) and place each piece in the carousel's own grid. This is how this site draws them:</p>
-<xo-tabs label="Layout recipe" class="code-tabs">
-  <section xo-tab="CSS"><pre data-lang="css"><code>xo-carousel { display: grid; grid-template-columns: auto minmax(<span class="tok-n">0</span>, <span class="tok-n">1</span>fr) auto; column-gap: <span class="tok-n">0.75rem</span>; align-items: center; }
+<xo-tabs label="Layout recipe" class="example">
+  <section xo-tab="CSS"><pre data-lang="css" tabindex="0"><code>xo-carousel { display: grid; grid-template-columns: auto minmax(<span class="tok-n">0</span>, <span class="tok-n">1</span>fr) auto; column-gap: <span class="tok-n">0.75rem</span>; align-items: center; }
 xo-carousel .xo-carousel-controls, xo-carousel .xo-carousel-nav { display: contents; }
 xo-carousel .xo-carousel-track { grid-column: <span class="tok-n">2</span>; grid-row: <span class="tok-n">1</span>; }
 xo-carousel .xo-carousel-prev { grid-column: <span class="tok-n">1</span>; grid-row: <span class="tok-n">1</span>; }
@@ -188,6 +196,10 @@ xo-carousel .xo-carousel-count { grid-column: <span class="tok-n">2</span>; grid
 
 <nav class="pager" aria-label="Pages"><a rel="prev" href="combobox.html"><small>Previous</small><span>Combobox and tags</span></a><a rel="next" href="own-control.html"><small>Next</small><span>Your own control</span></a></nav>
     </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#cards-several-at-a-time" aria-current="true">Cards, several at a time</a></li><li><a href="#a-banner-or-testimonials-moving-by-itself">A banner or testimonials, moving by itself</a></li><li><a href="#a-gallery-with-thumbnails">A gallery with thumbnails</a></li><li><a href="#slides-from-data">Slides from data</a></li><li><a href="#arrows-at-the-sides">Arrows at the sides</a></li></ol>
+    </aside>
   </div>
   <footer class="foot">
     <div class="wrap">

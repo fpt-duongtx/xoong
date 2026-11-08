@@ -11,15 +11,39 @@ if (palette) {
   });
 }
 
-for (const pre of document.querySelectorAll('pre[data-lang]')) {
+// An example has one Copy button at the end of its tab bar: it copies the code of the tab that is open (the first code tab while the Preview shows).
+for (const example of document.querySelectorAll('xo-tabs.example')) {
+  const actions = document.createElement('div');
+  actions.className = 'actions-end';
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = 'copy';
-  button.textContent = 'Copy';
+  button.className = 'ghost icon-only sm';
   button.setAttribute('aria-label', 'Copy the code');
+  button.title = 'Copy';
+  const icon = document.createElement('span');
+  icon.className = 'ic';
+  icon.dataset.ic = 'copy';
+  icon.setAttribute('aria-hidden', 'true');
+  button.append(icon);
   button.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(pre.querySelector('code').textContent); button.textContent = 'Copied'; } catch { button.textContent = 'Press Ctrl+C'; }
-    setTimeout(() => { button.textContent = 'Copy'; }, 1600);
+    const panels = [...example.querySelectorAll(':scope > [role="tabpanel"]')];
+    const open = panels.find((p) => !p.hidden && p.querySelector('pre')) ?? panels.find((p) => p.querySelector('pre'));
+    try { await navigator.clipboard.writeText(open?.querySelector('pre code')?.textContent ?? ''); icon.dataset.ic = 'check'; button.title = 'Copied'; } catch { button.title = 'Press Ctrl+C'; }
+    setTimeout(() => { icon.dataset.ic = 'copy'; button.title = 'Copy'; }, 1600);
   });
-  pre.append(button);
+  actions.append(button);
+  example.append(actions);
+}
+
+// "On this page": the entry of the section being read is the current one.
+const links = [...document.querySelectorAll('.rail ol a')];
+if (links.length && typeof IntersectionObserver !== 'undefined') {
+  const heads = links.map((a) => document.getElementById(a.hash.slice(1))).filter(Boolean);
+  const mark = () => {
+    const y = innerHeight * 0.3;
+    const here = [...heads].reverse().find((h) => h.getBoundingClientRect().top <= y) ?? heads[0];
+    for (const a of links) a.setAttribute('aria-current', String(a.hash === `#${here.id}`));
+  };
+  addEventListener('scroll', mark, { passive: true });
+  mark();
 }

@@ -1,0 +1,91 @@
+/*
+ * Page shell and demo frame (site/demo only: NOT for the framework).
+ * Fluid: the page fills the window. Three columns: navigation | content | right rail ("on this page", related, ads of the future).
+ * No max-width on the shell; only reading text keeps a comfortable measure, so wide demos use the room.
+ */
+:root { --gutter: clamp(1rem, 2.4vw, 2.5rem); --nav-w: 16rem; --rail-w: 15rem; --header-h: 4rem; --measure: 74ch; }
+body.shell-page header.top .wrap { max-width: none; padding-inline: var(--gutter); }
+body.shell-page footer.foot .wrap { max-width: none; padding-inline: var(--gutter); }
+
+.shell { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr) var(--rail-w); min-height: calc(100vh - var(--header-h)); }
+.shell > nav.side, .shell > aside.rail { position: sticky; top: var(--header-h); align-self: start; max-height: calc(100vh - var(--header-h)); overflow-y: auto; padding: 1.5rem 1rem 2rem var(--gutter); }
+.shell > aside.rail { padding: 1.5rem var(--gutter) 2rem 1rem; }
+.shell nav.side h2, .rail h2 { margin: 1.3rem 0 .35rem; font: 700 .72rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border: 0; padding: 0; }
+.shell nav.side h2:first-child, .rail h2:first-child { margin-top: 0; }
+.shell nav.side a { display: flex; align-items: center; gap: .55rem; min-height: 2.1rem; padding: 0 .7rem; border-radius: 8px; color: var(--text); text-decoration: none; font-size: .95rem; }
+.shell nav.side a:hover { background: var(--broth); }
+.shell nav.side a[aria-current="page"] { background: var(--ember-soft); color: var(--ember-deep); font-weight: 700; }
+.shell nav.side .icon { color: var(--muted); --xo-icon: 1.1rem; }
+.rail ol { margin: 0; padding: 0; list-style: none; border-left: 1px solid var(--line); }
+.rail ol a { display: block; padding: .3rem .8rem; margin-left: -1px; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; font-size: .9rem; }
+.rail ol a:hover { color: var(--text); }
+.rail ol a[aria-current="true"] { color: var(--ember-deep); border-left-color: var(--ember-deep); font-weight: 600; }
+.rail .card-mini { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--xo-radius); background: var(--surface); font-size: .9rem; }
+.rail .card-mini p { margin: .3rem 0 0; color: var(--muted); }
+
+.content { min-width: 0; padding: 2rem var(--gutter) 5rem; container-type: inline-size; }
+.content > h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.05em; margin: 0 0 .5rem; }
+.content > .lede, .content p, .content ul:not(.chips):not(.cards-row), .content ol { max-width: var(--measure); }
+.content h2 { margin: 3rem 0 .7rem; padding-top: 1rem; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header-h) + 1rem); font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.content h3 { margin: 1.8rem 0 .4rem; }
+.crumbs { display: flex; align-items: center; gap: .35rem; margin-bottom: 1rem; color: var(--muted); font-size: .875rem; } .crumbs a { color: inherit; } .crumbs .icon { --xo-icon: .9rem; }
+
+/* ---- demo frame: one look for every example ---- */
+.example { margin: 1.2rem 0 1.8rem; border: 1px solid var(--line); border-radius: calc(var(--xo-radius) + 4px); background: var(--surface); overflow: hidden; }
+.example-head { display: flex; align-items: center; gap: .5rem; padding-right: .6rem; background: var(--broth); border-bottom: 1px solid var(--line); }
+.example-head [role="tablist"] { flex: 1; border: 0; padding-left: .5rem; }
+.example-head [role="tab"] { margin: 0; min-height: 2.9rem; }
+.example-head .actions-end { display: flex; gap: .25rem; }
+.preview { padding: clamp(1rem, 2.5vw, 2rem); background: radial-gradient(circle at 1px 1px, var(--dots) 1.1px, transparent 1.3px) 0 0 / 20px 20px, var(--bg); }
+.preview > :first-child { margin-top: 0; } .preview > :last-child { margin-bottom: 0; }
+.preview .panel { padding: 1.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: calc(var(--xo-radius) + 2px); }
+.preview .split { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+@container (min-width: 56rem) { .preview .split { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } .preview .split.even { grid-template-columns: 1fr 1fr; } }
+.example pre { margin: 0; border-radius: 0; border: 0; padding: 1.1rem 1.3rem; background: var(--surface); color: var(--text); font-size: .9rem; line-height: 1.65; overflow-x: auto; }
+.preview-note { margin-top: .8rem; color: var(--muted); font-size: .85rem; }
+.example .t-tag { color: var(--ember-deep); } .example .t-attr { color: light-dark(#7a5a12, #f5c04a); } .example .t-str { color: light-dark(#2f6f48, #8fe0a8); } .example .t-mute { color: var(--muted); }
+
+.cards-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1rem; padding: 0; margin: 1rem 0; list-style: none; }
+.person { display: flex; gap: .8rem; align-items: center; padding: .8rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--xo-radius); }
+.avatar { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--ember-soft); color: var(--ember-deep); font-weight: 800; flex: none; }
+.person b { display: block; line-height: 1.2; } .person small { color: var(--muted); }
+
+@media (max-width: 80rem) { .shell { grid-template-columns: var(--nav-w) minmax(0, 1fr); } .shell > aside.rail { display: none; } }
+@media (max-width: 52rem) { .shell { grid-template-columns: minmax(0, 1fr); } .shell > nav.side { display: none; } .docs-menu { display: block; } .content { padding-top: 1.2rem; } }
+@media (min-width: 120rem) { :root { --nav-w: 18rem; --rail-w: 18rem; } }
+
+/* ---- components / icons pages ---- */
+.std-row { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 1rem; align-items: center; padding: .65rem 0; border-bottom: 1px dashed var(--line); }
+.std-row:last-child { border-bottom: 0; }
+.std-label { font: 600 .75rem/1.3 var(--mono); color: var(--muted); }
+.std-cells { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.std-cells input, .std-cells select { width: 11rem; }
+@media (max-width: 40rem) { .std-row { grid-template-columns: 1fr; gap: .3rem; } }
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); gap: .75rem; margin: 1rem 0; }
+.icon-cell { display: grid; justify-items: center; gap: .6rem; padding: 1.1rem .5rem .9rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--xo-radius); transition: border-color .15s ease, transform .15s ease; }
+.icon-cell:hover { border-color: var(--ember-deep); transform: translateY(-2px); }
+.icon-cell .icon { --xo-icon: 1.75rem; color: var(--text); }
+.icon-cell code { padding: 0; background: none; font-size: .72rem; color: var(--muted); }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ---- controls-demo ---- */
+.cards-3 { --xo-carousel-items: 1; }
+@container (min-width: 36rem) { .cards-3 { --xo-carousel-items: 2; } }
+@container (min-width: 56rem) { .cards-3 { --xo-carousel-items: 3; --xo-carousel-gap: 1.25rem; } }
+.stage-gap { margin-top: 1rem; max-width: 16rem; }
+.dialog-stage { position: relative; display: grid; place-items: start center; padding: 1rem; background: color-mix(in srgb, var(--soot) 8%, transparent); border-radius: var(--xo-radius); }
+.dialog-stage dialog { position: static; margin: 0; display: block; }
+.preview .field .opt { display: flex; align-items: center; min-height: 2.25rem; padding: 0 .65rem; border-radius: 8px; font-size: .95rem; }
+.preview .field .opt.xo-active { background: var(--ember-soft); }
+.preview .field .opt[aria-selected="true"] { font-weight: 700; }
+.toast-error { border-left: 4px solid var(--danger); }
+.example xo-carousel .card { display: block; padding: 1.1rem 1.2rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--xo-radius); }
+.example xo-carousel .card h3 { margin: 0 0 .3rem; font-size: 1.1rem; } .example xo-carousel .card p { margin: 0 0 .5rem; color: var(--muted); }
+
+/* ---- brand flourishes over the standard (site only; the framework standard has none of these) ---- */
+.xo-carousel-nav button { border: 2px solid var(--text); box-shadow: 0 3px 0 var(--text); }
+.xo-carousel-nav button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 0 var(--text); border-color: var(--text); background: var(--surface); }
+.xo-carousel-nav button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--text); }
+.xo-carousel-nav button:disabled { box-shadow: none; border-color: var(--line-strong); }
+button.primary { box-shadow: 0 2px 0 color-mix(in srgb, var(--text) 85%, transparent); }
+button.primary:active { box-shadow: none; }

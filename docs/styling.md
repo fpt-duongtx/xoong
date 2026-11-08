@@ -80,3 +80,9 @@ docs and its fallback, so a team can decide against its own browser matrix.
 * A utility-class system.
 * A large pre-themed component catalog. The built-in set stays small and
   focused on admin needs: table, form, dialog, layout.
+
+## Control size and state tokens
+
+Buttons, fields and selects share one scale: `--xo-control-height` (2.5rem; `-sm` 2rem for toolbars and table rows, `-lg` 3rem), `--xo-control-padding`, `--xo-control-gap` between an icon and a label, `--xo-field-gap` between a label, a control and its hint, and `--xo-touch` (2.75rem) as the smallest comfortable target: on a touch layout set `--xo-control-height: var(--xo-touch)`. Edges use `--xo-color-control-border` (3:1 against the page, WCAG 1.4.11), the focus ring is `--xo-focus` (3px in the accent, which must reach 3:1 too). Neutral tokens for state colours: `--xo-color-accent-soft` (the current item, a selected row), `--xo-color-subtle` (table header, tab bar), `--xo-color-success`, `--xo-color-warning`, `--xo-color-danger`, `--xo-color-inverse` and `--xo-color-inverse-text` (tooltip, toast), `--xo-shadow-pop`.
+
+Your own unlayered CSS always beats the framework's layers, which is the point, with one thing to know: a rule such as `button { ... }` also reaches the buttons the framework draws (the sort buttons in table headers, the chip close buttons). Scope your button styles (`.btn`, `:where()`), or restyle those few again.

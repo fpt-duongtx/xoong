@@ -13,11 +13,18 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/page-menu.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -61,7 +68,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell no-rail">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -82,12 +89,13 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Menu and tooltip</span></div>
 
 <h1>Menu and tooltip</h1>
 <p>The menu button pattern: click, Enter, Space or ArrowDown opens it (ArrowUp opens on the last item); arrows wrap, Home and End jump, a letter jumps to the next item that starts with it, Escape closes and returns to the trigger. The list is drawn in the <strong>top layer</strong> with the Popover API, so a table cell or a scroll area never clips it, and it is positioned through the CSS object model, which a strict CSP allows. A tooltip shows after a delay on hover and at once on keyboard focus, stays while the pointer is on it (WCAG 1.4.13) and describes, never names: an icon-only button still needs <code>aria-label</code>.</p>
-<xo-tabs label="xo-menu and xo-tooltip" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-menu and xo-tooltip" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <p class="toolbar">
       <xo-menu id="demo-menu" label="Row actions">
         <button xo-menu-trigger>Actions</button>
@@ -100,7 +108,7 @@
     </p>
     <p class="hint">Chosen: <output id="menu-out">nothing yet</output></p>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
   &lt;<span class="tok-t">xo-menu</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-menu"</span> <span class="tok-a">label</span>=<span class="tok-s">"Row actions"</span>&gt;
     &lt;<span class="tok-t">button</span> <span class="tok-a">xo-menu-trigger</span>&gt;Actions&lt;/<span class="tok-t">button</span>&gt;
     &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Edit&lt;/<span class="tok-t">button</span>&gt;
@@ -111,7 +119,7 @@
   &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Keyboard focus shows this at once"</span>&gt;Focus me&lt;/<span class="tok-t">button</span>&gt;
 &lt;/<span class="tok-t">p</span>&gt;
 &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Chosen: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"menu-out"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The menu page: choosing an item runs it as it is (a handler, a link, xo-click); here a click handler notes it.</span>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// The menu page: choosing an item runs it as it is (a handler, a link, xo-click); here a click handler notes it.</span>
 document.querySelector(<span class="tok-s">'#demo-menu'</span>).addEventListener(<span class="tok-s">'click'</span>, (e) =&gt; {
   <span class="tok-k">const</span> item = e.target.closest(<span class="tok-s">'button:not([xo-menu-trigger]), a'</span>);
   <span class="tok-k">if</span> (item) document.querySelector(<span class="tok-s">'#menu-out'</span>).textContent = item.textContent;

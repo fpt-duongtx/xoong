@@ -188,6 +188,7 @@ class XoCarousel extends XoElement {
     toggle.hidden = !(this.autoplay > 0);
     const label = this.#stopped ? text('xoong.carousel.play', 'Start automatic slide show') : text('xoong.carousel.pause', 'Pause automatic slide show');
     toggle.setAttribute('aria-label', label);
+    toggle.dataset.state = this.#stopped ? 'paused' : 'playing'; // a theme can draw its own icons from this
     /** @type {HTMLElement} */ (toggle.firstElementChild).textContent = this.#stopped ? '▶' : '❚❚';
     track.setAttribute('aria-live', this.autoplay > 0 && playing ? 'off' : 'polite');
     this.#announce();

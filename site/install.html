@@ -13,10 +13,17 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -60,7 +67,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -81,49 +88,50 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Start</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Install</span></div>
 
 <h1>Install</h1>
 <aside class="callout note">xoong is not on npm yet. Each version is a GitHub Release with one tarball per package. Until the repository is public you need <code>gh</code> signed in to an account that can read it.</aside>
 <p>You need Node 22.12 or newer. The libraries themselves have no runtime dependencies; Node is only for the tools (<code>xoong sync</code>, <code>dev</code>, <code>build</code>).</p>
 
-<h2>1. Download a release</h2>
-<xo-tabs label="Download" class="code-tabs">
-  <section xo-tab="Terminal"><pre data-lang="bash"><code>gh release download v0.0.22 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
+<h2 id="1-download-a-release">1. Download a release</h2>
+<xo-tabs label="Download" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>gh release download v0.0.23 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
 </xo-tabs>
 <p>The folder holds one <code>.tgz</code> per package and a <code>consume.json</code> that says what to copy into your project.</p>
 
-<h2>2. Point your <code>package.json</code> at the tarballs</h2>
+<h2 id="2-point-your-package-json-at-the-tarballs">2. Point your <code>package.json</code> at the tarballs</h2>
 <p>Copy <code>dependencies</code> (what you import) and every entry of <code>overrides</code> from <code>consume.json</code>, then run <code>npm install</code>.</p>
-<xo-tabs label="package.json" class="code-tabs">
-  <section xo-tab="package.json"><pre data-lang="json"><code>{
+<xo-tabs label="package.json" class="example">
+  <section xo-tab="package.json"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"dependencies"</span>: {
-    <span class="tok-a">"xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-0.0.22.tgz"</span>,
-    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.22.tgz"</span>
+    <span class="tok-a">"xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-0.0.23.tgz"</span>,
+    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.23.tgz"</span>
   },
   <span class="tok-a">"overrides"</span>: {
-    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.22.tgz"</span>
+    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.23.tgz"</span>
   }
 }</code></pre></section>
-  <section xo-tab="Terminal"><pre data-lang="bash"><code>npm install</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npm install</code></pre></section>
 </xo-tabs>
 
-<h2>3. Generate typed operations and run</h2>
+<h2 id="3-generate-typed-operations-and-run">3. Generate typed operations and run</h2>
 <p>Give <code>xoong sync</code> your OpenAPI document (a file or a URL). It writes <code>.xoong/operations.json</code>, which the data layer reads, and <code>api.d.ts</code> for TypeScript.</p>
-<xo-tabs label="Commands" class="code-tabs">
-  <section xo-tab="Terminal"><pre data-lang="bash"><code>npx xoong sync openapi.json      <span class="tok-c"># writes .xoong/operations.json and api.d.ts</span>
+<xo-tabs label="Commands" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npx xoong sync openapi.json      <span class="tok-c"># writes .xoong/operations.json and api.d.ts</span>
 npx xoong dev                    <span class="tok-c"># static server with an API proxy</span>
 npx xoong build <span class="tok-a">--out</span> dist       <span class="tok-c"># static output for strict-CSP hosting</span></code></pre></section>
-  <section xo-tab="xoong.config.json"><pre data-lang="json"><code>{
+  <section xo-tab="xoong.config.json"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"port"</span>: <span class="tok-n">5173</span>,
   <span class="tok-a">"proxy"</span>: { <span class="tok-a">"/api"</span>: <span class="tok-s">"http://localhost:8080"</span> }
 }</code></pre></section>
 </xo-tabs>
 
-<h2>4. A first screen</h2>
+<h2 id="4-a-first-screen">4. A first screen</h2>
 <p>Or let <code>xoong new</code> do steps 3 and 4: <code>npx xoong new my-app --spec openapi.json</code> creates a project with a first list screen.</p>
-<xo-tabs label="First screen" class="code-tabs">
-  <section xo-tab="index.html"><pre data-lang="html"><code>&lt;!doctype html&gt;
+<xo-tabs label="First screen" class="example">
+  <section xo-tab="index.html"><pre data-lang="html" tabindex="0"><code>&lt;!doctype html&gt;
 &lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/ui/src/xoong.css"</span>&gt;
 &lt;<span class="tok-t">script</span> <span class="tok-a">type</span>=<span class="tok-s">"module"</span> <span class="tok-a">src</span>=<span class="tok-s">"main.js"</span>&gt;&lt;/<span class="tok-t">script</span>&gt;
 
@@ -131,7 +139,7 @@ npx xoong build <span class="tok-a">--out</span> dist       <span class="tok-c">
   &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$loading"</span>&gt;Loading…&lt;/<span class="tok-t">p</span>&gt;
   &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role"</span> <span class="tok-a">sortable</span>&gt;&lt;/<span class="tok-t">xo-table</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
-  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+  <section xo-tab="main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
 <span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
 <span class="tok-k">import</span> <span class="tok-s">'@xoong/ui'</span>;
 <span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };
@@ -141,6 +149,10 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
 <p>Run <code>npx xoong check index.html</code> to lint the markup against your API; each message says how to fix it.</p>
 <nav class="pager" aria-label="Pages"><a rel="prev" href="overview.html"><small>Previous</small><span>Overview</span></a><a rel="next" href="how-it-works.html"><small>Next</small><span>How it works</span></a></nav>
     </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#1-download-a-release" aria-current="true">1. Download a release</a></li><li><a href="#2-point-your-package-json-at-the-tarballs">2. Point your package.json at the tarballs</a></li><li><a href="#3-generate-typed-operations-and-run">3. Generate typed operations and run</a></li><li><a href="#4-a-first-screen">4. A first screen</a></li></ol>
+    </aside>
   </div>
   <footer class="foot">
     <div class="wrap">

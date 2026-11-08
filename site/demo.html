@@ -14,11 +14,17 @@
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/demo.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -62,7 +68,7 @@
     <h2>Demo</h2>
     <a href="demo.html" aria-current="page">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell no-rail">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -83,12 +89,13 @@
       <h2>Demo</h2>
       <a href="demo.html" aria-current="page">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Demo</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Live demo</span></div>
 
 <h1>Live demo</h1>
 <p>A small people admin on the in-page API: sort, search, page, add someone, delete one or several. It is a table, a dialog with a generated form, and two buttons; there is no application code. Changes last until you reload.</p>
-<xo-tabs label="People admin" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="People admin" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-view get="listPeople">
       <p class="toolbar"><button xo-open="#add">Add person</button></p>
       <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
@@ -98,12 +105,12 @@
       </xo-table>
     </xo-view>
     <xo-dialog id="add">
-      <h2>Add person</h2>
+      <h2 id="add-person">Add person</h2>
       <xo-view><xo-form op="createPerson" submit="Add"></xo-form></xo-view>
       <button type="button" xo-close>Cancel</button>
     </xo-dialog>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
   &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#add"</span>&gt;Add person&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
   &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role,topics:Topics"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
     &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"role"</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;
@@ -116,14 +123,14 @@
   &lt;<span class="tok-t">xo-view</span>&gt;&lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add"</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;
   &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Cancel&lt;/<span class="tok-t">button</span>&gt;
 &lt;/<span class="tok-t">xo-dialog</span>&gt;</code></pre></section>
-  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-c">// The demo pages: the data layer, the admin parts and the rich widgets, pointed at the in-page API.</span>
+  <section xo-tab="main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// The demo pages: the data layer, the admin parts and the rich widgets, pointed at the in-page API.</span>
 <span class="tok-k">import</span> <span class="tok-s">'./api.js'</span>;
 <span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
 <span class="tok-k">import</span> <span class="tok-s">'@xoong/ui'</span>;
 <span class="tok-k">import</span> <span class="tok-s">'@xoong/forms'</span>;
 <span class="tok-k">import</span> <span class="tok-s">'@xoong/controls'</span>;
 <span class="tok-k">import</span> <span class="tok-s">'@xoong/richtext'</span>;</code></pre></section>
-  <section xo-tab="api.js"><pre data-lang="js"><code><span class="tok-c">// A backend for the demos, in the page: GitHub Pages serves files only, so a function plays the API.</span>
+  <section xo-tab="api.js"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// A backend for the demos, in the page: GitHub Pages serves files only, so a function plays the API.</span>
 <span class="tok-c">// The data layer takes any `fetch` (configure({ fetch })), so everything on the demo pages goes through the same code path</span>
 <span class="tok-c">// as a real server: typed operations, caching, loading and error states. Data lives in memory: reload to start again.</span>
 <span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;

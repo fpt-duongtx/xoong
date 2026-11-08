@@ -13,11 +13,18 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/page-tabs.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -61,7 +68,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell no-rail">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -82,12 +89,13 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Tabs</span></div>
 
 <h1>Tabs</h1>
 <p>The WAI-ARIA tabs pattern with automatic activation: Left and Right (wrapping), Home and End move and select, and only the selected tab is in the tab order. <code>xo-tab</code> is the label; the section's <code>id</code> is its key. Panels are hidden, not removed, so their form fields stay in the form. <em>The code tabs on this page are made with it.</em></p>
-<xo-tabs label="xo-tabs" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-tabs" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-tabs id="demo-tabs" label="Article" value="seo">
       <section xo-tab="General"><p>General settings: title, slug, author.</p></section>
       <section xo-tab="SEO" id="seo"><p>Search engine settings. This tab is selected by <code>value="seo"</code>.</p></section>
@@ -95,13 +103,13 @@
     </xo-tabs>
     <p class="hint">Selected: <output id="tabs-out">seo</output></p>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-tabs</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-tabs"</span> <span class="tok-a">label</span>=<span class="tok-s">"Article"</span> <span class="tok-a">value</span>=<span class="tok-s">"seo"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-tabs</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-tabs"</span> <span class="tok-a">label</span>=<span class="tok-s">"Article"</span> <span class="tok-a">value</span>=<span class="tok-s">"seo"</span>&gt;
   &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"General"</span>&gt;&lt;<span class="tok-t">p</span>&gt;General settings: title, slug, author.&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">section</span>&gt;
   &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"SEO"</span> <span class="tok-a">id</span>=<span class="tok-s">"seo"</span>&gt;&lt;<span class="tok-t">p</span>&gt;Search engine settings. This tab is selected by &lt;<span class="tok-t">code</span>&gt;value="seo"&lt;/<span class="tok-t">code</span>&gt;.&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">section</span>&gt;
   &lt;<span class="tok-t">section</span> <span class="tok-a">xo-tab</span>=<span class="tok-s">"Social"</span>&gt;&lt;<span class="tok-t">p</span>&gt;How the page looks when it is shared.&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">section</span>&gt;
 &lt;/<span class="tok-t">xo-tabs</span>&gt;
 &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Selected: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"tabs-out"</span>&gt;seo&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The tabs page: show what the control reports.</span>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// The tabs page: show what the control reports.</span>
 <span class="tok-c">// `xo-tab-change` carries the selected key (the section's id, or its position).</span>
 document.querySelector(<span class="tok-s">'#demo-tabs'</span>).addEventListener(<span class="tok-s">'xo-tab-change'</span>, (e) =&gt; {
   document.querySelector(<span class="tok-s">'#tabs-out'</span>).textContent = e.detail.value;

@@ -1,0 +1,66 @@
+/* Optional styles for @xoong/controls. Everything is in @layer xoong-controls and uses the --xo-* tokens of @xoong/ui, with fallbacks. */
+@layer xoong-controls {
+  xo-tabs { display: block; }
+  xo-tabs > [role="tablist"] { display: flex; gap: var(--xo-space-1, .25rem); border-bottom: 1px solid var(--xo-color-border, #d8dee4); overflow-x: auto; }
+  xo-tabs [role="tab"] { background: none; border: 0; border-bottom: 2px solid transparent; padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); cursor: pointer; font: inherit; color: inherit; white-space: nowrap; }
+  xo-tabs [role="tab"][aria-selected="true"] { border-bottom-color: var(--xo-color-accent, #0969da); font-weight: 600; }
+  xo-tabs [role="tab"][data-invalid]::after { content: " \25CF"; color: var(--xo-color-danger, #cf222e); }
+  xo-tabs > [role="tabpanel"] { padding-top: var(--xo-space-3, .75rem); }
+}
+
+@layer xoong-controls {
+  xo-menu { display: inline-block; }
+  xo-menu [role="menu"] { min-width: 10rem; padding: var(--xo-space-1, .25rem); background: var(--xo-color-surface, #fff); color: inherit; border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); box-shadow: 0 6px 18px rgb(0 0 0 / .15); }
+  xo-menu [role="menu"]:not([popover]) { position: absolute; z-index: 10; }
+  xo-menu [role="menu"][hidden] { display: none; }
+  xo-menu :is([role="menuitem"], [role="menuitemradio"]) { display: block; width: 100%; box-sizing: border-box; text-align: start; background: none; border: 0; padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); font: inherit; color: inherit; text-decoration: none; cursor: pointer; border-radius: 4px; }
+  xo-menu :is([role="menuitem"], [role="menuitemradio"]):is(:hover, :focus-visible) { background: var(--xo-color-hover, rgb(127 127 127 / .15)); outline: none; }
+  xo-menu [role="menuitemradio"] { padding-inline-start: 1.75rem; position: relative; }
+  xo-menu [role="menuitemradio"][aria-checked="true"] { font-weight: 600; }
+  xo-menu [role="menuitemradio"][aria-checked="true"]::before { content: "\2713"; position: absolute; inset-inline-start: .5rem; }
+  .xo-tooltip { padding: .25rem .5rem; border: 0; border-radius: 4px; background: #1b1f24; color: #fff; font-size: .85rem; max-width: 20rem; pointer-events: auto; }
+  .xo-tooltip[hidden] { display: none; }
+  xo-menu { position: relative; }
+}
+
+@layer xoong-controls {
+  xo-combobox, xo-tags { display: block; position: relative; }
+  .xo-combobox-box { display: flex; flex-wrap: wrap; gap: var(--xo-space-1, .25rem); align-items: center; padding: var(--xo-space-1, .25rem) var(--xo-space-2, .5rem); border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); background: var(--xo-color-surface, #fff); }
+  .xo-combobox-box:focus-within { outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 1px; }
+  .xo-combobox-input { flex: 1 1 8rem; min-width: 6rem; border: 0; outline: none; background: transparent; font: inherit; color: inherit; padding: var(--xo-space-1, .25rem) 0; }
+  .xo-chip { display: inline-flex; align-items: center; gap: .25rem; padding: 0 .25rem 0 .5rem; border-radius: 999px; background: var(--xo-color-hover, rgb(127 127 127 / .18)); font-size: .9em; }
+  .xo-chip button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; line-height: 1; padding: .15rem .3rem; border-radius: 50%; }
+  .xo-chip button:hover { background: rgb(127 127 127 / .3); }
+  .xo-combobox-list { margin: 0; padding: var(--xo-space-1, .25rem); list-style: none; max-height: 16rem; overflow-y: auto; background: var(--xo-color-surface, #fff); color: inherit; border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); box-shadow: 0 6px 18px rgb(0 0 0 / .15); }
+  .xo-combobox-list:not([popover]) { position: absolute; z-index: 10; inset-inline: 0; }
+  .xo-combobox-list[hidden] { display: none; }
+  .xo-combobox-list [role="option"], .xo-combobox-list .xo-empty { padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); border-radius: 4px; cursor: pointer; }
+  .xo-combobox-list .xo-empty { cursor: default; opacity: .7; }
+  .xo-combobox-list [role="option"].xo-active { background: var(--xo-color-hover, rgb(127 127 127 / .18)); }
+  .xo-combobox-list [role="option"][aria-selected="true"] { font-weight: 600; }
+  .xo-combobox-list [role="option"][aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+  xo-combobox[data-invalid] .xo-combobox-box, xo-tags[data-invalid] .xo-combobox-box { border-color: var(--xo-color-danger, #cf222e); }
+}
+
+@layer xoong-controls {
+  /* xo-carousel: a scroll container with scroll snap; --xo-carousel-items (default 1) slides are visible, --xo-carousel-gap apart */
+  xo-carousel { display: block; position: relative; --xo-carousel-gap-used: var(--xo-carousel-gap, var(--xo-space-3, 1rem)); }
+  .xo-carousel-track { display: flex; gap: var(--xo-carousel-gap-used); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; position: relative; }
+  .xo-carousel-track::-webkit-scrollbar { display: none; }
+  .xo-carousel-track:focus-visible { outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 2px; border-radius: var(--xo-radius, 6px); }
+  .xo-carousel-track > * { flex: 0 0 calc((100% - (var(--xo-carousel-items, 1) - 1) * var(--xo-carousel-gap-used)) / var(--xo-carousel-items, 1)); min-width: 0; box-sizing: border-box; scroll-snap-align: start; }
+  .xo-carousel-controls { display: flex; align-items: center; gap: var(--xo-space-3, 1rem); margin-block-start: var(--xo-space-3, 1rem); }
+  .xo-carousel-controls [hidden] { display: none; }
+  .xo-carousel-nav { display: flex; gap: var(--xo-space-2, .5rem); }
+  .xo-carousel-nav button { width: 2.5rem; height: 2.5rem; padding: 0; border-radius: 50%; font-size: 1.1rem; line-height: 1; }
+  .xo-carousel-nav button:disabled { opacity: .4; cursor: default; }
+  .xo-carousel-nav button:disabled:hover { border-color: var(--xo-color-border, #d8dee4); }
+  :dir(rtl) > .xo-carousel-controls .xo-carousel-prev span, :dir(rtl) > .xo-carousel-controls .xo-carousel-next span { display: inline-block; transform: scaleX(-1); }
+  .xo-carousel-dots { display: flex; flex: 1; justify-content: center; flex-wrap: wrap; gap: var(--xo-space-2, .5rem); }
+  .xo-carousel-dots button { width: .65rem; height: .65rem; padding: 0; border: 0; border-radius: 50%; background: var(--xo-color-border, #d8dee4); cursor: pointer; }
+  .xo-carousel-dots button[aria-current="true"] { background: var(--xo-color-accent, #0969da); }
+  .xo-carousel-dots button.xo-carousel-thumb { width: 4rem; height: 3rem; border-radius: 4px; overflow: hidden; opacity: .6; background: none; }
+  .xo-carousel-dots button.xo-carousel-thumb[aria-current="true"] { opacity: 1; outline: 2px solid var(--xo-color-accent, #0969da); outline-offset: 2px; }
+  .xo-carousel-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .xo-carousel-count { margin-inline-start: auto; color: var(--xo-color-muted, #5b6472); font-size: var(--xo-text-small, .875rem); font-variant-numeric: tabular-nums; }
+}

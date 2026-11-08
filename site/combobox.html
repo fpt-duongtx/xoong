@@ -13,11 +13,18 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/page-combobox.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -61,7 +68,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell no-rail">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -82,12 +89,13 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Combobox and tags</span></div>
 
 <h1>Combobox and tags</h1>
 <p>Both are form controls: <code>name</code>, <code>required</code>, <code>disabled</code>, <code>value</code>, validity, <code>dirty</code> and <code>touched</code>, and they work in <code>&lt;form xo-submit&gt;</code> like a native field. The value is a string, or an array with <code>multiple</code> and for tags. Options come from <code>&lt;option&gt;</code> children, from <code>el.options</code>, or from the schema's <code>enum</code>. <code>creatable</code> lets people add a value that is not in the list; <code>remote</code> leaves filtering to you through the <code>xo-search</code> event.</p>
-<xo-tabs label="xo-combobox and xo-tags" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-combobox and xo-tags" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <div class="split">
       <xo-combobox id="demo-author" name="author" label="Author" placeholder="Choose an author">
         <option value="1">Ada Lovelace</option>
@@ -103,7 +111,7 @@
     </div>
     <p class="hint">Values: <output id="combo-out"></output></p>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"split"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"split"</span>&gt;
   &lt;<span class="tok-t">xo-combobox</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-author"</span> <span class="tok-a">name</span>=<span class="tok-s">"author"</span> <span class="tok-a">label</span>=<span class="tok-s">"Author"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Choose an author"</span>&gt;
     &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"1"</span>&gt;Ada Lovelace&lt;/<span class="tok-t">option</span>&gt;
     &lt;<span class="tok-t">option</span> <span class="tok-a">value</span>=<span class="tok-s">"2"</span>&gt;Grace Hopper&lt;/<span class="tok-t">option</span>&gt;
@@ -117,7 +125,7 @@
   &lt;<span class="tok-t">xo-tags</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-tags"</span> <span class="tok-a">name</span>=<span class="tok-s">"keywords"</span> <span class="tok-a">label</span>=<span class="tok-s">"Keywords"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Type and press Enter"</span>&gt;&lt;/<span class="tok-t">xo-tags</span>&gt;
 &lt;/<span class="tok-t">div</span>&gt;
 &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Values: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"combo-out"</span>&gt;&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The combobox page: both are form controls, `value` is a string, or an array with `multiple` and for tags.</span>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// The combobox page: both are form controls, `value` is a string, or an array with `multiple` and for tags.</span>
 <span class="tok-k">const</span> $ = (selector) =&gt; document.querySelector(selector);
 <span class="tok-k">const</span> report = () =&gt; {
   $(<span class="tok-s">'#combo-out'</span>).textContent = JSON.stringify({ author: $(<span class="tok-s">'#demo-author'</span>).value, topics: $(<span class="tok-s">'#demo-topics'</span>).value, keywords: $(<span class="tok-s">'#demo-tags'</span>).value });
@@ -127,17 +135,17 @@ report();</code></pre></section>
 </xo-tabs>
 <p>Keys: ArrowDown and ArrowUp open and move (the focus stays in the input, <code>aria-activedescendant</code> follows), Enter picks, Escape closes, Backspace on an empty field removes the last chip. In tags, Enter or a comma adds the typed text. Enter never submits the form while the list is open.</p>
 
-<h2>In a generated form</h2>
+<h2 id="in-a-generated-form">In a generated form</h2>
 <p><code>&lt;xo-form&gt;</code> draws a control for any field with a <code>widget</code> hint that is a tag name: <code>xo-combobox</code>, <code>xo-tags</code>, <code>xo-richtext</code>, or your own element built on <code>XoControl</code>.</p>
-<xo-tabs label="Widgets" class="code-tabs">
-  <section xo-tab="xoong.hints.json"><pre data-lang="json"><code>{
+<xo-tabs label="Widgets" class="example">
+  <section xo-tab="xoong.hints.json"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"fields"</span>: {
     <span class="tok-a">"Page.topics"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-combobox"</span> },
     <span class="tok-a">"Page.keywords"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-tags"</span> },
     <span class="tok-a">"Page.role"</span>: { <span class="tok-a">"widget"</span>: <span class="tok-s">"xo-combobox"</span> }
   }
 }</code></pre></section>
-  <section xo-tab="OpenAPI"><pre data-lang="json"><code><span class="tok-a">"keywords"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"array"</span>, <span class="tok-a">"items"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span> }, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-tags"</span> }</code></pre></section>
+  <section xo-tab="OpenAPI"><pre data-lang="json" tabindex="0"><code><span class="tok-a">"keywords"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"array"</span>, <span class="tok-a">"items"</span>: { <span class="tok-a">"type"</span>: <span class="tok-s">"string"</span> }, <span class="tok-a">"x-xoong-widget"</span>: <span class="tok-s">"xo-tags"</span> }</code></pre></section>
 </xo-tabs>
 
 <nav class="pager" aria-label="Pages"><a rel="prev" href="menu.html"><small>Previous</small><span>Menu and tooltip</span></a><a rel="next" href="carousel.html"><small>Next</small><span>Carousel</span></a></nav>

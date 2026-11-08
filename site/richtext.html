@@ -14,12 +14,18 @@
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/demo.js"></script>
   <script type="module" src="src/page-richtext.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -63,7 +69,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -84,20 +90,21 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Guides</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Rich text</span></div>
 
 <h1>Rich text</h1>
 <p class="lead"><code>&lt;xo-richtext&gt;</code> is a <code>contenteditable</code> area with an accessible toolbar, and its value is <strong>sanitised HTML</strong>. It covers what most admin forms need and hands the rest (media libraries, embeds, custom blocks) to your app.</p>
-<xo-tabs label="Use" class="code-tabs">
-  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-k">import</span> <span class="tok-s">'@xoong/richtext'</span>;</code></pre></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/richtext/richtext.css"</span>&gt;
+<xo-tabs label="Use" class="example">
+  <section xo-tab="main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> <span class="tok-s">'@xoong/richtext'</span>;</code></pre></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/richtext/richtext.css"</span>&gt;
 &lt;<span class="tok-t">xo-richtext</span> <span class="tok-a">name</span>=<span class="tok-s">"body"</span> <span class="tok-a">label</span>=<span class="tok-s">"Body"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Write something"</span> <span class="tok-a">media</span>&gt;&lt;/<span class="tok-t">xo-richtext</span>&gt;</code></pre></section>
 </xo-tabs>
 
-<h2>Try it</h2>
+<h2 id="try-it">Try it</h2>
 <p>Drag the handle in the corner of the box to change its width: under 580px the editor switches to the <strong>compact</strong> toolbar and the rest of the tools move into a <em>More</em> menu. The toolbar is chosen by the editor's own width, not the screen's, so an editor in a narrow side panel gets the compact one on a wide screen. Click the image tool to see the media hook, and paste something from a web page: only what the editor allows is kept.</p>
-<xo-tabs label="xo-richtext" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+<xo-tabs label="xo-richtext" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <div class="resizable">
       <xo-richtext id="demo-editor" name="body" label="Body" placeholder="Write something" media></xo-richtext>
     </div>
@@ -105,13 +112,13 @@
     <h3>Value</h3>
     <pre class="value"><code id="rt-out"></code></pre>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"resizable"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"resizable"</span>&gt;
   &lt;<span class="tok-t">xo-richtext</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-editor"</span> <span class="tok-a">name</span>=<span class="tok-s">"body"</span> <span class="tok-a">label</span>=<span class="tok-s">"Body"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Write something"</span> <span class="tok-a">media</span>&gt;&lt;/<span class="tok-t">xo-richtext</span>&gt;
 &lt;/<span class="tok-t">div</span>&gt;
 &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">id</span>=<span class="tok-s">"expand"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Expand&lt;/<span class="tok-t">button</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">id</span>=<span class="tok-s">"reset"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Reset&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
 &lt;<span class="tok-t">h3</span>&gt;Value&lt;/<span class="tok-t">h3</span>&gt;
 &lt;<span class="tok-t">pre</span> <span class="tok-a">class</span>=<span class="tok-s">"value"</span>&gt;&lt;<span class="tok-t">code</span> <span class="tok-a">id</span>=<span class="tok-s">"rt-out"</span>&gt;&lt;/<span class="tok-t">code</span>&gt;&lt;/<span class="tok-t">pre</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// The rich text page: a start value, the media hook and a live view of the sanitised value.</span>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// The rich text page: a start value, the media hook and a live view of the sanitised value.</span>
 <span class="tok-k">const</span> editor = document.querySelector(<span class="tok-s">'#demo-editor'</span>);
 <span class="tok-k">const</span> out = document.querySelector(<span class="tok-s">'#rt-out'</span>);
 <span class="tok-k">const</span> START = <span class="tok-s">'&lt;h2&gt;Release notes&lt;/h2&gt;&lt;p&gt;Write &lt;strong&gt;bold&lt;/strong&gt;, &lt;em&gt;italic&lt;/em&gt; and &lt;u&gt;underlined&lt;/u&gt; text, add a &lt;a href="https://example.org"&gt;link&lt;/a&gt; or a list:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;one&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;/ul&gt;'</span>;
@@ -134,7 +141,7 @@ document.querySelector(<span class="tok-s">'#expand'</span>).addEventListener(<s
 document.querySelector(<span class="tok-s">'#reset'</span>).addEventListener(<span class="tok-s">'click'</span>, () =&gt; { editor.value = START; show(); });</code></pre></section>
 </xo-tabs>
 
-<h2>What the value may contain</h2>
+<h2 id="what-the-value-may-contain">What the value may contain</h2>
 <p><code>sanitizeHtml()</code> runs on every input, paste, drop and <code>value</code> set. Everything else is unwrapped (its text stays); scripts, styles, frames and the like are removed with their content, and no attribute outside this table survives (no <code>style</code>, <code>class</code>, <code>on*</code>).</p>
 <table class="props">
 <thead><tr><th>Allowed</th><th>Notes</th></tr></thead>
@@ -146,10 +153,10 @@ document.querySelector(<span class="tok-s">'#reset'</span>).addEventListener(<sp
 </tbody></table>
 <aside class="callout note">The client is never a trust boundary. The same function is exported as <code>@xoong/richtext/sanitize</code> so your <strong>server</strong> can sanitise on save as well.</aside>
 
-<h2>Media</h2>
+<h2 id="media">Media</h2>
 <p>The image tool fires a cancelable <code>xo-pick-media</code> event. Open your own library, then call <code>detail.insert({ src, alt })</code> now or later. With the caret in a heading the image goes in a paragraph after it, and nothing is written inline, so it works under a strict CSP.</p>
 
-<h2>Keys and sizes</h2>
+<h2 id="keys-and-sizes">Keys and sizes</h2>
 <ul>
   <li><strong>Toolbar:</strong> one tab stop; Left, Right, Home and End move inside it. Ctrl or Cmd with B, I, U and K work in the editor.</li>
   <li><strong>Sizes:</strong> <code>toolbar="full"</code> or <code>"compact"</code> forces one; the default follows the editor's width.</li>
@@ -158,6 +165,10 @@ document.querySelector(<span class="tok-s">'#reset'</span>).addEventListener(<sp
 </ul>
 <nav class="pager" aria-label="Pages"><a rel="prev" href="forms.html"><small>Previous</small><span>Forms</span></a><a rel="next" href="styling.html"><small>Next</small><span>Styling</span></a></nav>
     </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#try-it" aria-current="true">Try it</a></li><li><a href="#what-the-value-may-contain">What the value may contain</a></li><li><a href="#media">Media</a></li><li><a href="#keys-and-sizes">Keys and sizes</a></li></ol>
+    </aside>
   </div>
   <footer class="foot">
     <div class="wrap">

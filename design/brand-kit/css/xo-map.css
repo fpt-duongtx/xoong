@@ -1,0 +1,30 @@
+/*
+ * Token map: the framework's --xo-* tokens (including the NEW ones the standard needs) mapped to this site's palette.
+ * Calm/Ember (brand.css) only define palette values; this file says what each framework token means in that palette.
+ * New tokens proposed for xoong.css (give them neutral defaults there):
+ *   --xo-color-control-border   border of controls and fields, >= 3:1 on the page and on surfaces
+ *   --xo-color-accent-soft      tint of the accent: current item, selected row, chip background
+ *   --xo-color-subtle           quiet surface: table header, tab bar, toolbar, code bar
+ *   --xo-color-success / -warning / -danger   state colours (text-safe on surface; badges mix them with the surface)
+ *   --xo-color-inverse / -inverse-text        tooltip and toast
+ */
+:root {
+  --xo-color-bg: var(--bg);
+  --xo-color-surface: var(--surface);
+  --xo-color-text: var(--text);
+  --xo-color-muted: var(--muted);
+  --xo-color-border: var(--line);
+  --xo-color-control-border: var(--line-strong);
+  --xo-color-accent: var(--ember-deep);
+  --xo-color-accent-text: light-dark(#ffffff, #2b2623);
+  --xo-color-accent-soft: var(--ember-soft);
+  --xo-color-subtle: var(--broth);
+  --xo-color-success: var(--herb);
+  --xo-color-warning: var(--sesame);
+  --xo-color-danger: var(--danger);
+  --xo-color-inverse: var(--soot);
+  --xo-color-inverse-text: var(--rice);
+  --xo-font: var(--font);
+  --xo-font-mono: var(--mono);
+  --xo-radius: 10px;
+}

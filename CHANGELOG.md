@@ -3,6 +3,14 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.23 (control scale, brand shell)
+
+breaking: none.
+
+* Added: control scale and state tokens with neutral defaults in `xoong.css`: `--xo-control-height` (-sm, -lg), `--xo-control-padding`, `--xo-control-gap`, `--xo-touch`, `--xo-field-gap`, `--xo-icon`, `--xo-shadow-pop`, `--xo-color-accent-soft`, `--xo-color-subtle`, `--xo-color-success`, `--xo-color-warning`, `--xo-color-inverse`, `--xo-color-inverse-text`; buttons, fields and selects use the height scale; the focus ring is 3px. See docs/styling.md.
+* Added: `data-state="playing|paused"` on the carousel's pause button, for themes that draw icons.
+* Docs site: the design kit's fluid shell (navigation, content, "On this page" rail generated from the h2 headings), one Copy icon button per example, the standard component look (`components.css`, `standard.css`, `icons.css` as CSS masks), code blocks reachable by keyboard.
+
 ## 0.0.22 (states, refresh, control border)
 
 breaking: none.

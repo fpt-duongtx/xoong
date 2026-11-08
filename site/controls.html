@@ -13,10 +13,17 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -60,7 +67,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell no-rail">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -81,17 +88,18 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Overview</span></div>
 
 
 <h1>Controls</h1>
 <p class="lead">The controls every admin needs, as custom elements in the Light DOM with plain CSS. <code>@xoong/controls</code> depends only on <code>@xoong/core</code>, so it works with or without the rest.</p>
-<xo-tabs label="Use" class="code-tabs">
-  <section xo-tab="main.js"><pre data-lang="js"><code><span class="tok-k">import</span> <span class="tok-s">'@xoong/controls'</span>;   <span class="tok-c">// registers every element; or import one: '@xoong/controls/tabs'</span></code></pre></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/controls/controls.css"</span>&gt;  <span class="tok-c">&lt;!-- optional; one @layer, uses the --xo-* tokens --&gt;</span></code></pre></section>
+<xo-tabs label="Use" class="example">
+  <section xo-tab="main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> <span class="tok-s">'@xoong/controls'</span>;   <span class="tok-c">// registers every element; or import one: '@xoong/controls/tabs'</span></code></pre></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/controls/controls.css"</span>&gt;  <span class="tok-c">&lt;!-- optional; one @layer, uses the --xo-* tokens --&gt;</span></code></pre></section>
 </xo-tabs>
 
-<h2>The controls</h2>
+<h2 id="the-controls">The controls</h2>
 <ul>
   <li><a href="tabs.html">Tabs</a>: the WAI-ARIA tabs pattern, panels that stay in the form.</li>
   <li><a href="menu.html">Menu and tooltip</a>: a menu button in the top layer, choice menus, descriptions on hover and focus.</li>

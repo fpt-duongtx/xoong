@@ -13,6 +13,13 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
 </head>
@@ -78,15 +85,15 @@
       <li><span class="chip c-sesame"></span><div class="info"><b>Sesame</b><code>#E6C783</code><p>Notes, highlights.</p></div></li>
       <li><span class="chip c-herb"></span><div class="info"><b>Sage</b><code>#5B8A6B</code><p>Success.</p></div></li>
     </ul>
-    <xo-tabs label="Palette as tokens" class="code-tabs">
-  <section xo-tab="CSS"><pre data-lang="css"><code><span class="tok-c">/* a palette is values for the brand tokens; the site maps them onto the --xo-* tokens */</span>
+    <xo-tabs label="Palette as tokens" class="example">
+  <section xo-tab="CSS"><pre data-lang="css" tabindex="0"><code><span class="tok-c">/* a palette is values for the brand tokens; the site maps them onto the --xo-* tokens */</span>
 :root[data-palette=<span class="tok-s">"ember"</span>] {
   <span class="tok-a">--ember</span>:      light-dark(<span class="tok-n">#ff5b22</span>, <span class="tok-n">#ff7a45</span>);
   <span class="tok-a">--ember-deep</span>: light-dark(<span class="tok-n">#b93a0a</span>, <span class="tok-n">#ff9068</span>);
   <span class="tok-a">--bg</span>:         light-dark(<span class="tok-n">#fff8ee</span>, <span class="tok-n">#15110f</span>);
   <span class="tok-a">--text</span>:       light-dark(<span class="tok-n">#1c1512</span>, <span class="tok-n">#f6ebdd</span>);
 }</code></pre></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-menu</span> <span class="tok-a">label</span>=<span class="tok-s">"Colour palette"</span> <span class="tok-a">value</span>=<span class="tok-s">"calm"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-menu</span> <span class="tok-a">label</span>=<span class="tok-s">"Colour palette"</span> <span class="tok-a">value</span>=<span class="tok-s">"calm"</span>&gt;
   &lt;<span class="tok-t">button</span> <span class="tok-a">xo-menu-trigger</span>&gt;Palette&lt;/<span class="tok-t">button</span>&gt;
   &lt;<span class="tok-t">button</span> <span class="tok-a">value</span>=<span class="tok-s">"calm"</span>&gt;Calm&lt;/<span class="tok-t">button</span>&gt;
   &lt;<span class="tok-t">button</span> <span class="tok-a">value</span>=<span class="tok-s">"ember"</span>&gt;Ember&lt;/<span class="tok-t">button</span>&gt;

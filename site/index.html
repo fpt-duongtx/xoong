@@ -13,6 +13,13 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/demo.js"></script>
@@ -64,7 +71,7 @@
   <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
   <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
 </svg></div>
-        <div class="window"><div class="bar"><i></i><i></i><i></i><span>people.html</span></div><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+        <div class="window"><div class="bar"><i></i><i></i><i></i><span>people.html</span></div><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
   &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email,role"</span>
             <span class="tok-a">sortable</span>&gt;&lt;/<span class="tok-t">xo-table</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;
@@ -101,8 +108,8 @@
   <section>
     <div class="wrap">
       <div class="head"><span class="eyebrow">Taste it</span><h2>This table is the real thing.</h2><p>Sort a column, search, tick rows and delete them. There is no server: a function in the page plays the API, and everything else is xoong.</p></div>
-      <xo-tabs label="A data table" class="code-tabs example">
-  <section xo-tab="Preview"><div class="demo">
+      <xo-tabs label="A data table" class="example">
+  <section xo-tab="Preview"><div class="preview">
     <xo-view get="listPeople">
       <xo-table columns="name,email:E-mail,role" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
         <span slot="role" class="badge">{role}</span>
@@ -111,7 +118,7 @@
       </xo-table>
     </xo-view>
   </div></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
   &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
     &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"role"</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;
     &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
@@ -127,9 +134,9 @@
     <div class="wrap">
       <div class="head"><span class="eyebrow">The recipe</span><h2>Three steps from spec to screen.</h2></div>
       <ol class="recipe">
-        <li><div><h3>Sync your API</h3><p>Generate typed operations from the OpenAPI document you already have.</p><pre data-lang="bash"><code>npx xoong sync openapi.json</code></pre></div></li>
-        <li><div><h3>Write the screen</h3><p>HTML with a few <code>xo-*</code> elements. Style it with plain CSS and custom properties.</p><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;&lt;<span class="tok-t">xo-table</span> <span class="tok-a">sortable</span>&gt;&lt;/<span class="tok-t">xo-table</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></div></li>
-        <li><div><h3>Serve it hot</h3><p>Run the dev server, then build static output for strict-CSP hosting.</p><pre data-lang="bash"><code>npx xoong dev
+        <li><div><h3>Sync your API</h3><p>Generate typed operations from the OpenAPI document you already have.</p><pre data-lang="bash" tabindex="0"><code>npx xoong sync openapi.json</code></pre></div></li>
+        <li><div><h3>Write the screen</h3><p>HTML with a few <code>xo-*</code> elements. Style it with plain CSS and custom properties.</p><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;&lt;<span class="tok-t">xo-table</span> <span class="tok-a">sortable</span>&gt;&lt;/<span class="tok-t">xo-table</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></div></li>
+        <li><div><h3>Serve it hot</h3><p>Run the dev server, then build static output for strict-CSP hosting.</p><pre data-lang="bash" tabindex="0"><code>npx xoong dev
 npx xoong build <span class="tok-a">--out</span> dist</code></pre></div></li>
       </ol>
     </div>

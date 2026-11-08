@@ -13,10 +13,17 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -60,7 +67,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -81,40 +88,41 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Start</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>How it works</span></div>
 
 <h1>How it works</h1>
 <p>xoong has three layers, and you can stop at any of them: a reactive core and base element, a data layer generated from OpenAPI, and ready-made admin parts on top.</p>
 
-<h2>Data</h2>
+<h2 id="data">Data</h2>
 <p><code>xoong sync</code> turns your OpenAPI document into <code>operations.json</code>. A <code>&lt;xo-view get="listPeople"&gt;</code> calls the operation, caches the answer in a shared store (records with the same id are shared between screens) and exposes <code>$loading</code>, <code>$error</code> and the data to the markup inside it. You never write a cache key, an HTTP client or an error handler.</p>
-<xo-tabs label="Data" class="code-tabs">
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+<xo-tabs label="Data" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
   &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$loading"</span>&gt;Loading…&lt;/<span class="tok-t">p</span>&gt;
   &lt;<span class="tok-t">p</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"$error"</span> <span class="tok-a">role</span>=<span class="tok-s">"alert"</span>&gt;<span class="tok-i">{$error.code}</span>: <span class="tok-i">{$error.detail}</span>&lt;/<span class="tok-t">p</span>&gt;
   &lt;<span class="tok-t">ul</span>&gt;
     &lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;<span class="tok-i">{name}</span> &lt;<span class="tok-t">small</span>&gt;<span class="tok-i">{email}</span>&lt;/<span class="tok-t">small</span>&gt;&lt;/<span class="tok-t">li</span>&gt;
   &lt;/<span class="tok-t">ul</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
-  <section xo-tab="Terminal"><pre data-lang="bash"><code>npx xoong sync openapi.json</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npx xoong sync openapi.json</code></pre></section>
 </xo-tabs>
 
-<h2>Actions and forms</h2>
+<h2 id="actions-and-forms">Actions and forms</h2>
 <p>Writes are attributes too. A button runs an operation; after it succeeds, every cached query whose path overlaps it is refetched, so lists stay current without extra code. A form with <code>&lt;xo-form op="createPerson"&gt;</code> is drawn from the request schema: nested objects, arrays and unions included. Validation comes from the same schema, with your own rules by path.</p>
-<xo-tabs label="Actions" class="code-tabs">
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"POST /api/people/<span class="tok-i">{id}</span>/disable"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Disable <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Disabled"</span>&gt;Disable&lt;/<span class="tok-t">button</span>&gt;
+<xo-tabs label="Actions" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"POST /api/people/<span class="tok-i">{id}</span>/disable"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Disable <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Disabled"</span>&gt;Disable&lt;/<span class="tok-t">button</span>&gt;
 
 &lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add person"</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-c">// Only when HTML is not enough: the same client, typed from api.d.ts</span>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// Only when HTML is not enough: the same client, typed from api.d.ts</span>
 <span class="tok-k">import</span> { getClient } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
 
 <span class="tok-k">const</span> created = <span class="tok-k">await</span> getClient().mutate(<span class="tok-s">'createPerson'</span>, {}, { name: <span class="tok-s">'Ada'</span>, email: <span class="tok-s">'ada@example.org'</span> });</code></pre></section>
 </xo-tabs>
 
-<h2>Pages</h2>
+<h2 id="pages">Pages</h2>
 <p><code>&lt;xo-router&gt;</code> is a declarative History-API router with nested layouts, guards and a "leave this page?" question for unsaved forms. Public pages stay one HTML file each and can be prerendered with <code>@xoong/ssr</code>.</p>
-<xo-tabs label="Router" class="code-tabs">
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">xo-router</span> <span class="tok-a">base</span>=<span class="tok-s">"/admin"</span>&gt;
+<xo-tabs label="Router" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-router</span> <span class="tok-a">base</span>=<span class="tok-s">"/admin"</span>&gt;
   &lt;<span class="tok-t">template</span> <span class="tok-a">xo-layout</span>=<span class="tok-s">"shell"</span>&gt;
     &lt;<span class="tok-t">nav</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/people"</span>&gt;People&lt;/<span class="tok-t">a</span>&gt;&lt;/<span class="tok-t">nav</span>&gt;
     &lt;<span class="tok-t">main</span> <span class="tok-a">xo-outlet</span>&gt;&lt;/<span class="tok-t">main</span>&gt;
@@ -126,21 +134,21 @@
 &lt;/<span class="tok-t">xo-router</span>&gt;</code></pre></section>
 </xo-tabs>
 
-<h2>Language</h2>
+<h2 id="language">Language</h2>
 <p><code>@xoong/i18n</code> uses plain JSON catalogs and ICU-style messages. <code>xo-t</code> translates markup, and every built-in string (table, forms, controls) is a catalog key, Vietnamese included.</p>
-<xo-tabs label="i18n" class="code-tabs">
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">h1</span> <span class="tok-a">xo-t</span>=<span class="tok-s">"home.title"</span>&gt;Welcome&lt;/<span class="tok-t">h1</span>&gt;
+<xo-tabs label="i18n" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">h1</span> <span class="tok-a">xo-t</span>=<span class="tok-s">"home.title"</span>&gt;Welcome&lt;/<span class="tok-t">h1</span>&gt;
 &lt;<span class="tok-t">input</span> <span class="tok-a">xo-t</span>=<span class="tok-s">"placeholder:search.placeholder"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Search"</span>&gt;</code></pre></section>
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-k">import</span> { configureI18n, setLocale } <span class="tok-k">from</span> <span class="tok-s">'@xoong/i18n'</span>;
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configureI18n, setLocale } <span class="tok-k">from</span> <span class="tok-s">'@xoong/i18n'</span>;
 
 configureI18n({ locale: <span class="tok-s">'en'</span>, load: (locale) =&gt; fetch(<span class="tok-s">`/i18n/${locale}.json`</span>).then((r) =&gt; r.json()) });
 <span class="tok-k">await</span> setLocale(<span class="tok-s">'vi'</span>);</code></pre></section>
 </xo-tabs>
 
-<h2>Safety</h2>
+<h2 id="safety">Safety</h2>
 <p><code>xoong build</code> rewrites imports to files and removes the need for inline code, so the output runs under <code>default-src 'none'; script-src 'self'; style-src 'self'</code>. This site is built that way, and its tests fail on any CSP violation. Interpolated text is escaped, <code>javascript:</code> URLs become <code>about:blank</code>, and rich text is sanitised on every input.</p>
 
-<h2>Packages</h2>
+<h2 id="packages">Packages</h2>
 <p>Install only what you use. Sizes are gzip budgets that the tests enforce.</p>
 <div class="table-wrap"><table>
 <thead><tr><th>Package</th><th>What it is</th><th>Budget</th></tr></thead>
@@ -157,6 +165,10 @@ configureI18n({ locale: <span class="tok-s">'en'</span>, load: (locale) =&gt; fe
 </tbody></table></div>
 <nav class="pager" aria-label="Pages"><a rel="prev" href="install.html"><small>Previous</small><span>Install</span></a><a rel="next" href="data.html"><small>Next</small><span>Data and tables</span></a></nav>
     </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#data" aria-current="true">Data</a></li><li><a href="#actions-and-forms">Actions and forms</a></li><li><a href="#pages">Pages</a></li><li><a href="#language">Language</a></li><li><a href="#safety">Safety</a></li><li><a href="#packages">Packages</a></li></ol>
+    </aside>
   </div>
   <footer class="foot">
     <div class="wrap">

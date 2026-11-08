@@ -13,10 +13,17 @@
   <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <script type="module" src="src/site.js"></script>
 </head>
-<body>
+<body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
@@ -60,7 +67,7 @@
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
   </nav></details>
-  <div class="layout">
+  <div class="shell no-rail">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
@@ -81,12 +88,13 @@
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
     </nav>
-    <main id="main">
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Your own control</span></div>
 
 <h1>Your own control</h1>
 <p>A control that takes part in forms extends <code>XoControl</code>. It gets a value, validity, <code>dirty</code>, <code>touched</code>, <code>name</code> and <code>disabled</code>, and talks to the form binder through <code>ElementInternals</code>. You only write the rendering and call <code>userInput()</code> when the person changes something.</p>
-<xo-tabs label="XoControl" class="code-tabs">
-  <section xo-tab="JavaScript"><pre data-lang="js"><code><span class="tok-k">import</span> { XoControl, define, html } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
+<xo-tabs label="XoControl" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { XoControl, define, html } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
 
 <span class="tok-k">class</span> RatingStars <span class="tok-k">extends</span> XoControl {
   render() {
@@ -95,7 +103,7 @@
   }
 }
 define(<span class="tok-s">'rating-stars'</span>, RatingStars);</code></pre></section>
-  <section xo-tab="HTML"><pre data-lang="html"><code>&lt;<span class="tok-t">form</span> <span class="tok-a">xo-submit</span>=<span class="tok-s">"updateReview"</span>&gt;
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">form</span> <span class="tok-a">xo-submit</span>=<span class="tok-s">"updateReview"</span>&gt;
   &lt;<span class="tok-t">rating-stars</span> <span class="tok-a">name</span>=<span class="tok-s">"rating"</span>&gt;&lt;/<span class="tok-t">rating-stars</span>&gt;
   &lt;<span class="tok-t">button</span>&gt;Save&lt;/<span class="tok-t">button</span>&gt;
 &lt;/<span class="tok-t">form</span>&gt;</code></pre></section>

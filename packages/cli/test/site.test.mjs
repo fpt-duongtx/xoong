@@ -81,14 +81,15 @@ describe('documentation site', () => {
     clean();
   });
 
-  it('code tabs: the Preview runs, the HTML tab shows the highlighted markup, every block has a Copy button', async () => {
+  it('code tabs: the Preview runs, the HTML tab shows the highlighted markup, an example has one icon Copy button', async () => {
     await open('overview');
-    expect(await page.isVisible('xo-tabs .demo xo-table, xo-tabs .demo .xo-table')).toBe(true);
+    expect(await page.isVisible('xo-tabs.example .preview .xo-table')).toBe(true);
     expect(await page.isVisible('pre')).toBe(false); // code is behind its tab
     await tab('HTML').click();
     expect(await page.isVisible('pre')).toBe(true);
     expect(await page.$eval('pre[data-lang=html] .tok-t', (el) => el.textContent)).toBe('xo-view');
-    expect(await page.$$('pre[data-lang] button.copy')).toHaveLength(3);
+    expect(await page.$$('xo-tabs.example > .actions-end button[aria-label="Copy the code"]')).toHaveLength(1); // one per example, not one per block
+    expect(await page.$eval('pre[data-lang]', (el) => el.tabIndex)).toBe(0); // a scrolling code block can be reached with the keyboard
     await tab('main.js').click();
     expect(await text('pre[data-lang=js]')).toContain("import '@xoong/data/view'");
     clean();

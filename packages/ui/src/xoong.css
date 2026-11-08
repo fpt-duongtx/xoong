@@ -33,7 +33,22 @@
     --xo-color-accent: light-dark(#2457d6, #7aa2ff);
     --xo-color-accent-text: light-dark(#fff, #0d1117);
     --xo-color-danger: light-dark(#b42318, #ff8a80);
-    --xo-focus: 2px solid var(--xo-color-accent);
+    --xo-color-accent-soft: color-mix(in srgb, var(--xo-color-accent) 14%, var(--xo-color-surface)); /* a tint of the accent: the current item, a selected row, a chip */
+    --xo-color-subtle: color-mix(in srgb, var(--xo-color-text) 5%, var(--xo-color-surface)); /* a quiet surface: table header, tab bar, toolbar */
+    --xo-color-success: light-dark(#1a7f37, #56d364);
+    --xo-color-warning: light-dark(#9a6700, #e3b341);
+    --xo-color-inverse: light-dark(#1b1f27, #e8eaee); /* tooltip, toast */
+    --xo-color-inverse-text: light-dark(#fff, #14161a);
+    --xo-focus: 3px solid var(--xo-color-accent); /* the accent must be 3:1 against the page (WCAG 1.4.11, 2.4.11) */
+    --xo-control-height: 2.5rem; /* every button, field and select; the -sm one is for dense toolbars and table rows */
+    --xo-control-height-sm: 2rem;
+    --xo-control-height-lg: 3rem;
+    --xo-control-padding: 0.9rem;
+    --xo-control-gap: 0.5rem; /* between an icon and a label, between controls in a toolbar */
+    --xo-touch: 2.75rem; /* the smallest comfortable target: set --xo-control-height to it on a touch layout */
+    --xo-field-gap: 0.4rem; /* label, control, hint */
+    --xo-icon: 1.25rem;
+    --xo-shadow-pop: 0 14px 34px -14px color-mix(in srgb, var(--xo-color-text) 55%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 10%, transparent); /* menus, popovers */
   }
 }
 
@@ -43,7 +58,7 @@
   :where(a) { color: var(--xo-color-accent); }
   :where(:focus-visible) { outline: var(--xo-focus); outline-offset: 2px; }
   :where(button) {
-    font: inherit; padding: var(--xo-space-1) var(--xo-space-3); cursor: pointer;
+    font: inherit; min-height: var(--xo-control-height); padding: 0 var(--xo-control-padding); box-sizing: border-box; cursor: pointer;
     color: var(--xo-color-text); background: var(--xo-color-surface);
     border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius);
   }
@@ -53,6 +68,7 @@
     font: inherit; padding: var(--xo-space-1) var(--xo-space-2); color: inherit; background: var(--xo-color-surface);
     border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius);
   }
+  :where(input:not([type="checkbox"], [type="radio"], [type="color"], [type="range"], [type="file"]), select) { min-height: var(--xo-control-height); box-sizing: border-box; }
   :where([aria-invalid="true"]) { border-color: var(--xo-color-danger); }
   .xo-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }
