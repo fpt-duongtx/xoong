@@ -35,6 +35,7 @@ import { XoongError } from './client.js';
 import { idOf } from './store.js';
 import { format } from './format.js';
 import { urlSync } from './url-state.js';
+import './options.js'; // options-op on a combobox or a tag input
 
 /** Where `p-id=":id"` finds route parameters (set by the router in @xoong/ui). */
 let paramSource = /** @type {((name: string) => string | undefined) | null} */ (null);

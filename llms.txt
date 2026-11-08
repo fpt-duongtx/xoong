@@ -45,19 +45,19 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   `<xo-view get="/users/{id}" p-id="42">`; `p-id="?id"` reads ?id= from the page URL. JS: `view.params = { id: 7 }`.
 - `{path}` reads a field of the current item (`.` = the item, `a.b` nested), then the view's `p-*` params.
   Variables: `$loading`, `$error` (`status`, `code`, `detail`, `retryAfterS`), `$index`, `$stream`/`$streaming` (event-stream call). Text is escaped;
-  `javascript:` URLs become about:blank; `on*`, `srcdoc` cannot be interpolated.
+  `javascript:` URLs become about:blank; `on*`, `srcdoc` are not interpolated.
 - `xo-each="path"` repeats the element per item (keyed by entity id). `xo-if="path"` / `xo-if="!path"` (empty array = false).
 - `xo-click="OP"` calls one; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; `xo-keep` keeps them). `xo-body="path"`: a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each applies at once; undone on failure.
-- `xo-select` on a row checkbox ticks the row (`all:items`: all); `xo-selected` on an xo-click button runs it per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts them.
+- `xo-select` on a row checkbox ticks the row (`all:items`: all); `xo-selected` on an xo-click runs it per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts them.
 - `xo-confirm="Delete {title}?"` asks first (native dialog; `setConfirm(fn)`). `xo-notice="Saved"` toasts on success. `xo-with="status=published"` adds body fields.
   `xo-selected="ids"` sends ONE request with the ticked ids; `$selected`: ticked rows.
-- `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button with `xo-param="status=draft"` gets `aria-current` while current (`status=`: unset).
-- Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json; `setFormat` adds).
+- `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button `xo-param="status=draft"` gets `aria-current` while current (`status=`: unset).
+- Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json).
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v`). Vars: `$hasPrev`, `$hasNext`. `xo-refresh` on a button refetches.
-- Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. A running call sets `aria-busy`.
-- After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
+- Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
+- After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and /users/1);
   not a detail query whose entity the response returned. Override: `configure({ invalidate: { shipOrder: ['getDashboard'] } })`.
 
 ## JavaScript API (only when HTML is not enough)
@@ -106,16 +106,16 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 
 ## Languages (`import '@xoong/i18n'`; flat JSON catalogs, ICU-subset messages)
     <h1 xo-t="home.title">Welcome</h1>   <input xo-t="placeholder:k; aria-label:k2" placeholder="Search" aria-label="Search">
-  The written text is the default; in an xo-view `{name}` comes from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}`.
+  The written text is the default; in an xo-view `{name}` is from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}`.
 
 ## Controls (`import '@xoong/controls'`)
     <xo-tabs label="Page"><section xo-tab="General">...</section><section xo-tab="SEO" id="seo">...</section></xo-tabs>
     <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><a href="/x">Open</a></xo-menu>  (`value` on menu and items: choice menu, `xo-menu-select`)
-    <xo-combobox name="a" label="Author" multiple creatable><option value="1">Ada</option></xo-combobox>   <xo-tags name="kw"></xo-tags>
+    <xo-combobox name="a" label="Author" multiple creatable options-op="listAuthors"><option value="1">Ada</option></xo-combobox>   <xo-tags name="kw"></xo-tags>
     <xo-carousel items="3" dots counter loop autoplay="5000"><article>..</article></xo-carousel>
     <xo-richtext name="body" media></xo-richtext>   (`@xoong/richtext`: sanitised HTML; cancelable `xo-pick-media`, then `e.detail.insert({ src, alt })`)
   Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags: string or array (`multiple`);
-  `remote` + `xo-search`, or `el.options = [...]`. `xo-tooltip="text"` describes any element.
+  `remote` + `xo-search`, `el.options = [...]`, or `options-op` (+ `option-value`/`option-label`). `xo-tooltip="text"` describes any element.
 
 ## Live updates (server-sent events)
 JSON per message: {type:"patch", entity:"User", id:42, path:"/status", value:"x", version:7} | {type:"upsert", entity, id, value, version} |

@@ -63,7 +63,7 @@ class XoCombobox extends XoControl {
   set options(list) {
     this.#fromSchema = false;
     this.#options = (list ?? []).map(normalize);
-    if (this.#built) { this.#syncText(); if (this.#open) this.#refresh(); }
+    if (this.#built) { this.#syncText(); this.#renderChips(); if (this.#open) this.#refresh(); } // chips show labels, so they follow the options
   }
 
   /**

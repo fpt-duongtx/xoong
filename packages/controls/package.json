@@ -1,6 +1,6 @@
 {
   "name": "@xoong/controls",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "xoong form and page controls: tabs, popover, tooltip, menu, combobox, chips, tag input, carousel. Light DOM, accessible, zero dependencies besides @xoong/core.",
   "type": "module",
   "main": "src/index.js",

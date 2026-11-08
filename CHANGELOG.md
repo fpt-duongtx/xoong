@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.28 (options from the API)
+
+breaking: none.
+
+* Added: `options-op`, `option-value` and `option-label` on `<xo-combobox>` and `<xo-tags>`: the options come from a list operation through the shared cache (`p-<name>` parameters, paths for value and label, `items` or `data` unwrapped); a mutation of the list refreshes them. Needs `@xoong/data/view`.
+* Fixed: setting `el.options` after a value was already there did not redraw the chips, so a saved record showed raw ids as labels.
+
 ## 0.0.27 (menu divider)
 
 breaking: none.

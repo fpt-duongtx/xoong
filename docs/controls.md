@@ -73,6 +73,7 @@ string, or an array of strings with `multiple` and for `<xo-tags>`.
 
 * **Options:** `<option>` children (`selected` sets the start value), or `el.options = ['a', { value: 'b', label: 'B', disabled: true }]`, or the field's schema: `enum` for a single
   choice, an array of an `enum` for several.
+* **From the API:** `options-op="listCategories" option-value="id" option-label="name.en"` (needs `@xoong/data/view`). The operation is a GET (an operationId or `/path`); `p-<name>` attributes are its parameters, as on `<xo-view>`. The list is the response or its `items` (or `data`); the two paths default to `value`/`id` and `label`/`name`. The options come from the shared cache, so a mutation of that list (a category added elsewhere on the page) refreshes them, and chips show the labels of a saved value.
 * **`creatable`** lets the person add a value that is not in the list. **`remote`** leaves the filtering to you: listen to `xo-search` (`detail.query`) and set `el.options`.
 * **Keys:** ArrowDown and ArrowUp open and move (the focus stays in the input, `aria-activedescendant` follows), Enter picks, Escape closes, Backspace on an empty field removes the
   last chip; in `<xo-tags>` Enter or a comma adds the typed text and leaving the field commits it. Enter never submits the form while the list is open.
