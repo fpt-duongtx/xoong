@@ -84,6 +84,32 @@ describe('documentation site', () => {
     clean();
   });
 
+  it('the theme toggle switches light and dark, the choice is remembered on the next page, and the logo follows', async () => {
+    await open('index');
+    const bg = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    const theme = () => page.evaluate(() => document.documentElement.dataset.theme ?? null);
+    const toggle = 'xo-theme-toggle button';
+    expect(await page.getAttribute(toggle, 'aria-label')).toBe('Dark theme');
+    await page.click(toggle);
+    const first = await theme();
+    expect(['light', 'dark']).toContain(first);
+    expect(await page.getAttribute(toggle, 'aria-pressed')).toBe(String(first === 'dark'));
+    const bgFirst = await bg();
+    await page.click(toggle);
+    const second = await theme();
+    expect(second).not.toBe(first);
+    expect(await bg()).not.toBe(bgFirst);
+    await page.click(toggle);
+    const chosen = await theme();
+    await page.goto(`${base}install.html`); // another page: applied before the first paint
+    expect(await theme()).toBe(chosen);
+    expect(await page.getAttribute(toggle, 'aria-pressed')).toBe(String(chosen === 'dark'));
+    const dark = await page.$eval('header.top picture > source', (s) => s.media);
+    expect(dark).toBe(chosen === 'dark' ? 'all' : 'not all'); // an explicit choice overrides the system for the logo
+    await page.evaluate(() => localStorage.clear());
+    clean();
+  });
+
   it('code tabs: the Preview runs, the HTML tab shows the highlighted markup, an example has one icon Copy button', async () => {
     await open('overview');
     expect(await page.isVisible('xo-tabs.example .preview .xo-table')).toBe(true);

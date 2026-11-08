@@ -50,3 +50,12 @@ if (links.length && typeof IntersectionObserver !== 'undefined') {
   addEventListener('scroll', mark, { passive: true });
   mark();
 }
+
+// The theme toggle (<xo-theme-toggle>) sets <html data-theme>. The logo picture picks its dark file by the system setting, so it follows the choice here.
+const logos = [...document.querySelectorAll('picture > source[media*="prefers-color-scheme: dark"]')];
+const syncLogos = () => {
+  const theme = document.documentElement.dataset.theme;
+  for (const s of logos) { s.dataset.media ??= s.media; s.media = theme === 'dark' ? 'all' : theme === 'light' ? 'not all' : s.dataset.media; }
+};
+syncLogos();
+document.addEventListener('xo-theme-change', syncLogos);

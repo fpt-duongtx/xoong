@@ -12,3 +12,4 @@ import './stepper.js';
 import './password.js';
 import './copy.js';
 import './image.js';
+import './theme-toggle.js';

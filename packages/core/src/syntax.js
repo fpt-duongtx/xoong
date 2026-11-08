@@ -16,4 +16,4 @@ export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast', '
 
 /** Attributes and elements of @xoong/controls and @xoong/richtext. */
 export const XO_CONTROL_ATTRIBUTES = ['xo-tab', 'xo-menu-trigger', 'xo-tooltip'];
-export const XO_CONTROL_ELEMENTS = ['xo-tabs', 'xo-menu', 'xo-combobox', 'xo-tags', 'xo-richtext', 'xo-carousel', 'xo-switch', 'xo-date', 'xo-time', 'xo-slider', 'xo-stepper', 'xo-password', 'xo-copy', 'xo-image'];
+export const XO_CONTROL_ELEMENTS = ['xo-tabs', 'xo-menu', 'xo-combobox', 'xo-tags', 'xo-richtext', 'xo-carousel', 'xo-switch', 'xo-date', 'xo-time', 'xo-slider', 'xo-stepper', 'xo-password', 'xo-copy', 'xo-image', 'xo-theme-toggle'];

@@ -195,6 +195,7 @@ ${page.body}
           <hr>
           <a href="theme-builder.html">Build your own theme</a>
         </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
       </nav>
     </div>
   </header>

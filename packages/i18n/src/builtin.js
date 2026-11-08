@@ -17,6 +17,7 @@ export const builtin = {
   "xoong.controls.copied": "Copied",
   "xoong.controls.copy": "Copy",
   "xoong.controls.create": "Add \"{value}\"",
+  "xoong.controls.darkTheme": "Dark theme",
   "xoong.controls.date": "Date",
   "xoong.controls.dateRange": "Choose a date within the allowed range.",
   "xoong.controls.dateRangeHint": "Start - end",

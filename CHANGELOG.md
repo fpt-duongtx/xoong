@@ -3,6 +3,14 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.40 (theme toggle)
+
+breaking: none.
+
+* Added: `<xo-theme-toggle>` in `@xoong/controls` (`@xoong/controls/theme-toggle`): a button that sets `data-theme` light or dark on `<html>`, saves the choice, follows the system until chosen, fires `xo-theme-change`.
+* The documentation site has the toggle in its header (light/dark, remembered, the logo follows).
+* Kit ux/live-demos taken (two live demo pages, `demo-pages.css`, icons; not part of the site or `mist.css`).
+
 ## 0.0.39 (xo-image style)
 
 breaking: none.
