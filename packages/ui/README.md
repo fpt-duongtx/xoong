@@ -15,6 +15,7 @@ import '@xoong/ui';
 ```
 ```html
 <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+<link rel="stylesheet" href="/@xoong/ui/src/mist.css">   <!-- optional: the Mist look (the Rainlet design system), one self-sufficient file -->
 <xo-view get="listPeople">
   <xo-table columns="name,email:E-mail,role" sortable filters="name:Search" page-size="10"></xo-table>
 </xo-view>

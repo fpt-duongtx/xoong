@@ -90,3 +90,16 @@ Your own unlayered CSS always beats the framework's layers, which is the point, 
 ## A look of your own, or a theme
 
 The framework's files are in cascade layers; a stylesheet that restyles the components as a whole (this site's look is one) should be in a layer of its own, declared after them: `@layer xoong.tokens, xoong.base, xoong.components, xoong-controls, xoong-richtext, my-theme;`. Then your own unlayered CSS, and any theme in a later layer, always wins without specificity fights. Tokens work the same way: set `--xo-*` on `:root`, or on any element for a region (a token such as `--xo-color-accent` that you map from your own variable is resolved where it is declared, so map it on `:root`).
+
+## The Mist look for an app: `@xoong/ui/mist.css`
+
+One stylesheet, self-sufficient, that gives an app the Mist look (the Rainlet design system): the tokens (`--text`, `--card`, `--accent`, `--line`, ..., 40px controls, 8px and 12px radii) with a dark scheme (`prefers-color-scheme`, or `data-theme="dark"` / `"light"` on `<html>` to force one), the mapping of the framework's `--xo-*` tokens from them, and the look of the buttons, fields, form rhythm (`.xo-form`, `.xo-fields`), badges and chips, tabs, the segmented control (`.xo-seg`), menus, tooltips, toasts, dialogs (`dialog.xo-modal`), tables (and `<xo-table cards>` as row cards under 768px), notices, skeleton/empty/error states and the controls of the Mist spec. It has none of a page's chrome (no header, shell, hero or prose styles).
+
+```html
+<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+<link rel="stylesheet" href="/@xoong/controls/controls.css">
+<link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+<link rel="stylesheet" href="/@xoong/ui/src/mist.css">   <!-- last: nothing else is needed -->
+```
+
+It is one cascade layer (`xoong-mist`, after the framework's), so your own CSS wins. The icons are CSS masks made of `data:` images: a strict CSP needs `img-src 'self' data:`. The file is generated from the design kit (`node tools/build-mist.mjs`) and a test keeps it in step; the kit's `MIST.md` has the token map and the table of Rainlet admin classes and their xoong equivalents.

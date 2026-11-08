@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
+## 0.0.30 (Mist as a package file)
+
+breaking: none.
+
+* Added: `@xoong/ui/mist.css` (`src/mist.css`): the Mist look (the Rainlet design system) as one self-sufficient stylesheet for an app: the tokens and a dark scheme, the `--xo-*` mapping straight from them, the component skin and the controls of the Mist spec, in the layer `xoong-mist`, without the documentation site's chrome. Generated from the design kit by `tools/build-mist.mjs`; `test/mist.test.mjs` checks it is up to date, self-contained and draws 40px controls and the Mist primary in a page with only the four framework files.
+
 ## Unreleased
 
 * Publishing to npm is prepared, not done: every package has a LICENSE, a README, `publishConfig`, `engines` and exact lockstep dependencies (`node tools/set-version.mjs`, `node tools/package-files.mjs`); `@xoong/forms` and `@xoong/i18n` now ship the type declarations their `exports` already promised; `test/publish.test.mjs` checks the tarballs; the manual workflow `publish.yml` (dry run by default) and the runbook `docs/publishing.md` are in.
