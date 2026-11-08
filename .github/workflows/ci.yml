@@ -1,3 +1,6 @@
+# CI runs on the home server (runners labelled xoong-home, three instances). Fork pull requests need a maintainer's approval first
+# (Settings > Actions > General > Fork pull request workflows), because a self-hosted runner executes the code of the change.
+# The browsers' system libraries are installed on the server once (`playwright install-deps`); the browsers come from `playwright install`.
 name: ci
 
 on:
@@ -7,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, xoong-home]
     strategy:
       fail-fast: false
       matrix:
@@ -20,7 +23,7 @@ jobs:
           cache: npm
       - run: npm ci
       # Real-browser tests drive Chromium through Playwright.
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install chromium
       - name: Lint (no-shadow)
         run: npm run lint
       - name: Tests with coverage (thresholds enforced)
@@ -38,7 +41,7 @@ jobs:
   # The same real-browser tests (router, shell, form controls, build under a strict CSP, prerendering, the admin example) in the other engines of the
   # supported matrix (docs/browser-support.md). Chromium runs in the job above.
   browsers:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, xoong-home]
     strategy:
       fail-fast: false
       matrix:
@@ -50,7 +53,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright install ${{ matrix.browser }}
       - name: Browser tests in ${{ matrix.browser }}
         run: npm run test:browsers
         env:
