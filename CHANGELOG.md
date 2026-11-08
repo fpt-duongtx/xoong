@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.39 (xo-image style)
+
+breaking: none.
+
+* Mist (kit ux/image): the look of `<xo-image>` (shimmer while loading, image icon and note for empty and error).
+
 ## 0.0.38 (xo-image)
 
 breaking: none.

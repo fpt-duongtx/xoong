@@ -1329,6 +1329,40 @@
   xo-copy .xo-copyfield input { background: var(--xo-color-subtle); }
   .xo-input-wrap button.xo-input-end, xo-password button.xo-input-end { position: absolute; right: 4px; top: 50%; translate: 0 -50%; }
   .xo-input-wrap button.xo-date-open { position: absolute; }
+  xo-image {
+    border-radius: var(--xo-radius);
+    background: var(--xo-color-subtle);
+  }
+  xo-image[data-state="loading"] {
+    background: linear-gradient(100deg, var(--xo-color-subtle) 30%, var(--xo-color-border) 50%, var(--xo-color-subtle) 70%) 0 0 / 300% 100%;
+    animation: xo-image-shimmer 1.4s linear infinite;
+  }
+  @keyframes xo-image-shimmer { to { background-position: -150% 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    xo-image[data-state="loading"] { animation: none; background: var(--xo-color-subtle); }
+  }
+  xo-image[data-state="empty"]::before, xo-image .xo-image-note::before {
+    content: "";
+    inline-size: 24px;
+    block-size: 24px;
+    background: currentcolor;
+    mask: var(--ic-image) center / contain no-repeat;
+    -webkit-mask: var(--ic-image) center / contain no-repeat;
+  }
+  xo-image[data-state="empty"] {
+    display: grid;
+    place-items: center;
+    color: var(--xo-color-text-2);
+  }
+  xo-image .xo-image-note {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--xo-color-text-2);
+  }
 
   /* ---- skin ---- */
   :root { --shadow-sm: 0 1px 2px color-mix(in srgb, var(--xo-color-text) 6%, transparent); --shadow-float: 0 12px 32px color-mix(in srgb, var(--xo-color-text) 14%, transparent), 0 2px 6px color-mix(in srgb, var(--xo-color-text) 8%, transparent); --xo-shadow-pop: var(--shadow-float); --xo-shadow-raised: none; --xo-focus: 2px solid var(--xo-color-accent); --xo-focus-thin: 2px solid var(--xo-color-accent); }
