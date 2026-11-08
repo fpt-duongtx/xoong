@@ -53,3 +53,11 @@ No inline `<script>` or `<style>`, no `style=""` attributes, no web fonts, no ex
 ## Open question for the dev side
 
 Pages are off for now and the domain is undecided, so the wordmark is just `xoong` (no `.dev`).
+
+## Update: states, 404, social cards, contrast (branch `ux/states-404-social`)
+
+- `states.html`: card hover/focus/active; code tabs; carousel (cards + arrows, dots, thumbnails, counter); loading skeleton, empty state and error state for the data demos; mobile note.
+- `404.html`: the Pages not-found page. `docs.html` now has the mobile **Menu** disclosure (`<details class="docs-menu">`, shown below 52rem, sidebar hidden).
+- `assets/og-guides.png`, `og-controls.png`, `og-demo.png`, `og-brand.png` (1200x630, one per section) next to `og.png`.
+- Contrast (checked with a script for Calm/Ember x light/dark): Calm `--muted` light is now `#675f56`; new `--line-strong` (control borders, 3:1) and `--danger` tokens in both palettes; the focus ring and the selected-tab underline use `--ember-deep` instead of `--ember`, because the pot colour is only 2.4:1 on Paper (a focus indicator needs 3:1). `--ember` stays a fill/decoration colour, never text or a lone indicator.
+- Please take the same ring colour on the site (`@layer xoong.base { :focus-visible { outline: 3px solid var(--ember-deep) } }`).

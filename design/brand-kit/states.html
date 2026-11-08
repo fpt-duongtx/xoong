@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>States · xoong</title>
+  <meta name="description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta name="theme-color" content="#f7f4ec">
+  <meta property="og:title" content="xoong · One pot. Whole app.">
+  <meta property="og:description" content="xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.">
+  <meta property="og:image" content="assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/brand.css">
+  <script src="js/palette.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="docs.html">Docs sample</a>
+        <a href="brand.html">Brand</a>
+        <button class="palette-toggle" type="button" aria-pressed="false" title="Switch colour palette"><span>Calm</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-head"><div class="wrap"><h1>States</h1><p class="lede">Hover, focus, active, empty, error and small-screen layouts for the Pages site. Tab through this page to see the focus rings.</p></div></div>
+  <main class="wrap">
+  <section>
+    <div class="head"><span class="eyebrow">Cards</span><h2>Hover, focus, active</h2><p>Lift on hover, a ring on keyboard focus, press on active. The ring is Ember Deep (4.5:1 or better), never the pot colour.</p></div>
+    <ul class="grid">
+      <li><a class="card" href="#"><span class="no">01</span><h3>Link card</h3><p>Hover me, tab to me, press me.</p></a></li>
+      <li><div class="card"><span class="no">02</span><h3>Static card</h3><p>Lifts on hover; no ring unless something inside takes focus. <a href="#">A link</a> inside shows the ring on the card.</p></div></li>
+      <li><div class="card"><span class="no">03</span><h3>Resting</h3><p>Border is the soft line colour: decoration, not a control.</p></div></li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="head"><span class="eyebrow">Tabs</span><h2>Code tabs</h2><p>Hover tints, active deepens, selected gets the Ember Deep underline. Focus draws inside the tab.</p></div>
+    <div class="tabs"><div class="tablist" role="tablist"><span class="tab" role="tab" aria-selected="true" tabindex="0">Selected</span><span class="tab" role="tab" aria-selected="false" tabindex="0">Hover/focus me</span><span class="tab" role="tab" aria-selected="false" tabindex="0">Another</span></div><pre><code>&lt;xo-tabs label="Example"&gt;…&lt;/xo-tabs&gt;</code></pre></div>
+  </section>
+
+  <section>
+    <div class="head"><span class="eyebrow">Carousel</span><h2>Cards with arrows, dots, thumbnails, counter</h2><p>Arrows are solid 2.8rem buttons (touch target) that press like the primary button. Dots show the current page as a pill. Thumbnails ring the current item. The counter uses the mono face.</p></div>
+    <div class="carousel" role="group" aria-roledescription="carousel" aria-label="Services">
+      <button class="arrow prev" type="button" aria-label="Previous" disabled>‹</button>
+      <div class="track">
+        <div class="card"><span class="no">01</span><h3>Data</h3><p>Typed operations from OpenAPI.</p></div>
+        <div class="card"><span class="no">02</span><h3>Forms</h3><p>Drawn from the request schema.</p></div>
+        <div class="card"><span class="no">03</span><h3>Tables</h3><p>Sort, search, page, select.</p></div>
+        <div class="card"><span class="no">04</span><h3>Router</h3><p>Declarative History API.</p></div>
+      </div>
+      <button class="arrow next" type="button" aria-label="Next">›</button>
+      <div class="meta"><span class="count" aria-live="polite">1 / 4</span>
+        <ol class="dots"><li><button type="button" aria-label="Go to slide 1" aria-current="true"></button></li><li><button type="button" aria-label="Go to slide 2"></button></li><li><button type="button" aria-label="Go to slide 3"></button></li><li><button type="button" aria-label="Go to slide 4"></button></li></ol></div>
+      <ul class="thumbs"><li><button type="button" aria-label="Slide 1" aria-current="true"></button></li><li><button type="button" aria-label="Slide 2"></button></li><li><button type="button" aria-label="Slide 3"></button></li><li><button type="button" aria-label="Slide 4"></button></li></ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span class="eyebrow">Data</span><h2>Loading, empty, error</h2><p>The pot tells the story: lid off for nothing here, tipped over with a crack for a failed request. Always say what happened, what to do, and offer one action.</p></div>
+    <div class="skeleton" role="status" aria-label="Loading"><i></i><i></i><i></i></div>
+    <p></p>
+    <div class="logo-grid">
+      <div class="state"><svg class="art" viewBox="-2 -2 68 68" aria-hidden="true"><rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/><path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/><ellipse cx="32" cy="31.5" rx="20" ry="4.5" fill="none" stroke="currentColor" stroke-width="3"/><rect class="m-ink" x="9" y="8" width="48" height="7.5" rx="3.75" transform="rotate(-14 33 12)"/><path class="empty-body" d="M20 20h24"/></svg><h3>Nobody here yet</h3><p>The table has no rows. Add the first person to see it fill up.</p><div class="row-actions"><button class="btn primary" type="button">Add person</button></div></div>
+      <div class="state error" role="alert"><svg class="art" viewBox="-2 -2 68 68" aria-hidden="true"><g transform="rotate(-10 32 40)"><rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/><rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/><path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/><path d="M34 31.5l-4 8 6 4-5 9" fill="none" stroke="var(--bg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><path class="m-steam" d="M44 6l6 6-6 6"/></svg><h3>Could not load people</h3><p><code>NETWORK: Failed to fetch</code>. Check your connection and try again.</p><div class="row-actions"><button class="btn primary" type="button">Try again</button><button class="btn" type="button">Details</button></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span class="eyebrow">Mobile</span><h2>Docs sidebar on a phone</h2><p>Below 52rem the sidebar becomes a sticky <b>Menu</b> disclosure showing the current page. Targets are 44px tall; the list scrolls inside 70vh. Resize this window to see it on the docs sample page.</p></div>
+    <div class="prose"><p>Native <code>&lt;details&gt;</code>, no script. In xoong terms this is a disclosure around the same <code>nav</code> the desktop sidebar uses.</p></div>
+  </section>
+  </main>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="docs.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>
