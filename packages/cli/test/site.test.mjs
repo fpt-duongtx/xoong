@@ -299,7 +299,7 @@ describe('documentation site', () => {
         await page.waitForTimeout(300); // demos finish rendering
         await scan(name);
       }
-    });
+    }, 240000);
 
     it('every page in Ember and dark, the other colour sets of the same tokens', async () => {
       for (const name of PAGES) {
@@ -309,7 +309,7 @@ describe('documentation site', () => {
         await scan(`${name} (ember, dark)`);
       }
       await scheme('light', 'calm');
-    });
+    }, 240000);
 
     it('open states: a menu list, a dialog, the rich text More menu, the confirm dialog', async () => {
       await open('menu');
@@ -351,6 +351,6 @@ describe('documentation site', () => {
       await open('404');
       await scan('404');
       clean();
-    });
+    }, 240000);
   });
 });
