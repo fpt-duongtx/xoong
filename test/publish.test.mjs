@@ -20,7 +20,7 @@ describe('packages are ready for npm', () => {
     for (const dir of dirs) {
       const m = manifest(dir);
       for (const deps of [m.dependencies, m.devDependencies, m.peerDependencies, m.optionalDependencies]) {
-        for (const [name, range] of Object.entries(deps ?? {})) if (name === 'xoong' || name.startsWith('@xoong/')) expect(range, `${m.name} depends on ${name}`).toBe(version);
+        for (const [name, range] of Object.entries(deps ?? {})) if (name.startsWith('@xoong/')) expect(range, `${m.name} depends on ${name}`).toBe(version);
       }
     }
   });

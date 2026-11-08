@@ -1,6 +1,6 @@
 {
   "name": "@xoong/richtext",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "A small rich text editor for xoong forms: contenteditable, no dependencies besides @xoong/core, sanitised HTML in and out. Toolbar, headings, bold, italic, lists, quote, links (http, https, mailto, tel only), media hook.",
   "type": "module",
   "main": "src/index.js",
@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/fpt-duongtx/xoong#readme",
   "dependencies": {
-    "@xoong/core": "0.0.34"
+    "@xoong/core": "0.0.35"
   },
   "publishConfig": {
     "access": "public"

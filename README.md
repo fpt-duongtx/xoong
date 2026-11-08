@@ -10,7 +10,7 @@ Parts that are still planned (stream gateway, VS Code extension, lint presets) a
 [`docs/`](docs). Picking this project up? Read [HANDOVER.md](HANDOVER.md) first. Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
-# once published: npm install xoong     (the `xoong` command and `import { configure, signal } from 'xoong'`)
+# once published: npm install @xoong/xoong     (the `xoong` command and `import { configure, signal } from '@xoong/xoong'`)
 npm install
 npm test                         # everything
 node packages/cli/src/cli.js new /tmp/demo --spec examples/admin/openapi.json --link $(pwd)   # a project using these packages
@@ -58,7 +58,7 @@ Full text: [docs/design-principles.md](docs/design-principles.md).
 When you need computation, drop to plain JavaScript:
 
 ```js
-import { derived } from 'xoong'
+import { derived } from '@xoong/xoong'
 export const revenueByRegion = derived(({ orders }) => groupBy(orders, 'region'))
 ```
 

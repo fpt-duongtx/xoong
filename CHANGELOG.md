@@ -1,7 +1,14 @@
 # Changelog
 
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
-projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
+projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
+
+## 0.0.35 (first npm release: the umbrella is @xoong/xoong)
+
+breaking: the umbrella package is now `@xoong/xoong` (npm refused the bare name `xoong`, "too similar to long"). Import from `@xoong/xoong`, `@xoong/xoong/view`, `@xoong/xoong/ui`; the `xoong` command is unchanged.
+
+* The `@xoong/*` packages are on npm under the tag `next` (0.0.34 was published without the umbrella; 0.0.35 is the first complete set).
+* Mist (kit ux/four-controls): styles for `<xo-slider>`, `<xo-stepper>`, `<xo-password>` (eye-off icon), `<xo-copy>`.
 
 ## 0.0.34 (slider, stepper, password, copy)
 

@@ -120,13 +120,13 @@ npx xoong render page.html --api https://api.example.org --out page.prerendered.
 Public pages only: a page that needs the visitor's session is rendered in the browser.` },
   xoong: { intro: 'One install for xoong, a small standards-first web framework: signals and templates, the OpenAPI data layer, forms, the admin set and the `xoong` command.', use: `
 \`\`\`bash
-npm install xoong
+npm install @xoong/xoong
 npx xoong sync openapi.json
 \`\`\`
 \`\`\`js
-import { configure, signal, html } from 'xoong';
-import 'xoong/view';
-import 'xoong/ui';
+import { configure, signal, html } from '@xoong/xoong';
+import '@xoong/xoong/view';
+import '@xoong/xoong/ui';
 \`\`\`
 More parts, installed separately: \`@xoong/controls\`, \`@xoong/richtext\`, \`@xoong/i18n\`, \`@xoong/test\`, \`@xoong/ssr\`, \`@xoong/mcp\`, \`@xoong/lsp\`.` },
 };

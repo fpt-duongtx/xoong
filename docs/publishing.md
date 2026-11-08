@@ -18,10 +18,10 @@ This page is the runbook; the checks it relies on are in `test/publish.test.mjs`
 3. **A token for CI.** npmjs.com → *Access Tokens* → *Generate new token* → **Granular**, permission *Read and write* for the packages of the `xoong` scope and the package `xoong`, expiry 90 days. On GitHub: repository → *Settings → Secrets and variables → Actions* → `NPM_TOKEN`.
    (The very first publish of a name creates it, so the token must be allowed to create packages in the scope; after the first release you can narrow it.)
 4. **Dry run.** Actions → *publish* → *Run workflow* with `dry_run` on (the default). It runs the lint and the tests, then `npm publish --dry-run` for each package in dependency order.
-5. **Publish under `next`.** Run it again with `dry_run` off and the tag `next`. While xoong is 0.0.x the tag `next` means "try it": `npm install xoong@next`.
-6. **Check.** In a scratch folder: `npm init -y && npm install xoong@next`, then `npx xoong --help` and `import 'xoong'` in Node; open the package pages on npmjs.com (README, provenance badge).
-7. **Promote.** When you are happy: `npm dist-tag add xoong@0.0.N latest` (and the same for each `@xoong/*`), or just publish the next version with the tag `latest`.
-8. **Tell the docs.** Switch the Install page and `docs/consuming.md` from release tarballs to `npm install xoong` (the site generator has the text in `tools/site/pages.mjs`), and say so in `CHANGELOG.md`.
+5. **Publish under `next`.** Run it again with `dry_run` off and the tag `next`. While xoong is 0.0.x the tag `next` means "try it": `npm install @xoong/xoong@next`.
+6. **Check.** In a scratch folder: `npm init -y && npm install @xoong/xoong@next`, then `npx xoong --help` and `import '@xoong/xoong'` in Node; open the package pages on npmjs.com (README, provenance badge).
+7. **Promote.** When you are happy: `npm dist-tag add @xoong/xoong@0.0.N latest` (and the same for each `@xoong/*`), or just publish the next version with the tag `latest`.
+8. **Tell the docs.** Switch the Install page and `docs/consuming.md` from release tarballs to `npm install @xoong/xoong` (the site generator has the text in `tools/site/pages.mjs`), and say so in `CHANGELOG.md`.
 
 ## Every later release
 
@@ -37,7 +37,7 @@ A published version cannot be changed or reused: fix forward with the next numbe
 
 ## Decisions that are yours
 
-* The scope name (`@xoong`) and whether the umbrella package keeps the bare name `xoong`.
+* The umbrella package is `@xoong/xoong`: npm refused the bare name `xoong` ("too similar to long"). The `xoong` command still comes from it.
 * The first version to publish (0.0.29 as it is, or a fresh 0.1.0-alpha).
 * `next` first, `latest` later, as above.
 * Whether the docs site (GitHub Pages) goes live at the same time.

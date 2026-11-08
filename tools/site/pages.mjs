@@ -201,7 +201,7 @@ gh release download v${VERSION} -R fpt-duongtx/xoong -D vendor/xoong`]])}
 ${tabs('package.json', [['package.json', 'json', `
 {
   "dependencies": {
-    "xoong": "file:./vendor/xoong/xoong-${VERSION}.tgz",
+    "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-${VERSION}.tgz",
     "@xoong/ui": "file:./vendor/xoong/xoong-ui-${VERSION}.tgz"
   },
   "overrides": {

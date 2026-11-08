@@ -11,7 +11,7 @@ if (!/^\d+\.\d+\.\d+(-[\w.]+)?$/.test(version ?? '')) { console.error('usage: no
 const root = new URL('../', import.meta.url);
 const read = (p) => JSON.parse(readFileSync(new URL(p, root), 'utf8'));
 const write = (p, json) => writeFileSync(new URL(p, root), JSON.stringify(json, null, 2) + '\n');
-const own = (name) => name === 'xoong' || name.startsWith('@xoong/');
+const own = (name) => name.startsWith('@xoong/');
 const pin = (deps) => { for (const name of Object.keys(deps ?? {})) if (own(name)) deps[name] = version; };
 
 const dirs = readdirSync(new URL('packages/', root)).sort();

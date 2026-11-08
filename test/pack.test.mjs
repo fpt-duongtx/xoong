@@ -17,7 +17,7 @@ describe('tools/pack.mjs', () => {
     expect(packed.map((p) => p.name).sort()).toEqual(dirs.map((d) => JSON.parse(require_('packages/' + d + '/package.json')).name).sort());
 
     const consume = JSON.parse(await readFile(join(out, 'consume.json'), 'utf8'));
-    expect(Object.keys(consume.overrides)).toEqual(expect.arrayContaining(['@xoong/core', '@xoong/data', '@xoong/ui', 'xoong']));
+    expect(Object.keys(consume.overrides)).toEqual(expect.arrayContaining(['@xoong/core', '@xoong/data', '@xoong/ui', '@xoong/xoong']));
     expect(consume.commit).toMatch(/^[0-9a-f]{7,}$/);
 
     // tarballs contain source and manifest, not tests
@@ -29,9 +29,9 @@ describe('tools/pack.mjs', () => {
     // a fresh project installs them from the tarballs alone (external dependencies such as parse5 come from the registry, so this test needs network)
     const app = await mkdtemp(join(tmpdir(), 'xoong-consumer-'));
     await mkdir(app, { recursive: true });
-    await writeFile(join(app, 'package.json'), JSON.stringify({ name: 'consumer', private: true, type: 'module', dependencies: { xoong: consume.dependencies.xoong, '@xoong/ui': consume.dependencies['@xoong/ui'] }, overrides: consume.overrides }));
+    await writeFile(join(app, 'package.json'), JSON.stringify({ name: 'consumer', private: true, type: 'module', dependencies: { '@xoong/xoong': consume.dependencies['@xoong/xoong'], '@xoong/ui': consume.dependencies['@xoong/ui'] }, overrides: consume.overrides }));
     await run('npm', ['install', '--no-audit', '--no-fund'], { cwd: app, timeout: 120000 });
-    const { stdout: ok } = await run(process.execPath, ['--input-type=module', '-e', "import { signal, configure } from 'xoong'; console.log(typeof signal(1).value, typeof configure)"], { cwd: app });
+    const { stdout: ok } = await run(process.execPath, ['--input-type=module', '-e', "import { signal, configure } from '@xoong/xoong'; console.log(typeof signal(1).value, typeof configure)"], { cwd: app });
     expect(ok.trim()).toBe('number function');
   }, 180000);
 });

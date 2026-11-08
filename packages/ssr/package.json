@@ -1,6 +1,6 @@
 {
   "name": "@xoong/ssr",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "Prerender xoong pages: run the real <xo-view> runtime in Node (happy-dom), wait for the data, write HTML. No hydration step: the browser re-renders from the saved template.",
   "type": "module",
   "exports": {
@@ -19,9 +19,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@xoong/core": "0.0.34",
-    "@xoong/data": "0.0.34",
-    "@xoong/ui": "0.0.34",
+    "@xoong/core": "0.0.35",
+    "@xoong/data": "0.0.35",
+    "@xoong/ui": "0.0.35",
     "happy-dom": "^21.0.4"
   },
   "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
