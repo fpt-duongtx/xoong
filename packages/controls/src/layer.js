@@ -21,17 +21,23 @@ export function showLayer(panel, anchor, { matchWidth = false } = {}) {
   panel.hidden = false;
   const top = panel.hasAttribute('popover');
   if (top && !panel.matches(':popover-open')) panel.showPopover();
+  const MARGIN = 8;
   const place = () => {
     if (!top) return;
     const r = anchor.getBoundingClientRect();
-    const room = (globalThis.innerHeight || 768) - r.bottom;
-    const height = panel.getBoundingClientRect().height;
-    const flip = room < height + 8 && r.top > room; // not enough room below and more above: open upwards
-    Object.assign(panel.style, {
-      position: 'fixed', inset: 'auto', margin: '0', left: `${r.left}px`,
-      top: flip ? `${Math.max(4, r.top - height)}px` : `${r.bottom}px`,
-      ...(matchWidth ? { width: `${r.width}px`, boxSizing: 'border-box' } : {}),
-    });
+    const vw = globalThis.innerWidth || 1024;
+    const vh = globalThis.innerHeight || 768;
+    // measure at the natural size, then fit: first the side with room, then a height limit when neither side has enough
+    Object.assign(panel.style, { position: 'fixed', inset: 'auto', margin: '0', maxHeight: '', ...(matchWidth ? { width: `${r.width}px`, boxSizing: 'border-box' } : {}) });
+    const size = panel.getBoundingClientRect();
+    const below = vh - r.bottom - MARGIN;
+    const above = r.top - MARGIN;
+    const up = below < size.height && above > below; // not enough room below and more above: open upwards
+    const room = Math.max(up ? above : below, 80);
+    const height = Math.min(size.height, room);
+    if (size.height > room) panel.style.maxHeight = `${room}px`; // the panel scrolls (the lists already have overflow)
+    const left = Math.min(Math.max(r.left, MARGIN), Math.max(MARGIN, vw - size.width - MARGIN)); // keep it inside the viewport sideways
+    Object.assign(panel.style, { left: `${left}px`, top: up ? `${Math.max(MARGIN, r.top - height)}px` : `${r.bottom}px` });
   };
   place();
   if (!top) return () => {};

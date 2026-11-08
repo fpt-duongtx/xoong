@@ -10,9 +10,11 @@
  * - The trigger is the element named by `anchor` (a selector), or the element just before the popover. It gets `aria-expanded` and `aria-controls`.
  * - A click on the trigger toggles it. Escape closes it and gives the focus back to the trigger; a click outside, or Tab out of the panel, closes it.
  * - `open()`, `close()` and `toggle()`; the property/attribute `open`; `xo-popover-open` and `xo-popover-close` fire on the element.
- * - The panel has the class `xo-popover` (the theme draws it, positioned under its wrapper) and `role="region"` named by `label`.
+ * - The panel has the class `xo-popover` (the theme draws it) and `role="region"` named by `label`. With the Popover API it is drawn in the top layer under the
+ *   trigger and kept inside the viewport (flips up when there is more room above, scrolls when neither side has enough).
  */
 import { XoElement, define } from '@xoong/core';
+import { prepareLayer, showLayer, hideLayer } from './layer.js';
 
 let counter = 0;
 
@@ -26,6 +28,7 @@ class XoPopover extends XoElement {
 
   connected() {
     this.classList.add('xo-popover');
+    prepareLayer(this);
     this.setAttribute('role', 'region');
     if (!this.id) this.id = this.#id;
     this.#trigger = this.anchor ? document.querySelector(this.anchor) : /** @type {HTMLElement | null} */ (this.previousElementSibling);
@@ -35,7 +38,8 @@ class XoPopover extends XoElement {
     this.addEventListener('focusout', (e) => { if (this.open && e.relatedTarget && !this.contains(/** @type {Node} */ (e.relatedTarget)) && e.relatedTarget !== this.#trigger) this.close(); });
     this.#paint();
   }
-  disconnected() { this.#trigger?.removeEventListener('click', this.#onClick); document.removeEventListener('pointerdown', this.#onDocument); }
+  disconnected() { this.#trigger?.removeEventListener('click', this.#onClick); document.removeEventListener('pointerdown', this.#onDocument); this.#stop(); }
+  #stop = () => {};
   attributeChangedCallback(attr, old, value) { super.attributeChangedCallback(attr, old, value); this.#paint(); }
 
   /** Open it; the focus moves to the first focusable element of the panel. */
@@ -47,15 +51,19 @@ class XoPopover extends XoElement {
   #paint() {
     if (!this.isConnected) return;
     if (this.label) this.setAttribute('aria-label', this.label); else this.removeAttribute('aria-label');
-    this.hidden = !this.open;
     this.#trigger?.setAttribute('aria-expanded', String(this.open));
+    if (this.open === this.#wasOpen) return;
     if (this.open) {
+      this.#stop();
+      this.#stop = showLayer(this, this.#trigger ?? this);
       document.addEventListener('pointerdown', this.#onDocument);
       this.dispatchEvent(new Event('xo-popover-open', { bubbles: true }));
       /** @type {HTMLElement | null} */ (this.querySelector('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))?.focus();
     } else {
+      this.#stop();
+      hideLayer(this);
       document.removeEventListener('pointerdown', this.#onDocument);
-      if (this.#wasOpen) this.dispatchEvent(new Event('xo-popover-close', { bubbles: true }));
+      this.dispatchEvent(new Event('xo-popover-close', { bubbles: true }));
     }
     this.#wasOpen = this.open;
   }

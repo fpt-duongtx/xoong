@@ -712,7 +712,7 @@ button[aria-pressed="true"]:not(.chip, [role="tab"], .xo-seg button) { backgroun
 .xo-date-open:hover { color: var(--xo-color-text); background: var(--xo-color-subtle); }
 .xo-date-open[aria-expanded="true"] { color: var(--xo-color-accent-strong); background: var(--xo-color-accent-soft); }
 .xo-date-open .ic { --xo-icon: 18px; }
-.xo-date-panel { position: absolute; z-index: 20; box-sizing: border-box; width: calc(7 * 36px + 6 * 2px + 32px + 2px); max-width: calc(100vw - 16px); padding: 16px; }
+.xo-date-panel { overflow: auto; position: absolute; z-index: 20; box-sizing: border-box; width: calc(7 * 36px + 6 * 2px + 32px + 2px); max-width: calc(100vw - 16px); padding: 16px; }
 .xo-date-panel[hidden] { display: none; }
 .xo-date-head { display: grid; grid-template-columns: 32px 1fr 32px; align-items: center; gap: 8px; margin-bottom: 8px; }
 .xo-date-head > b { text-align: center; font: 600 14px/1.3 var(--xo-font); }
