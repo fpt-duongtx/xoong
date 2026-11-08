@@ -4,6 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { build } from '../src/build.js';
+import { excluder } from '../src/exclude.js';
 import { findPackages, createDevHandler } from '@xoong/server/node';
 
 async function project() {
@@ -86,5 +87,40 @@ describe('a package installed as a symlink, with the app inside the package fold
     expect(r.warnings).toEqual([]);
     const all = (await readdir(out, { recursive: true })).map((n) => n.split('\\').join('/')).filter((n) => /\.\w+$/.test(n)).sort();
     expect(all).toEqual(['@rainlet/src/index.js', '@rainlet/src/theme.css', 'build-report.json', 'index.html', 'main.js']);
+  });
+});
+
+describe('exclude: HTML that is not a page', () => {
+  it('--exclude and build.exclude keep partials, fixtures and drafts out of the build', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'xoong-ex-'));
+    const outs = await mkdtemp(join(tmpdir(), 'xoong-ex-out-')); // outside the root: a later build must not read an earlier output as input
+    const w = async (p, t) => { await mkdir(join(root, p, '..'), { recursive: true }); await writeFile(join(root, p), t); };
+    await w('index.html', '<!doctype html><title>x</title><a href="about.html">a</a>');
+    await w('about.html', '<!doctype html><title>about</title>');
+    await w('screens/home.html', '<p>partial</p>');
+    await w('fixtures/a.html', '<p>fixture</p>');
+    await w('notes.draft.html', '<p>draft</p>');
+    await w('app.html', '<p>source</p>');
+    const files = async (out) => (await readdir(out, { recursive: true })).map((n) => n.split('\\').join('/')).filter((n) => n.endsWith('.html')).sort();
+    const all = await build({ root, out: join(outs, 'o1') });
+    expect(all.warnings).toEqual([]);
+    expect(await files(join(outs, 'o1'))).toEqual(['about.html', 'app.html', 'fixtures/a.html', 'index.html', 'notes.draft.html', 'screens/home.html']);
+    await build({ root, out: join(outs, 'o2'), exclude: ['screens/', 'fixtures/**', '*.draft.html', 'app.html'] });
+    expect(await files(join(outs, 'o2'))).toEqual(['about.html', 'index.html']);
+    await writeFile(join(root, 'xoong.config.json'), JSON.stringify({ build: { exclude: ['screens', 'fixtures', 'app.html', '*.draft.html'] } }));
+    await build({ root, out: join(outs, 'o3') });
+    expect(await files(join(outs, 'o3'))).toEqual(['about.html', 'index.html']);
+  });
+
+  it('the glob: * stays in a folder, ** crosses folders, a name without / matches at any depth', () => {
+    const ex = excluder(['a/*.html', 'b/**/x.html', 'drafts', '?.md']);
+    expect(ex('a/one.html')).toBe(true);
+    expect(ex('a/deep/one.html')).toBe(false);
+    expect(ex('b/x.html')).toBe(true);
+    expect(ex('b/c/d/x.html')).toBe(true);
+    expect(ex('src/drafts')).toBe(true);
+    expect(ex('src/drafts/x.html')).toBe(false); // a folder is skipped as a whole while walking, so its files are never asked
+    expect(ex('z.md')).toBe(true);
+    expect(ex('zz.md')).toBe(false);
   });
 });

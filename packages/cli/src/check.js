@@ -27,7 +27,8 @@
  *   XO252 <xo-form op> operation has no simple request fields to generate a form from
  */
 import { readFile, readdir, stat } from 'node:fs/promises';
-import { join, extname } from 'node:path';
+import { excluder } from './exclude.js';
+import { join, extname, relative } from 'node:path';
 import { parse } from 'parse5';
 import { nearest } from '@xoong/core/closest';
 import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
@@ -317,9 +318,11 @@ export function checkScript(source, table, file = '<input>') {
 }
 
 /** Collect .html files from files and folders (skips node_modules and dot folders). */
-export async function collectHtml(paths) {
+export async function collectHtml(paths, { exclude } = {}) {
   const out = [];
+  const skip = excluder(exclude);
   const visit = async (p) => {
+    if (skip(relative('.', p))) return;
     const s = await stat(p);
     if (s.isDirectory()) {
       for (const name of await readdir(p)) if (!['node_modules', 'dist', 'build', 'coverage'].includes(name) && !name.startsWith('.')) await visit(join(p, name));
@@ -330,8 +333,8 @@ export async function collectHtml(paths) {
 }
 
 /** @returns {Promise<{ findings: Finding[], files: number }>} */
-export async function checkFiles(paths, table) {
-  const files = await collectHtml(paths);
+export async function checkFiles(paths, table, options = {}) {
+  const files = await collectHtml(paths, options);
   const findings = [];
   for (const file of files) {
     const source = await readFile(file, 'utf8');

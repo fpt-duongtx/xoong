@@ -10,6 +10,8 @@
  *   - TypeScript is stripped (erasable syntax only) and .ts files are written as .js;
  *   - `--base` prefixes root-absolute URLs for an app served under a path;
  *   - nothing is minified or bundled; every file is the one you wrote (readable in the browser's tools).
+ * HTML files that are not pages (partials, fixtures, drafts) are kept out of the start list with `--exclude <glob>` (repeatable) or `"build": { "exclude": [...] }` in
+ * xoong.config.json (paths relative to the root; see exclude.js). A file that a page references is still published.
  * What cannot be seen (a fetch() of a data file, an image named in JavaScript) is added with `--include <file-or-folder>`.
  */
 import { readFile, writeFile, mkdir, readdir, stat, copyFile, realpath } from 'node:fs/promises';
@@ -18,6 +20,7 @@ import { gzipSync } from 'node:zlib';
 import { parse } from 'parse5';
 import { findPackages, packagePath, stripTypes } from '@xoong/server/node';
 import { loadConfig } from './dev.js';
+import { excluder } from './exclude.js';
 import { buildImportMap } from '@xoong/server';
 
 const SCRIPT_EXT = new Set(['.js', '.mjs', '.ts', '.mts']);
@@ -28,10 +31,10 @@ const isLocal = (u) => !!u && !/^([a-z][a-z0-9+.-]*:|\/\/|#)/i.test(u);
 export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'";
 
 /**
- * @param {{ root?: string, out?: string, base?: string, include?: string[] }} [options]
+ * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[] }} [options]
  * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string }>}
  */
-export async function build({ root = '.', out = 'dist', base = '', include = [], packages: extra } = {}) {
+export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, packages: extra } = {}) {
   const rootDir = await realpath(resolve(root)); // real path: packages are found by theirs, so an app inside a symlinked package must compare equal
   // the output folder may not exist yet: resolve the part that does
   const realOut = async (p) => { try { return await realpath(p); } catch { const up = dirname(p); return up === p ? p : join(await realOut(up), basename(p)); } };
@@ -175,10 +178,12 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
 
   // pages first, then whatever they pull in
   const pages = [];
+  const skip = excluder([...(exclude ?? []), ...(((await loadConfig(rootDir)).build ?? {}).exclude ?? [])]);
   const walk = async (dir) => {
     for (const name of await readdir(dir)) {
       if (name === 'node_modules' || name.startsWith('.') || resolve(dir, name) === outDir) continue;
       const p = join(dir, name);
+      if (skip(relative(rootDir, p))) continue;
       if ((await stat(p)).isDirectory()) await walk(p); else if (/\.html?$/i.test(name)) pages.push(urlOf(p));
     }
   };

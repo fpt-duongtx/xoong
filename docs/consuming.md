@@ -34,7 +34,8 @@ checkout directly (no tarballs).
 
 ## Serving an app in production
 
-Use `xoong build` (it needs only your project, no bundler): `xoong build --root . --out dist [--base /admin] [--include public]` (`--help` prints the options; unknown options are refused; an output folder inside the root is never read as input). It follows the
+Use `xoong build` (it needs only your project, no bundler): `xoong build --root . --out dist [--base /admin] [--include public] [--exclude 'screens/**']` (`--help` prints the options; unknown options are refused; an output folder inside the root is never read as input). It follows the
+Every `.html` file under the root is a page. HTML that is not (partials, fixtures, drafts) is kept out with `--exclude <glob>` (repeatable) or `"build": { "exclude": ["screens/**", "*.draft.html"] }` in `xoong.config.json`: paths relative to the root, `*` stays in a folder, `**` crosses folders, a name without `/` matches at any depth, a trailing `/` is a folder. A file that a page references is still published. `xoong check` takes `--exclude` too, and `"check": { "exclude": [...] }` in the config.
 HTML pages, rewrites package imports to URLs (no import map), strips TypeScript, copies what is referenced, and prints the Content-Security-Policy
 the output is tested with ([security.md](security.md)). Serve `dist` as static files, with the pages' routes answering the app's HTML if you use
 `<xo-router>`. Nothing is minified or bundled yet: the files are the ones you wrote, and `dist/build-report.json` lists sizes (also gzipped).

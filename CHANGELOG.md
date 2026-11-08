@@ -3,6 +3,10 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+* `xoong build --exclude <glob>` (repeatable) and `"build": { "exclude": [...] }` in `xoong.config.json` keep HTML that is not a page (partials, fixtures, drafts) out of the start list; `xoong check` has `--exclude` and `"check": { "exclude": [...] }` too. Popups (menu, combobox, date, popover) stay inside the viewport; carousel `<article>` slides no longer carry `role="group"`; styles of the six new controls (kit ux/polish).
+
 ## 0.0.40 (theme toggle, six more controls)
 
 breaking: none.

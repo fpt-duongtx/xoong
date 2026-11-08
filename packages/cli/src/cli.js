@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @ts-check
 import { sync, doctor } from './commands.js';
-import { startDev, parseProxyFlags } from './dev.js';
+import { startDev, parseProxyFlags, loadConfig } from './dev.js';
 import { checkFiles, formatFindings } from './check.js';
 import { scaffold } from './scaffold.js';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -12,9 +12,9 @@ const HELP = `xoong <command>
   sync <openapi.json|yaml|url> [--out .xoong] [--hints hints.json]   generate operations.json and api.d.ts
   doctor <openapi.json|yaml|url> [--hints hints.json] [--all]   audit the OpenAPI document for xoong
   new <folder> --spec <openapi.json|yaml|url> [--title "My app"] [--link <xoong checkout>]   create a project with a first screen
-  check <file|folder>... [--operations .xoong/operations.json] [--format text|json]   check HTML screens
+  check <file|folder>... [--operations .xoong/operations.json] [--format text|json] [--exclude glob]...   check HTML screens
   render <page.html> --api <url> [--url /users/7] [--operations .xoong/operations.json] [--out file]   prerender a page (a route, with --url) with its data (needs @xoong/ssr)
-  build [--root .] [--out dist] [--base /admin] [--include path]...   static output for strict-CSP hosting (no import map, no inline code)
+  build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]...   static output for strict-CSP hosting (no import map, no inline code)
   i18n extract <html|js files or folders>... [--out catalogs/en.json]   list xo-t keys with their source text
   i18n check <catalog.json> --source <en.json>   missing keys, wrong placeholders, invalid messages
   dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080] [--spa]   serve the app (static, proxy, .ts)
@@ -45,8 +45,9 @@ try {
     let table;
     try { table = JSON.parse(await readFile(opsFile, 'utf8')); } catch { throw new Error(`xoong: cannot read ${opsFile}. Run \`xoong sync <openapi>\` first, or pass --operations <file>`); }
     const format = flag('--format', 'text');
-    const targets = rest.filter((v, i) => !v.startsWith('--') && !['--operations', '--format'].includes(rest[i - 1]));
-    const { findings, files } = await checkFiles(targets, table);
+    const targets = rest.filter((v, i) => !v.startsWith('--') && !['--operations', '--format', '--exclude'].includes(rest[i - 1]));
+    const exclude = [...rest.flatMap((v, i) => (rest[i - 1] === '--exclude' ? [v] : [])), ...(((await loadConfig('.')).check ?? {}).exclude ?? [])];
+    const { findings, files } = await checkFiles(targets, table, { exclude });
     console.log(format === 'json' ? JSON.stringify(findings, null, 2) : formatFindings(findings, { files }));
     process.exitCode = findings.some((f) => f.level === 'error') ? 1 : 0;
   } else if (cmd === 'render' && rest[0] && flag('--api')) {
@@ -75,11 +76,12 @@ try {
     console.log(problems.length ? `${problems.length} problems` : 'ok');
     process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'build') {
-    const unknown = rest.filter((v, i) => v.startsWith('-') && !['--root', '--out', '--base', '--include'].includes(v) && true);
-    if (unknown.length) throw new Error(`xoong build: unknown option ${unknown.join(', ')} (known: --root, --out, --base, --include)`);
+    const unknown = rest.filter((v, i) => v.startsWith('-') && !['--root', '--out', '--base', '--include', '--exclude'].includes(v) && true);
+    if (unknown.length) throw new Error(`xoong build: unknown option ${unknown.join(', ')} (known: --root, --out, --base, --include, --exclude)`);
     const { build, CSP } = await import('./build.js');
     const include = rest.flatMap((v, i) => (rest[i - 1] === '--include' ? [v] : []));
-    const r = await build({ root: flag('--root', '.'), out: flag('--out', 'dist'), base: flag('--base', ''), include });
+    const exclude = rest.flatMap((v, i) => (rest[i - 1] === '--exclude' ? [v] : []));
+    const r = await build({ root: flag('--root', '.'), out: flag('--out', 'dist'), base: flag('--base', ''), include, exclude });
     const total = r.files.reduce((n, f) => n + f.bytes, 0);
     const gz = r.files.reduce((n, f) => n + f.gzip, 0);
     console.log(`built ${r.files.length} files into ${r.out} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);
