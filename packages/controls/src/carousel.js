@@ -153,7 +153,8 @@ class XoCarousel extends XoElement {
     const index = this.#index;
     slides.forEach((slide, i) => {
       if (!slide.hasAttribute('aria-label') || slide.hasAttribute('data-xo-label')) { slide.setAttribute('aria-label', text('xoong.carousel.slide', '{n} of {count}', { n: i + 1, count: n })); slide.setAttribute('data-xo-label', ''); }
-      slide.setAttribute('role', 'group');
+      if (slide.localName === 'article') slide.removeAttribute('role'); // an <article> already has a role, and group is not allowed on it (axe aria-allowed-role); the roledescription and label stay
+      else slide.setAttribute('role', 'group');
       slide.setAttribute('aria-roledescription', 'slide');
       if (laidOut) { // a slide completely out of view is not reachable by Tab or by a reader's browse mode; a peeking one is
         const a = slide.getBoundingClientRect(), b = track.getBoundingClientRect();

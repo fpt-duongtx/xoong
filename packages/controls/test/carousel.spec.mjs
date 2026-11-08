@@ -14,13 +14,19 @@ const dots = () => [...document.querySelectorAll('.xo-carousel-dots button')];
 afterEach(() => { document.body.innerHTML = ''; vi.useRealTimers(); });
 
 describe('<xo-carousel>', () => {
+  it('slides that are not articles are groups', async () => {
+    document.body.innerHTML = '<xo-carousel label="L"><div>a</div><div>b</div></xo-carousel>';
+    await new Promise((r) => setTimeout(r, 0));
+    expect([...document.querySelectorAll('.xo-carousel-track > div')].every((d) => d.getAttribute('role') === 'group')).toBe(true);
+  });
+
   it('follows the WAI-ARIA carousel pattern: a named region, slides as groups, labelled buttons', async () => {
     const el = await mountCarousel();
     expect(el.getAttribute('role')).toBe('region');
     expect(el.getAttribute('aria-roledescription')).toBe('carousel');
     expect(el.getAttribute('aria-label')).toBe('Services');
     expect(slides().map((s) => s.getAttribute('aria-label'))).toEqual(['1 of 5', '2 of 5', '3 of 5', '4 of 5', '5 of 5']);
-    expect(slides().every((s) => s.getAttribute('role') === 'group' && s.getAttribute('aria-roledescription') === 'slide')).toBe(true);
+    expect(slides().every((s) => !s.hasAttribute('role') && s.getAttribute('aria-roledescription') === 'slide')).toBe(true); // an <article> keeps its own role (group is not allowed on it)
     expect(q('.xo-carousel-track').tabIndex).toBe(0); // a scroll area the keyboard can reach
     expect(q('.xo-carousel-prev').getAttribute('aria-label')).toBe('Previous slide');
     expect(q('.xo-carousel-next').getAttribute('aria-label')).toBe('Next slide');
