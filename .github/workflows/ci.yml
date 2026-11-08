@@ -18,6 +18,7 @@ jobs:
     runs-on: [self-hosted, xoong-home]
     strategy:
       fail-fast: false
+      max-parallel: 1 # one at a time: two coverage runs (each with a worker per CPU) plus the browsers took the shared machine to a load of 70+
       matrix:
         node: [22, 24]
     steps:
@@ -32,7 +33,7 @@ jobs:
       - name: Lint (no-shadow)
         run: npm run lint
       - name: Tests with coverage (thresholds enforced)
-        run: npm run test:coverage
+        run: npm run test:coverage -- --maxWorkers=6
       - name: Type-check generated types for the sample specs
         run: |
           mkdir -p .tmp && node packages/cli/src/cli.js sync examples/chat/openapi.json --hints examples/chat/xoong.hints.json --out .tmp
@@ -50,6 +51,7 @@ jobs:
     runs-on: [self-hosted, xoong-home]
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         browser: [firefox, webkit]
     steps:
@@ -61,6 +63,6 @@ jobs:
       - run: npm ci
       - run: npx playwright install ${{ matrix.browser }}
       - name: Browser tests in ${{ matrix.browser }}
-        run: npm run test:browsers
+        run: npm run test:browsers -- --maxWorkers=4
         env:
           XOONG_BROWSER: ${{ matrix.browser }}
