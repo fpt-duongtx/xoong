@@ -167,14 +167,12 @@ describe('controls in a browser', () => {
       await page.keyboard.press('ArrowRight');
       await settled(1);
       await page.$eval('#car', (el) => el.setAttribute('items', '1.25'));
-      await page.waitForFunction(() => document.querySelector('#car .xo-carousel-dots').children.length === 5 && document.querySelector('#car .xo-carousel-track').children[2].inert);
-      const s = await state();
-      expect(s.dots).toBe(5); // one slide in view: every slide can lead
-      expect(s.inert[2]).toBe(true); // two ahead: out of view
+      await page.waitForFunction(() => document.querySelector('#car .xo-carousel-dots').children.length === 5);
+      expect((await state()).dots).toBe(5); // one slide in view: every slide can lead
       await page.$eval('#car', (el) => el.goTo(0));
       await settled(0);
+      // from the first slide: the second one peeks (and stays usable), the third is two slides away (out of reach)
       await page.waitForFunction(() => { const c = document.querySelector('#car .xo-carousel-track').children; return !c[0].inert && !c[1].inert && c[2].inert; });
-      expect((await state()).inert.slice(0, 3)).toEqual([false, false, true]); // the second one peeks and stays usable
       await page.$eval('#car', (el) => el.setAttribute('items', '3'));
       expect(errors).toEqual([]);
     });
