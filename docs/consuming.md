@@ -1,12 +1,12 @@
 # Using xoong from another project (before it is published)
 
-Nothing is published to npm. Each drop is a git tag (`v0.0.N`) with a GitHub Release in the private repository that carries one
+Nothing is published to npm. Each drop is a git tag (`v0.0.N`) with a GitHub Release in the public repository (https://github.com/fpt-duongtx/xoong/releases) that carries one
 tarball per package and a `consume.json`. All packages share the version number.
 
 ## Install a drop
 
 ```bash
-# in your project (needs `gh` signed in to the private repository)
+# in your project (the repository is public: `gh` needs no sign-in for it)
 gh release download v0.0.28 -R fpt-duongtx/xoong -D vendor/xoong
 ```
 

@@ -1,7 +1,7 @@
 # Changelog
 
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
-projects run xoong in production. Nothing has been published yet.
+projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
 ## 0.0.28 (options from the API)
 

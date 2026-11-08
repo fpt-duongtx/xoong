@@ -178,7 +178,7 @@ ${example({
     description: 'Install xoong from release files, generate typed operations from OpenAPI and run a project.',
     body: `
 <h1>Install</h1>
-${callout('note', 'xoong is not on npm yet. Each version is a GitHub Release with one tarball per package. Until the repository is public you need <code>gh</code> signed in to an account that can read it.')}
+${callout('note', 'xoong is not on npm yet. Each version is a GitHub Release with one tarball per package; the repository is public, so downloading needs no sign-in.')}
 <p>You need Node 22.12 or newer. The libraries themselves have no runtime dependencies; Node is only for the tools (<code>xoong sync</code>, <code>dev</code>, <code>build</code>).</p>
 
 <h2>1. Download a release</h2>
