@@ -14,6 +14,10 @@
  *   Choosing an item (click or Enter) closes the menu and runs the item as usual (xo-click, a link, a click handler).
  * - Where the browser has the Popover API the list is drawn in the top layer, so it is never clipped by a table or a scroll area.
  * - `xo-menu-open` and `xo-menu-close` fire on the element.
+ * - A choice menu: items with a `value` attribute are radio items (`menuitemradio`, `aria-checked`); the menu's `value` says which one is on.
+ *   Choosing one sets `value` (an attribute, so CSS can read it) and fires `xo-menu-select` with `{ value }`.
+ *
+ *     <xo-menu label="Palette" value="calm"><button xo-menu-trigger>Palette</button><button value="calm">Calm</button><button value="ember">Ember</button></xo-menu>
  */
 import { XoElement, define } from '@xoong/core';
 import { prepareLayer, showLayer, hideLayer } from './layer.js';
@@ -21,7 +25,7 @@ import { prepareLayer, showLayer, hideLayer } from './layer.js';
 let counter = 0;
 
 class XoMenu extends XoElement {
-  static props = { label: String };
+  static props = { label: String, value: String };
 
   /** @type {HTMLElement | null} */ #trigger = null;
   /** @type {HTMLElement | null} */ #panel = null;
@@ -31,6 +35,7 @@ class XoMenu extends XoElement {
   #onEscape = (/** @type {KeyboardEvent} */ event) => { if (event.key === 'Escape' && this.isOpen) { event.preventDefault(); this.close({ focus: true }); } };
 
   connected() {
+    this.effect(() => this.#check(this.value));
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => this.#build(), { once: true });
     else queueMicrotask(() => this.#build());
   }
@@ -52,7 +57,7 @@ class XoMenu extends XoElement {
     if (this.label) panel.setAttribute('aria-label', this.label);
     for (const item of children) {
       if (item === trigger) continue;
-      item.setAttribute('role', 'menuitem');
+      item.setAttribute('role', item.hasAttribute('value') ? 'menuitemradio' : 'menuitem');
       item.tabIndex = -1;
       panel.append(item);
     }
@@ -64,12 +69,23 @@ class XoMenu extends XoElement {
     this.#trigger = trigger;
     this.#panel = panel;
     prepareLayer(panel);
+    this.#check(this.value);
     trigger.addEventListener('click', () => (this.isOpen ? this.close() : this.open()));
     trigger.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowDown') { event.preventDefault(); this.open('first'); }
       else if (event.key === 'ArrowUp') { event.preventDefault(); this.open('last'); }
     });
-    panel.addEventListener('click', (event) => { if (/** @type {Element} */ (event.target).closest('[role=menuitem]')) this.close({ focus: true }); });
+    panel.addEventListener('click', (event) => {
+      const item = /** @type {Element} */ (event.target).closest('[role=menuitem], [role=menuitemradio]');
+      if (!item) return;
+      if (item.getAttribute('role') === 'menuitemradio') {
+        const value = item.getAttribute('value') ?? '';
+        const changed = value !== this.value;
+        this.setAttribute('value', value);
+        if (changed) this.dispatchEvent(new CustomEvent('xo-menu-select', { bubbles: true, detail: { value } }));
+      }
+      this.close({ focus: true });
+    });
     panel.addEventListener('keydown', (event) => this.#onKey(event));
   }
 
@@ -95,6 +111,11 @@ class XoMenu extends XoElement {
     document.removeEventListener('keydown', this.#onEscape);
     if (focus) this.#trigger?.focus();
     this.dispatchEvent(new CustomEvent('xo-menu-close', { bubbles: true }));
+  }
+
+  /** The radio item whose `value` is the menu's is the checked one. */
+  #check(/** @type {string | null | undefined} */ value) {
+    for (const item of this.#items) if (item.getAttribute('role') === 'menuitemradio') item.setAttribute('aria-checked', String(item.getAttribute('value') === value));
   }
 
   #focusItem(/** @type {number} */ index) {

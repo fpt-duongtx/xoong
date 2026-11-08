@@ -1,6 +1,6 @@
 // The content of the documentation site. `npm run site` writes site/*.html from this file; the architecture test fails when they differ.
 import { readFileSync } from 'node:fs';
-import { tabs, example, callout } from './lib.mjs';
+import { tabs, example, callout, code, codeCard, mark } from './lib.mjs';
 
 const VERSION = JSON.parse(readFileSync(new URL('../../packages/xoong/package.json', import.meta.url), 'utf8')).version; // the release the install page names
 
@@ -22,9 +22,92 @@ import operations from '/.xoong/operations.json' with { type: 'json' };
 configure({ api: operations, baseUrl: '/api' });`;
 
 export const pages = [
+
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'index.html', group: 'Start', nav: 'Overview', title: 'Overview', demo: true,
+    file: 'index.html', section: 'home', title: 'One pot. Whole app.', demo: true,
+    description: 'xoong: a small, standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.',
+    body: `
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Standards-first web framework</span>
+        <h1>One pot.<br><em>Whole app.</em></h1>
+        <p class="lede">Xoong is a small web framework that cooks with what the browser already gives you. Declare a screen, point it at your OpenAPI document, write plain CSS. That is the whole job.</p>
+        <div class="actions">
+          <a class="btn primary" href="install.html">Get started</a>
+          <a class="btn" href="demo.html">See it running</a>
+        </div>
+        <ul class="pills"><li><b>0</b> runtime deps</li><li><b>0</b> shadow DOM</li><li><b>0</b> inline scripts</li></ul>
+      </div>
+      <div class="stage">
+        <div class="pot-badge">${mark({ size: 128, steam: true })}</div>
+        ${codeCard('people.html', 'html', `
+<xo-view get="listPeople">
+  <xo-table columns="name,email,role"
+            sortable></xo-table>
+</xo-view>
+
+<!-- loading, errors, cache and types
+     come from your OpenAPI document -->`)}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">The ingredients</span><h2>Few things, chosen well.</h2><p>Mainstream frameworks make you chase them. Xoong keeps its surface tiny and lets the platform do the heavy lifting.</p></div>
+      <ul class="grid">
+        <li class="card"><span class="no">01</span><h3>Standards first</h3><p>Custom elements, the DOM, ES modules, the History API, native <code>&lt;dialog&gt;</code> and <code>Intl</code>. No virtual DOM, no JSX, no hooks.</p></li>
+        <li class="card"><span class="no">02</span><h3>Light DOM only</h3><p>Your CSS and your tests see the real DOM. No Shadow DOM and no scoped-style magic between you and the page.</p></li>
+        <li class="card"><span class="no">03</span><h3>OpenAPI is the contract</h3><p><code>xoong sync</code> reads your spec and writes typed operations. Forms and tables are drawn from the schemas.</p></li>
+        <li class="card"><span class="no">04</span><h3>Zero runtime deps</h3><p>Upgrading Node never breaks the runtime, because the runtime runs in the browser and brings nothing along.</p></li>
+        <li class="card"><span class="no">05</span><h3>Strict CSP ready</h3><p><code>xoong build</code> outputs static files that run under <code>script-src 'self'</code>. No inline code, ever.</p></li>
+        <li class="card"><span class="no">06</span><h3>Made for AI and people</h3><p>One way to do each thing, a short <code>llms.txt</code>, an MCP server, and <code>xoong check</code> with messages that contain the fix.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="band" role="presentation">
+    <div class="wrap">
+      <div><strong>1</strong><span>way to do each thing</span></div>
+      <div><strong>0</strong><span>runtime dependencies</span></div>
+      <div><strong>600+</strong><span>tests, incl. real browsers</span></div>
+      <div><strong>MIT</strong><span>licence, forever</span></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Taste it</span><h2>This table is the real thing.</h2><p>Sort a column, search, tick rows and delete them. There is no server: a function in the page plays the API, and everything else is xoong.</p></div>
+      ${example({ label: 'A data table', preview: TABLE })}
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">The recipe</span><h2>Three steps from spec to screen.</h2></div>
+      <ol class="recipe">
+        <li><div><h3>Sync your API</h3><p>Generate typed operations from the OpenAPI document you already have.</p>${code('bash', 'npx xoong sync openapi.json')}</div></li>
+        <li><div><h3>Write the screen</h3><p>HTML with a few <code>xo-*</code> elements. Style it with plain CSS and custom properties.</p>${code('html', '<xo-view get="listPeople"><xo-table sortable></xo-table></xo-view>')}</div></li>
+        <li><div><h3>Serve it hot</h3><p>Run the dev server, then build static output for strict-CSP hosting.</p>${code('bash', 'npx xoong dev\nnpx xoong build --out dist')}</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <div class="box">
+        <h2>Hungry for less framework?</h2>
+        <p>Xoong is a 0.0.x prototype and the syntax is still Draft. Come cook with us early.</p>
+        <div class="actions"><a class="btn primary" href="install.html">Install</a><a class="btn" href="how-it-works.html">How it works</a></div>
+      </div>
+    </div>
+  </section>`,
+  },
+  // ------------------------------------------------------------------------------------------------------------------------------
+  {
+    file: 'overview.html', group: 'Start', nav: 'Overview', title: 'Overview', demo: true, section: 'docs',
     description: 'xoong: a standards-first web framework. Light DOM, plain CSS, an OpenAPI-driven data layer, no runtime dependencies.',
     body: `
 <h1>xoong</h1>
@@ -70,7 +153,7 @@ ${example({
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'install.html', group: 'Start', nav: 'Install', title: 'Install',
+    file: 'install.html', section: 'docs', group: 'Start', nav: 'Install', title: 'Install',
     description: 'Install xoong from release files, generate typed operations from OpenAPI and run a project.',
     body: `
 <h1>Install</h1>
@@ -128,7 +211,7 @@ ${tabs('First screen', [
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'how-it-works.html', group: 'Start', nav: 'How it works', title: 'How it works',
+    file: 'how-it-works.html', section: 'docs', group: 'Start', nav: 'How it works', title: 'How it works',
     description: 'How xoong turns an OpenAPI document into data, forms and screens.',
     body: `
 <h1>How it works</h1>
@@ -208,7 +291,7 @@ await setLocale('vi');`]])}
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'data.html', group: 'Guides', nav: 'Data and tables', title: 'Data and tables', demo: true,
+    file: 'data.html', section: 'docs', group: 'Guides', nav: 'Data and tables', title: 'Data and tables', demo: true,
     description: 'Read data with xo-view, draw a table with xo-table, and run actions with plain attributes.',
     body: `
 <h1>Data and tables</h1>
@@ -278,7 +361,7 @@ document.addEventListener('xo-error', (e) => console.warn(e.detail.code, e.detai
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'forms.html', group: 'Guides', nav: 'Forms', title: 'Forms', demo: true, richtext: true,
+    file: 'forms.html', section: 'docs', group: 'Guides', nav: 'Forms', title: 'Forms', demo: true, richtext: true,
     description: 'Generated and hand-written forms: schema validation, dirty state, arrays with reordering, server errors.',
     body: `
 <h1>Forms</h1>
@@ -392,7 +475,7 @@ form.serialize = (draft, body) => ({ ...body, name: body.name.trim() }); // the 
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'controls.html', group: 'Guides', nav: 'Controls', title: 'Controls', demo: true, script: 'page-controls.js',
+    file: 'controls.html', section: 'docs', group: 'Guides', nav: 'Controls', title: 'Controls', demo: true, script: 'page-controls.js',
     description: 'Accessible tabs, menu, tooltip, combobox and tags as custom elements.',
     body: `
 <h1>Controls</h1>
@@ -496,7 +579,7 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'richtext.html', group: 'Guides', nav: 'Rich text', title: 'Rich text', demo: true, richtext: true, script: 'page-richtext.js',
+    file: 'richtext.html', section: 'docs', group: 'Guides', nav: 'Rich text', title: 'Rich text', demo: true, richtext: true, script: 'page-richtext.js',
     description: 'A small rich text editor for forms: sanitised HTML value, accessible toolbar, two sizes, an expand dialog.',
     body: `
 <h1>Rich text</h1>
@@ -545,7 +628,7 @@ ${callout('note', 'The client is never a trust boundary. The same function is ex
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'styling.html', group: 'Guides', nav: 'Styling', title: 'Styling', demo: false, script: 'page-styling.js',
+    file: 'styling.html', section: 'docs', group: 'Guides', nav: 'Styling', title: 'Styling', demo: false, script: 'page-styling.js',
     description: 'Change the look of xoong with CSS custom properties and cascade layers.',
     body: `
 <h1>Styling</h1>
@@ -604,7 +687,7 @@ ${tabs('Shell', [['HTML', 'html', `
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'demo.html', group: 'Demo', nav: 'Live demo', title: 'Live demo', demo: true, richtext: true,
+    file: 'demo.html', section: 'demo', group: 'Demo', nav: 'Live demo', title: 'Live demo', demo: true, richtext: true,
     description: 'A small admin screen built with xoong: a data table, an add dialog and bulk actions on a fake in-page API.',
     body: `
 <h1>Live demo</h1>
@@ -628,5 +711,78 @@ ${example({
   extra: [['main.js', 'js', { file: 'site/src/demo.js' }], ['api.js', 'js', { file: 'site/src/api.js' }]],
 })}
 <p>The <em>api.js</em> tab is the whole backend of this page. Replace <code>fetch: handle</code> with a <code>baseUrl</code> and the same markup talks to a real server.</p>`,
+  },
+
+  // ------------------------------------------------------------------------------------------------------------------------------
+  {
+    file: 'brand.html', section: 'brand', title: 'Brand kit',
+    description: 'The identity of xoong: logo, colour, type and voice, with downloads.',
+    body: `
+  <div class="page-head"><div class="wrap"><h1>Brand kit</h1><p class="lede">The identity of xoong: a small pot with a lot of heat.</p></div></div>
+  <div class="wrap">
+  <div class="prose">
+    <h2>The idea</h2>
+    <p><em>Xoong</em> is the Vietnamese word for a saucepan, the pot every kitchen has and nobody replaces. That is the framework: one small, sturdy tool that does the whole job. The steam rising from the lid is a pair of angle brackets, so the pot reads as code at a glance.</p>
+    <p>Personality: <strong>practical, warm, a little cheeky.</strong> We talk like a good cook explaining a recipe, not like a vendor selling a platform.</p>
+  </div>
+
+  <section>
+    <div class="head"><span class="eyebrow">Logo</span><h2>Mark and wordmark</h2><p>The mark is the only symbol. The wordmark is lowercase <b>xoong</b>, heavy weight, tracking −0.045em. On this site the mark is inline SVG and follows the palette (use the menu in the header); the files below are fixed colour.</p></div>
+    <div class="logo-grid">
+      <div class="tile on-rice"><span class="lockup"><img src="brand/mark.svg" alt=""><span class="word">xoong</span></span><small>mark.svg · on Paper</small></div>
+      <div class="tile on-soot"><span class="lockup"><img src="brand/mark-reverse.svg" alt=""><span class="word">xoong</span></span><small>mark-reverse.svg · on Ink</small></div>
+      <div class="tile on-ember"><span class="lockup"><img src="brand/mark-mono.svg" alt=""><span class="word">xoong</span></span><small>mark-mono.svg · one colour</small></div>
+      <div class="tile on-broth"><span class="sizes"><img src="brand/favicon.svg" alt="" width="72" height="72"><img src="brand/favicon.svg" alt="" width="48" height="48"><img src="brand/favicon.svg" alt="" width="32" height="32"><img src="brand/favicon.svg" alt="" width="16" height="16"></span><small>favicon.svg · 72 48 32 16</small></div>
+    </div>
+    <div class="prose"><p>Clear space equals one handle (about a fifth of the mark) on every side. Minimum size: 16 px for the icon, 24 px for the mark. Do not recolour the pot outside a palette, add outlines, rotate it for effect or use the steam alone.</p></div>
+    <div class="dl">
+      <a class="btn" href="brand/mark.svg" download>mark.svg</a><a class="btn" href="brand/mark-reverse.svg" download>mark-reverse.svg</a><a class="btn" href="brand/mark-mono.svg" download>mark-mono.svg</a><a class="btn" href="brand/favicon.svg" download>favicon.svg</a>
+      <a class="btn" href="brand/mark-ember.svg" download>mark-ember.svg</a><a class="btn" href="brand/mark-ember-reverse.svg" download>mark-ember-reverse.svg</a><a class="btn" href="brand/favicon-ember.svg" download>favicon-ember.svg</a>
+      <a class="btn" href="brand/lockup.png" download>lockup.png</a><a class="btn" href="brand/og.png" download>og.png</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><span class="eyebrow">Colour</span><h2>Two palettes, one structure.</h2><p><b>Calm</b> (clay and sage on warm paper) is the default. <b>Ember</b> turns the heat up. A palette is only a set of custom-property values, so a third is easy: see the tabs below.</p></div>
+    <ul class="swatches">
+      <li><span class="chip c-clay"></span><div class="info"><b>Clay</b><code>#DF8A6A</code><p>Calm: the pot, fills.</p></div></li>
+      <li><span class="chip c-deep"></span><div class="info"><b>Clay Deep</b><code>#9A4D33</code><p>Calm: links, primary actions.</p></div></li>
+      <li><span class="chip c-soot"></span><div class="info"><b>Ink</b><code>#2B2623</code><p>Text, outlines, dark surfaces.</p></div></li>
+      <li><span class="chip c-paper"></span><div class="info"><b>Paper</b><code>#F7F4EC</code><p>Page background.</p></div></li>
+      <li><span class="chip c-ember"></span><div class="info"><b>Ember</b><code>#FF5B22</code><p>Ember palette: the pot.</p></div></li>
+      <li><span class="chip c-embdeep"></span><div class="info"><b>Ember Deep</b><code>#B93A0A</code><p>Ember: links on light.</p></div></li>
+      <li><span class="chip c-sesame"></span><div class="info"><b>Sesame</b><code>#E6C783</code><p>Notes, highlights.</p></div></li>
+      <li><span class="chip c-herb"></span><div class="info"><b>Sage</b><code>#5B8A6B</code><p>Success.</p></div></li>
+    </ul>
+    ${tabs('Palette as tokens', [['CSS', 'css', `
+/* a palette is values for the brand tokens; the site maps them onto the --xo-* tokens */
+:root[data-palette="ember"] {
+  --ember:      light-dark(#ff5b22, #ff7a45);
+  --ember-deep: light-dark(#b93a0a, #ff9068);
+  --bg:         light-dark(#fff8ee, #15110f);
+  --text:       light-dark(#1c1512, #f6ebdd);
+}`], ['HTML', 'html', `
+<xo-menu label="Colour palette" value="calm">
+  <button xo-menu-trigger>Palette</button>
+  <button value="calm">Calm</button>
+  <button value="ember">Ember</button>
+</xo-menu>`]])}
+  </section>
+
+  <section>
+    <div class="head"><span class="eyebrow">Type</span><h2>System fonts, set with confidence.</h2><p>No font files: zero requests and a strict CSP that stays strict.</p></div>
+    <div class="type-row"><small>Display<br>800 · −0.055em</small><div class="t-display">One pot. Whole app.</div></div>
+    <div class="type-row"><small>Text<br>400 · 17px / 1.65</small><div>Avenir Next, Segoe UI Variable, then the system UI font. Short paragraphs, plain words.</div></div>
+    <div class="type-row"><small>Code<br>ui-monospace</small><div class="t-mono">&lt;xo-view get="listPeople"&gt;</div></div>
+  </section>
+
+  <section>
+    <div class="head"><span class="eyebrow">Voice</span><h2>Say it like a cook.</h2></div>
+    <div class="dodont">
+      <div class="card"><span class="no">Do</span><ul><li>Be concrete: “one way to do each thing”.</li><li>Use kitchen words lightly: pot, recipe, ingredients.</li><li>Say the status honestly: prototype, Draft syntax.</li><li>Lead with what the reader can do next.</li></ul></div>
+      <div class="card"><span class="no bad">Don't</span><ul><li>Say “revolutionary”, “blazing” or “next-gen”.</li><li>Use more than one cooking word per paragraph.</li><li>Promise what is still planned.</li><li>Write the name in capitals. It is <b>xoong</b>.</li></ul></div>
+    </div>
+  </section>
+  </div>`,
   },
 ];

@@ -106,11 +106,11 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 
 ## Languages (`import '@xoong/i18n'`; flat JSON catalogs, ICU-subset messages)
     <h1 xo-t="home.title">Welcome</h1>   <input xo-t="placeholder:k; aria-label:k2" placeholder="Search" aria-label="Search">
-  The written text is the default; in an xo-view `{name}` comes from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}` reads `{en, vi}`. Built-in strings: `xoong.*` keys.
+  The written text is the default; in an xo-view `{name}` comes from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}` reads `{en, vi}`.
 
 ## Controls (`import '@xoong/controls'`)
     <xo-tabs label="Page"><section xo-tab="General">...</section><section xo-tab="SEO" id="seo">...</section></xo-tabs>
-    <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><a href="/x">Open</a></xo-menu>
+    <xo-menu label="Actions"><button xo-menu-trigger>Actions</button><a href="/x">Open</a></xo-menu>  (`value` on menu and items: choice menu, `xo-menu-select`)
     <xo-combobox name="a" label="Author" multiple creatable><option value="1">Ada</option></xo-combobox>   <xo-tags name="kw"></xo-tags>
     <xo-richtext name="body" media></xo-richtext>   (`@xoong/richtext`: sanitised HTML value; `xo-pick-media` is cancelable, call `e.detail.insert({ src, alt })`)
   Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags: string, or array with `multiple`;
@@ -129,5 +129,5 @@ Failures become XoongError (problem+json, `{ error: { code, message, retry_after
     await screen.click('button'); await screen.submit('form', { name: 'Cy' }); await screen.push(event);
     expect(screen.texts('li')).toEqual([...]); expect(api.unhandled).toEqual([]);
 
-## Limits today (tell the user, do not work around them)
-Swagger 2.0 is converted by `sync` (basic; use `npx swagger2openapi` for exotic files). No request-time SSR (prerender per URL: `xoong render --url /path`), no WebSocket.
+## Limits today (tell the user, no workarounds)
+Swagger 2.0: `sync` converts it (basic; exotic: `npx swagger2openapi`). No request-time SSR (prerender per URL: `xoong render --url /path`), no WebSocket.

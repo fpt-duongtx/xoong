@@ -13,8 +13,11 @@
   xo-menu [role="menu"] { min-width: 10rem; padding: var(--xo-space-1, .25rem); background: var(--xo-color-surface, #fff); color: inherit; border: 1px solid var(--xo-color-border, #d8dee4); border-radius: var(--xo-radius, 6px); box-shadow: 0 6px 18px rgb(0 0 0 / .15); }
   xo-menu [role="menu"]:not([popover]) { position: absolute; z-index: 10; }
   xo-menu [role="menu"][hidden] { display: none; }
-  xo-menu [role="menuitem"] { display: block; width: 100%; box-sizing: border-box; text-align: start; background: none; border: 0; padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); font: inherit; color: inherit; text-decoration: none; cursor: pointer; border-radius: 4px; }
-  xo-menu [role="menuitem"]:hover, xo-menu [role="menuitem"]:focus-visible { background: var(--xo-color-hover, rgb(127 127 127 / .15)); outline: none; }
+  xo-menu :is([role="menuitem"], [role="menuitemradio"]) { display: block; width: 100%; box-sizing: border-box; text-align: start; background: none; border: 0; padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); font: inherit; color: inherit; text-decoration: none; cursor: pointer; border-radius: 4px; }
+  xo-menu :is([role="menuitem"], [role="menuitemradio"]):is(:hover, :focus-visible) { background: var(--xo-color-hover, rgb(127 127 127 / .15)); outline: none; }
+  xo-menu [role="menuitemradio"] { padding-inline-start: 1.75rem; position: relative; }
+  xo-menu [role="menuitemradio"][aria-checked="true"] { font-weight: 600; }
+  xo-menu [role="menuitemradio"][aria-checked="true"]::before { content: "\2713"; position: absolute; inset-inline-start: .5rem; }
   .xo-tooltip { padding: .25rem .5rem; border: 0; border-radius: 4px; background: #1b1f24; color: #fff; font-size: .85rem; max-width: 20rem; pointer-events: auto; }
   .xo-tooltip[hidden] { display: none; }
   xo-menu { position: relative; }

@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rich text · xoong</title>
   <meta name="description" content="A small rich text editor for forms: sanitised HTML value, accessible toolbar, two sizes, an expand dialog.">
-  <link rel="icon" href="data:,">
+  <meta property="og:title" content="Rich text · xoong">
+  <meta property="og:description" content="A small rich text editor for forms: sanitised HTML value, accessible toolbar, two sizes, an expand dialog.">
+  <meta property="og:image" content="brand/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">
   <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
@@ -16,13 +21,32 @@
 </head>
 <body>
   <header class="top">
-    <a class="brand" href="index.html">xoong</a>
-    <span class="tag">standards-first web framework</span>
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="calm">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+        </xo-menu>
+      </nav>
+    </div>
   </header>
   <div class="layout">
     <nav class="side" aria-label="Documentation">
       <h2>Start</h2>
-      <a href="index.html">Overview</a>
+      <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
       <h2>Guides</h2>
@@ -106,10 +130,23 @@ document.querySelector(<span class="tok-s">'#reset'</span>).addEventListener(<sp
   <li><strong>Expand:</strong> <code>el.expand()</code> moves the same editor, with its caret and undo history, into a dialog; Done and Escape close it. The host places its own Expand button.</li>
   <li><strong>Props:</strong> <code>name</code>, <code>label</code>, <code>placeholder</code>, <code>required</code>, <code>readonly</code>, <code>disabled</code>, <code>maxlength</code>, <code>tools="bold italic link"</code>.</li>
 </ul>
-      <nav class="pager" aria-label="Pages"><a rel="prev" href="controls.html"><small>Previous</small><span>Controls</span></a><a rel="next" href="styling.html"><small>Next</small><span>Styling</span></a></nav>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="controls.html"><small>Previous</small><span>Controls</span></a><a rel="next" href="styling.html"><small>Next</small><span>Styling</span></a></nav>
     </main>
   </div>
-  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
   <xo-toast></xo-toast>
 </body>
 </html>

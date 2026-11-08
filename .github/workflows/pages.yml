@@ -31,7 +31,7 @@ jobs:
       - name: Build the site
         run: |
           node packages/cli/src/cli.js sync site/demo/openapi.json --out site/.xoong
-          node packages/cli/src/cli.js build --root site --out _site --base "/${{ github.event.repository.name }}" --include img
+          node packages/cli/src/cli.js build --root site --out _site --base "/${{ github.event.repository.name }}" --include img --include brand
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

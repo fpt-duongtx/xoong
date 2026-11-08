@@ -116,7 +116,7 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
   it('only mentions xo-* attributes that xoong defines, and documents all of them', async () => {
     const { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } = await import('../packages/core/src/syntax.js');
     const known = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES]);
-    const eventsAndPlanned = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS, 'xo-tab-change', 'xo-search', 'xo-pick-media', 'xo-menu-open', 'xo-menu-close', 'xo-done', 'xo-error', 'xo-card', 'xo-reveal', 'xo-invalid', 'xo-array-change', 'xo-navigate', 'xo-dirty', ...CSS_CLASSES]);
+    const eventsAndPlanned = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS, 'xo-tab-change', 'xo-search', 'xo-pick-media', 'xo-menu-open', 'xo-menu-close', 'xo-done', 'xo-error', 'xo-card', 'xo-reveal', 'xo-invalid', 'xo-array-change', 'xo-menu-select', 'xo-navigate', 'xo-dirty', ...CSS_CLASSES]);
     const mentioned = new Set([...llms.matchAll(/\bxo-[a-z]+(?:-[a-z]+)*\b/g)].map((m) => m[0]));
     for (const name of mentioned) if (!eventsAndPlanned.has(name)) expect(known.has(name), `llms.txt mentions ${name}, which xoong does not define`).toBe(true);
     for (const name of known) expect(mentioned.has(name), `xoong defines ${name}, but llms.txt does not document it`).toBe(true);

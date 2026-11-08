@@ -10,7 +10,8 @@ import { launchChromium } from '../../../tools/browser.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'install', 'how-it-works', 'data', 'forms', 'controls', 'richtext', 'styling', 'demo'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'controls', 'richtext', 'styling', 'demo', 'brand'];
+const DOCS = PAGES.filter((n) => !['index', 'brand'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
 let errors = [];
@@ -18,7 +19,7 @@ let errors = [];
 beforeAll(async () => {
   out = join(await mkdtemp(join(tmpdir(), 'xoong-site-')), 'dist');
   await sync(join(repo, 'site/demo/openapi.json'), { out: join(repo, 'site/.xoong') });
-  await build({ root: join(repo, 'site'), out, base: '/xoong', include: ['img'] });
+  await build({ root: join(repo, 'site'), out, base: '/xoong', include: ['img', 'brand'] });
   server = createServer(async (req, res) => {
     res.setHeader('content-security-policy', CSP);
     const path = new URL(req.url, 'http://x').pathname.replace(/^\/xoong/, '') || '/';
@@ -52,16 +53,35 @@ describe('documentation site', () => {
     for (const name of PAGES) {
       await open(name);
       expect(await page.title(), name).toContain('xoong');
-      expect(await page.$eval('header.top', (el) => getComputedStyle(el).display), name).toBe('flex'); // site.css applied
-      expect(await page.$$('nav.side a'), name).toHaveLength(PAGES.length);
-      expect(await page.$$('nav a[aria-current="page"]'), name).toHaveLength(1);
+      expect(await page.$eval('header.top .wrap', (el) => getComputedStyle(el).display), name).toBe('flex'); // site.css applied
+      expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
+      expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length : 0);
+      expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
       expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs
       clean();
     }
   });
 
-  it('code tabs: the Preview runs, the HTML tab shows the highlighted markup, every block has a Copy button', async () => {
+  it('the palette menu is a choice menu: Ember sets the palette on the page, it is remembered, and the logo follows', async () => {
     await open('index');
+    const accent = () => page.evaluate(() => getComputedStyle(document.querySelector('.hero h1 em')).color);
+    const calm = await accent();
+    expect(await page.getAttribute('xo-menu.palette', 'value')).toBe('calm');
+    await page.click('xo-menu.palette [xo-menu-trigger]');
+    expect(await page.$$eval('xo-menu.palette [role=menuitemradio]', (els) => els.map((e) => e.getAttribute('aria-checked')))).toEqual(['true', 'false']);
+    await page.click('xo-menu.palette [role=menuitemradio]:text-is("Ember")');
+    expect(await page.evaluate(() => document.documentElement.dataset.palette)).toBe('ember');
+    expect(await accent()).not.toBe(calm);
+    expect(await page.$eval('.brand .m-body', (el) => getComputedStyle(el).fill)).toBe(await accent()); // the pot is the palette's ember
+    await page.goto(`${base}install.html`); // another page: applied before the first paint
+    expect(await page.evaluate(() => document.documentElement.dataset.palette)).toBe('ember');
+    expect(await page.getAttribute('xo-menu.palette', 'value')).toBe('ember');
+    await page.evaluate(() => localStorage.clear());
+    clean();
+  });
+
+  it('code tabs: the Preview runs, the HTML tab shows the highlighted markup, every block has a Copy button', async () => {
+    await open('overview');
     expect(await page.isVisible('xo-tabs .demo xo-table, xo-tabs .demo .xo-table')).toBe(true);
     expect(await page.isVisible('pre')).toBe(false); // code is behind its tab
     await tab('HTML').click();

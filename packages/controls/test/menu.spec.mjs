@@ -120,4 +120,26 @@ describe('<xo-menu>', () => {
     expect(document.querySelector('#t').getAttribute('aria-haspopup')).toBe('menu');
     expect(document.querySelectorAll('[role=menuitem]').length).toBe(1);
   });
+
+  it('a choice menu: items with a value are radio items, the menu value marks one, choosing sets it and fires xo-menu-select', async () => {
+    document.body.innerHTML = `<xo-menu label="Palette" value="calm"><button xo-menu-trigger>Palette</button>
+      <button value="calm">Calm</button><button value="ember">Ember</button></xo-menu>`;
+    await new Promise((r) => setTimeout(r, 0));
+    const radios = () => [...document.querySelectorAll('[role=menuitemradio]')];
+    expect(radios().map((i) => i.getAttribute('aria-checked'))).toEqual(['true', 'false']);
+    const menu = document.querySelector('xo-menu');
+    const seen = [];
+    menu.addEventListener('xo-menu-select', (e) => seen.push(e.detail.value));
+    trigger().click();
+    radios()[1].click();
+    expect(seen).toEqual(['ember']);
+    expect(menu.getAttribute('value')).toBe('ember');
+    expect(radios().map((i) => i.getAttribute('aria-checked'))).toEqual(['false', 'true']);
+    expect(panel().hidden).toBe(true); // choosing closes the menu
+    trigger().click();
+    radios()[1].click(); // the same choice again: no event
+    expect(seen).toEqual(['ember']);
+    menu.setAttribute('value', 'calm'); // set from outside (a saved preference)
+    expect(radios().map((i) => i.getAttribute('aria-checked'))).toEqual(['true', 'false']);
+  });
 });

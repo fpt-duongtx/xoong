@@ -83,13 +83,43 @@ export const callout = (kind, body) => `<aside class="callout ${kind}">${body}</
 export const lang = LANG_LABEL;
 
 // ---- layout ---------------------------------------------------------------------------------------------------------------------
+/** The mark: a two-handled pot whose steam is a pair of angle brackets. Inline, so it follows the palette (classes m-* in site.css). */
+export const mark = ({ size = 32, steam = false } = {}) => `<svg class="mark${steam ? ' steam' : ''}" width="${size}" height="${size}" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg>`;
+
+const TOP = [['home', 'index.html', 'Home'], ['docs', 'overview.html', 'Docs'], ['demo', 'demo.html', 'Demo'], ['brand', 'brand.html', 'Brand']];
+
+/** A code card in the brand's "window" look (highlighted when the page is generated). */
+export const codeCard = (name, lang, src) => `<div class="window"><div class="bar"><i></i><i></i><i></i><span>${esc(name)}</span></div>${code(lang, src)}</div>`;
+
 export function layout({ pages, page }) {
+  const docs = pages.filter((p) => p.group);
   const link = (p) => `<a href="${p.file}"${p.file === page.file ? ' aria-current="page"' : ''}>${esc(p.nav)}</a>`;
-  const groups = [...new Set(pages.map((p) => p.group))];
-  const side = groups.map((g) => `<h2>${esc(g)}</h2>\n${pages.filter((p) => p.group === g).map(link).join('\n')}`).join('\n');
-  const i = pages.indexOf(page);
-  const prev = pages[i - 1], next = pages[i + 1];
+  const groups = [...new Set(docs.map((p) => p.group))];
+  const side = groups.map((g) => `<h2>${esc(g)}</h2>\n${docs.filter((p) => p.group === g).map(link).join('\n')}`).join('\n');
+  const i = docs.indexOf(page);
+  const prev = docs[i - 1], next = docs[i + 1];
   const pager = `<nav class="pager" aria-label="Pages">${prev ? `<a rel="prev" href="${prev.file}"><small>Previous</small><span>${esc(prev.nav)}</span></a>` : '<span></span>'}${next ? `<a rel="next" href="${next.file}"><small>Next</small><span>${esc(next.nav)}</span></a>` : '<span></span>'}</nav>`;
+  const top = TOP.map(([key, file, label]) => `<a href="${file}"${key === page.section ? ' aria-current="page"' : ''}>${label}</a>`).join('\n        ');
+  const body = page.group
+    ? `  <div class="layout">
+    <nav class="side" aria-label="Documentation">
+${side.replace(/^/gm, '      ')}
+    </nav>
+    <main id="main">
+${page.body}
+${pager}
+    </main>
+  </div>`
+    : `  <main id="main">
+${page.body}
+  </main>`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -97,7 +127,12 @@ export function layout({ pages, page }) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${esc(page.title)} · xoong</title>
   <meta name="description" content="${esc(page.description)}">
-  <link rel="icon" href="data:,">
+  <meta property="og:title" content="${esc(page.title)} · xoong">
+  <meta property="og:description" content="${esc(page.description)}">
+  <meta property="og:image" content="brand/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <script src="src/palette.js"></script>
   <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
   <link rel="stylesheet" href="/@xoong/controls/controls.css">${page.richtext ? '\n  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">' : ''}
   <link rel="stylesheet" href="src/site.css">
@@ -105,19 +140,26 @@ export function layout({ pages, page }) {
 </head>
 <body>
   <header class="top">
-    <a class="brand" href="index.html">xoong</a>
-    <span class="tag">standards-first web framework</span>
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home">${mark()}<span class="word">xoong</span></a>
+      <nav aria-label="Main">
+        ${top}
+        <xo-menu class="palette" label="Colour palette" value="calm">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+        </xo-menu>
+      </nav>
+    </div>
   </header>
-  <div class="layout">
-    <nav class="side" aria-label="Documentation">
-${side.replace(/^/gm, '      ')}
-    </nav>
-    <main id="main">
-${page.body}
-${pager.replace(/^/gm, '      ')}
-    </main>
-  </div>
-  <footer>xoong is a working prototype (0.0.x). MIT licence.</footer>${page.demo ? '\n  <xo-toast></xo-toast>' : ''}
+${body}
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html">${mark({ size: 26 })}<span class="word">xoong</span></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>${page.demo ? '\n  <xo-toast></xo-toast>' : ''}
 </body>
 </html>
 `;

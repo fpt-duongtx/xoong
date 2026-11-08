@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.16 (brand site, choice menu)
+
+breaking: none.
+
+* Added: a choice menu. `<xo-menu value="calm">` with items that have a `value` makes them `menuitemradio` with `aria-checked` (a check mark in the default style); choosing one sets the menu's `value` attribute and fires `xo-menu-select` with `{ value }`.
+* Docs site: rebuilt in the xoong brand (Calm and Ember palettes as token overrides on the `--xo-*` tokens, the mark as inline SVG that follows the palette, a Home page, a Brand page with downloads in `site/brand/`, a palette menu made with `<xo-menu>`). The site uses xoong's own elements for tabs, menu, tooltip, tables, dialog and toast.
+
 ## 0.0.15 (docs site, array change event)
 
 breaking: none.
