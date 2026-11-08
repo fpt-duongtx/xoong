@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="src/standard.css">
   <link rel="stylesheet" href="src/icons.css">
   <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
@@ -57,6 +58,7 @@
     <h2>Guides</h2>
     <a href="data.html">Data and tables</a>
     <a href="forms.html" aria-current="page">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
     <a href="styling.html">Styling</a>
     <h2>Controls</h2>
@@ -68,6 +70,7 @@
     <a href="own-control.html">Your own control</a>
     <a href="components.html">Standard</a>
     <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
     <a href="icons.html">Icons</a>
     <h2>Demo</h2>
     <a href="demo.html">Live demo</a>
@@ -81,6 +84,7 @@
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html" aria-current="page">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
       <a href="styling.html">Styling</a>
       <h2>Controls</h2>
@@ -92,6 +96,7 @@
       <a href="own-control.html">Your own control</a>
       <a href="components.html">Standard</a>
       <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
       <a href="icons.html">Icons</a>
       <h2>Demo</h2>
       <a href="demo.html">Live demo</a>
@@ -266,7 +271,7 @@ form.rules = {
 form.serialize = (draft, body) =&gt; ({ ...body, name: body.name.trim() }); <span class="tok-c">// the last word on the request body</span></code></pre></section>
 </xo-tabs>
 <p>On an invalid submit the form fires a cancelable <code>xo-reveal</code> event with the path, so tabs and collapsed sections can open before the focus moves, then <code>xo-invalid</code>.</p>
-<nav class="pager" aria-label="Pages"><a rel="prev" href="data.html"><small>Previous</small><span>Data and tables</span></a><a rel="next" href="richtext.html"><small>Next</small><span>Rich text</span></a></nav>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="data.html"><small>Previous</small><span>Data and tables</span></a><a rel="next" href="data-states.html"><small>Next</small><span>Loading, empty, error</span></a></nav>
     </main>
     <aside class="rail" aria-label="On this page">
       <h2>On this page</h2>

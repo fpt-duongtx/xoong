@@ -366,15 +366,19 @@ ${example({
   label: 'Loading, empty and error states',
   preview: `
 <xo-view class="states" get="listPeople" p-limit="4">
-  <div class="skeleton" xo-if="$loading" role="status" aria-label="Loading"><i></i><i></i><i></i></div>
+  <div class="skeleton" xo-if="$loading" role="status" aria-busy="true">
+    <span class="xo-visually-hidden">Loading people</span>
+    <div class="sk-head"><i></i><i></i><i></i><i></i><i></i></div>
+    ${'<div class="sk-row"><i></i><i></i><i></i><i></i><i></i></div>'.repeat(5)}
+  </div>
   <div class="state error" xo-if="$error" role="alert">
     ${art.error}
     <h3>Could not load people</h3>
-    <p>{$error.detail}</p>
-    <div class="row-actions"><button class="btn primary" type="button" xo-refresh>Try again</button></div>
+    <p><code>{$error.code}</code> {$error.detail}. Check your connection and try again.</p>
+    <div class="state-actions"><button class="primary" type="button" xo-refresh><span class="ic" data-ic="redo" aria-hidden="true"></span>Try again</button></div>
   </div>
   <xo-table columns="name,email:E-mail" filters="name:Search (try zzz or fail)" empty="Nobody here">
-    <template slot="empty"><div class="state">${art.empty}<h3>Nobody here yet</h3><p>No one matches this search.</p></div></template>
+    <template slot="empty"><div class="state">${art.empty}<h3>Nobody here yet</h3><p>No one matches this search.</p><div class="state-actions"><button type="button" xo-param="name=">Clear search</button></div></div></template>
   </xo-table>
 </xo-view>`,
 })}
@@ -507,6 +511,12 @@ form.rules = {
 };
 form.serialize = (draft, body) => ({ ...body, name: body.name.trim() }); // the last word on the request body`]])}
 <p>On an invalid submit the form fires a cancelable <code>xo-reveal</code> event with the path, so tabs and collapsed sections can open before the focus moves, then <code>xo-invalid</code>.</p>`,
+  },
+  // ------------------------------------------------------------------------------------------------------------------------------
+  {
+    file: 'data-states.html', section: 'docs', group: 'Guides', nav: 'Loading, empty, error', title: 'Loading, empty and error',
+    description: 'What a view shows while it loads, when there is nothing, and when it fails.',
+    body: kit('data-states.html'),
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
@@ -843,6 +853,12 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
     description: 'Every control with realistic content, in one place.',
     body: kit('controls-demo.html'),
   },
+  {
+    file: 'overlays.html', section: 'docs', group: 'Controls', nav: 'Overlays', title: 'Overlays and copy feedback',
+    description: 'Menus, listboxes, tooltips, toasts and confirm dialogs, in both colour schemes.',
+    body: kit('overlays.html'),
+  },
+  // ------------------------------------------------------------------------------------------------------------------------------
   {
     file: 'icons.html', section: 'docs', group: 'Controls', nav: 'Icons', title: 'Icons',
     description: 'The icon set: 24px grid, 1.75 stroke, currentColor.',

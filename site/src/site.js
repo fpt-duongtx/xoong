@@ -15,6 +15,9 @@ if (palette) {
 for (const example of document.querySelectorAll('xo-tabs.example')) {
   const actions = document.createElement('div');
   actions.className = 'actions-end';
+  const label = document.createElement('span'); // "Copied": announced politely, slides in (states.css)
+  label.className = 'copy-label';
+  label.setAttribute('role', 'status');
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'ghost icon-only sm';
@@ -28,10 +31,10 @@ for (const example of document.querySelectorAll('xo-tabs.example')) {
   button.addEventListener('click', async () => {
     const panels = [...example.querySelectorAll(':scope > [role="tabpanel"]')];
     const open = panels.find((p) => !p.hidden && p.querySelector('pre')) ?? panels.find((p) => p.querySelector('pre'));
-    try { await navigator.clipboard.writeText(open?.querySelector('pre code')?.textContent ?? ''); icon.dataset.ic = 'check'; button.title = 'Copied'; } catch { button.title = 'Press Ctrl+C'; }
-    setTimeout(() => { icon.dataset.ic = 'copy'; button.title = 'Copy'; }, 1600);
+    try { await navigator.clipboard.writeText(open?.querySelector('pre code')?.textContent ?? ''); icon.dataset.ic = 'check'; button.title = 'Copied'; button.dataset.state = 'copied'; label.textContent = 'Copied'; } catch { button.title = 'Press Ctrl+C'; }
+    setTimeout(() => { icon.dataset.ic = 'copy'; button.title = 'Copy'; delete button.dataset.state; label.textContent = ''; }, 1600);
   });
-  actions.append(button);
+  actions.append(label, button);
   example.append(actions);
 }
 

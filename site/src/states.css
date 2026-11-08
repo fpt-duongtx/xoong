@@ -1,0 +1,34 @@
+/*
+ * Loading, empty and error states (framework-ready: --xo-* tokens only; the pot illustrations are site-only art).
+ *   loading:  <div class="skeleton" xo-if="$loading" role="status"><span class="xo-visually-hidden">Loading</span>...bars...</div>
+ *   empty:    <template slot="empty"><div class="state">...</div></template>
+ *   error:    <div class="state error" xo-if="$error" role="alert">...<button xo-refresh>Try again</button></div>
+ */
+.skeleton { display: grid; gap: .65rem; padding: 1rem; border: 1px solid var(--xo-color-border); border-radius: calc(var(--xo-radius) + 2px); background: var(--xo-color-surface); }
+.skeleton > i, .skeleton .sk-row > i { display: block; height: 1rem; border-radius: 6px; background: linear-gradient(90deg, var(--xo-color-subtle) 25%, color-mix(in srgb, var(--xo-color-subtle) 55%, var(--xo-color-surface)) 50%, var(--xo-color-subtle) 75%) 0 0 / 200% 100%; animation: sk-shimmer 1.4s linear infinite; }
+.skeleton > i:nth-child(2) { width: 80%; } .skeleton > i:nth-child(3) { width: 55%; }
+.skeleton .sk-head { display: grid; grid-template-columns: 3rem 2fr 2fr 1fr 5rem; gap: 1rem; padding: .35rem .75rem; }
+.skeleton .sk-row { display: grid; grid-template-columns: 3rem 2fr 2fr 1fr 5rem; gap: 1rem; align-items: center; padding: .65rem .75rem; border-top: 1px solid var(--xo-color-border); }
+.skeleton .sk-row > i:first-child { width: 1.15rem; height: 1.15rem; border-radius: 4px; }
+.skeleton .sk-row > i:last-child { height: var(--xo-control-height-sm); border-radius: var(--xo-radius); }
+@keyframes sk-shimmer { to { background-position: -200% 0; } }
+.state { display: grid; justify-items: center; gap: .6rem; text-align: center; padding: 2.5rem 1.25rem; border: 2px dashed var(--xo-color-control-border); border-radius: calc(var(--xo-radius) + 2px); background: var(--xo-color-surface); }
+.state h3 { margin: 0; font-size: 1.25rem; } .state p { margin: 0; max-width: 28rem; color: var(--xo-color-muted); }
+.state .state-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-top: .6rem; }
+.state code { background: var(--xo-color-subtle); }
+.state.error { border-style: solid; border-color: var(--xo-color-danger); }
+.state.error h3 { color: var(--xo-color-danger); }
+.state .icon-tile { display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--xo-color-accent-soft); color: var(--xo-color-accent); }
+.state.error .icon-tile { background: color-mix(in srgb, var(--xo-color-danger) 12%, var(--xo-color-surface)); color: var(--xo-color-danger); }
+.state .art { width: 5.5rem; height: 5.5rem; }
+@media (max-width: 40rem) { .skeleton .sk-head, .skeleton .sk-row { grid-template-columns: 2rem 1fr 1fr; } .skeleton .sk-head > :nth-child(n+4), .skeleton .sk-row > :nth-child(n+4) { display: none; } }
+@media (prefers-reduced-motion: reduce) { .skeleton i { animation: none; } }
+
+/* ---- copy feedback on the code frame button ---- */
+.actions-end { display: flex; align-items: center; gap: .35rem; }
+.copy-label { font: 700 .75rem/1 var(--xo-font); padding: .3rem .55rem; border-radius: 99px; color: var(--xo-color-text); background: color-mix(in srgb, var(--xo-color-success) 18%, var(--xo-color-surface)); opacity: 0; transform: translateX(4px); transition: opacity .15s ease, transform .15s ease; pointer-events: none; }
+.actions-end:has([data-state="copied"]) .copy-label, .copy-label.is-visible { opacity: 1; transform: none; }
+.actions-end button[data-state="copied"] { color: color-mix(in srgb, var(--xo-color-success) 60%, var(--xo-color-text)); background: color-mix(in srgb, var(--xo-color-success) 14%, transparent); }
+.actions-end button:focus-visible { outline: var(--xo-focus); outline-offset: 2px; }
+.force-dark { color-scheme: dark; background: var(--xo-color-bg); color: var(--xo-color-text); }
+.force-light { color-scheme: light; background: var(--xo-color-bg); color: var(--xo-color-text); }

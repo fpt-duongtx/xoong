@@ -102,3 +102,14 @@ button.primary:active { box-shadow: none; }
 .control-cards .card code { margin-top: .6rem; justify-self: start; font-size: .78rem; color: var(--muted); }
 .ctl-icon { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 12px; background: var(--ember-soft); color: var(--ember-deep); }
 .shell.no-rail { grid-template-columns: var(--nav-w) minmax(0, 1fr); }
+
+/* ---- overlays sheet: open overlays side by side ---- */
+.overlay-set { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.25rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); align-items: start; }
+.overlay-cell { display: grid; gap: .75rem; align-content: start; min-width: 0; }
+.overlay-cell dialog { position: static; margin: 0; display: block; max-width: 100%; }
+.overlay-cell .menu-panel .opt { display: flex; align-items: center; min-height: 2.25rem; padding: 0 .65rem; border-radius: 8px; font-size: .95rem; }
+.overlay-cell .menu-panel .opt.xo-active { background: var(--xo-color-accent-soft); } .overlay-cell .menu-panel .opt[aria-selected="true"] { font-weight: 700; }
+
+/* headings inside dialogs are not page sections: undo the .content h2 section styling */
+.content dialog h2, .content .xo-confirm h2 { margin: 0 0 .5rem; padding: 0; border: 0; font-size: 1.3rem; }
+.example > pre { border-top: 0; }

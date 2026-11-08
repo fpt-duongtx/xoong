@@ -156,3 +156,5 @@ xo-richtext[data-invalid] .xo-richtext-box { border-color: var(--xo-color-danger
 .xo-admin > header, .xo-admin header { background: color-mix(in srgb, var(--xo-color-bg) 85%, transparent); backdrop-filter: blur(12px); }
 .xo-admin nav a[aria-current="page"] { background: var(--xo-color-accent-soft) !important; color: var(--xo-color-accent); }
 .xo-toast[hidden], .xo-richtext-link[hidden], xo-menu [role="menu"][hidden], .xo-combobox-list[hidden] { display: none; }
+/* inverse surfaces (tooltip, toast) keep a faint rim so they separate from a dark page */
+.xo-tooltip, .tooltip, .xo-toast, .toast { outline: 1px solid color-mix(in srgb, var(--xo-color-inverse-text) 16%, transparent); outline-offset: -1px; }

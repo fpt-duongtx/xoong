@@ -11,7 +11,7 @@ import { axe } from '../../../tools/axe.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'components', 'controls-demo', 'icons', 'demo', 'brand'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'components', 'controls-demo', 'overlays', 'icons', 'demo', 'brand'];
 const DOCS = PAGES.filter((n) => !['index', 'brand'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
@@ -58,7 +58,7 @@ describe('documentation site', () => {
       expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
       expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length : 0);
       expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
-      if (!['components', 'icons'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
+      if (!['components', 'icons', 'data-states', 'overlays'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
     }
   });
@@ -223,7 +223,7 @@ describe('documentation site', () => {
     expect(await text(`${states} .state h3`)).toBe('Nobody here yet');
     await page.fill(`${states} input[type=search]`, 'fail');
     await page.waitForSelector(`${states} .state.error`);
-    expect(await text(`${states} .state.error p`)).toBe('The people service is not answering');
+    expect(await text(`${states} .state.error p`)).toContain('The people service is not answering');
     expect(await page.$$(`${states} .state:not(.error)`)).toHaveLength(0); // not "nobody here" after a failure
     await page.click(`${states} button:text-is("Try again")`);
     await page.waitForFunction(() => !document.querySelector('xo-view .state.error'));

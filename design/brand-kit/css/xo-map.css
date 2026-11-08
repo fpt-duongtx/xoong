@@ -22,7 +22,7 @@
   --xo-color-success: var(--herb);
   --xo-color-warning: var(--sesame);
   --xo-color-danger: var(--danger);
-  --xo-color-inverse: var(--soot);
+  --xo-color-inverse: light-dark(var(--soot), #3b3530);   /* lighter than the page in dark, so a toast or tooltip reads */
   --xo-color-inverse-text: var(--rice);
   --xo-font: var(--font);
   --xo-font-mono: var(--mono);
