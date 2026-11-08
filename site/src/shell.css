@@ -1,3 +1,5 @@
+/* shell.css of the design kit, in the layer xoong-standard (tools/kit-css.mjs) */
+@layer xoong-standard {
 /*
  * Page shell and demo frame (site/demo only: NOT for the framework).
  * Fluid: the page fills the window. Three columns: navigation | content | right rail ("on this page", related, ads of the future).
@@ -124,3 +126,5 @@ button.primary:active { box-shadow: none; }
 .ring-table .sw[data-bg="surface"] { background: var(--xo-color-surface); } .ring-table .sw[data-bg="subtle"] { background: var(--xo-color-subtle); }
 .ring-table .sw[data-bg="accent-soft"] { background: var(--xo-color-accent-soft); } .ring-table .sw[data-bg="inverse"] { background: var(--xo-color-inverse); }
 .bg-inverse :is(button:not(.primary), [role="tab"]) { color: var(--xo-color-inverse-text); background: transparent; border-color: color-mix(in srgb, var(--xo-color-inverse-text) 45%, transparent); }
+
+}

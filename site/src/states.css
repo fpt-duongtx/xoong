@@ -1,3 +1,5 @@
+/* states.css of the design kit, in the layer xoong-standard (tools/kit-css.mjs) */
+@layer xoong-standard {
 /*
  * Loading, empty and error states (framework-ready: --xo-* tokens only; the pot illustrations are site-only art).
  *   loading:  <div class="skeleton" xo-if="$loading" role="status"><span class="xo-visually-hidden">Loading</span>...bars...</div>
@@ -32,3 +34,5 @@
 .actions-end button:focus-visible { outline: var(--xo-focus); outline-offset: 2px; }
 .force-dark { color-scheme: dark; background: var(--xo-color-bg); color: var(--xo-color-text); }
 .force-light { color-scheme: light; background: var(--xo-color-bg); color: var(--xo-color-text); }
+
+}

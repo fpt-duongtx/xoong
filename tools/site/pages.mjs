@@ -10,7 +10,6 @@ const kit = (file) => {
   const named = main
     .replace(/assets\/img\//g, 'img/') // the site's pictures live in site/img
     .replace(/ style="[^"]*"/g, '') // a style attribute is blocked by the page's CSP; the elements that had one (a carousel's --xo-carousel-items) set it again from their own attributes
-    .replace(/(<div class="[^"]*focus-bg[^"]*"[^>]*>)([\s\S]*?)(<\/div>)/g, (_, open, inner, close) => open + inner.replace(/ role="tab"| aria-selected="[^"]*"/g, '') + close) // the focus samples are lone buttons, not a tab list (axe: aria-required-parent)
     .replace(/<select(?![^>]*aria-label)/g, '<select aria-label="Example"'); // until the kit names its example selects (axe: select-name)
   return sprite + named.replace(/<div class="crumbs">[\s\S]*?<\/div>/, '').replace(/^\n+/, '');
 };

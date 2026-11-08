@@ -1,3 +1,5 @@
+/* icons.css of the design kit, in the layer xoong-standard (tools/kit-css.mjs) */
+@layer xoong-standard {
 /*
  * Icons as CSS masks: the same 45 icons as assets/icons.svg, usable where the markup cannot hold an <svg>:
  * glyphs drawn by a control itself (carousel arrows, rich-text toolbar, combobox chips, sort arrows) and any element: <span class="ic" style-free>.
@@ -105,3 +107,5 @@
 .ic[data-ic="palette"] { --ic: var(--ic-palette); }
 .ic[data-ic="sun"] { --ic: var(--ic-sun); }
 .ic[data-ic="moon"] { --ic: var(--ic-moon); }
+
+}

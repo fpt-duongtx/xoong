@@ -1,3 +1,5 @@
+/* brand.css of the design kit, in the layer xoong-standard (tools/kit-css.mjs) */
+@layer xoong-standard {
 /*
  * Xoong Dev: site styles. Plain CSS, no build step, no inline styles (strict CSP).
  * Brand tokens first (Calm is the default; Ember under [data-palette="ember"]); they also feed the framework's own --xo-* tokens so the live demo matches.
@@ -405,4 +407,6 @@ a.card:active { transform: translateY(-1px); box-shadow: none; }
   header.top nav { flex-wrap: nowrap; overflow-x: auto; width: 100%; margin-left: 0; scrollbar-width: none; }
   header.top nav a[href="index.html"] { display: none; }
   .window pre, pre { max-width: 100%; }
+}
+
 }

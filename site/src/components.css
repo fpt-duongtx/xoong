@@ -1,3 +1,5 @@
+/* components.css of the design kit, in the layer xoong-standard (tools/kit-css.mjs) */
+@layer xoong-standard {
 /*
  * xoong components, standard look. Styles the DOM the framework really renders (xo-tabs, xo-menu, xo-combobox, xo-carousel,
  * .xo-table, .xo-form, xo-dialog, .xo-toast, xo-richtext) on top of controls.css (native controls) and icons.css (glyph masks).
@@ -163,3 +165,5 @@ xo-richtext[data-invalid] .xo-richtext-box { border-color: var(--xo-color-danger
 xo-menu [role^="menuitem"]:focus-visible, .menu-panel [role="menuitem"]:focus-visible, .xo-richtext-more [role^="menuitem"]:focus-visible { outline: var(--xo-focus-thin, 2px solid var(--xo-color-accent)); outline-offset: -2px; }
 /* controls that sit on an inverse surface (toast action, tooltip link) use the inverse text colour: the accent is only ~2.5:1 on the light-scheme inverse */
 .xo-toast :focus-visible, .toast :focus-visible, .xo-tooltip :focus-visible { outline: 3px solid var(--xo-color-inverse-text); outline-offset: 2px; }
+
+}

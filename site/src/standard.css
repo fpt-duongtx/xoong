@@ -1,3 +1,5 @@
+/* controls.css of the design kit, in the layer xoong-standard (tools/kit-css.mjs) */
+@layer xoong-standard {
 /*
  * Control standard (candidate for the framework: controls.css / xoong.css).
  * Everything reads --xo-* and the palette tokens, so it follows Calm/Ember and light/dark. One height scale, one radius,
@@ -162,3 +164,5 @@ input[type="color"]:hover { border-color: var(--xo-color-text); } input[type="co
 button.ghost.is-hover { background: color-mix(in srgb, var(--xo-color-text) 8%, transparent); border-color: transparent; }
 /* ring colour on inverse surfaces (toast, tooltip): the accent fails 3:1 there in the light scheme */
 :root { --xo-focus-inverse: 3px solid var(--xo-color-inverse-text); --xo-focus-thin: 2px solid var(--xo-color-accent); }
+
+}

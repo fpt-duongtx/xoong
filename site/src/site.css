@@ -1,7 +1,9 @@
 /*
  * What this site adds to the design kit (brand.css, xo-map.css, standard.css, icons.css, components.css, shell.css, all from design/brand-kit):
- * the pieces of the generated pages that the kit's static HTML did not have. Unlayered, loaded last.
+ * the pieces of the generated pages that the kit's static HTML did not have. Like the kit's files (tools/kit-css.mjs) it is in the layer
+ * xoong-standard, declared after the framework's layers: a consumer's or a theme's CSS, unlayered or in a later layer, beats all of it.
  */
+@layer xoong-standard {
 
 /* syntax colours: the code is highlighted when the pages are generated (classes tok-*) */
 .tok-c { color: var(--muted); font-style: italic; }
@@ -114,3 +116,4 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 .notice .ic { --xo-icon: 1.25rem; margin-top: 0.15rem; }
 .notice.info .ic { color: var(--xo-color-accent); }
 .notice.warn .ic { color: color-mix(in srgb, var(--xo-color-warning) 35%, var(--xo-color-text)); }
+}

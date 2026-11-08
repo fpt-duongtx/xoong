@@ -266,6 +266,28 @@ describe('documentation site', () => {
     clean();
   });
 
+  it('the site look is one cascade layer: a consumer\'s own CSS beats it, and a token set on :root rethemes the components', async () => {
+    await open('forms');
+    await page.waitForSelector('.xo-form .xo-submit');
+    const result = await page.evaluate(() => {
+      const button = document.querySelector('.xo-form .xo-submit');
+      const before = getComputedStyle(button).backgroundColor;
+      const sheet = new CSSStyleSheet(); // the CSS object model: allowed under the strict CSP
+      sheet.replaceSync('* { transition: none !important; } .xo-submit { background: rgb(1, 2, 3); } :root { --xo-color-accent: rgb(10, 20, 30); }');
+      document.adoptedStyleSheets = [sheet];
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--xo-color-accent)';
+      document.body.append(probe);
+      const accent = getComputedStyle(probe).color;
+      probe.remove();
+      return { before, after: getComputedStyle(button).backgroundColor, accent };
+    });
+    expect(result.before).not.toBe('rgb(1, 2, 3)');
+    expect(result.after).toBe('rgb(1, 2, 3)');
+    expect(result.accent).toBe('rgb(10, 20, 30)');
+    clean();
+  });
+
   it('404.html names its files from the site root and shows the missing path; every page has a social card', async () => {
     violations = []; errors = [];
     const out404 = await page.goto(`${base}404.html`);

@@ -1,3 +1,5 @@
+/* xo-map.css of the design kit, in the layer xoong-standard (tools/kit-css.mjs) */
+@layer xoong-standard {
 /*
  * Token map: the framework's --xo-* tokens (including the NEW ones the standard needs) mapped to this site's palette.
  * Calm/Ember (brand.css) only define palette values; this file says what each framework token means in that palette.
@@ -27,4 +29,6 @@
   --xo-font: var(--font);
   --xo-font-mono: var(--mono);
   --xo-radius: 10px;
+}
+
 }
