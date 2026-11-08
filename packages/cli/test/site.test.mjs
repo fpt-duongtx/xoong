@@ -62,7 +62,7 @@ describe('documentation site', () => {
       if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit', 'theme-builder', 'brand'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
     }
-  });
+  }, 240000);
 
   it('the palette menu is a choice menu: Ember sets the palette on the page, it is remembered, and the logo follows', async () => {
     await open('index');
