@@ -243,12 +243,23 @@ describe('paste, drop and media', () => {
     buttons().find((b) => b.dataset.tool === 'image').click();
     expect(typeof detail.insert).toBe('function');
     detail.insert({ src: '/media/a.png', alt: 'A' });
-    expect(exec).toHaveBeenCalledWith('insertHTML', false, '<img src="/media/a.png" alt="A">');
+    expect(editor().querySelector('img')?.getAttribute('src')).toBe('/media/a.png');
+    expect(exec).not.toHaveBeenCalledWith('insertHTML', false, expect.stringContaining('<img')); // a Range: no style="" copied under a strict CSP
     exec.mockClear();
     expect(el.insertImage('javascript:alert(1)')).toBe(false);
     expect(el.insertImage('data:image/svg+xml,<svg>')).toBe(false);
     expect(exec).not.toHaveBeenCalled();
     expect(el.insertImage('https://x.test/b.png')).toBe(true);
+  });
+
+  it('an image inserted with the caret in a heading lands in a paragraph after it; in a paragraph it goes inline at the caret', async () => {
+    const el = await mount('media');
+    editor().innerHTML = '<h2>Title</h2><p>Body text.</p>';
+    const at = (node, offset) => { const r = document.createRange(); r.setStart(node, offset); r.collapse(true); return r; };
+    expect(el.insertImage('/media/a.png', 'A', at(editor().querySelector('h2').firstChild, 2))).toBe(true);
+    expect(editor().innerHTML).toBe('<h2>Title</h2><p><img src="/media/a.png" alt="A"></p><p>Body text.</p>');
+    el.insertImage('/media/b.png', 'B', at(editor().querySelectorAll('p')[1].firstChild, 4));
+    expect(editor().querySelectorAll('p')[1].innerHTML).toBe('Body<img src="/media/b.png" alt="B"> text.');
   });
 });
 

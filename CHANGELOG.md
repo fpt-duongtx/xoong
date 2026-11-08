@@ -5,6 +5,12 @@ projects run xoong in production. Nothing has been published yet.
 
 ## Unreleased
 
+## 0.0.14 (richtext image insert under strict CSP)
+
+breaking: none.
+
+* Fixed: inserting an image no longer goes through `execCommand`, so Chromium does not copy a `style=""` attribute that a strict CSP reports (`style-src-attr`). The image is inserted with a Range; with the caret in a heading it lands in a paragraph of its own after the heading.
+
 ## 0.0.13 (control baseline)
 
 breaking: none.

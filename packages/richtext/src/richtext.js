@@ -610,7 +610,26 @@ class XoRichtext extends XoControl {
     this.#editor.focus();
     const selection = getSelection();
     if (at && selection) { selection.removeAllRanges(); selection.addRange(at); }
-    exec('insertHTML', html.replace(/^<p>|<\/p>$/g, ''));
+    // A Range, not execCommand: Chromium's insertHTML copies computed styles into a style="" attribute, which a strict CSP reports.
+    const template = document.createElement('template');
+    template.innerHTML = html.replace(/^<p>|<\/p>$/g, '');
+    const img = template.content.firstChild;
+    const editor = this.#editor;
+    const range = selection && selection.rangeCount && editor.contains(selection.anchorNode) ? selection.getRangeAt(0) : null;
+    if (!img) return false;
+    let heading = range?.startContainer ?? null;
+    while (heading && heading.parentNode !== editor) heading = heading.parentNode;
+    if (range && heading && /^H[1-6]$/.test(heading.nodeName)) { // an image in a heading is rarely wanted: a paragraph of its own after it
+      const p = document.createElement('p');
+      p.append(img);
+      heading.after(p);
+      range.setStartAfter(img);
+    } else if (range) {
+      range.deleteContents();
+      range.insertNode(img);
+      range.setStartAfter(img);
+    } else editor.append(img);
+    if (selection && range) { range.collapse(true); selection.removeAllRanges(); selection.addRange(range); }
     this.#commit();
     return true;
   }
