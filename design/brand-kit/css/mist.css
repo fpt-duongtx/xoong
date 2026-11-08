@@ -218,3 +218,14 @@ dialog.xo-modal::backdrop { background: color-mix(in srgb, #1f2a33 45%, transpar
 .carousel .count { font: 600 13px/1 var(--xo-font); color: var(--xo-color-muted); }
 .thumbs button { border: 0; border-radius: var(--xo-radius); box-shadow: inset 0 0 0 1px var(--xo-color-border); }
 .thumbs button[aria-current="true"] { box-shadow: none; outline: 2px solid var(--xo-color-accent); outline-offset: 2px; }
+
+/* a link that looks like a button (row actions, "New article", "View site"): <a class="button [primary|ghost|danger|sm]"> */
+.button { text-decoration: none; }
+.button:hover { text-decoration: none; color: var(--xo-color-text); }
+.button.primary { font-weight: 600; color: var(--xo-color-primary-text); background: var(--xo-color-primary); border-color: var(--xo-color-primary); }
+.button.primary:hover { color: var(--xo-color-primary-text); background: color-mix(in srgb, var(--xo-color-primary) 84%, #000); border-color: color-mix(in srgb, var(--xo-color-primary) 84%, #000); }
+.button.ghost { background: transparent; border-color: transparent; } .button.ghost:hover { background: var(--xo-color-subtle); }
+.button.danger { color: var(--xo-color-danger); border-color: var(--xo-color-danger); }
+.button.sm { min-height: var(--xo-control-height-sm); padding: 0 12px; font-size: 13px; }
+.button.icon-only { width: var(--xo-control-height); padding: 0; } .button.icon-only.sm { width: var(--xo-control-height-sm); }
+.button[aria-disabled="true"] { color: var(--xo-color-muted); background: var(--xo-color-subtle); border-color: var(--xo-color-border); pointer-events: none; }

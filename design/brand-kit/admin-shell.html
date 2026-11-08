@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin shell · xoong</title>
+<link rel="icon" href="assets/mist/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css"><link rel="stylesheet" href="css/mist-tokens.css"><link rel="stylesheet" href="css/brand.css"><link rel="stylesheet" href="css/xo-map.css"><link rel="stylesheet" href="css/controls.css"><link rel="stylesheet" href="css/icons.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/states.css"><link rel="stylesheet" href="css/controls-new.css"><link rel="stylesheet" href="css/mist.css"><link rel="stylesheet" href="css/admin-shell.css">
+</head><body class="admin-demo">
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" class="sprite">
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
+  <symbol id="i-heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+  <symbol id="i-paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
+  <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+  <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
+  <symbol id="i-underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
+  <symbol id="i-list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
+  <symbol id="i-list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
+  <symbol id="i-quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
+  <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
+  <symbol id="i-success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
+</svg>
+
+<div class="xo-app">
+  <div class="xo-side"><div class="xo-side__in">
+    <button class="xo-ws" type="button" aria-label="Switch project, current: Acme Studio, Production"><span class="xo-ws__mark">A</span><span class="grow"><span class="xo-ws__name">Acme Studio</span><span class="xo-ws__env">Production</span></span><svg class="icon sm" aria-hidden="true"><use href="#i-sort"/></svg></button>
+    <nav aria-label="Admin" class="xo-side__nav xo-scroll" tabindex="0"><ul class="xo-nav">
+      <li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-menu"/></svg><span>Dashboard</span></a></li>
+      <li><div class="xo-nav__label">Content</div><ul class="xo-nav"><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg><span>Pages</span><span class="xo-count">24</span></a></li><li><a class="xo-nav__link" href="#" aria-current="page"><svg class="icon " aria-hidden="true"><use href="#i-edit"/></svg><span>Articles</span><span class="xo-count">12</span></a></li><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-image"/></svg><span>Media</span></a></li><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-calendar"/></svg><span>Schedule</span></a></li></ul></li>
+      <li><div class="xo-nav__label">Inbox</div><ul class="xo-nav"><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-user"/></svg><span>Leads</span><span class="xo-count">12</span></a></li><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-info"/></svg><span>Messages</span><span class="xo-count">3</span></a></li></ul></li>
+      <li><div class="xo-nav__label">Site</div><ul class="xo-nav"><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-menu"/></svg><span>Menus</span></a></li><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-palette"/></svg><span>Theme</span></a></li><li><a class="xo-nav__link" href="#"><svg class="icon " aria-hidden="true"><use href="#i-search"/></svg><span>SEO</span></a></li></ul></li>
+    </ul></nav>
+    <div class="xo-side__foot"><span class="xo-avatar" aria-hidden="true">AD</span><span class="grow"><span class="xo-ws__name">Admin</span><span class="xo-ws__env">Account and security</span></span><button class="ghost icon-only sm" type="button" aria-label="Sign out"><svg class="icon " aria-hidden="true"><use href="#i-arrow-right"/></svg></button></div>
+  </div></div>
+  <div class="xo-main">
+    <header class="xo-topbar">
+      <ol class="xo-crumbs"><li>Acme Studio</li><li><svg class="icon sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></li><li>Content</li><li><svg class="icon sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></li><li aria-current="page">Articles</li></ol>
+      <span class="grow"></span>
+      <button class="xo-search-button" type="button"><svg class="icon " aria-hidden="true"><use href="#i-search"/></svg><span>Search or jump to…</span><span class="xo-kbd">⌘K</span></button>
+      <a class="button" href="#">View site <svg class="icon sm" aria-hidden="true"><use href="#i-external-link"/></svg></a>
+    </header>
+    <main class="xo-content">
+      <div class="xo-page-head">
+        <div><div class="xo-eyebrow">Content</div><h1 class="xo-title">Articles</h1><p class="xo-lede">News and guides for your visitors. Drafts stay private until you publish.</p></div>
+        <div class="row-inline"><a class="button" href="#"><svg class="icon " aria-hidden="true"><use href="#i-download"/></svg>Export</a><a class="button primary" href="#"><svg class="icon " aria-hidden="true"><use href="#i-plus"/></svg>New article</a></div>
+      </div>
+      <div class="row-inline between">
+        <div class="xo-seg" role="group" aria-label="Status"><button type="button" aria-pressed="true">All <span class="xo-count">85</span></button><button type="button" aria-pressed="false">Published <span class="xo-count">70</span></button><button type="button" aria-pressed="false">Draft <span class="xo-count">12</span></button><button type="button" aria-pressed="false">Scheduled <span class="xo-count">3</span></button></div>
+        <label class="xo-input-wrap grow"><svg class="icon " aria-hidden="true"><use href="#i-search"/></svg><input type="search" placeholder="Search by title or path" aria-label="Search articles"></label>
+      </div>
+      <div class="table-frame xo-cards"><table class="std"><thead><tr><th class="select"><input type="checkbox" aria-label="Select all"></th><th>Title</th><th>Status</th><th>Updated</th><th><span class="xo-visually-hidden">Actions</span></th></tr></thead><tbody><tr><td class="select"><input type="checkbox" aria-label="Select Why Greece still appeals"></td><td data-title data-label="Title"><a href="#" class="primary-cell">Why Greece still appeals</a><br><span class="muted path">/news/why-greece</span></td><td data-status data-label="Status"><span class="badge ok">Published</span></td><td data-label="Updated" class="muted">2 hours ago</td><td class="cell-actions"><a class="button ghost sm" href="#"><svg class="icon sm" aria-hidden="true"><use href="#i-edit"/></svg>Edit</a><button class="icon-only ghost sm" type="button" aria-label="More actions for Why Greece still appeals"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr><tr aria-selected="true"><td class="select"><input type="checkbox" aria-label="Select Portugal Golden Visa: what changed" checked></td><td data-title data-label="Title"><a href="#" class="primary-cell">Portugal Golden Visa: what changed</a><br><span class="muted path">/news/portugal-changes</span></td><td data-status data-label="Status"><span class="badge warn">Draft</span></td><td data-label="Updated" class="muted">Yesterday</td><td class="cell-actions"><a class="button ghost sm" href="#"><svg class="icon sm" aria-hidden="true"><use href="#i-edit"/></svg>Edit</a><button class="icon-only ghost sm" type="button" aria-label="More actions for Portugal Golden Visa: what changed"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr><tr><td class="select"><input type="checkbox" aria-label="Select Five regions to know in Spain"></td><td data-title data-label="Title"><a href="#" class="primary-cell">Five regions to know in Spain</a><br><span class="muted path">/news/five-regions</span></td><td data-status data-label="Status"><span class="badge">Scheduled</span></td><td data-label="Updated" class="muted">3 days ago</td><td class="cell-actions"><a class="button ghost sm" href="#"><svg class="icon sm" aria-hidden="true"><use href="#i-edit"/></svg>Edit</a><button class="icon-only ghost sm" type="button" aria-label="More actions for Five regions to know in Spain"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr><tr><td class="select"><input type="checkbox" aria-label="Select Visa FAQ"></td><td data-title data-label="Title"><a href="#" class="primary-cell">Visa FAQ</a><br><span class="muted path">/news/visa-faq</span></td><td data-status data-label="Status"><span class="badge ok">Published</span></td><td data-label="Updated" class="muted">Last week</td><td class="cell-actions"><a class="button ghost sm" href="#"><svg class="icon sm" aria-hidden="true"><use href="#i-edit"/></svg>Edit</a><button class="icon-only ghost sm" type="button" aria-label="More actions for Visa FAQ"><svg class="icon " aria-hidden="true"><use href="#i-more"/></svg></button></td></tr></tbody></table><div class="table-foot"><span>Showing 1–4 of 85</span><span class="row-inline"><button class="sm icon-only" aria-label="Previous page" disabled><svg class="icon " aria-hidden="true"><use href="#i-chevron-left"/></svg></button><button class="sm">1</button><button class="sm icon-only" aria-label="Next page"><svg class="icon " aria-hidden="true"><use href="#i-chevron-right"/></svg></button></span></div></div>
+    </main>
+  </div>
+</div>
+<script src="js/controls-new-demo.js"></script></body></html>

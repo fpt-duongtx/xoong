@@ -10,6 +10,7 @@
 //   - states.css        skeleton, empty and error states
 //   - controls-new.css  the look of the controls of the Mist spec (switch, slider, segmented, progress, ...; some need no script, the rest comes with their logic)
 //   - mist.css          the Mist shape on top, WITHOUT page chrome (header, shell, rail, hero, prose, brand type)
+//   - admin-shell.css   the app shell for admin screens (.xo-app, .xo-side, .xo-nav, .xo-topbar, .xo-page-head, ...)
 // Everything is in one cascade layer, `xoong-mist`, declared after the framework's layers: your own CSS (unlayered, or in a later layer) wins.
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -105,6 +106,7 @@ const parts = [
   ['states', filter(read('states.css'))],
   ['new controls', filter(read('controls-new.css'))],
   ['skin', filter(read('mist.css'))],
+  ['admin shell', filter(read('admin-shell.css'))],
 ];
 const body = parts.map(([name, css]) => `/* ---- ${name} ---- */\n${css.trim()}`).join('\n\n');
 const text = `/*

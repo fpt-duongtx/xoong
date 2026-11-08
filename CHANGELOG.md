@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
+## 0.0.31 (xo-switch, admin shell)
+
+breaking: none.
+
+* Added: `<xo-switch>` in `@xoong/controls` (`@xoong/controls/switch`): one setting on or off, ARIA switch, boolean `value`/`checked`, `change` and `input`, `busy`, `size="sm"`, `disabled`, `readonly`, form value "on" or nothing. Controls budget raised to 10 KB for it.
+* Added to `@xoong/ui/mist.css`: the admin app shell (`.xo-app`, `.xo-side`, `.xo-nav`, `.xo-topbar`, `.xo-page-head`, ...), `a.button` (a link that looks like a button) and the kit's other small fixes.
+
 ## 0.0.30 (Mist as a package file)
 
 breaking: none.
