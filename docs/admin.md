@@ -43,6 +43,7 @@ browser. Its application script is only `configure()`.
 * A button with `xo-param="status=draft"` gets `aria-current="true"` while that is the current value; `status=` matches "unset" (an "All" tab).
 * `xo-selected="ids"` on a bulk button sends **one** request with the ticked ids (as the API knows them: numbers stay numbers) plus `xo-with="status=published"` fields typed from the
   schema; bare `xo-selected` runs once per row. `$selected` is the list of ticked rows (`xo-body="$selected"`).
+* `xo-then="/articles/{id}"` on an xo-click or xo-submit goes to that path after success: `{id}` comes from the result (the created record), then from the item acted on (`xo-then="/articles"` after a delete). `<xo-router>` navigates; without a router the browser loads the path.
 * `xo-confirm="Delete {title}?"` asks first in a native dialog (`confirm()` from `@xoong/ui` replaces the browser's, labels in `confirmLabels`). `xo-notice="Saved"` raises a toast
   after success; from JavaScript `toast.show({ message, action: { label: 'Undo', run } })`.
 * Table: `empty="..."` or a `<template slot="empty">`, `filters="q:Search"`, `page-sizes="10,25,50"`, "1–3 of 5" text, and a column format `publishedAt:Published:datetime`
@@ -159,7 +160,7 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
 * **Binding by `name`** (`a.b`, `items[0].x`; `items.0.x` is the same). Attributes the author did not write are completed from the schema
   (`type`, `required`, `min`/`max`/`step`, `minlength`/`maxlength`, `pattern`, enum options); the author's attributes win. Any `XoControl` with a
   `name` is a field too; it receives `schema`, `hints` (every hint key, unknown ones included) and `xoForm` (the model, to read other paths).
-* **Prefill.** An *edit* form (the operation has path parameters, or `xo-body="path"` names a record) starts from the record of its view; a *create*
+* **Prefill.** An *edit* form (the operation has path parameters, is a `PUT` or `PATCH`, or `xo-body="path"` names a record) starts from the record of its view; a *create*
   form starts from the schema's defaults and empties after success (`xo-keep` keeps the values). After an edit succeeds the saved record is the new baseline.
   If the record changes underneath (a live update) a pristine form follows it; a dirty form keeps its draft and `$form.stale` becomes true.
 * **Validation** is the model's, not the browser's: the form gets `novalidate`, so a hidden or off-screen invalid control can never block submit. Rules from the

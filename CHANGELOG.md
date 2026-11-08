@@ -3,6 +3,14 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.37 (fixes from the admin screens)
+
+breaking: none.
+
+* Fixed: content inserted by a reactive binding (`html`) is no longer tracked: a child element that read or wrote state while it connected (an `XoControl` registering with a form) subscribed the parent binding and could redraw all controls in a loop.
+* Fixed: a `PUT`/`PATCH` form inside a view with data is an edit form even when the path has no parameter (a singleton such as site settings): it starts from the record without `xo-body="."`.
+* Added: `xo-then="/articles/{id}"` on xo-click/xo-submit: go to a path after success; `{id}` from the result, then from the item acted on. `<xo-router>` navigates (event `xo-go`).
+
 ## 0.0.36 (publishing through Trusted Publishing)
 
 breaking: none.

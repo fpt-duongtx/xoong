@@ -24,6 +24,7 @@ export const ATTRIBUTE_DOCS = {
   'xo-with': 'On xo-click/xo-submit: fixed fields added to the request body, `field=value,other={path}` (typed from the request schema).',
   'xo-confirm': 'On xo-click/xo-submit: ask before running, with a native dialog. `{path}` names the item: `xo-confirm="Delete {title}?"`.',
   'xo-notice': 'On xo-click/xo-submit: after success, show this message in <xo-toast> (`{path}` and `{$selectedCount}` work).',
+  'xo-then': 'On xo-click/xo-submit: after success, go to this path; `{id}` comes from the result (a created record), then from the item acted on: `xo-then="/articles/{id}"`, or `xo-then="/articles"` after a delete. <xo-router> navigates.',
   'xo-guard': 'On a <form xo-submit>: with unsaved changes the router asks before the page is left. `xo-guard="off"` disables it; any other text is the question to ask.',
   'xo-route': 'On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route. The content is inert until the route matches.',
   'xo-layout': 'On a <template> inside <xo-router>: a layout (shell) that routes use with `layout="name"`. It must contain one element with xo-outlet.',

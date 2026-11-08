@@ -14,7 +14,7 @@
  *   @event=${fn}   : event listener.
  * An attribute value must be exactly one expression (no mixing text and `${}`).
  */
-import { effect } from './signals.js';
+import { effect, untracked } from './signals.js';
 
 const MARK = '__xo_';
 const cache = new WeakMap();
@@ -120,7 +120,7 @@ function bindAttr(el, part, value, disposers) {
     else if (v == null || v === false) el.removeAttribute(name);
     else el.setAttribute(name, v === true ? '' : String(v));
   };
-  if (typeof value === 'function') disposers.push(effect(() => apply(value())));
+  if (typeof value === 'function') disposers.push(effect(() => { const v = value(); untracked(() => apply(v)); })); // only `value` is tracked: what a child element reads while it connects must not subscribe this binding
   else apply(value);
 }
 
@@ -139,7 +139,7 @@ function bindChild(marker, value, disposers) {
     appendValue(frag, v, inner);
     end.before(frag);
   };
-  if (typeof value === 'function') disposers.push(effect(() => put(value())));
+  if (typeof value === 'function') disposers.push(effect(() => { const v = value(); untracked(() => put(v)); })); // same: inserting content connects child elements
   else put(value);
   disposers.push(clear);
 }

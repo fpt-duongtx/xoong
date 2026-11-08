@@ -51,10 +51,10 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each applies at once; undone on failure.
 - `xo-select` on a row checkbox ticks the row (`all:items`: all); `xo-selected` on an xo-click runs it per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts them.
-- `xo-confirm="Delete {title}?"` asks first (native dialog; `setConfirm(fn)`). `xo-notice="Saved"` toasts on success. `xo-with="status=published"` adds body fields.
+- `xo-confirm="Delete {title}?"` asks first (native dialog). `xo-notice="Saved"` toasts on success. `xo-then="/articles/{id}"` goes there after success. `xo-with="status=published"` adds body fields.
   `xo-selected="ids"` sends ONE request with the ticked ids; `$selected`: ticked rows.
-- `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button `xo-param="status=draft"` gets `aria-current` while current (`status=`: unset).
-- Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json).
+- `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button `xo-param="status=draft"` gets `aria-current` while current.
+- Formats: `{publishedAt | datetime}` (date, time, relative, number).
 - `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v`). Vars: `$hasPrev`, `$hasNext`. `xo-refresh` on a button refetches.
 - Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and /users/1);

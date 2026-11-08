@@ -60,6 +60,11 @@ class XoRouter extends XoElement {
   #scrolls = new Map();
   /** Forms with unsaved changes (they announce it with `xo-dirty`); leaving the page asks first, unless the form says `xo-guard="off"`. */
   #dirtyForms = new Set();
+  // xo-then on a button or form: the data layer asks the page to go on to another path
+  #onGo = (/** @type {Event} */ e) => {
+    e.preventDefault();
+    this.navigate(/** @type {CustomEvent} */ (e).detail.path).catch?.((err) => this.#report(err));
+  };
   #onDirty = (/** @type {Event} */ e) => {
     const form = /** @type {Element} */ (e.target);
     if (/** @type {any} */ (e).detail?.dirty && form.getAttribute('xo-guard') !== 'off') this.#dirtyForms.add(form); else this.#dirtyForms.delete(form);
@@ -82,6 +87,7 @@ class XoRouter extends XoElement {
   disconnected() {
     document.removeEventListener('click', this.#onClick);
     document.removeEventListener('xo-dirty', this.#onDirty);
+    this.removeEventListener('xo-go', this.#onGo);
     window.removeEventListener('popstate', this.#onPop);
     window.removeEventListener('beforeunload', this.#onUnload);
     setUrlSync(null);
@@ -128,6 +134,7 @@ class XoRouter extends XoElement {
     this.#pos = window.history.state?.xoPos ?? 0;
     document.addEventListener('click', this.#onClick);
     document.addEventListener('xo-dirty', this.#onDirty);
+    this.addEventListener('xo-go', this.#onGo);
     window.addEventListener('popstate', this.#onPop);
     window.addEventListener('beforeunload', this.#onUnload);
     this.#vetoes.push(async () => { // a dirty form asks before the page is left (links, Back, navigate)

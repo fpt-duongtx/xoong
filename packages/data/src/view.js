@@ -382,7 +382,7 @@ function bindNode(node, scope, ctx, disposers) {
       disposers.push(() => el.removeEventListener('click', refresh));
       continue;
     }
-    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected' || attr.name === 'xo-with' || attr.name === 'xo-confirm' || attr.name === 'xo-notice' || attr.name === 'xo-t') continue;
+    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected' || attr.name === 'xo-with' || attr.name === 'xo-confirm' || attr.name === 'xo-notice' || attr.name === 'xo-then' || attr.name === 'xo-t') continue;
     const parts = parseInterpolation(attr.value);
     if (parts) {
       const name = attr.name;
@@ -513,8 +513,8 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
     try { op0 = client.op(opRef); } catch { /* reported when the form is submitted */ }
     if (op0?.bodySchema) {
       const bodyPath = el.getAttribute('xo-body');
-      // An edit form (the operation has path parameters, or xo-body names a record) starts from that record; a create form starts empty.
-      const edits = !!bodyPath || /\{[^}]+\}/.test(op0.path);
+      // An edit form (the operation has path parameters, is a PUT or PATCH, or xo-body names a record) starts from that record; a create form starts empty.
+      const edits = !!bodyPath || /\{[^}]+\}/.test(op0.path) || op0.method === 'PUT' || op0.method === 'PATCH';
       const record = edits ? () => { const plain = client.store.denormalize(lookup(scope, bodyPath ?? '.')); return plain && typeof plain === 'object' ? plain : undefined; } : undefined;
       engine = formEngine.attach(el, { schema: op0.bodySchema, record, hadRecord: edits });
       disposers.push(() => engine.detach());
@@ -571,6 +571,12 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       const result = bulk ? results : results[0];
       if (!engine && eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
       host.emit('xo-done', result);
+      const then = el.getAttribute('xo-then'); // go on to another page: `{field}` comes from the result (a created record), then from the item acted on
+      if (then !== null) {
+        const resultScope = { value: () => (Array.isArray(result) ? undefined : result), parent: scope };
+        const path = evalParts(parseInterpolation(then) ?? [then], resultScope, lookup);
+        if (el.dispatchEvent(new CustomEvent('xo-go', { bubbles: true, cancelable: true, detail: { path } }))) location.assign(path); // <xo-router> handles it and cancels the default
+      }
       if (noticeText) host.emit('xo-notice', { message: noticeText, kind: 'success' }); // shown by <xo-toast>
     } catch (e) {
       // API failures are expected flows (events + global onError). Anything else is a bug in the screen.
