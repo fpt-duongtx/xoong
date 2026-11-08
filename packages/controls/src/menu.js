@@ -13,7 +13,7 @@
  *   typing a letter jumps to the next item that starts with it. Escape closes and returns the focus to the trigger; Tab closes.
  *   Choosing an item (click or Enter) closes the menu and runs the item as usual (xo-click, a link, a click handler).
  * - Where the browser has the Popover API the list is drawn in the top layer, so it is never clipped by a table or a scroll area.
- * - `xo-menu-open` and `xo-menu-close` fire on the element.
+ * - `xo-menu-open` and `xo-menu-close` fire on the element. An `<hr>` between items is a divider (role=separator, skipped by the keys).
  * - A choice menu: items with a `value` attribute are radio items (`menuitemradio`, `aria-checked`); the menu's `value` says which one is on.
  *   Choosing one sets `value` (an attribute, so CSS can read it) and fires `xo-menu-select` with `{ value }`.
  *
@@ -43,7 +43,7 @@ class XoMenu extends XoElement {
   disconnected() { document.removeEventListener('pointerdown', this.#onDocument); document.removeEventListener('keydown', this.#onEscape); }
 
   get isOpen() { return !!this.#panel && !this.#panel.hidden; }
-  get #items() { return /** @type {HTMLElement[]} */ ([...(this.#panel?.children ?? [])]); }
+  get #items() { return /** @type {HTMLElement[]} */ ([...(this.#panel?.children ?? [])]).filter((i) => i.getAttribute('role') !== 'separator'); }
 
   #build() {
     if (this.#panel || !this.isConnected) return;
@@ -57,6 +57,7 @@ class XoMenu extends XoElement {
     if (this.label) panel.setAttribute('aria-label', this.label);
     for (const item of children) {
       if (item === trigger) continue;
+      if (item.localName === 'hr') { item.setAttribute('role', 'separator'); panel.append(item); continue; } // a divider: not an item, skipped by the keys
       item.setAttribute('role', item.hasAttribute('value') ? 'menuitemradio' : 'menuitem');
       item.tabIndex = -1;
       panel.append(item);

@@ -142,4 +142,18 @@ describe('<xo-menu>', () => {
     menu.setAttribute('value', 'calm'); // set from outside (a saved preference)
     expect(radios().map((i) => i.getAttribute('aria-checked'))).toEqual(['true', 'false']);
   });
+
+  it('an hr is a divider: role=separator, not an item, and the arrow keys skip it', async () => {
+    document.body.innerHTML = '<xo-menu label="Palette"><button xo-menu-trigger>Palette</button><button>Mist</button><hr><a href="#build">Build your own</a></xo-menu>';
+    await new Promise((r) => setTimeout(r, 0));
+    const kids = [...document.querySelectorAll('[role=menu] > *')];
+    expect(kids.map((k) => k.getAttribute('role'))).toEqual(['menuitem', 'separator', 'menuitem']);
+    trigger().click();
+    key(trigger(), 'ArrowDown');
+    expect(document.activeElement.textContent).toBe('Mist');
+    key(document.activeElement, 'ArrowDown');
+    expect(document.activeElement.textContent).toBe('Build your own'); // the divider was skipped
+    key(document.activeElement, 'ArrowDown');
+    expect(document.activeElement.textContent).toBe('Mist'); // wraps
+  });
 });

@@ -43,6 +43,8 @@ item that starts with it, Escape closes (wherever the focus is) and returns to t
 (`xo-click`, a link, a handler). The list is drawn in the **top layer** when the browser has the Popover API, so a table cell or a scroll area never clips it; the
 position is set through the CSS object model, which a strict CSP allows. `xo-menu-open` and `xo-menu-close` fire on the element.
 
+An `<hr>` between items is a divider (`role="separator"`, skipped by the arrow keys); an `<a>` is an item like a button, so "Build your own theme" can be a link at the end of a choice menu.
+
 **A choice menu** (a palette, a sort order, a language): give the items a `value` and the menu a `value`. The items become `menuitemradio` with `aria-checked` (a check mark in the default style), choosing one sets the menu's `value` (an attribute, so CSS can read it, and you can set it from a saved preference) and fires `xo-menu-select` with `{ value }`; choosing the current one fires nothing.
 
 ```html

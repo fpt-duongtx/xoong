@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.27 (menu divider)
+
+breaking: none.
+
+* Added: an `<hr>` inside `<xo-menu>` is a divider (`role="separator"`), not an item; the keys skip it.
+
 ## 0.0.26 (focus indicators)
 
 breaking: none.
