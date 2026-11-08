@@ -30,14 +30,15 @@ const nothing = (v) => v === undefined || v === null || v === '';
 /**
  * What is sent, and what "dirty" compares: the draft reduced to the request schema.
  *  - only properties of the schema are kept (ids, timestamps and other server-owned fields of the record drop out; read-only too);
- *  - an empty value follows `emptyAs` ("omit" by default, or "null"); an explicit null is kept for a nullable field;
+ *  - an empty value follows `emptyAs` ("omit" by default, or "null"; an untouched field counts as empty); an explicit null is kept for a nullable field;
+ *    a nullable property the schema lists as required is sent as null when empty (the key must be present);
  *  - `pruneEmpty` on an object removes its empty members, and an object left empty follows its own `emptyAs`;
  *  - a node of type `any` is kept as it is.
  * @param {Node | undefined} node @param {any} v
  */
 export function normalize(node, v) {
   if (!node || node.t === 'any') return v;
-  if (v === undefined) return undefined;
+  if (v === undefined) return node.emptyAs === 'null' && node.t !== 'object' ? null : undefined; // a field never touched is still empty, and empty follows emptyAs (an object that was never created sends nothing)
   const asEmpty = () => (node.emptyAs === 'null' ? null : undefined);
   if (v === null) return node.nullable ? null : asEmpty();
   if (node.t === 'union') { const picked = variant(node, v); return picked ? normalize(picked, v) : undefined; }
@@ -46,7 +47,8 @@ export function normalize(node, v) {
     const out = {};
     for (const [k, child] of Object.entries(node.props ?? {})) {
       if (child.readOnly) continue;
-      const n = normalize(child, v[k]);
+      let n = normalize(child, v[k]);
+      if (n === undefined && child.nullable && (node.required ?? []).includes(k)) n = null; // the key must be there, and null is its "empty"
       if (n !== undefined && !(node.pruneEmpty && (n === null ? !child.nullable : nothing(n) || (typeof n === 'object' && !Array.isArray(n) && !Object.keys(n).length)))) out[k] = n;
     }
     if (node.pruneEmpty && !Object.keys(out).length) return node.nullable && node.emptyAs !== 'omit' ? null : asEmpty();

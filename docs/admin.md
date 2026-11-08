@@ -55,14 +55,16 @@ One `<template>` per route, inert until it matches (views inside it do not fetch
 content changes:
 
 ```html
-<xo-router base="/admin">
-  <template xo-layout="shell"><nav><a href="/admin/users">Users</a></nav><main xo-outlet></main></template>
+<xo-router base="/admin" base-links>
+  <template xo-layout="shell"><nav><a href="/users">Users</a></nav><main xo-outlet></main></template>
   <template xo-route="/" layout="shell" title="Home">...</template>
   <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
   <template xo-route="/login">...</template>
   <template xo-route="*">Not found</template>
 </xo-router>
 ```
+
+With `base-links`, a root-relative link inside the router (`href="/users"`) is relative to the base, like the `xo-route` paths: the same screens mount under `/admin` or `/admin-next` without editing a link, and the address shown on hover and opened in a new tab is the real one (`/admin/users`). A link that already starts with the base, one with `rel="external"` or a `target`, is left as written (use `rel="external"` to leave the app: `/logout`). Without `base-links` links are as written, so write the base in them.
 
 * **Routes.** `xo-route="/users/:id"` (static segments beat `:param` beats `*`). `title` sets `document.title`. `layout` names an
   `xo-layout` template (layouts nest with `layout=` on a layout). Inside the route, `p-id=":id"` hands the path parameter to a view

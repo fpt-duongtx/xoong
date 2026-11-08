@@ -3,6 +3,14 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.24 (nullable fields, base-relative links)
+
+breaking: none (`base-links` is opt-in; the nullable change only affects schemas that list a nullable property as required or set `emptyAs: "null"`).
+
+* Fixed: a field the person never touched is empty like any other: with `emptyAs: "null"` it is sent as `null` instead of being left out (an object that was never created still sends nothing).
+* Fixed: a nullable property that the schema lists as required (zod `.nullable()`) may be left empty: the control is not `required`, the form does not block, and the request carries `null` for it (the key must be there).
+* Added: `<xo-router base-links>`: a root-relative link inside the router (`href="/users"`) is relative to the base, so the same screens mount under any base; the `href` is rewritten after each navigation (hover and "open in a new tab" show the real address) and a link added later is resolved on click. `rel="external"` or a `target` leave the app.
+
 ## 0.0.23 (control scale, brand shell)
 
 breaking: none.

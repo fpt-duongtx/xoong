@@ -240,6 +240,41 @@ describe('<xo-router> base path', () => {
   });
 });
 
+describe('<xo-router base-links>', () => {
+  const click = (el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }));
+
+  it('a root-relative link inside the router is relative to the base: the same screens mount under any base', async () => {
+    history.replaceState(null, '', '/admin-next/users');
+    await open(APP('', 'base="/admin-next" base-links'));
+    await go('/users');
+    expect(screen.$('#users').getAttribute('href')).toBe('/admin-next/users'); // what hover and "open in a new tab" show
+    expect(screen.$('#home').getAttribute('href')).toBe('/admin-next/');
+    click(screen.$('#home'));
+    await until(() => router.current.path === '/');
+    expect(location.pathname).toBe('/admin-next');
+  });
+
+  it('a link that already has the base, rel="external", or a target is left as written; a link added later still works on click', async () => {
+    history.replaceState(null, '', '/admin/users');
+    await open(APP('<a id="has" href="/admin/users">a</a><a id="out" href="/logout" rel="external">b</a><a id="tab" href="/help" target="_blank">c</a>', 'base="/admin" base-links'));
+    await go('/users');
+    expect([screen.$('#has'), screen.$('#out'), screen.$('#tab')].map((a) => a.getAttribute('href'))).toEqual(['/admin/users', '/logout', '/help']);
+    const late = document.createElement('a'); // a link a view renders after the navigation
+    late.id = 'late'; late.setAttribute('href', '/users/new');
+    screen.$('main').append(late);
+    click(late);
+    await until(() => router.current.path === '/users/new');
+    expect(location.pathname).toBe('/admin/users/new');
+  });
+
+  it('without base-links nothing changes: a root link outside the base is the browser\'s', async () => {
+    history.replaceState(null, '', '/admin/users');
+    await open(APP('', 'base="/admin"'));
+    await go('/users');
+    expect(screen.$('#users').getAttribute('href')).toBe('/users');
+  });
+});
+
 describe('<xo-router> guards and leaving', () => {
   it('a guard can redirect (login), cancel, or let through; redirects replace the history entry', async () => {
     await open();

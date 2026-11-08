@@ -2,7 +2,8 @@
 /**
  * <xo-router>: a History-API router declared in markup (see docs/decisions/0008-spa-router.md and docs/admin.md).
  *
- *   <xo-router base="/admin">
+ *   <xo-router base="/admin">          (add `base-links`: a root-relative link such as href="/users" inside the router means /admin/users,
+ *                                          so the same screens can be mounted under any base; rel="external" leaves the app)
  *     <template xo-layout="shell"><nav>...<a href="/users">Users</a></nav><main xo-outlet></main></template>
  *     <template xo-route="/users/:id" layout="shell" title="User" description="The user page"><xo-view get="getUser" p-id=":id">...</xo-view></template>
  *     <template xo-route="*">Not found</template>
@@ -41,7 +42,7 @@ function compile(pattern) {
 let active = null;
 
 class XoRouter extends XoElement {
-  static props = { base: String };
+  static props = { base: String, baseLinks: Boolean };
 
   /** @type {Route[]} */ #routes = [];
   /** @type {Map<string, { template: HTMLTemplateElement, layout: string | null }>} */ #layouts = new Map();
@@ -148,6 +149,13 @@ class XoRouter extends XoElement {
 
   get #base() { return trim(this.base || '/'); }
 
+  /** With `base-links`, a root-relative link that does not already start with the base is relative to the base. */
+  #own(/** @type {string} */ href) {
+    const base = this.#base;
+    if (!this.baseLinks || base === '/' || !href.startsWith('/') || href.startsWith('//')) return href;
+    return href === base || href.startsWith(base + '/') || href.startsWith(base + '?') || href.startsWith(base + '#') ? href : base + href;
+  }
+
   /** The browser location as a router location (path without the base). */
   #read() {
     return this.#parse(window.location.pathname + window.location.search + window.location.hash, true);
@@ -181,7 +189,7 @@ class XoRouter extends XoElement {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const a = /** @type {Element} */ (e.target)?.closest?.('a[href]');
     if (!a || (a.getAttribute('target') && a.getAttribute('target') !== '_self') || a.hasAttribute('download') || a.getAttribute('rel')?.includes('external')) return;
-    const url = new URL(/** @type {string} */ (a.getAttribute('href')), window.location.href);
+    const url = new URL(this.#own(/** @type {string} */ (a.getAttribute('href'))), window.location.href);
     if (url.origin !== window.location.origin) return;
     const base = this.#base;
     if (base !== '/' && !(url.pathname === base || url.pathname.startsWith(base + '/'))) return; // not ours: let the browser navigate
@@ -314,6 +322,10 @@ class XoRouter extends XoElement {
       let meta = document.head.querySelector('meta[name="description"]');
       if (!meta) { meta = document.createElement('meta'); meta.setAttribute('name', 'description'); document.head.append(meta); }
       meta.setAttribute('content', to.route.description);
+    }
+    if (this.baseLinks) for (const a of this.querySelectorAll('a[href]')) { // the address shown on hover and opened in a new tab is the real one
+      const href = /** @type {string} */ (a.getAttribute('href'));
+      if (!a.getAttribute('rel')?.includes('external') && !a.getAttribute('target') && this.#own(href) !== href) a.setAttribute('href', this.#own(href));
     }
     for (const a of document.querySelectorAll('a[href]')) {
       let path;

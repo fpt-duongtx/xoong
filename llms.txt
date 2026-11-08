@@ -55,7 +55,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   `xo-selected="ids"` sends ONE request with the ticked ids; `$selected`: ticked rows.
 - `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button with `xo-param="status=draft"` gets `aria-current` while current (`status=`: unset).
 - Formats: `{publishedAt | datetime}` (date, time, relative, number, localized, json; `setFormat` adds).
-- `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v` toggles). Vars: `$hasPrev`, `$hasNext`. `xo-refresh` on a button refetches.
+- `xo-param="k=v"` on click sets a view param and refetches (`k+=n`, `k-=n`, `k~=v`). Vars: `$hasPrev`, `$hasNext`. `xo-refresh` on a button refetches.
 - Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}. A running call sets `aria-busy`.
 - After a mutation, queries whose path overlaps it are refetched (POST /users/1/disable refreshes GET /users and GET /users/1);
   not a detail query whose entity the response returned. Override: `configure({ invalidate: { shipOrder: ['getDashboard'] } })`.
@@ -95,18 +95,18 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   <xo-toast></xo-toast> shows errors and xo-notice. Style: xoong.css properties; layout: `<body class="xo-admin">` + header, nav, main.
 
 ## Routing (admin apps; `import { router } from '@xoong/ui'`; public pages stay one HTML file each)
-    <xo-router base="/admin">
+    <xo-router base="/admin" base-links>
       <template xo-layout="shell"><nav><a href="/users">Users</a></nav><main xo-outlet></main></template>
       <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
       <template xo-route="*">Not found</template>
     </xo-router>
-  Links are intercepted; `p-id=":id"` reads a path parameter. JS: `router.navigate('/users/3')`,
+  Links are intercepted (`base-links`: `/users` is `/admin/users`); `p-id=":id"` reads a path param. JS: `router.navigate('/users/3')`,
   `router.guard((to, from) => ok ? true : '/login')`, `router.beforeNavigate(() => !dirty)` vetoes.
   A dirty form makes the router ask first (`xo-guard="off"`: no). 401: `configure({ onUnauthorized: () => router.navigate('/login') })`.
 
 ## Languages (`import '@xoong/i18n'`; flat JSON catalogs, ICU-subset messages)
     <h1 xo-t="home.title">Welcome</h1>   <input xo-t="placeholder:k; aria-label:k2" placeholder="Search" aria-label="Search">
-  The written text is the default; in an xo-view `{name}` comes from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}`: `{en, vi}`.
+  The written text is the default; in an xo-view `{name}` comes from the scope. `configureI18n({ locale, messages, load })`, `setLocale('vi')`, `t('key', { count })`. `{title | localized}`.
 
 ## Controls (`import '@xoong/controls'`)
     <xo-tabs label="Page"><section xo-tab="General">...</section><section xo-tab="SEO" id="seo">...</section></xo-tabs>
@@ -122,7 +122,7 @@ JSON per message: {type:"patch", entity:"User", id:42, path:"/status", value:"x"
 {type:"delete", entity, id, version} | {type:"resync"}. `version` must increase per entity.
 
 ## Errors
-Failures become XoongError (problem+json, `{ error: { code, message } }`, `{ detail }`).
+Failures become XoongError (problem+json, `{ error: { code, message } }`).
 
 ## Testing (Vitest)
     const api = mockApi(operations, { listUsers: () => [{ id: 1, name: 'Ada' }] });
@@ -131,4 +131,4 @@ Failures become XoongError (problem+json, `{ error: { code, message } }`, `{ det
     expect(screen.texts('li')).toEqual([...]); expect(api.unhandled).toEqual([]);
 
 ## Limits today (tell the user)
-Swagger 2.0: converted by `sync`. No request-time SSR (prerender: `xoong render`), no WebSocket.
+Swagger 2.0: via `sync`. No request-time SSR (use `xoong render`), no WebSocket.

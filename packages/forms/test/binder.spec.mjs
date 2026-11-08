@@ -262,4 +262,39 @@ describe('date-time', () => {
     await screen.submit('form');
     expect(a.callsOf('updateArticle')[1].body.publishedAt).toBe(new Date('2027-03-04T10:15').toISOString());
   });
+
+describe('nullable fields', () => {
+  const nullSchema = {
+    t: 'object', required: ['title', 'publishedAt', 'note'],
+    props: {
+      title: str(),
+      publishedAt: str({ nullable: true, emptyAs: 'null' }), // listed as required: the key must be there
+      note: str({ nullable: true }), // required and nullable, no emptyAs
+      subtitle: str({ emptyAs: 'null' }), // optional, but empty means null
+      tags: { t: 'array', items: str(), emptyAs: 'null' },
+    },
+  };
+  const nullTable = { version: 1, entities: { Post: { id: 'id' } }, operations: { createPost: { id: 'createPost', method: 'POST', path: '/posts', body: true, response: { t: 'entity', name: 'Post' }, bodySchema: nullSchema } } };
+
+  it('an untouched field is empty: emptyAs null sends null; a required nullable field is not blocking and is sent as null', async () => {
+    const calls = [];
+    const a = mockApi(nullTable, { createPost: ({ body }) => { calls.push(body); return { id: 1, ...body }; } });
+    screen = await mount('<xo-view><form xo-submit="createPost"><input name="title"><input name="publishedAt"><input name="note"><input name="subtitle"><button>Add</button></form></xo-view>', { api: a });
+    expect(screen.$('[name=publishedAt]').required).toBe(false); // nullable: may be left empty
+    expect(screen.$('[name=note]').required).toBe(false);
+    expect(screen.$('[name=title]').required).toBe(true);
+    await input('title', 'Hello');
+    await screen.submit('form');
+    expect(calls).toHaveLength(1);
+    expect(calls[0]).toEqual({ title: 'Hello', publishedAt: null, note: null, subtitle: null, tags: null });
+  });
+
+  it('an empty required text field that is not nullable still blocks', async () => {
+    const a = mockApi(nullTable, { createPost: () => ({ id: 1 }) });
+    screen = await mount('<xo-view><form xo-submit="createPost"><input name="title"><button>Add</button></form></xo-view>', { api: a });
+    await screen.submit('form');
+    expect(a.unhandled ?? []).toEqual([]);
+    expect(screen.$('form').model.errors.title).toBeTruthy();
+  });
+});
 });

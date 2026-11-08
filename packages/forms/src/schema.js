@@ -220,7 +220,7 @@ function walk(node, value, at, errors) {
     for (const [name, child] of Object.entries(node.props ?? {})) {
       const v = value[name];
       if ((node.required ?? []).includes(name) && !child.readOnly && isEmpty(v)) {
-        if (v === null && child.nullable) continue; // an explicit null is a value for a nullable field
+        if (child.nullable) continue; // a nullable field may be left empty (it is sent as null): "required" only means the key is present
         errors[pathKey([...at, name])] = message('required');
         continue;
       }
@@ -246,5 +246,5 @@ export function isRequired(root, parts, value) {
   if (!parts.length) return false;
   const parent = nodeAt(root, parts.slice(0, -1), value);
   const p = variant(parent, getAt(value, parts.slice(0, -1)));
-  return !!p && p.t === 'object' && (p.required ?? []).includes(parts.at(-1));
+  return !!p && p.t === 'object' && (p.required ?? []).includes(parts.at(-1)) && !p.props?.[parts.at(-1)]?.nullable; // a nullable field may be left empty
 }
