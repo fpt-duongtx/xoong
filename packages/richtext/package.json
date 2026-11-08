@@ -1,6 +1,6 @@
 {
   "name": "@xoong/richtext",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "A small rich text editor for xoong forms: contenteditable, no dependencies besides @xoong/core, sanitised HTML in and out. Toolbar, headings, bold, italic, lists, quote, links (http, https, mailto, tel only), media hook.",
   "type": "module",
   "main": "src/index.js",

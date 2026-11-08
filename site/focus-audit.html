@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Focus audit · xoong</title>
+  <meta name="description" content="How the keyboard focus indicator was measured against every surface, in both palettes and schemes.">
+  <meta property="og:title" content="Focus audit · xoong">
+  <meta property="og:description" content="How the keyboard focus indicator was measured against every surface, in both palettes and schemes.">
+  <meta property="og:image" content="brand/og-controls.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><svg class="mark" width="32" height="32" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="calm">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+        </xo-menu>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Focus audit</span></span></summary><nav aria-label="Documentation menu">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    <a href="styling.html">Styling</a>
+    <h2>Controls</h2>
+    <a href="controls.html">Overview</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="own-control.html">Your own control</a>
+    <a href="components.html">Standard</a>
+    <a href="controls-demo.html">All controls</a>
+    <a href="overlays.html">Overlays</a>
+    <a href="focus-audit.html" aria-current="page">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    <h2>Demo</h2>
+    <a href="demo.html">Live demo</a>
+  </nav></details>
+  <div class="shell no-rail">
+    <nav class="side" aria-label="Documentation">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      <a href="styling.html">Styling</a>
+      <h2>Controls</h2>
+      <a href="controls.html">Overview</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="own-control.html">Your own control</a>
+      <a href="components.html">Standard</a>
+      <a href="controls-demo.html">All controls</a>
+      <a href="overlays.html">Overlays</a>
+      <a href="focus-audit.html" aria-current="page">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      <h2>Demo</h2>
+      <a href="demo.html">Live demo</a>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Controls</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Focus audit</span></div>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" class="sprite">
+  <symbol id="chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="chevron-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+  <symbol id="arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6"/></symbol>
+  <symbol id="arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+  <symbol id="arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  <symbol id="pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="M8 5.5v13L19 12z"/></symbol>
+  <symbol id="heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+  <symbol id="paragraph" viewBox="0 0 24 24"><path d="M13 4v16M9 4v16M16 4H9a4 4 0 0 0 0 8h4"/></symbol>
+  <symbol id="sort" viewBox="0 0 24 24"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></symbol>
+  <symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="more" viewBox="0 0 24 24"><circle cx="5" cy="12" r=".8"/><circle cx="12" cy="12" r=".8"/><circle cx="19" cy="12" r=".8"/></symbol>
+  <symbol id="grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r=".8"/><circle cx="15" cy="6" r=".8"/><circle cx="9" cy="12" r=".8"/><circle cx="15" cy="12" r=".8"/><circle cx="9" cy="18" r=".8"/><circle cx="15" cy="18" r=".8"/></symbol>
+  <symbol id="trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5M10 11v5m4-5v5"/></symbol>
+  <symbol id="edit" viewBox="0 0 24 24"><path d="M5 19l1-4 10.5-10.5a2 2 0 0 1 2.8 2.8L8.8 17.8 5 19Z"/><path d="m14.5 6.5 3 3"/></symbol>
+  <symbol id="copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5H6a1 1 0 0 0-1 1v9"/></symbol>
+  <symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></symbol>
+  <symbol id="external-link" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3A4 4 0 0 0 13 5.3l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></symbol>
+  <symbol id="expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6m16-10-7 7M4 20l7-7"/></symbol>
+  <symbol id="undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5M4 12h10a4.5 4.5 0 0 1 0 9h-3"/></symbol>
+  <symbol id="redo" viewBox="0 0 24 24"><path d="m15 7 5 5-5 5m5-5H10a4.5 4.5 0 0 0 0 9h3"/></symbol>
+  <symbol id="bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zm0 7h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+  <symbol id="italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8m1-14L9 19"/></symbol>
+  <symbol id="underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></symbol>
+  <symbol id="list-bullet" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="4.6" cy="7" r=".8"/><circle cx="4.6" cy="12" r=".8"/><circle cx="4.6" cy="17" r=".8"/></symbol>
+  <symbol id="list-number" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10M4 6l1.6-1v5M3.8 14.8c.6-1 2.6-1 2.6.4 0 1.4-2.6 1.8-2.7 3.3h2.9"/></symbol>
+  <symbol id="quote" viewBox="0 0 24 24"><path d="M9 8C6 8.5 4.5 11 4.5 14v2h4.5v-4.5H6.5M19 8c-3 .5-4.5 3-4.5 6v2H19v-4.5h-2.5"/></symbol>
+  <symbol id="code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2.5-10.5-3 13"/></symbol>
+  <symbol id="image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m4 17 5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4m8-4v4"/></symbol>
+  <symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6"/></symbol>
+  <symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="warning" viewBox="0 0 24 24"><path d="M12 4 21 20H3z"/><path d="M12 10v4m0 3h.01"/></symbol>
+  <symbol id="error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></symbol>
+  <symbol id="success" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+  <symbol id="palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.5 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/></symbol>
+  <symbol id="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></symbol>
+</svg>      
+      <h1>Focus audit</h1>
+      <p class="lede">What the keyboard focus ring looks like on every surface, in Calm and Ember, light and dark, and the result of tabbing through the real pages. axe cannot check this; the rules are WCAG 2.4.7 (visible) and 1.4.11 (3:1 against what surrounds it).</p>
+
+      <h2 id="result">Result</h2>
+      <div class="notice ok"><svg class="icon " aria-hidden="true"><use href="#success"/></svg><p><b>2116 focus states, 0 failures</b> after the fixes below: 12 pages (components, forms, data, demo, carousel, menu, tabs, combobox, rich text, own control, styling, overlays) x Calm/Ember x light/dark, tabbing through every control.</p></div>
+      <p></p>
+      <div class="notice warn"><svg class="icon " aria-hidden="true"><use href="#warning"/></svg><p><b>Before the fixes:</b> menu items (and the rich-text More menu) signalled focus with a fill change only, about 1.3:1, in all four combinations. They now also get an inset 2px ring.</p></div>
+
+      <h2 id="matrix">Ring contrast per surface</h2>
+      <p>The ring is <code>--xo-color-accent</code>, drawn 2px outside the control (<code>outline-offset: 2px</code>), so it sits on whatever surrounds the control. Contrast of the accent against each surface token (needs 3:1):</p>
+      <div class="table-frame"><table class="std ring-table"><thead><tr><th>Palette</th><th>Ring</th><th>page</th><th>surface</th><th>subtle</th><th>accent-soft</th><th>inverse</th></tr></thead><tbody><tr><td class="primary-cell">Calm · light</td><td><code>#9a4d33</code></td><td class="ok"><span class="sw" data-bg="page"></span><b>5.49</b> </td><td class="ok"><span class="sw" data-bg="surface"></span><b>5.93</b> </td><td class="ok"><span class="sw" data-bg="subtle"></span><b>4.94</b> </td><td class="ok"><span class="sw" data-bg="accent-soft"></span><b>4.97</b> </td><td class="bad"><span class="sw" data-bg="inverse"></span><b>2.48</b> <span class="badge danger">fail</span></td></tr><tr><td class="primary-cell">Calm · dark</td><td><code>#eeaa90</code></td><td class="ok"><span class="sw" data-bg="page"></span><b>9.36</b> </td><td class="ok"><span class="sw" data-bg="surface"></span><b>8.62</b> </td><td class="ok"><span class="sw" data-bg="subtle"></span><b>7.82</b> </td><td class="ok"><span class="sw" data-bg="accent-soft"></span><b>7.71</b> </td><td class="ok"><span class="sw" data-bg="inverse"></span><b>6.21</b> </td></tr><tr><td class="primary-cell">Ember · light</td><td><code>#b93a0a</code></td><td class="ok"><span class="sw" data-bg="page"></span><b>5.42</b> </td><td class="ok"><span class="sw" data-bg="surface"></span><b>5.72</b> </td><td class="ok"><span class="sw" data-bg="subtle"></span><b>5.06</b> </td><td class="ok"><span class="sw" data-bg="accent-soft"></span><b>4.68</b> </td><td class="ok"><span class="sw" data-bg="inverse"></span><b>3.15</b> </td></tr><tr><td class="primary-cell">Ember · dark</td><td><code>#ff9068</code></td><td class="ok"><span class="sw" data-bg="page"></span><b>8.44</b> </td><td class="ok"><span class="sw" data-bg="surface"></span><b>7.81</b> </td><td class="ok"><span class="sw" data-bg="subtle"></span><b>7.08</b> </td><td class="ok"><span class="sw" data-bg="accent-soft"></span><b>6.81</b> </td><td class="ok"><span class="sw" data-bg="inverse"></span><b>5.43</b> </td></tr><tr><td class="primary-cell">Framework default · light</td><td><code>#2457d6</code></td><td class="ok"><span class="sw" data-bg="page"></span><b>5.80</b> </td><td class="ok"><span class="sw" data-bg="surface"></span><b>6.16</b> </td><td class="ok"><span class="sw" data-bg="subtle"></span><b>5.16</b> </td><td class="ok"><span class="sw" data-bg="accent-soft"></span><b>4.88</b> </td><td class="bad"><span class="sw" data-bg="inverse"></span><b>2.69</b> <span class="badge danger">fail</span></td></tr><tr><td class="primary-cell">Framework default · dark</td><td><code>#7aa2ff</code></td><td class="ok"><span class="sw" data-bg="page"></span><b>7.28</b> </td><td class="ok"><span class="sw" data-bg="surface"></span><b>6.56</b> </td><td class="ok"><span class="sw" data-bg="subtle"></span><b>6.17</b> </td><td class="ok"><span class="sw" data-bg="accent-soft"></span><b>5.60</b> </td><td class="ok"><span class="sw" data-bg="inverse"></span><b>4.26</b> </td></tr></tbody></table></div>
+      <p class="hint">Framework default rows use the neutral defaults you gave me (accent #2457d6 / #7aa2ff on #f7f8fa / #14161a); subtle, accent-soft and inverse for them are my derived estimates (6-7% text, 12-16% accent, #1b1f24 / #3a3f47).</p>
+      <div class="notice info"><svg class="icon " aria-hidden="true"><use href="#info"/></svg><p><b>One exception: inverse surfaces in the light scheme.</b> The accent is 2.48:1 on Calm's inverse and 2.69:1 on the framework default. Anything focusable on a toast or tooltip uses <code>--xo-focus-inverse</code> (3px, the inverse text colour, 13:1+). Ember light passes at 3.15:1 but gets the same treatment for consistency.</p></div>
+
+      <h2 id="samples">Focus rings, forced</h2>
+      <p>Buttons, a primary button, a field, an icon button and a tab in the focus state, on each surface, light then dark (use the palette menu for Ember).</p>
+      <div class="example"><div class="preview">
+        <div class="std-row"><span class="std-label">page · light</span><div class="std-cells"><div class="force-light bg-page focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">surface · light</span><div class="std-cells"><div class="force-light bg-surface focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">subtle · light</span><div class="std-cells"><div class="force-light bg-subtle focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">accent-soft · light</span><div class="std-cells"><div class="force-light bg-accent-soft focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">inverse · light</span><div class="std-cells"><div class="force-light bg-inverse focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div>
+        <div class="std-row"><span class="std-label">page · dark</span><div class="std-cells"><div class="force-dark bg-page focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">surface · dark</span><div class="std-cells"><div class="force-dark bg-surface focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">subtle · dark</span><div class="std-cells"><div class="force-dark bg-subtle focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">accent-soft · dark</span><div class="std-cells"><div class="force-dark bg-accent-soft focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div><div class="std-row"><span class="std-label">inverse · dark</span><div class="std-cells"><div class="force-dark bg-inverse focus-bg"><button class="is-focus">Button</button><button class="primary is-focus">Primary</button><input class="is-focus field-control" value="Field" aria-label="Field"><button class="ghost icon-only is-focus" aria-label="More"><svg class="icon " aria-hidden="true"><use href="#more"/></svg></button><button class="is-focus">Tab</button></div></div></div>
+      </div></div>
+
+      <h2 id="rules">Rules the design follows</h2>
+      <ul>
+        <li>One ring: <code>--xo-focus: 3px solid var(--xo-color-accent)</code>, 2px offset. Never remove it; fields also change border to the accent and add a soft glow.</li>
+        <li>List items (menu, rich-text More): fill change <em>plus</em> a 2px inset ring (<code>--xo-focus-thin</code>).</li>
+        <li>On inverse surfaces: <code>--xo-focus-inverse</code>.</li>
+        <li>The ring colour is the accent text colour (<code>--ember-deep</code>), never the pot colour (<code>--ember</code>, 2.4:1 on Paper).</li>
+        <li>Composite controls draw the ring once, on the wrapper (<code>:focus-within</code>): combobox box, rich-text box. No double rings.</li>
+      </ul>
+
+      <h2 id="keys">Tab stops and keys</h2>
+      <p>The order is the DOM order. Composite controls are one tab stop and move inside with the arrow keys (roving tabindex).</p>
+      <div class="table-frame"><table class="std"><thead><tr><th>Control</th><th>Tab stops</th><th>Keys</th></tr></thead><tbody><tr><td class="primary-cell">xo-tabs</td><td>1 (the selected tab)</td><td class="muted">← → move, Home/End first/last, panels are not tab stops until focused</td></tr><tr><td class="primary-cell">xo-menu</td><td>1 (the trigger)</td><td class="muted">Enter/Space/↓ open, ↑↓ Home End move, a letter jumps, Esc closes and returns, Tab closes</td></tr><tr><td class="primary-cell">xo-combobox / xo-tags</td><td>1 (the input)</td><td class="muted">↓↑ open and move (focus stays in the input), Enter picks, Esc closes, Backspace removes the last chip</td></tr><tr><td class="primary-cell">xo-carousel</td><td>1 per button + the track</td><td class="muted">track: ← → Home End; buttons: Enter/Space; hidden slides are inert</td></tr><tr><td class="primary-cell">xo-richtext</td><td>1 toolbar + 1 editor</td><td class="muted">toolbar: ← → Home End (roving); Ctrl/Cmd+B I U K in the editor</td></tr><tr><td class="primary-cell">xo-table</td><td>each header button, each row control</td><td class="muted">Enter/Space on a header sorts; the select-all checkbox first</td></tr><tr><td class="primary-cell">xo-dialog / confirm</td><td>trapped inside while open</td><td class="muted">Esc closes and focus returns to the opener</td></tr><tr><td class="primary-cell">Skip link</td><td>1 (first)</td><td class="muted">Enter jumps to #main (add one to the page shell)</td></tr></tbody></table></div>
+
+      <h2 id="run">Run it yourself</h2>
+      <pre tabindex="0"><code>node design/brand-kit/audit/focus-check.mjs components forms data demo
+KIT=1 node design/brand-kit/audit/focus-check.mjs ...   # with the kit CSS laid over the built site
+node design/brand-kit/audit/ring-contrast.mjs            # the ring matrix above</code></pre>
+    
+<nav class="pager" aria-label="Pages"><a rel="prev" href="overlays.html"><small>Previous</small><span>Overlays</span></a><a rel="next" href="icons.html"><small>Next</small><span>Icons</span></a></nav>
+    </main>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html"><svg class="mark" width="26" height="26" viewBox="-2 -2 68 68" aria-hidden="true">
+  <path class="m-steam l" d="M20 6 14 12l6 6"/><path class="m-steam r" d="M44 6l6 6-6 6"/>
+  <circle class="m-ink" cx="32" cy="13" r="4.2"/>
+  <rect class="m-ink" x="8" y="22" width="48" height="7.5" rx="3.75"/>
+  <rect class="m-ink" x="1" y="35" width="12" height="6.5" rx="3.25"/><rect class="m-ink" x="51" y="35" width="12" height="6.5" rx="3.25"/>
+  <path class="m-body" d="M12 31.5h40V44a12 12 0 0 1-12 12H24A12 12 0 0 1 12 44Z"/>
+  <path class="m-hi" d="M19 40v3.5a6 6 0 0 0 4 5.6" fill="none" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+</svg><span class="word">xoong</span></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

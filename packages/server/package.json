@@ -1,6 +1,6 @@
 {
   "name": "@xoong/server",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "xoong server: one (Request) => Response handler for static files, an API proxy and TypeScript type stripping, plus a Node adapter. Dev and optional production use; never shipped to the browser.",
   "type": "module",
   "exports": {

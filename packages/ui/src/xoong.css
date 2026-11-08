@@ -39,6 +39,8 @@
     --xo-color-warning: light-dark(#9a6700, #e3b341);
     --xo-color-inverse: light-dark(#1b1f27, #e8eaee); /* tooltip, toast */
     --xo-color-inverse-text: light-dark(#fff, #14161a);
+    --xo-focus-thin: 2px solid var(--xo-color-accent); /* a ring drawn inside a list item */
+    --xo-focus-inverse: 3px solid var(--xo-color-inverse-text); /* on an inverse surface (toast, tooltip): the accent ring can fall under 3:1 there */
     --xo-focus: 3px solid var(--xo-color-accent); /* the accent must be 3:1 against the page (WCAG 1.4.11, 2.4.11) */
     --xo-control-height: 2.5rem; /* every button, field and select; the -sm one is for dense toolbars and table rows */
     --xo-control-height-sm: 2rem;
@@ -137,6 +139,7 @@
   .xo-confirm::backdrop { background: rgb(0 0 0 / 0.45); }
   .xo-confirm-actions { display: flex; gap: var(--xo-space-2); justify-content: flex-end; margin-top: var(--xo-space-3); }
   .xo-confirm-ok { color: var(--xo-color-accent-text); background: var(--xo-color-danger); border-color: transparent; }
+  .xo-toast :where(button:focus-visible) { outline: var(--xo-focus-inverse); }
   .xo-toast-action { margin-inline-start: var(--xo-space-2); }
   .xo-toast-status { color: var(--xo-color-text); border-color: var(--xo-color-border); }
   xo-dialog > dialog { padding: var(--xo-space-4); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }

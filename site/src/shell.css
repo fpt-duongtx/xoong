@@ -113,3 +113,14 @@ button.primary:active { box-shadow: none; }
 /* headings inside dialogs are not page sections: undo the .content h2 section styling */
 .content dialog h2, .content .xo-confirm h2 { margin: 0 0 .5rem; padding: 0; border: 0; font-size: 1.3rem; }
 .example > pre { border-top: 0; }
+
+/* ---- focus audit ---- */
+.focus-bg { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; padding: 1rem 1.2rem; border-radius: var(--xo-radius); }
+.bg-page { background: var(--xo-color-bg); } .bg-surface { background: var(--xo-color-surface); } .bg-subtle { background: var(--xo-color-subtle); }
+.bg-accent-soft { background: var(--xo-color-accent-soft); } .bg-inverse { background: var(--xo-color-inverse); color: var(--xo-color-inverse-text); }
+.bg-inverse :is(button, input) { outline-color: var(--xo-color-inverse-text); }
+.ring-table td b { font-variant-numeric: tabular-nums; margin-right: .35rem; } .ring-table td.bad b { color: var(--xo-color-danger); }
+.ring-table .sw { display: inline-block; width: .9rem; height: .9rem; margin-right: .5rem; vertical-align: -.1em; border: 1px solid var(--xo-color-control-border); border-radius: 4px; background: var(--xo-color-bg); }
+.ring-table .sw[data-bg="surface"] { background: var(--xo-color-surface); } .ring-table .sw[data-bg="subtle"] { background: var(--xo-color-subtle); }
+.ring-table .sw[data-bg="accent-soft"] { background: var(--xo-color-accent-soft); } .ring-table .sw[data-bg="inverse"] { background: var(--xo-color-inverse); }
+.bg-inverse :is(button:not(.primary), [role="tab"]) { color: var(--xo-color-inverse-text); background: transparent; border-color: color-mix(in srgb, var(--xo-color-inverse-text) 45%, transparent); }

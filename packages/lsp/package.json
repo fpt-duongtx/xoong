@@ -1,6 +1,6 @@
 {
   "name": "@xoong/lsp",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Language server for xoong screens: the same diagnostics as `xoong check`, completion of operation names and xo-* attributes, hover docs. Any editor that speaks LSP.",
   "type": "module",
   "bin": {

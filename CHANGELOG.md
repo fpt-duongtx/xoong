@@ -3,6 +3,14 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.26 (focus indicators)
+
+breaking: none.
+
+* Fixed (found by tabbing through the docs site): items of `<xo-menu>` and the rich text More menu showed focus with a background change only (1.3:1); they now draw a 2px ring inside the item (`--xo-focus-thin`).
+* Added: `--xo-focus-thin` and `--xo-focus-inverse` (a ring in `--xo-color-inverse-text` for buttons on an inverse surface such as a toast action, where the accent ring can fall under 3:1).
+* Tests: `tools/focus.mjs` tabs through pages and measures every focus indicator against what surrounds it (3:1, WCAG 1.4.11); it runs on five pages in Calm light and Ember dark next to axe. Docs: the focus audit page from the design kit.
+
 ## 0.0.25 (table cells, required marker, docs polish)
 
 breaking: none.

@@ -160,3 +160,5 @@ input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; } input[type="co
 input[type="color"]:hover { border-color: var(--xo-color-text); } input[type="color"]:focus-visible { outline: var(--xo-focus); outline-offset: 2px; }
 .setting { display: inline-flex; align-items: center; gap: .6rem; } .setting output { min-width: 3ch; font: 600 .85rem var(--xo-font-mono); color: var(--xo-color-muted); }
 button.ghost.is-hover { background: color-mix(in srgb, var(--xo-color-text) 8%, transparent); border-color: transparent; }
+/* ring colour on inverse surfaces (toast, tooltip): the accent fails 3:1 there in the light scheme */
+:root { --xo-focus-inverse: 3px solid var(--xo-color-inverse-text); --xo-focus-thin: 2px solid var(--xo-color-accent); }

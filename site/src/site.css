@@ -114,3 +114,6 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 .notice .ic { --xo-icon: 1.25rem; margin-top: 0.15rem; }
 .notice.info .ic { color: var(--xo-color-accent); }
 .notice.warn .ic { color: color-mix(in srgb, var(--xo-color-warning) 35%, var(--xo-color-text)); }
+
+/* until the kit gives the static .menu-panel samples a focus ring (the framework menus have one): a fill alone is not an indicator */
+.menu-panel [role="menuitem"]:focus-visible { outline: var(--xo-focus-thin); outline-offset: -2px; }

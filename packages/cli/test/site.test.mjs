@@ -8,10 +8,11 @@ import { build, CSP } from '../src/build.js';
 import { sync } from '../src/commands.js';
 import { launchChromium } from '../../../tools/browser.mjs';
 import { axe } from '../../../tools/axe.mjs';
+import { focusStates, weak } from '../../../tools/focus.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'components', 'controls-demo', 'overlays', 'icons', 'demo', 'brand'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'own-control', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'demo', 'brand'];
 const DOCS = PAGES.filter((n) => !['index', 'brand'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
@@ -58,7 +59,7 @@ describe('documentation site', () => {
       expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
       expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length : 0);
       expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
-      if (!['components', 'icons', 'data-states', 'overlays'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
+      if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
     }
   });
@@ -310,6 +311,21 @@ describe('documentation site', () => {
       }
       await scheme('light', 'calm');
     }, 240000);
+
+    it('keyboard focus: every focus state on the main pages has an indicator of at least 3:1 (WCAG 1.4.11), in Calm light and Ember dark', async () => {
+      for (const [palette, colorScheme] of [['calm', 'light'], ['ember', 'dark']]) {
+        await page.emulateMedia({ colorScheme });
+        for (const name of ['forms', 'data', 'menu', 'components', 'demo']) {
+          await open(name);
+          await page.evaluate((p) => { document.documentElement.dataset.palette = p; }, palette);
+          await page.waitForTimeout(200);
+          const states = await focusStates(page, { max: 90 });
+          expect(states.length, `${name}: nothing could be focused`).toBeGreaterThan(3);
+          expect(weak(states).map((r) => `${palette}/${colorScheme} ${name}: ${r.tag} "${r.text}" ${r.kind} ${r.ratio}`), name).toEqual([]);
+        }
+      }
+      await page.emulateMedia({ colorScheme: 'light' });
+    }, 480000);
 
     it('open states: a menu list, a dialog, the rich text More menu, the confirm dialog', async () => {
       await open('menu');

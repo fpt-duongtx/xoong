@@ -14,7 +14,8 @@
   xo-menu [role="menu"]:not([popover]) { position: absolute; z-index: 10; }
   xo-menu [role="menu"][hidden] { display: none; }
   xo-menu :is([role="menuitem"], [role="menuitemradio"]) { display: block; width: 100%; box-sizing: border-box; text-align: start; background: none; border: 0; padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); font: inherit; color: inherit; text-decoration: none; cursor: pointer; border-radius: 4px; }
-  xo-menu :is([role="menuitem"], [role="menuitemradio"]):is(:hover, :focus-visible) { background: var(--xo-color-hover, rgb(127 127 127 / .15)); outline: none; }
+  xo-menu :is([role="menuitem"], [role="menuitemradio"]):is(:hover, :focus-visible) { background: var(--xo-color-hover, rgb(127 127 127 / .15)); }
+  xo-menu :is([role="menuitem"], [role="menuitemradio"]):focus-visible { outline: var(--xo-focus-thin, 2px solid var(--xo-color-accent, #0969da)); outline-offset: -2px; } /* a fill alone is not a focus indicator (1.4.11) */
   xo-menu [role="menuitemradio"] { padding-inline-start: 1.75rem; position: relative; }
   xo-menu [role="menuitemradio"][aria-checked="true"] { font-weight: 600; }
   xo-menu [role="menuitemradio"][aria-checked="true"]::before { content: "\2713"; position: absolute; inset-inline-start: .5rem; }
