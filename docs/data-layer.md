@@ -123,6 +123,15 @@ Conflict policy (editing the same field concurrently) is last-writer-wins by
 * One global handler (toast, redirect on 401, etc.) plus an optional per-view
   override. Retry and token refresh are configured once, not per call.
 
+## One client, one place for paths and settings
+
+Everything that talks to the API goes through the one client that `configure()` made, and `getClient()` returns it. `baseUrl`, `headers` (a CSRF token, auth), `credentials`, `retry`, `onUnauthorized`, `onError` and `fetch` are set there once; a widget does not carry its own copy and does not call `fetch` itself.
+
+* **Paths live in the OpenAPI document** (and so in `operations.json`). Code names an operation: `getClient().query('listMedia', { limit: 50 })`, `getClient().mutate('uploadMedia', {}, formData)`. A multipart operation takes a `FormData` body as it is.
+* **Errors are one type.** Whatever the server returns (`application/problem+json`, `{ errors: [{ pointer, detail }] }`, `{ error: { code, message, fields } }`, `{ detail }`) becomes a `XoongError` with `status`, `code`, `detail` and `fields`.
+* **Reads share the cache.** A list read with `<xo-view get>` or `client.query()` refreshes by itself after a mutation whose path overlaps it, and records are shared by entity id.
+* **Data the server already has** goes in with `client.seed(operation, params, data)`: the server writes the JSON into the page (a `<script type="application/json">` is not code, so a strict CSP allows it), one module script calls `seed`, and a view that asks for the same operation and params shows it at once and makes no request until it is stale (`staleTime`). The API stays the contract for everything else.
+
 ## 8. Declarative call syntax (Draft)
 
 ```html

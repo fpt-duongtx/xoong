@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published yet.
 
+## 0.0.17 (cache seeding)
+
+breaking: none.
+
+* Added: `client.seed(operation, params, data)` puts data the server already has into the cache as if the GET had run (entities shared, no request until stale), for a page whose server embeds its first data.
+* Docs: "One client, one place for paths and settings" in `docs/data-layer.md`.
+
 ## 0.0.16 (brand site, choice menu)
 
 breaking: none.

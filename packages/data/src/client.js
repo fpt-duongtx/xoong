@@ -292,6 +292,22 @@ export function createClient(options) {
       return q;
     },
 
+    /**
+     * Put data the server already has (rendered into the page, a bootstrap payload) into the cache as if the GET had run: entities are
+     * shared like any response, and a view that asks for this operation and these params shows it at once, with no request until it is stale.
+     */
+    seed(ref, params = {}, json) {
+      const q = client.query(ref, params);
+      batch(() => {
+        q.root.value = normalize(store, q.op.response, json);
+        q.status.value = 'success';
+        q.error.value = null;
+        q.updatedAt = Date.now();
+        q.stale = false;
+      });
+      return q.data.peek();
+    },
+
     /** Fetch a GET operation once (respecting freshness) and resolve with plain data. */
     async load(ref, params = {}) {
       const q = client.query(ref, params);

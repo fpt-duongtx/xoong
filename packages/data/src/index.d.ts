@@ -65,6 +65,8 @@ export interface Client<Ops extends Record<keyof Ops, OperationType> = any> {
   op(ref: string): any;
   query<K extends Id<Ops>>(op: K, ...params: ParamsArg<Ops[K]>): TypedQuery<Ops[K]>;
   load<K extends Id<Ops>>(op: K, ...params: ParamsArg<Ops[K]>): Promise<Ops[K]['response']>;
+  /** Put data the server already has into the cache as if the GET had run (no request until it is stale). */
+  seed<K extends Id<Ops>>(op: K, params: Ops[K] extends { params: infer P } ? P : never, data: Ops[K]['response']): Ops[K]['response'];
   mutate<K extends Id<Ops>>(op: K, params: Ops[K]['params'], ...body: [Ops[K]['body']] extends [never] ? [] : [body: Ops[K]['body']]): Promise<Ops[K]['response']>;
   stream<K extends Id<Ops>>(op: K, params: Ops[K]['params'], body?: Ops[K]['body'], options?: { signal?: AbortSignal }): AsyncGenerator<SseEvent>;
   invalidateAll(): void;

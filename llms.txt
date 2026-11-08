@@ -62,10 +62,10 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 
 ## JavaScript API (only when HTML is not enough)
 @xoong/data: `configure(opts)`, `getClient()`, `derived(({ all, get }) => value)`, `createClient(opts)`, `connectStream`.
-  opts: api (operations.json), baseUrl, headers (fn -> object: auth), credentials, staleTime=30000, gcTime=300000, retry=2 (GET only),
+  opts: api, baseUrl, headers (fn -> object: auth), credentials, staleTime=30000, gcTime=300000, retry=2 (GET only),
   evictEntities, retryDelay=300, invalidate, onError, onUnauthorized, streamUrl, fetch.
   TypeScript: `createClient<Operations>(...)` (from .xoong/api.d.ts) checks names, params, bodies.
-  client.load(op, params) -> data | client.query(op, params) -> {data, status, error} signals | client.mutate(op, params, body)
+  client.load(op, params) -> data | client.query(op, params) -> {data, status, error} signals | client.mutate(op, params, body) | client.seed(op, params, data)
   client.stream(op, params, body) -> async iterator of SSE events {event, data, json, id}
   `derived` = computed over loaded entities of a type (`all('Order')`).
 @xoong/core: `signal(v)` (.value, .peek()), `computed(fn)`, `effect(fn)` (side effects only), `batch`,
@@ -130,4 +130,4 @@ Failures become XoongError (problem+json, `{ error: { code, message, retry_after
     expect(screen.texts('li')).toEqual([...]); expect(api.unhandled).toEqual([]);
 
 ## Limits today (tell the user, no workarounds)
-Swagger 2.0: `sync` converts it (basic; exotic: `npx swagger2openapi`). No request-time SSR (prerender per URL: `xoong render --url /path`), no WebSocket.
+Swagger 2.0: `sync` converts it (basic; exotic: `npx swagger2openapi`). No request-time SSR (prerender: `xoong render --url`), no WebSocket.

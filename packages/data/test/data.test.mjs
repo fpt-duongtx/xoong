@@ -18,6 +18,19 @@ test('load caches by operation + canonical params (key order irrelevant)', async
   assert.equal(f.calls.length, 2);
 });
 
+test('seed puts server-known data in the cache: no request, entities shared, a later load is a cache hit', async () => {
+  const f = fakeFetch({ 'GET /users': () => users(), 'GET /users/1': () => ({ id: 1, name: 'Ada Lovelace', role: 'admin' }) });
+  const c = createClient({ api, fetch: f });
+  c.seed('listUsers', { page: 1 }, users());
+  assert.deepEqual(await c.load('listUsers', { page: 1 }), users()); // fresh: nothing fetched
+  assert.equal(f.calls.length, 0);
+  assert.equal(c.query('listUsers', { page: 1 }).status.peek(), 'success');
+  await c.load('getUser', { id: 1 }); // the same record: the seeded list follows it
+  assert.equal(c.query('listUsers', { page: 1 }).data.peek()[0].name, 'Ada Lovelace');
+  await c.load('listUsers', { page: 2 }); // other params were not seeded
+  assert.equal(f.calls.filter((x) => x.key === 'GET /users').length, 1);
+});
+
 test('unknown operation gives a hint', () => {
   const c = createClient({ api, fetch: fakeFetch({}) });
   assert.throws(() => c.query('GET /user'), /Closest: "GET \/users"/);
