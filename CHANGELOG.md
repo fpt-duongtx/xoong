@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. Nothing has been published to npm yet; the repository is public and each version is a GitHub prerelease.
 
+## 0.0.33 (xo-time, date picker style)
+
+breaking: none.
+
+* Added: `<xo-time>` in `@xoong/controls` (`@xoong/controls/time`): a time of day as two native selects (Hour, Minute), `HH:mm` value, `step`, `min`/`max`.
+* Mist (kit ux/date-style): the look of `<xo-date>` (field button, calendar panel, header, day states).
+
 ## 0.0.32 (xo-date, check XO222)
 
 breaking: none.

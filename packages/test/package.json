@@ -1,6 +1,6 @@
 {
   "name": "@xoong/test",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "description": "Test helpers for xoong UI: mount screens, mock the API from operations.json, push live events. Runs on Vitest (happy-dom or browser mode).",
   "type": "module",
   "exports": {
@@ -10,8 +10,8 @@
     "vitest": ">=2"
   },
   "dependencies": {
-    "@xoong/core": "0.0.32",
-    "@xoong/data": "0.0.32"
+    "@xoong/core": "0.0.33",
+    "@xoong/data": "0.0.33"
   },
   "license": "MIT",
   "files": [
