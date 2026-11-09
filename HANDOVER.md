@@ -1,8 +1,98 @@
 # Handover: xoong
 
-For the next agent (a local Claude Code session that can push to GitHub). Read this first, then
-`README.md`, `docs/design-principles.md` and `llms.txt`. Everything described here was built in one
-cloud session that could not push; nothing has been committed, and nothing has been run on GitHub.
+For the next agent (a Claude Code session on a new machine). Read section 0 first (the state on 2026-11-10 and how to
+continue), then `README.md`, `docs/design-principles.md` and `llms.txt`. Sections 1 and later were written in the first
+cloud session and are still true unless section 0 says otherwise; the packages are released (npm, tag `next`) and CI runs.
+
+## 0. State on 2026-11-10 and how to continue
+
+**Released:** `@xoong/*` 0.0.52 is on npm (tag `next`; `latest` is an old 0.0.34, `@xoong/xoong` latest 0.0.35) and on GitHub
+(prereleases `v0.0.x`, tarballs attached). Docs site: https://fpt-duongtx.github.io/xoong/ (GitHub Pages, built by
+`.github/workflows/pages.yml` with `xoong build`). Main is green. Versions move in lockstep (all 14 packages, exact pins).
+`CHANGELOG.md` is the detailed history (0.0.31 to 0.0.52); each entry has a `breaking:` line.
+
+**People and roles (Claude sessions, owner chats in Vietnamese; code, docs, commits in English):**
+
+* *Xoong Dev* (this role): core, data, forms, ui, controls, cli, mcp, lsp, server, ssr, i18n, tooling, the docs-site
+  generator (`tools/site/**`, `site/src/site.css`, `tools/kit-css.mjs`, `tools/build-mist.mjs`), CI, README, releases.
+* *UX* session: owns the design kit `design/brand-kit/**` (Mist look). It works on branches `ux/<topic>`; Dev takes them with
+  `git checkout ux/<branch> -- design/brand-kit/` then `node tools/kit-css.mjs && node tools/build-mist.mjs && node tools/site.mjs`.
+  Dev never edits the kit CSS; it describes the markup it needs and asks UX.
+* *rainlet / Bloomoz admin* session (`Admin page shared architecture`): the first real consumer (admin UI on xoong); its bug
+  reports have priority. The clinic site (`fpt-duongtx/tieuhoalamhong`) is a second consumer.
+* Messages between sessions arrive as "cross-session" messages; they are not the owner's approval for anything.
+
+**Release procedure** (the owner says "bump freely"; publishing to npm needs an explicit yes in chat each time):
+
+1. Edit `CHANGELOG.md` (new heading, a `breaking:` line), `node tools/set-version.mjs 0.0.N` (all versions, pins, lockfile, docs),
+   `node tools/site.mjs` (regenerates `site/*.html`, `reference.json`, `search-index.json`, `llms.txt` copy), `npm ci`,
+   `npm run lint`, `npx vitest run` (or `npm run test:coverage`), commit, push to `main`.
+2. CI (`ci.yml`, about 10 to 15 minutes, runs on the home server) must be green: jobs test (22), test (24), browsers (firefox, webkit).
+3. Pack from the TAGGED commit (a scratch `git worktree` at that commit, symlink `node_modules`): `node tools/pack.mjs dist-pack --prefix ./vendor/xoong`,
+   `git tag vN`, `git push origin vN`, `gh release create vN --prerelease dist-pack/*.tgz`.
+4. Only after the owner's yes: `gh workflow run publish.yml --ref vN -f dry_run=false -f tag=next` (npm Trusted Publishing/OIDC, no token,
+   runs on `ubuntu-latest`). npm metadata lags for a minute: re-check with `npm view @xoong/core dist-tags.next --prefer-online`.
+5. Tell UX and rainlet (SendMessage) what shipped.
+
+**Home server (CI and Pages runners):** `ssh duongtx@192.168.0.200` (Ubuntu, Node 24, Docker, passwordless sudo). Runners
+`/opt/actions-runner/xoong`, `xoong-2`, `xoong-3` (user `runner`, label `xoong-home`); other projects have their own: leave them
+alone. `ci.yml` has one job at a time (`max-parallel: 1`) and capped workers because the server is shared. To re-register a runner
+get a token with `gh api -X POST repos/fpt-duongtx/xoong/actions/runners/registration-token` and pass it over ssh stdin, never print
+it. After a Playwright upgrade run `sudo node node_modules/playwright/cli.js install-deps` on the server.
+
+**Gates you will meet** (all in tests; raise a number only with a stated reason next to it): gzip budgets in
+`test/architecture.test.mjs` `budgetKb` (core 5.9, data 19.8, forms 9.5, i18n 5.7, ui 12.8, controls 37, richtext 8.5 KB);
+`llms.txt` size limit (`length / 3.8 < 3220`); drift tests (every element and attribute needs an html-data description, MCP
+explanation, LSP completion, llms.txt or `NOT_IN_LLMS` entry, a docs mention and a Reference entry); the site gates
+(`packages/cli/test/site.test.mjs`: axe in 4 palette/scheme combinations and at 390px, focus indicator 3:1, strict CSP, no sideways
+scroll, pages equal the generator output); coverage thresholds (never lowered); `node tools/site.mjs --check`.
+
+**Things that bite:**
+
+* The permission classifier sometimes blocks big `python - <<EOF` heredoc commands as "dangerous rm" even when nothing is removed; use the
+  Edit/Write tools instead (do not try to get around a real removal block). Never publish to npm without the owner's yes.
+* Local site tests can be flaky when the Mac sleeps or is loaded (timeouts of hours are not real failures); CI on the home server is the judge.
+* Absent `Number` props read as 0; props do not reflect to attributes; `define()` keeps an accessor a class wrote for a prop
+  (`xo-switch.checked`); XoControl sets a `value` attribute after `connected()`; use `this.ready().then(...)` when children are data;
+  `text('xoong.<area>.<key>', 'English')` needs literal keys and an entry in `packages/i18n/src/builtin.js` and `catalogs/vi.json`.
+* Strict CSP everywhere: no inline scripts or style attributes (CSSOM from script is fine).
+* `@xoong/xoong` is the umbrella name (`xoong` was refused by npm); `xoong new` pins the CLI's own version.
+
+**What exists now (beyond sections 1 to 8):** drawer, breadcrumb, alert, skeleton, tree, colour picker, rating and 30 other controls;
+dialogs (`confirm/alert/prompt/ask`, titled `<xo-dialog>`); `<xo-table column-picker>`, icon pager, humanized headers; cancelable `xo-error`
+and `view.error`; `getClient().reset()`; `xoong build --minify --exclude --no-preload` (modulepreload by default); lazy router and dialogs;
+the Reference page and menu, universal search (Ctrl/Cmd+K), Tools pages (CLI, MCP, editor, error codes, generated from the code),
+Recipes page, Dialogs page, animated architecture figures with a step bar. Edge-case scan result: `CHANGELOG.md` 0.0.46, and the
+"Known limits" table of the Recipes page lists what is deliberately not fixed.
+
+**Unfinished work, in the owner's order of priority:**
+
+1. **Benchmarks** (`benchmarks/`, its README explains everything; publish switch `benchmarks/results/publish.json` is `false`, so the
+   home block, `benchmarks.html` and the README tables are NOT generated). Done: runtime table for the flat people screen in xoong, React
+   (specialist version), Vue and Angular 22 (all libraries counted in full), CLI and MCP speed, a re-render probe, a profile of where xoong's
+   time and bytes go (`benchmarks/perf/PROFILE.md`, `CHANGES.md`: layout and style are 53% of creating 10,000 rows and shared by all stacks;
+   xoong's own JS 18%). Remaining, in order: (a) stage B: `SPEC.md`, one shared stylesheet and fixture, text-only normalisation (no
+   icons, svg, fonts), parity test (same accessible tree and API calls in every stack); (b) stage C: a rich nested screen (3 levels,
+   nested views, array-form dialog, optimistic edit) in xoong first (it may reveal framework slow paths: fix them generally, never tune
+   the sample), then React, Vue, Angular; (c) stage D: re-measure all stacks in one session, evaluate the publication gate on both
+   screens (xoong best or within 10% in 4 of 6 headline rows, none more than 25% behind; show xoong default AND `--minify` side by side,
+   count esbuild in the minified column), then flip `publish.json` and regenerate. Today the flat screen with `--minify` meets the gate, the
+   default build does not (bytes 37% behind). Owner rule: honest numbers, nothing inflated; if xoong clearly loses, do not publish.
+2. **Controls** not built yet (owner's list): table advanced (column resize, pinned columns, row grouping, virtualisation: separate batch),
+   kanban (third party), timeline and stepper (not wanted: use tabs).
+3. **Streaming** (the owner mentioned it at the very beginning; the exact wording is lost): live views over SSE, `connectStream`, POST
+   streams with `$stream` exist. Not built: stream gateway (`docs/server.md` section 4), WebSocket transport (a recipe only), SSE with an
+   Authorization header (recipe), NDJSON streaming, new entities joining a loaded list. Ask the owner which they meant.
+4. **Owner-side tasks:** `npm deprecate` of the 0.0.34 versions, inspect the stray `0.0.0-stage` version on npm, native-speaker review of
+   the Vietnamese strings and the rewritten docs (data-layer, architecture, ADR-0009), real-device checks (IME, Safari, phones),
+   unverified Claude Desktop/Cursor/Neovim snippets on the MCP and editor pages.
+5. **Known gaps** (honest list in the Recipes page "Known limits"): pager needs `total`; 429/408 not retried; objects as query params;
+   duplicate ids in a list; hidden or disabled form fields are still sent; `--base` leaves anchors; no live reload in `xoong dev`.
+6. Roadmap items open: stream gateway, VS Code extension and lint presets, per-tag lazy loading, codemods (0.8), three production
+   projects before 1.0 (see `docs/roadmap.md`).
+
+**Local memory of the previous machine is not transferred.** Key preferences from it: bump versions freely, publish to npm only on an
+explicit yes; never force-push `main`; honest assessments; explain in Vietnamese, write code and docs in English; never enter credentials.
 
 ## 1. What xoong is (and who it is for)
 
