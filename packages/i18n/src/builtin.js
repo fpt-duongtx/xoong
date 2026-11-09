@@ -108,6 +108,7 @@ export const builtin = {
   "xoong.stat.worse": "{change} worse",
   "xoong.steps.done": "Completed",
   "xoong.table.actions": "Actions",
+  "xoong.table.columns": "Columns",
   "xoong.table.next": "Next",
   "xoong.table.pagination": "Pagination",
   "xoong.table.previous": "Previous",

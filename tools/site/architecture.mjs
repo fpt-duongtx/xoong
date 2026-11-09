@@ -1,7 +1,7 @@
 // The Architecture section of the documentation site: how xoong works inside. Seven pages, each with diagrams (drawn by diagrams.mjs: inline SVG, classes dg-*,
 // some of them animated) and code. Every statement was checked against the source it names in "Where to look in the code"; what is planned and not built is left out or marked "not yet".
 import { tabs, code } from './lib.mjs';
-import { diagram, sequence, esc } from './diagrams.mjs';
+import { diagram, sequence, states, ui, esc } from './diagrams.mjs';
 
 /** Inline code. */
 const c = (s) => `<code>${esc(s)}</code>`;
@@ -57,17 +57,18 @@ const overviewTooling = diagram({
 });
 
 const seamSeq = sequence({
-  id: 'ov-seam', label: 'Diagram: a higher package registering into a seam of a lower one', col: 230, size: 'sm', anim: { travel: 0.9, gap: 0.3, dur: 6.5 },
+  id: 'ov-seam', label: 'Diagram: a higher package registering into a seam of a lower one', col: 230, size: 'sm', anim: { travel: 0.9, gap: 0.3, dur: 7 },
   title: 'A higher package registers into a seam of a lower one',
-  desc: 'Two participants: @xoong/forms, the higher package, and @xoong/data, the lower one. 1. When @xoong/forms is imported, it calls setFormEngine with its attach function; data keeps it. A note says that later, an xo-view draws a form with xo-submit. 2. Data calls the registered attach with the form, its request schema and its record. 3. Attach returns an engine, the form model of that form, and data detaches it again when the view goes away.',
+  desc: 'Two participants: @xoong/forms, the higher package, and @xoong/data, the lower one. Above the arrows is the code that makes the first step happen, in a window named main.js.',
   caption: 'The higher package registers itself when it is imported; the lower package calls it back later. Nothing imports upward. Dashed: the answer.',
-  motion: 'a dot travels along each arrow in the order of the steps: the registration when forms is imported, then, after a pause at the note, the call back into forms and its answer.',
+  motion: 'a dot travels along each arrow in the order of the steps, while the line of code that causes the step is lit: the registration when forms is imported, then, after a pause at the note, the call back into forms and its answer.',
+  code: { name: 'main.js', lang: 'js', lines: ["import '@xoong/data/view';", "import '@xoong/forms';"] },
   parts: ['@xoong/forms', '@xoong/data'],
   msgs: [
-    { from: 0, to: 1, label: ['when imported:', 'setFormEngine({ attach })'] },
+    { from: 0, to: 1, label: ['when imported:', 'setFormEngine({ attach })'], code: [1, 1], says: 'Your app imports @xoong/forms. On load, forms calls setFormEngine({ attach }) from @xoong/data, and data keeps the function.' },
     { note: 'Later: xo-view draws a form with xo-submit', over: [0, 1] },
-    { from: 1, to: 0, label: 'attach(form, { schema, ... })' },
-    { from: 0, to: 1, label: 'returns an engine', dashed: true },
+    { from: 1, to: 0, label: 'attach(form, { schema, ... })', says: 'When an xo-view draws a form with xo-submit for an operation that has a request schema, data calls the registered attach with the form, its schema and its record.' },
+    { from: 0, to: 1, label: 'returns an engine', dashed: true, says: 'attach returns an engine, the form model of that form. Data keeps it and detaches it when the view goes away.' },
   ],
 });
 
@@ -204,42 +205,77 @@ const dataEntry = diagram({
   },
 });
 
+const PEOPLE = [['Ada', 'ada@example.org', 'admin'], ['Bob', 'bob@example.org', 'editor'], ['Cy', 'cy@example.org', 'viewer']];
+
 const readSeq = sequence({
-  id: 'df-read', label: 'Diagram: one read as a sequence', col: 150, size: 'md', anim: true,
+  id: 'df-read', label: 'Diagram: one read as a sequence', col: 170, size: 'lg', anim: true,
   title: 'One read',
-  desc: 'Four participants: the xo-view, the query cache, the entity store and the backend API. 1. The view asks the cache for its query and retains it. 2. The cache sets loading, so the view sees $loading true. 3. The cache sends GET /users?limit=10 to the API. 4. The API answers 200 with JSON. 5. The cache normalises the response into the store, upserting User#1 and the other records. 6. The cache sets success, so $loading becomes false. 7. The view reads the records from the store, tracked, and draws them.',
-  caption: 'A read, top to bottom. Dashed arrows are answers or signal updates.',
-  motion: 'a dot travels along the arrows one after another, top to bottom, so the order of the steps is the order of the motion; a hollow dot rides a dashed arrow, an answer or a signal update.',
-  parts: ['xo-view', 'Query cache', 'Entity store', 'Backend API'],
+  desc: 'Columns, left to right: the screen the person sees (a window with a table of people), the query cache, the entity store, and your services and APIs, drawn as example tiles of which only the People API is called. Above the arrows, between the cache and the store, is the code you write, in a window named people.html, which makes the screen.',
+  caption: 'A read, top to bottom. Dashed arrows are answers or signal updates. The code is all you write; the people and the names of the services are examples.',
+  motion: 'a dot travels along the arrows one after another, top to bottom, while the line of code that causes the step is lit and the screen changes with it: loading rows first, then the table. A hollow dot rides a dashed arrow.',
+  screen: {
+    w: 250, title: '/people',
+    code: { name: 'people.html', lang: 'html', lines: ['<xo-view get="listPeople">', '  <xo-table columns="name,email,role"', '            sortable></xo-table>', '</xo-view>', '', '<!-- loading, errors, cache and types', '     come from your OpenAPI document -->'] },
+    build(scr, win, d) {
+      const x = scr.left, w = scr.inner, y = scr.top + 8;
+      d.raw(ui.thead(x, y, w));
+      const rows = PEOPLE.map((r, i) => ui.trow(x, y + 22 + i * 28, w, r)).join('');
+      const [, loading, , listed] = states([win(1)[1] - 0.25, win(5)[1] - 0.25, win(6)[1] - 0.25]);
+      d.layer(ui.tskel(x, y + 22, w), loading);
+      d.layer(rows, listed);
+      d.still(rows);
+    },
+  },
+  parts: ['Query cache', 'Entity store'],
+  services: { active: 'People API', sub: ['GET /people'] },
   msgs: [
-    { from: 0, to: 1, label: 'query(op, params).retain()' },
-    { from: 1, to: 0, label: '$loading = true', dashed: true },
-    { from: 1, to: 3, label: 'GET /users?limit=10' },
-    { from: 3, to: 1, label: '200 JSON', dashed: true },
-    { from: 1, to: 2, label: 'upsert User#1, User#2' },
-    { from: 1, to: 0, label: '$loading = false', dashed: true },
-    { from: 0, to: 2, label: 'read records (tracked)' },
+    { from: 0, to: 1, label: 'query(op, params).retain()', code: [0, 0], says: 'The xo-view with get="listPeople" starts. It selects its query, listPeople, and retains it: it asks the query cache to watch that query.' },
+    { from: 1, to: 0, label: '$loading = true', dashed: true, code: [0, 0], says: 'The cache has no fresh answer, so the query\'s status is loading. The view sees $loading as true, and the screen shows loading rows.' },
+    { from: 1, to: 3, label: 'GET /people', code: [5, 6], says: 'The cache sends GET /people to your People API. The path and the query names come from your OpenAPI document.' },
+    { from: 3, to: 1, label: '200 JSON', dashed: true, says: 'Your People API answers 200 with the people as JSON.' },
+    { from: 1, to: 2, label: 'upsert Person#1, Person#2', code: [5, 6], says: 'The cache normalises the answer into the entity store: each person once, as Person#1, Person#2 and so on.' },
+    { from: 1, to: 0, label: '$loading = false', dashed: true, code: [5, 6], says: 'The query\'s status becomes success, so $loading is false and the loading rows go away.' },
+    { from: 0, to: 2, label: 'read records (tracked)', code: [1, 2], says: 'The view reads the records from the store, tracked, and its effects write the rows into the xo-table on the screen.' },
   ],
 });
 
 const writeSeq = sequence({
-  id: 'df-write', label: 'Diagram: one write as a sequence', col: 144, size: 'lg', anim: true,
+  id: 'df-write', label: 'Diagram: one write as a sequence', col: 130, size: 'xl', anim: true, wide: 210,
   title: 'One write',
-  desc: 'Five participants: the xo-click button, client.mutate, the entity store, the query cache and the backend API. 1. The button calls mutate with the operation, params and body. 2. With xo-optimistic, mutate puts a provisional patch in the store. 3. Mutate sends POST /users/1/disable to the API. 4. The API answers 200 with the updated User. 5. Mutate normalises the response into the store, upserting User#1. 6. Mutate invalidates every cached query whose path overlaps /users/1/disable. 7. The query cache refetches GET /users, if something is watching it. 8. The API answers with the list. 9. Mutate resolves and the xo-done event fires. A note says that on failure the optimistic patch is undone, a XoongError is thrown and xo-error fires.',
-  caption: 'A write, top to bottom. Invalidation is by path; only queries that something is watching refetch at once.',
-  motion: 'a dot travels along the arrows one after another, top to bottom, from the click to the refetch of the list; a hollow dot rides a dashed arrow, an answer. The note about a failure is not played: it is the other road.',
-  parts: ['xo-click', 'client.mutate', 'Entity store', 'Query cache', 'Backend API'],
+  desc: 'Columns, left to right: the screen the person sees (a table of people with a Disable button in each row), client.mutate, the entity store, the query cache, and your services and APIs, drawn as example tiles of which only the People API is called. Above the arrows, between mutate and the cache, is the code you write, in a window named people.html, which makes the screen. A note says that on failure the optimistic patch is undone, a XoongError is thrown and xo-error fires.',
+  caption: 'A write, top to bottom. Invalidation is by path; only queries that something is watching refetch at once. The people and the names of the services are examples.',
+  motion: 'a dot travels along the arrows one after another, top to bottom, while the code that causes the step is lit and the screen changes with it: the question, then the row that says "disabled". A hollow dot rides a dashed arrow. The note about a failure is not played: it is the other road.',
+  screen: {
+    w: 250, title: '/people',
+    code: { name: 'people.html', lang: 'html', w: 330, lines: ['<xo-view get="listPeople">', '  <xo-table columns="name,status">', '    <button xo-click="POST /people/{id}/disable"', '            xo-confirm="Disable {name}?"', '            xo-optimistic="status=disabled"', '    >Disable</button>', '  </xo-table>', '</xo-view>'] },
+    build(scr, win, d) {
+      const x = scr.left, w = scr.inner, y = scr.top + 8;
+      d.raw(ui.thead(x, y, w, ['Name \u25B2', 'Status', '']));
+      const row = (i, status) => ui.trow(x, y + 22 + i * 28, w, [PEOPLE[i][0], status], { button: 'Disable' });
+      const active = row(0, 'active') + row(1, 'active') + row(2, 'active');
+      const disabled = row(0, 'disabled') + row(1, 'active') + row(2, 'active');
+      const [before, after] = states([win(2)[1] - 0.25]);
+      d.layer(active, before);
+      d.layer(disabled, after);
+      d.still(disabled);
+      d.layer(ui.ring(x + w - 54, y + 26, 52, 20), [[win(0)[0], win(0)[1] + 0.3]]);
+      d.layer(ui.dialog(scr.x + 20, y + 130, scr.w - 40, 'Disable Ada?'), [[win(0)[0], win(0)[1] - 0.05]]);
+    },
+  },
+  parts: ['client.mutate', 'Entity store', 'Query cache'],
+  services: { active: 'People API', sub: ['GET /people', 'POST /people/{id}/disable'] },
   msgs: [
-    { from: 0, to: 1, label: 'mutate(op, params, body)' },
-    { from: 1, to: 2, label: ['xo-optimistic:', 'provisional patch'] },
-    { from: 1, to: 4, label: 'POST /users/1/disable' },
-    { from: 4, to: 1, label: '200 + User', dashed: true },
-    { from: 1, to: 2, label: 'upsert User#1' },
-    { from: 1, to: 3, label: ['invalidate paths that overlap', '/users/1/disable'] },
-    { from: 3, to: 4, label: 'refetch GET /users' },
-    { from: 4, to: 3, label: '200 list', dashed: true },
-    { from: 1, to: 0, label: 'resolves, xo-done', dashed: true },
-    { note: 'On failure: patch undone, XoongError thrown, xo-error fires', over: [0, 4] },
+    { from: 0, to: 1, label: 'mutate(op, params, body)', code: [2, 3], says: 'You click Disable on a row. The button\'s xo-click starts client.mutate, and xo-confirm asks first: "Disable Ada?" You press OK.' },
+    { from: 1, to: 2, label: ['xo-optimistic:', 'provisional patch'], code: [4, 4], says: 'With xo-optimistic, mutate patches the loaded record in the entity store at once, before the server has answered.' },
+    { from: 2, to: 0, label: 'effects: row says disabled', dashed: true, says: 'The row reads that record, so its effect writes "disabled" on the screen at once.' },
+    { from: 1, to: 4, label: 'POST /people/1/disable', code: [2, 2], says: 'mutate sends POST /people/1/disable to your People API. The {id} comes from the row.' },
+    { from: 4, to: 1, label: '200 + Person', dashed: true, says: 'Your People API answers 200 with the updated person.' },
+    { from: 1, to: 2, label: 'upsert Person#1', says: 'mutate puts the answer in the store: Person#1 is now the server\'s version, so every screen that shows it is up to date.' },
+    { from: 1, to: 3, label: ['invalidate paths that overlap', '/people/1/disable'], code: [0, 0], says: 'mutate marks every cached query whose path overlaps /people/1/disable as stale. GET /people is one.' },
+    { from: 3, to: 4, label: 'refetch GET /people', code: [0, 0], says: 'Something is watching that query (the list on the screen), so the cache sends GET /people again, now.' },
+    { from: 4, to: 3, label: '200 list', dashed: true, says: 'Your People API answers with the list as it is now.' },
+    { from: 1, to: 0, label: 'resolves, xo-done', dashed: true, says: 'mutate resolves, and the xo-done event fires on the view. The list is up to date.' },
+    { note: 'On failure: patch undone, xo-error fires', over: [1, 3] },
   ],
 });
 
@@ -437,29 +473,47 @@ ${files([
 // ---- 3. forms -------------------------------------------------------------------------------------------------------------------------
 
 const formsModel = diagram({
-  id: 'fm-model', label: 'Diagram: from the request schema to the form controls', w: 560, h: 520, size: 'sm', anim: true,
+  id: 'fm-model', label: 'Diagram: from the request schema to the form controls', w: 870, h: 584, size: 'xl', anim: true,
   title: 'From the request schema to the form controls',
-  desc: 'At the top left, the request schema in the OpenAPI document becomes the bodySchema node tree in operations.json when xoong sync runs. At the top right is the record, the item of the enclosing xo-view. Both feed the form model, created by createForm: the bodySchema is its schema and a copy of the record is its baseline. The model holds the baseline, the draft and the state of every path. Below it is the DOM binder, attach(form). Effects carry values and errors from the model to the binder, and set(path, raw) carries changes back. The binder writes to the form controls (input, select, textarea, XoControl) and hears their input, change and focusout events.',
+  desc: 'At the top left, the request schema in the OpenAPI document becomes the bodySchema node tree in operations.json when xoong sync runs. At the top right is the record, the item of the enclosing xo-view. Both feed the form model, created by createForm: the bodySchema is its schema and a copy of the record is its baseline. The model holds the baseline, the draft and the state of every path. Below it is the DOM binder, attach(form). Effects carry values and errors from the model to the binder, and set(path, raw) carries changes back. At the bottom is the screen the person sees: a window with the form controls (input, select, textarea, XoControl), which the binder writes to and whose input, change and focusout events it hears. To the right of the screen, the code you write, in a window named people.html, which makes the form.',
   caption: 'The model is the single source of truth. The DOM is a view of it: values go out through effects, changes come back through delegated events.',
-  motion: 'a dot follows the road in order. The schema becomes the bodySchema and, with the record, makes the model; the model\'s values go out through the binder to the controls. Then a change a person makes comes back as set(path, raw), and the new value and error go out again.',
+  motion: 'a dot follows the road in order while the code that causes the step is lit. The schema becomes the bodySchema and, with the record, makes the model; the model\'s values go out through the binder to the controls on the screen. Then a change a person makes comes back as set(path, raw), and the new value and error go out again.',
   draw(d) {
     const a = d.box(10, 14, 250, 'Request schema', 'requestBody in OpenAPI');
     const b = d.box(10, 104, 250, 'bodySchema', 'node tree in operations.json');
     const rec = d.box(300, 14, 250, 'Record', 'item of the enclosing xo-view');
     const model = d.box(80, 214, 400, 'Form model', ['createForm({ schema, value, rules })', 'baseline, draft, state per path'], { kind: 'core' });
     const binder = d.box(80, 336, 400, 'DOM binder', 'attach(form): delegated listeners, effect per control');
-    const ctl = d.box(80, 442, 400, 'Form controls', 'input, select, textarea, XoControl');
+    const scr = d.screen(60, 442, 440, 126, { title: '/people/1/edit' });
+    const code = d.code(596, 450, 262, 'people.html', 'html', ['<xo-view get="getPerson" p-id="1">', '  <xo-form op="updatePerson"', '           submit="Save"></xo-form>', '</xo-view>']);
+    d.line([[code.x, code.cy], [scr.r, code.cy]], { label: 'is drawn as', at: [(code.x + scr.r) / 2, code.cy - 13] });
+
+    const x = scr.left, y = scr.top + 8;
+    const values = (name, email, err = '') => ui.field(x, y, 190, 'Name', name) + ui.field(x + 206, y, 190, 'Email', email, err);
     const t = d.clock();
-    const [sync, make, out1, out2] = [t(), t(), t(), t()]; // the model is made, then its values go out to the controls
+    const sync = d.step('xoong sync wrote the request schema of the operation into operations.json, as the bodySchema node tree.', t());
+    const make = d.step('createForm builds the form model from the bodySchema, and keeps a copy of the record as its baseline.', t(), { code: [code, 0, 1] });
+    const out1 = d.step('The model\'s values and errors reach the DOM binder through effects.', t());
+    const out2 = d.step('The binder writes them into the form controls: the screen shows the record\'s values.', t(), { code: [code, 1, 2] });
     t.skip(0.6);
-    const [typed, back, out3, out4] = [t(), t(), t(), t()]; // then a person changes a field: the change comes back, and the new value goes out
+    const typed = d.step('You change the e-mail field. The control fires input (and later change and focusout), and the binder hears it through delegated events.', t());
+    const back = d.step('The binder tells the model: set(path, raw). The model is the only place that holds the value.', t());
+    const out3 = d.step('The model validates the new value: the e-mail is not valid. Its effects carry the new state to the binder.', t());
+    const out4 = d.step('The binder writes the error note: the field shows "Enter a valid email address." and is marked invalid.', t());
+    const [empty, filled, edited, wrong] = states([out2[1] - 0.25, typed[0] + 0.35, out4[1] - 0.25]);
+    d.layer(values('', ''), empty);
+    d.layer(values('Ada Lovelace', 'ada@example.org'), filled);
+    d.layer(values('Ada Lovelace', 'ada@'), edited);
+    d.layer(values('Ada Lovelace', 'ada@', 'Enter a valid email address.'), wrong);
+    d.still(values('Ada Lovelace', 'ada@example.org'));
+
     d.line([[a.cx, a.b], [a.cx, b.y]], { label: 'xoong sync', at: [146, 88], anchor: 'start', go: sync, from: a, to: b });
     d.line([[b.cx, b.b], [b.cx, 188], [200, 188], [200, model.y]], { go: make, from: b, to: model });
     d.line([[rec.cx, rec.b], [rec.cx, 188], [360, 188], [360, model.y]], { label: 'baseline = copy', at: [440, 130], anchor: 'start', go: make, from: rec, to: model });
     d.line([[170, model.b], [170, binder.y]], { label: 'effects', at: [158, 312], anchor: 'end', go: [out1, out3], from: model, to: binder });
     d.line([[390, binder.y], [390, model.b]], { label: 'set(path, raw)', at: [402, 312], anchor: 'start', go: back, from: binder, to: model });
-    d.line([[170, binder.b], [170, ctl.y]], { label: 'value, error note', at: [158, 418], anchor: 'end', go: [out2, out4], from: binder, to: ctl });
-    d.line([[390, ctl.y], [390, binder.b]], { label: 'input, change, focusout', at: [402, 418], anchor: 'start', go: typed, from: ctl, to: binder });
+    d.line([[170, binder.b], [170, scr.y]], { label: 'value, error note', at: [158, 418], anchor: 'end', go: [out2, out4], from: binder, to: scr });
+    d.line([[390, scr.y], [390, binder.b]], { label: 'input, change, focusout', at: [402, 418], anchor: 'start', go: typed, from: scr, to: binder });
   },
 });
 
@@ -630,29 +684,45 @@ ${files([
 // ---- 4. rendering ---------------------------------------------------------------------------------------------------------------------
 
 const renderGraph = diagram({
-  id: 'rn-graph', label: 'Diagram: how a signal change reaches the DOM', w: 590, h: 360, size: 'sm', anim: true,
+  id: 'rn-graph', label: 'Diagram: how a signal change reaches the DOM', w: 780, h: 424, size: 'lg', anim: true,
   title: 'How a signal change reaches the DOM',
-  desc: 'Two signals, first and last, feed a computed value, full, which is calculated lazily and cached. Two effects read the computed value: one writes a text node and one writes the class attribute. Each effect updates only its own DOM node. A separate box notes that batch groups several writes so that the effects run once, at the end.',
+  desc: 'Two signals, first and last, feed a computed value, full, which is calculated lazily and cached. Two effects read the computed value: one writes a text node and one writes the class attribute. Each effect updates only its own DOM node, which is on the screen the person sees: a window with a heading. A separate box notes that batch groups several writes so that the effects run once, at the end. To the right of the screen, the code that makes it, in a window named card.js.',
   caption: 'A write to a signal marks what read it. Only the effects that depend on it re-run, and each writes one node.',
-  motion: 'a dot shows one write: to first, then on to the computed value, to the two effects that read it, and from each effect to its own DOM node. After a pause the same happens for a write to last.',
+  motion: 'a dot shows one write: to first, then on to the computed value, to the two effects that read it, and from each effect to its own DOM node on the screen, while the code that causes the step is lit. After a pause the same happens for a write to last.',
   draw(d) {
     const s1 = d.box(10, 14, 170, 'first', 'signal("Ada")');
     const s2 = d.box(200, 14, 170, 'last', 'signal("Lovelace")');
     const comp = d.box(95, 104, 190, 'full', 'computed(): lazy, cached');
     const e1 = d.box(10, 194, 170, 'effect', 'sets node.data');
     const e2 = d.box(200, 194, 170, 'effect', 'sets class attribute');
-    const dom = d.box(10, 284, 360, 'DOM', 'a text node and an attribute change; nothing else');
-    d.box(398, 104, 180, 'batch(fn)', ['groups writes: effects', 'run once at the end'], { kind: 'soft' });
+    d.box(430, 14, 180, 'batch(fn)', ['groups writes: effects', 'run once at the end'], { kind: 'soft' });
+    const scr = d.screen(10, 284, 360, 124, { title: '/card' });
+    const code = d.code(430, 214, 334, 'card.js', 'js', ['const full = computed(() =>', "  first.value + ' ' + last.value);", '', 'html`<h3 class=${() =>', "  full.value.length > 12 ? 'long' : ''}>", '  ${() => full.value}</h3>`;']);
+    d.line([[code.x, scr.cy - 10], [scr.r, scr.cy - 10]]);
+
+    const x = scr.left, y = scr.top + 8;
+    const card = (name, long) => `<rect class="dg-wrow${long ? ' dg-wlong' : ''}" x="${x}" y="${y}" width="${scr.inner}" height="58" rx="6"/>`
+      + ui.h(x + 12, y + 20, name) + `<text class="dg-wm" x="${x + 12}" y="${y + 42}">${esc(`<h3 class="${long ? 'long' : ''}">`)}</text>`;
     const t = d.clock();
-    const [w1, run1, dom1] = [t(), t(), t()]; // a write to first
+    const w1 = d.step('Your code writes first.value = "Augusta". The computed value full read first, so it is marked as out of date.', t(), { code: [code, 0, 1] });
+    const run1 = d.step('The two effects that read full run. full is calculated now, once, and cached.', t(), { code: [code, 3, 5] });
+    const dom1 = d.step('Each effect writes its own DOM node: the text of the heading becomes "Augusta Lovelace", and, because that is longer than 12 characters, the class becomes "long". Nothing else on the page is touched.', t(), { code: [code, 3, 5] });
     t.skip(0.8);
-    const [w2, run2, dom2] = [t(), t(), t()]; // a write to last
-    d.line([[s1.cx, s1.b], [s1.cx, 88], [150, 88], [150, comp.y]], { go: w1, from: s1, to: comp });
-    d.line([[s2.cx, s2.b], [s2.cx, 88], [230, 88], [230, comp.y]], { go: w2, from: s2, to: comp });
-    d.line([[150, comp.b], [150, 178], [e1.cx, 178], [e1.cx, e1.y]], { go: [run1, run2], from: comp, to: e1 });
+    const w2 = d.step('Your code writes last.value = "King". full is marked as out of date again.', t(), { code: [code, 0, 1] });
+    const run2 = d.step('The two effects run again. full is calculated again, once.', t(), { code: [code, 3, 5] });
+    const dom2 = d.step('Each effect writes its own node again: the text becomes "Augusta King", and the class is empty again.', t(), { code: [code, 3, 5] });
+    const [first, second, third] = states([dom1[1] - 0.25, dom2[1] - 0.25]);
+    d.layer(card('Ada Lovelace', false), first);
+    d.layer(card('Augusta Lovelace', true), second);
+    d.layer(card('Augusta King', false), third);
+    d.still(card('Augusta King', false));
+
+    d.line([[s1.cx, s1.b], [s1.cx, 88], [150, 88], [150, comp.y]], { label: '1', at: [s1.cx - 12, 82], anchor: 'end', go: w1, from: s1, to: comp });
+    d.line([[s2.cx, s2.b], [s2.cx, 88], [230, 88], [230, comp.y]], { label: '4', at: [s2.cx + 12, 82], anchor: 'start', go: w2, from: s2, to: comp });
+    d.line([[150, comp.b], [150, 178], [e1.cx, 178], [e1.cx, e1.y]], { label: '2, 5', at: [60, 166], go: [run1, run2], from: comp, to: e1 });
     d.line([[230, comp.b], [230, 178], [e2.cx, 178], [e2.cx, e2.y]], { go: [run1, run2], from: comp, to: e2 });
-    d.line([[e1.cx, e1.b], [e1.cx, dom.y]], { go: [dom1, dom2], from: e1, to: dom });
-    d.line([[e2.cx, e2.b], [e2.cx, dom.y]], { go: [dom1, dom2], from: e2, to: dom });
+    d.line([[e1.cx, e1.b], [e1.cx, scr.y]], { label: '3, 6', at: [e1.cx + 10, 266], anchor: 'start', go: [dom1, dom2], from: e1, to: scr });
+    d.line([[e2.cx, e2.b], [e2.cx, scr.y]], { go: [dom1, dom2], from: e2, to: scr });
   },
 });
 
@@ -833,24 +903,60 @@ ${files([
 // ---- 5. routing -----------------------------------------------------------------------------------------------------------------------
 
 const navSteps = diagram({
-  id: 'rt-steps', label: 'Diagram: the steps of one navigation', w: 570, h: 650, size: 'sm', anim: true,
+  id: 'rt-steps', label: 'Diagram: the steps of one navigation', w: 700, h: 652, size: 'lg', anim: true,
   title: 'The steps of one navigation',
-  desc: 'A navigation starts from a link click, Back or Forward, or router.navigate(). Step 1: if the new location has the same path and query as the current one, nothing is done. Step 2: the vetoes run, which are the beforeNavigate hooks and the built-in check that asks first when a form has unsaved changes. Step 3: the guards run; each returns true, false, or a path to redirect to. A veto or a guard that returns false stops here: the URL is put back, and a Back or Forward is undone with history.go. Step 4: the history is written with pushState or replaceState and a position. Step 5: the layouts are kept or replaced and the route template is cloned. Step 6: after the render, the title, the description, aria-current, the focus and the scroll are set, and the xo-navigate event fires.',
+  desc: 'A navigation starts from a link click, Back or Forward, or router.navigate(). The steps run down the left: the same-place check, the vetoes (the beforeNavigate hooks and the built-in question when a form has unsaved changes), the guards (each returns true, false, or a path to redirect to), the history, the render, and what happens after. A veto or a guard that returns false stops here: the URL is put back, and a Back or Forward is undone with history.go. On the right, at the top, is the code you write: an xo-router with one route template. At the bottom right is the screen the person sees: a window with an address bar, a navigation that stays and a content area that changes.',
   caption: 'One navigation. A newer navigation that starts while a veto or guard is still waiting takes over, and the older one stops.',
-  motion: 'a dot goes down the steps in order, the way a navigation that nothing stops goes. The two ways out, to Stay, are not played.',
+  motion: 'a dot goes down the steps in order, the way a navigation that nothing stops goes, with side trips to the screen: the address changes, the content changes, and the title and focus are set. The two ways out, to Stay, are not played.',
   draw(d) {
-    const t = d.box(10, 14, 320, 'Trigger', 'link, Back/Forward, router.navigate()');
-    const same = d.box(10, 100, 320, 'Same place?', 'same path and query: nothing to do');
-    const veto = d.box(10, 186, 320, 'Vetoes', ['beforeNavigate() hooks;', 'a form with unsaved changes asks first']);
-    const guard = d.box(10, 288, 320, 'Guards', ['guard() hooks: true, false,', 'or a path to redirect to']);
-    const hist = d.box(10, 390, 320, 'History', 'pushState or replaceState, with a position');
-    const render = d.box(10, 476, 320, 'Render', 'keep shared layouts, clone the route template', { kind: 'core' });
-    const after = d.box(10, 562, 320, 'After', ['title, description, aria-current, focus,', 'scroll, then the xo-navigate event']);
-    const stay = d.box(390, veto.y, 170, 'Stay', ['URL put back;', 'Back/Forward undone', 'with history.go()'], { kind: 'err', bh: guard.b - veto.y });
-    const turn = d.clock({ travel: 0.8 });
-    [[t, same], [same, veto], [veto, guard], [guard, hist], [hist, render], [render, after]].forEach(([a, b]) => d.line([[a.cx, a.b], [a.cx, b.y]], { go: turn(), from: a, to: b }));
-    d.line([[veto.r, veto.cy], [stay.x, veto.cy]], { label: 'false', at: [360, veto.cy - 13] });
-    d.line([[guard.r, guard.cy], [stay.x, guard.cy]], { label: 'false', at: [360, guard.cy - 13] });
+    const t = d.box(10, 14, 280, 'Trigger', 'link, Back/Forward, router.navigate()');
+    const same = d.box(10, 100, 280, 'Same place?', 'same path and query: nothing to do');
+    const veto = d.box(10, 186, 280, 'Vetoes', ['beforeNavigate() hooks;', 'a form with unsaved changes asks first']);
+    const guard = d.box(10, 288, 280, 'Guards', ['guard() hooks: true, false,', 'or a path to redirect to']);
+    const hist = d.box(10, 390, 280, 'History', 'pushState or replaceState, with a position');
+    const render = d.box(10, 476, 280, 'Render', 'keep shared layouts, clone the route template', { kind: 'core' });
+    const after = d.box(10, 562, 280, 'After', ['title, description, aria-current, focus,', 'scroll, then the xo-navigate event']);
+    const stay = d.box(350, veto.y, 210, 'Stay', ['URL put back;', 'Back/Forward undone', 'with history.go()'], { kind: 'err', bh: guard.b - veto.y });
+    const code = d.code(340, 14, 352, 'index.html', 'html', ['<xo-router>', '  <template xo-route="/users/:id" title="User">', '    <xo-view get="getUser" p-id=":id">...</xo-view>', '  </template>', '</xo-router>']);
+    const scr = d.screen(350, 398, 236, 238, { title: '/users' });
+
+    const x = scr.left, y = scr.top;
+    const nav = (item) => `<rect class="dg-wrow" x="${x}" y="${y + 10}" width="56" height="178" rx="6"/>` + ui.t(x + 8, y + 28, 'Users', item === 'u' ? '' : 'dg-wn') + ui.t(x + 8, y + 50, 'Orders', 'dg-wn');
+    const list = nav('u') + ui.h(x + 68, y + 26, 'Users') + [0, 1, 2].map((i) => `<rect class="dg-wrow" x="${x + 68}" y="${y + 40 + i * 34}" width="${scr.inner - 68}" height="28" rx="5"/>` + ui.t(x + 78, y + 54 + i * 34, ['Ada', 'Bob', 'Cy'][i])).join('');
+    const one = nav('u') + ui.h(x + 68, y + 26, 'User 3') + [0, 1].map((i) => `<rect class="dg-wfield" x="${x + 68}" y="${y + 52 + i * 44}" width="${scr.inner - 68}" height="28" rx="5"/>` + ui.t(x + 78, y + 66 + i * 44, ['Cy', 'cy@example.org'][i], 'dg-wn')).join('');
+
+    const turn = d.clock({ travel: 0.7 });
+    const c = (text, n, opts) => d.step(text, turn(), opts);
+    const s1 = c('You click a link to /users/3 (or press Back, or the code calls router.navigate()). The router checks whether it is already at that place, same path and query. It is not, so it goes on.');
+    const s2 = c('The vetoes run: the beforeNavigate() hooks, and the built-in question when a form has unsaved changes. None of them says stop.');
+    const s3 = c('The guards run. Each returns true, false, or a path to go to instead. Here all of them say true.');
+    const s4 = c('The router writes the history with pushState (or replaceState, with a position).');
+    const s5 = c('The address bar of the browser now shows /users/3.');
+    const s6 = c('The layout stays. The router clones the template of the route /users/:id into the outlet.', null, { code: [code, 1] });
+    const s7 = c('The new content is on the screen. The navigation stayed; only the content changed. Its views start and fetch now.');
+    const s8 = c('After the render, the router sets the title and the description, marks the current link, moves the focus and the scroll.', null, { code: [code, 1] });
+    const s9 = c('The screen: the window shows the new title, and the focus is on the new content. The xo-navigate event fires.');
+    const [url1, url2] = states([s5[1] - 0.25]);
+    d.layer(ui.t(scr.bar[0] - 58 + 58, scr.bar[1], '/users', 'dg-wm'), url1);
+    d.layer(ui.t(scr.bar[0], scr.bar[1], '/users/3', 'dg-wm'), url2);
+    const [before, afterRender, focused] = states([s7[1] - 0.25, s9[1] - 0.25]);
+    d.layer(list, before);
+    d.layer(one, afterRender);
+    d.layer(one + ui.ring(x + 65, y + 8, scr.inner - 62, 24), focused);
+    d.still(one);
+
+    const numbered = (a, b, n, win, extra = {}) => d.line([[a.cx, a.b], [a.cx, b.y]], { label: n, at: [a.cx + 10, (a.b + b.y) / 2], anchor: 'start', go: win, from: a, to: b, ...extra });
+    numbered(t, same, '1', s1);
+    numbered(same, veto, '2', s2);
+    numbered(veto, guard, '3', s3);
+    numbered(guard, hist, '4', s4);
+    d.line([[hist.r, hist.cy], [scr.x, hist.cy]], { label: '5 URL', at: [(hist.r + scr.x) / 2, hist.cy - 13], go: s5, from: hist, to: scr });
+    numbered(hist, render, '6', s6);
+    d.line([[render.r, render.cy], [scr.x, render.cy]], { dash: true, label: '7 draws', at: [(render.r + scr.x) / 2, render.cy - 13], go: s7, from: render, to: scr });
+    numbered(render, after, '8', s8);
+    d.line([[after.r, after.cy], [scr.x, after.cy]], { dash: true, label: '9 focus', at: [(after.r + scr.x) / 2, after.cy - 13], go: s9, from: after, to: scr });
+    d.line([[veto.r, veto.cy], [stay.x, veto.cy]], { label: 'false', at: [320, veto.cy - 13] });
+    d.line([[guard.r, guard.cy], [stay.x, guard.cy]], { label: 'false', at: [320, guard.cy - 13] });
   },
 });
 
@@ -965,21 +1071,29 @@ ${files([
 // ---- 6. build and delivery ------------------------------------------------------------------------------------------------------------
 
 const buildSteps = diagram({
-  id: 'bd-build', label: 'Diagram: what xoong build does', w: 570, h: 480, size: 'sm', anim: { dur: 6.5 },
+  id: 'bd-build', label: 'Diagram: what xoong build does', w: 580, h: 480, size: 'sm', anim: { dur: 7 },
   title: 'What xoong build does',
-  desc: 'Every HTML page under the root is the start. The build follows what each page references: scripts, stylesheets and images, the modules the scripts import, CSS urls, and any files named with --include. Installed @xoong packages are found in node_modules and copied to the same URLs the dev server uses. It then rewrites bare imports to URLs, strips TypeScript, drops the import map and applies the --base prefix. It warns about anything the strict policy would block: an inline script, a style attribute, an inline style element. The result is the dist folder: the files you wrote, plus build-report.json.',
+  desc: 'Every HTML page under the root is the start. The build follows what each page references: scripts, stylesheets and images, the modules the scripts import, CSS urls, and any files named with --include. Installed @xoong packages are found in node_modules and copied to the same URLs the dev server uses. It then rewrites bare imports to URLs, strips TypeScript, drops the import map and applies the --base prefix. It warns about anything the strict policy would block: an inline script, a style attribute, an inline style element. The result is the dist folder: the files you wrote, plus build-report.json. At the top right is the command that starts it, in a terminal window.',
   caption: 'No bundling and no minifying: each file in the output is the file you wrote, with its imports rewritten.',
-  motion: 'a dot goes down the steps in order: the pages and the installed packages are followed together, then the files are rewritten, checked, and written to dist.',
+  motion: 'a dot goes down the steps in order, while the command is lit: the pages and the installed packages are followed together, then the files are rewritten, checked, and written to dist.',
   draw(d) {
     const pages = d.box(10, 14, 320, 'HTML pages', 'every .html file under --root');
     const follow = d.box(10, 100, 320, 'Follow references', ['script, link, img; module imports;', 'CSS url(); --include files']);
-    const pkgs = d.box(390, 100, 170, 'Installed packages', ['@xoong/* from', 'node_modules']);
+    const pkgs = d.box(390, 100, 180, 'Installed packages', ['@xoong/* from', 'node_modules']);
     const rewrite = d.box(10, 202, 320, 'Rewrite', ['bare imports to URLs, TypeScript stripped,', 'import map dropped, --base prefix']);
     const warn = d.box(10, 304, 320, 'Warn', ['what a strict policy blocks: inline script,', 'style attribute, style element']);
     const out = d.box(10, 406, 320, 'dist/', 'your files, rewritten, plus build-report.json', { kind: 'core' });
+    const cmd = d.code(364, 14, 206, 'Terminal', 'bash', ['npx xoong build --out dist']);
+    d.line([[cmd.x, cmd.cy], [pages.r, cmd.cy]]);
     const turn = d.clock({ travel: 0.9 });
-    const first = turn(); // the pages and the packages come in together
-    [[pages, follow, first], [follow, rewrite, turn()], [rewrite, warn, turn()], [warn, out, turn()]].forEach(([a, b, go]) => d.line([[a.cx, a.b], [a.cx, b.y]], { go, from: a, to: b }));
+    const first = d.step('You run xoong build. It starts from every HTML page under the root and follows what each one references: scripts, stylesheets, images, the modules the scripts import, CSS url() and any files named with --include. Installed @xoong packages are found in node_modules.', turn(), { code: [cmd, 0] });
+    const second = d.step('Each file is rewritten as it is copied: bare imports become URLs, TypeScript is stripped, the import map is dropped and the --base prefix is applied.', turn(), { code: [cmd, 0] });
+    const third = d.step('The build warns about anything the strict policy would block: an inline script, a style attribute, an inline style element.', turn(), { code: [cmd, 0] });
+    const fourth = d.step('The result is dist/: your files, rewritten, plus build-report.json.', turn(), { code: [cmd, 0] });
+    d.line([[pages.cx, pages.b], [pages.cx, follow.y]], { label: '1', at: [pages.cx + 10, (pages.b + follow.y) / 2], anchor: 'start', go: first, from: pages, to: follow });
+    d.line([[follow.cx, follow.b], [follow.cx, rewrite.y]], { label: '2', at: [follow.cx + 10, (follow.b + rewrite.y) / 2], anchor: 'start', go: second, from: follow, to: rewrite });
+    d.line([[rewrite.cx, rewrite.b], [rewrite.cx, warn.y]], { label: '3', at: [rewrite.cx + 10, (rewrite.b + warn.y) / 2], anchor: 'start', go: third, from: rewrite, to: warn });
+    d.line([[warn.cx, warn.b], [warn.cx, out.y]], { label: '4', at: [warn.cx + 10, (warn.b + out.y) / 2], anchor: 'start', go: fourth, from: warn, to: out });
     d.line([[pkgs.x, pkgs.cy], [follow.r, follow.cy]], { go: first, from: pkgs, to: follow });
   },
 });
@@ -1099,11 +1213,11 @@ ${files([
 // ---- 7. tooling -----------------------------------------------------------------------------------------------------------------------
 
 const toolEngine = diagram({
-  id: 'tl-engine', label: 'Diagram: one check engine, three front ends', w: 590, h: 290, size: 'sm', anim: { dur: 6.5 },
+  id: 'tl-engine', label: 'Diagram: one check engine, three front ends', w: 590, h: 372, size: 'sm', anim: { dur: 7 },
   title: 'One check engine, three front ends',
-  desc: 'Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants.',
+  desc: 'Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants. At the bottom is the command that runs the first of them, in a terminal window.',
   caption: 'A new rule is written once and appears in every front end with the same message and the same fix.',
-  motion: 'dots go from the three inputs into the engine together, and then out to the three front ends together: one set of findings, shown three ways.',
+  motion: 'dots go from the three inputs into the engine together, and then out to the three front ends together, while the command is lit: one set of findings, shown three ways.',
   draw(d) {
     const i1 = d.box(10, 14, 200, 'operations.json', 'from xoong sync', { bh: 74 });
     const i2 = d.box(10, 104, 200, 'syntax.js', 'every xo-* name', { bh: 74 });
@@ -1112,10 +1226,13 @@ const toolEngine = diagram({
     const o1 = d.box(432, 14, 150, 'xoong check', 'CLI and CI', { bh: 74 });
     const o2 = d.box(432, 104, 150, 'xoong-lsp', ['diagnostics,', 'completion, hover'], { bh: 74 });
     const o3 = d.box(432, 194, 150, 'xoong-mcp', ['tools: check,', 'explain_error'], { bh: 74 });
+    const cmd = d.code(190, 296, 230, 'Terminal', 'bash', ['npx xoong check index.html']);
+    d.line([[cmd.cx, cmd.y], [cmd.cx, eng.b]]);
     const turn = d.clock({ travel: 1.4, gap: 0.8 });
-    const into = turn(), out = turn();
-    [[i1, 100], [i2, 150], [i3, 200]].forEach(([b, y]) => d.line([[b.r, b.cy], [eng.x, y]], { go: into, from: b, to: eng }));
-    [[o1, 100], [o2, 150], [o3, 200]].forEach(([b, y]) => d.line([[eng.r, y], [b.x, b.cy]], { go: out, from: eng, to: b }));
+    const into = d.step('You run xoong check, or your editor or your AI assistant does. The check engine takes three inputs: operations.json (from xoong sync), the list of xo-* names in syntax.js, and your HTML, JS and TS files.', turn(), { code: [cmd, 0] });
+    const out = d.step('The engine produces findings with codes XO2xx, each with a fix. The three front ends show the same findings: xoong check in the terminal and CI, xoong-lsp in your editor, xoong-mcp for AI assistants.', turn(), { code: [cmd, 0] });
+    [[i1, 100], [i2, 150], [i3, 200]].forEach(([b, y], k) => d.line([[b.r, b.cy], [eng.x, y]], { label: k === 1 ? '1' : '', at: [(b.r + eng.x) / 2 - 8, y - 16], go: into, from: b, to: eng }));
+    [[o1, 100], [o2, 150], [o3, 200]].forEach(([b, y], k) => d.line([[eng.r, y], [b.x, b.cy]], { label: k === 1 ? '2' : '', at: [(eng.r + b.x) / 2, y - 18], go: out, from: eng, to: b }));
   },
 });
 

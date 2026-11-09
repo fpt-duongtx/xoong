@@ -110,9 +110,13 @@ defineTemplate('xo-form', (el, { client }) => {
   form.setAttribute('xo-submit', ref);
   form.className = 'xo-form';
   for (const name of FORWARDED) if (el.hasAttribute(name)) form.setAttribute(name, el.getAttribute(name) ?? ''); // the modifiers of the action go to the form that runs it
+  // Elements inside <xo-form> are drawn beside the submit button, in one row: `<xo-form op="createPerson" submit="Add"><button type="button" xo-close>Cancel</button></xo-form>`
+  const extras = [...el.children].map((child) => child.outerHTML).join('');
+  const inDialog = !!el.closest('xo-dialog'); // in a dialog the buttons are a row of their own, which the dialog keeps in view while the fields scroll
+  const actions = (/** @type {string} */ submitButton) => (extras || inDialog ? `<div class="xo-form-actions">${submitButton}${extras}</div>` : submitButton);
   if (op.bodySchema) { // the schema-driven generator: nested objects, arrays, unions, hints
     const submit = el.getAttribute('submit');
-    form.innerHTML = fields(op.bodySchema, '', 0) + (submit ? `<button class="xo-submit">${esc(submit)}</button>` : '<button class="xo-submit" xo-t="xoong.form.save">Save</button>');
+    form.innerHTML = fields(op.bodySchema, '', 0) + actions(submit ? `<button class="xo-submit">${esc(submit)}</button>` : '<button class="xo-submit" xo-t="xoong.form.save">Save</button>');
     return form;
   }
   const flat = op.bodyFields ?? [];
@@ -147,6 +151,12 @@ defineTemplate('xo-form', (el, { client }) => {
   const button = document.createElement('button');
   button.className = 'xo-submit';
   button.textContent = el.getAttribute('submit') || 'Save';
-  form.append(button);
+  if (extras || inDialog) {
+    const row = document.createElement('div');
+    row.className = 'xo-form-actions';
+    row.innerHTML = extras;
+    row.prepend(button);
+    form.append(row);
+  } else form.append(button);
   return form;
 });

@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Command line · xoong</title>
+  <meta name="description" content="The xoong command: sync, doctor, new, check, dev, build, render and i18n, with every option, its default, an example and the exit codes.">
+  <meta property="og:title" content="Command line · xoong">
+  <meta property="og:description" content="The xoong command: sync, doctor, new, check, dev, build, render and i18n, with every option, its default, an example and the exit codes.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Command line</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html" aria-current="page">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html" aria-current="page">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Tools</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Command line</span></div>
+
+<h1>Command line</h1>
+<p class="lead"><code>xoong</code> is the command that goes with the framework. It reads your OpenAPI document and writes the table of operations the runtime uses, checks your HTML screens against it, serves the app while you work, and writes static files that run under a strict Content-Security-Policy. It runs in Node, in development and in your build; none of it is sent to the browser.</p>
+
+<h2 id="install-and-run">Install and run</h2>
+<p>The command is part of <code>@xoong/cli</code>. <code>@xoong/xoong</code>, the one install for the runtime and the admin set, depends on it, so either gives you <code>xoong</code>. Both need Node 22.12 or newer. The command reads no environment variables.</p>
+<xo-tabs label="Install" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code><span class="tok-c"># the runtime, the admin set and the command in one install</span>
+npm install @xoong/xoong@next
+
+<span class="tok-c"># or only the command, as a development tool</span>
+npm install <span class="tok-a">--save-dev</span> @xoong/cli@next
+
+npx xoong <span class="tok-a">--version</span>
+npx xoong <span class="tok-a">--help</span></code></pre></section>
+</xo-tabs>
+<p><code>npx xoong</code> runs the copy in <code>node_modules</code>. <code>xoong --help</code> (or <code>-h</code>, or <code>xoong help</code>, anywhere on the line) prints every command with every option and does nothing else; <code>xoong --version</code> (<code>-v</code>) prints the version. An option that does not exist is refused with the list of the ones that do, never ignored. The MCP server and the language server are separate programs: <a href="mcp.html"><code>xoong-mcp</code></a> and <a href="editor.html"><code>xoong-lsp</code></a>.</p>
+
+<h2 id="the-commands-at-a-glance">The commands at a glance</h2>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Command</th><th>What it does</th><th>Reads</th><th>Writes</th></tr></thead>
+<tbody>
+<tr><td><a href="#xoong-sync"><code>xoong&nbsp;sync</code></a></td><td>Turns an OpenAPI document into the files the runtime and the editor read.</td><td>An OpenAPI 3 or Swagger 2 document (a file or a URL), a hints file</td><td><code>.xoong/operations.json</code>, <code>api.d.ts</code>, <code>xoong.html-data.json</code></td></tr>
+<tr><td><a href="#xoong-doctor"><code>xoong&nbsp;doctor</code></a></td><td>Audits the document and says what limits xoong, with a fix for each finding.</td><td>The document, a hints file</td><td>Nothing</td></tr>
+<tr><td><a href="#xoong-new"><code>xoong&nbsp;new</code></a></td><td>Creates a project with a first list screen.</td><td>The document</td><td>A project folder</td></tr>
+<tr><td><a href="#xoong-check"><code>xoong&nbsp;check</code></a></td><td>Checks screens against your API: operations that do not exist, attributes in the wrong place, missing names.</td><td>HTML, JavaScript and TypeScript files, <code>operations.json</code></td><td>Nothing</td></tr>
+<tr><td><a href="#xoong-render"><code>xoong&nbsp;render</code></a></td><td>Prerenders a page, with its data, into plain HTML.</td><td>A page, the API it reads from, <code>operations.json</code></td><td>The HTML: a file, or standard output</td></tr>
+<tr><td><a href="#xoong-build"><code>xoong&nbsp;build</code></a></td><td>Writes static files that run under a strict Content-Security-Policy.</td><td>Every page under the root and what they reference</td><td><code>dist/</code> and <code>dist/build-report.json</code></td></tr>
+<tr><td><a href="#xoong-i18n"><code>xoong&nbsp;i18n extract</code></a></td><td>Lists the translatable texts (<code>xo-t</code>) with their source text.</td><td>HTML and JavaScript files</td><td>A catalog (JSON): a file, or standard output</td></tr>
+<tr><td><a href="#xoong-i18n"><code>xoong&nbsp;i18n check</code></a></td><td>Compares a translation with the source catalog.</td><td>Two catalog files</td><td>Nothing</td></tr>
+<tr><td><a href="#xoong-dev"><code>xoong&nbsp;dev</code></a></td><td>Serves the app while you work: static files, an API proxy, TypeScript.</td><td>The project folder</td><td>Nothing</td></tr>
+</tbody></table></div>
+<p>A project uses them in this order: <code>sync</code> when the API changes, <code>check</code> while you write screens, <code>dev</code> to look at them, <code>build</code> to ship them.</p>
+<xo-tabs label="A project, day to day" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npx xoong sync openapi.json <span class="tok-a">--hints</span> xoong.hints.json   <span class="tok-c"># after the API changed</span>
+npx xoong check index.html src                          <span class="tok-c"># as you write screens</span>
+npx xoong dev                                           <span class="tok-c"># http://127.0.0.1:5173</span>
+npx xoong build <span class="tok-a">--out</span> dist                              <span class="tok-c"># what you deploy</span></code></pre></section>
+</xo-tabs>
+
+<h2 id="xoong-sync">xoong sync</h2>
+<p>Turns your OpenAPI document into what the rest of xoong reads. Run it once, and again whenever the API changes. It reads OpenAPI 3.x as JSON or YAML, from a file or an http(s) URL (Swagger 2.0 is converted first), and writes three files into <code>.xoong/</code>:</p>
+<ul>
+<li><code>operations.json</code>: the table of operations, with their parameters, request fields and entities. <a href="data.html"><code>configure({ api })</code></a> gives it to the runtime; <code>check</code>, the language server and the MCP server read it too.</li>
+<li><code>api.d.ts</code>: TypeScript types for the same operations.</li>
+<li><code>xoong.html-data.json</code>: completion data for the editor (<a href="editor.html">Editor support</a>).</li>
+</ul>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong sync &lt;openapi.json|yaml|url&gt; [--out .xoong] [--hints hints.json]</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--out</code></td><td><code>.xoong</code></td><td>The folder for the generated files (created when it is missing).</td></tr>
+<tr><td><code>--hints</code></td><td>none</td><td>A hints file (xoong.hints.json). It is never looked for on its own: pass it on every run.</td></tr>
+</tbody></table></div>
+<p>It prints one line with the counts. Errors print in full, with the code, the place, the message and the fix, and make the exit code 1. What the document asks for and xoong does not do (<a href="codes.html#xo113">XO113</a>) is one <code>warning</code> line per kind. Any other warnings are only counted: <code>xoong doctor</code> lists them.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong sync openapi.json <span class="tok-a">--hints</span> xoong.hints.json
+synced 5 operations, 1 entities
+
+<span class="tok-c">$</span> npx xoong sync openapi.json
+synced 1 operations, 0 entities
+error XO150 #/components/schemas/Order
+  $ref points to something that does not exist
+  fix: Define the target or remove the reference
+warning XO113: the required header X-Tenant-Id (listOrders) is not sent by xoong. Send it on every call: configure({ headers: () =&gt; ({ 'X-Tenant-Id': value }) })</code></pre>
+<p>The second run exits with 1 because of the error; the warning alone would not.</p>
+
+<h2 id="xoong-doctor">xoong doctor</h2>
+<p>A health check of the OpenAPI document, for when you do not own it. It prints what limits xoong (a missing <code>operationId</code>, undocumented errors, schemas that are entities in all but name), each with a fix, and writes nothing. The codes are the <code>XO1xx</code> ones in <a href="codes.html">Error codes</a>.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong doctor &lt;openapi.json|yaml|url&gt; [--hints hints.json] [--all]</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--hints</code></td><td>none</td><td>The same hints file you give to sync, so the audit sees what sync sees.</td></tr>
+<tr><td><code>--all</code></td><td>off</td><td>Print every warning. By default each warning code shows its first five and counts the rest.</td></tr>
+</tbody></table></div>
+<p>Errors always print in full. Each warning code shows its first five findings and counts the rest, so a large API stays readable; <code>--all</code> prints everything. The exit code is 1 when there is an error, 0 otherwise.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong doctor openapi.json <span class="tok-a">--hints</span> xoong.hints.json
+error XO150 #/components/schemas/Order
+  $ref points to something that does not exist
+  fix: Define the target or remove the reference
+warn XO113 #/paths (parameters in: header)
+  the required header X-Tenant-Id (listOrders) is not sent by xoong
+  fix: Send it on every call: configure({ headers: () =&gt; ({ 'X-Tenant-Id': value }) })
+
+1 operations, 0 entities, 1 errors, 1 warnings</code></pre>
+
+<h2 id="xoong-new">xoong new</h2>
+<p>Creates a project folder from an OpenAPI document: a page with a table of the first list the API offers (the first GET operation without path parameters whose response is, or contains, a list of objects), a test for it, the configuration and the generated files. It refuses to run in a folder that already has a <code>package.json</code>.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong new &lt;folder&gt; <span class="tok-a">--spec</span> &lt;openapi.json|yaml|url&gt; [--title <span class="tok-s">"My app"</span>] [--link &lt;xoong checkout&gt;]</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--spec</code></td><td><em>required</em></td><td>The OpenAPI document the project is made from (a file or a URL). It is copied into the project.</td></tr>
+<tr><td><code>--title</code></td><td>the title of the OpenAPI document</td><td>The heading of the first screen.</td></tr>
+<tr><td><code>--link</code></td><td>none</td><td>A checkout of the xoong repository: the project then uses its packages by path instead of from npm.</td></tr>
+</tbody></table></div>
+<p>It writes <code>package.json</code> (with the scripts <code>dev</code>, <code>sync</code>, <code>check</code> and <code>test</code>), <code>xoong.config.json</code>, <code>xoong.hints.json</code>, <code>index.html</code>, <code>src/main.ts</code>, <code>src/app.css</code>, <code>vitest.config.mjs</code>, <code>test/index.spec.mjs</code>, <code>README.md</code>, a copy of the document as <code>openapi.json</code>, and <code>.xoong/</code> as <code>sync</code> would.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong new people-app <span class="tok-a">--spec</span> openapi.json
+created /home/you/people-app
+  first screen: GET /api/people
+  next: cd people-app &amp;&amp; npm install &amp;&amp; npm run dev
+  (the @xoong/* packages come from npm; to use a checkout of the xoong repository instead, run again with --link &lt;path to the xoong repository&gt;)</code></pre>
+<aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p>The generated <code>package.json</code> asks for the version of the CLI you ran for every <code>@xoong</code> package (they are released together), so <code>npx @xoong/cli@next new</code> gives a project on the same release. See <a href="install.html">Install</a>.</p></aside>
+
+<h2 id="xoong-check">xoong check</h2>
+<p>Finds the mistakes that would otherwise show up as a button that does nothing, before you open a browser. It reads HTML files and, in <code>.js</code>, <code>.mjs</code>, <code>.ts</code> and <code>.mts</code> files, the HTML inside <code>html`...`</code> templates and the operation named in a <code>client.load</code>, <code>query</code>, <code>mutate</code> or <code>stream</code> call. It compares what it finds with <code>operations.json</code>. Give it files and folders; folders are walked without <code>node_modules</code>, <code>dist</code>, <code>build</code>, <code>coverage</code> and folders that start with a dot.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong check &lt;file|folder&gt;... [--operations .xoong/operations.json] [--format text|json] [--exclude glob]...</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--operations</code></td><td><code>.xoong/operations.json</code></td><td>The operations table that sync wrote.</td></tr>
+<tr><td><code>--format</code></td><td><code>text</code></td><td>text prints one finding with its fix per line; json prints the list of findings, for tools. One of <code>text</code> or <code>json</code>.</td></tr>
+<tr><td><code>--exclude</code></td><td>none</td><td>Skip the files and folders that match (paths relative to the current folder). It adds to check.exclude of xoong.config.json. May be given more than once.</td></tr>
+</tbody></table></div>
+<p>Every finding has a code, a place (file, line, column), a message and a fix. An error makes the exit code 1; a warning is printed and does not. Without <code>.xoong/operations.json</code> (or the file <code>--operations</code> names) it stops and tells you to run <code>xoong sync</code>. <code>--exclude</code> and <code>"check": { "exclude": [] }</code> of <code>xoong.config.json</code> take globs, see <a href="#configuration">Configuration</a>.</p>
+<xo-tabs label="Check a screen" class="example">
+  <section xo-tab="screens/people.html"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"GET /api/people"</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePersn"</span> <span class="tok-a">xo-confirm-kind</span>=<span class="tok-s">"danger"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email"</span> <span class="tok-a">sortable</span>&gt;&lt;/<span class="tok-t">xo-table</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong check screens
+screens/people.html:2:11  error XO201  unknown operation "deletePersn" (closest: "deletePerson")
+    fix: Use "deletePerson"
+screens/people.html:2:34  error XO270  xo-confirm-kind does nothing without xo-confirm on the same element
+    fix: Add xo-confirm="Question?" beside it, or remove it
+
+1 files, 2 errors, 0 warnings</code></pre></section>
+  <section xo-tab="--format json"><pre data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong check screens <span class="tok-a">--format</span> json
+[
+  {
+    "level": "error",
+    "code": "XO201",
+    "file": "screens/people.html",
+    "line": 2,
+    "column": 11,
+    "message": "unknown operation \"deletePersn\" (closest: \"deletePerson\")",
+    "fix": "Use \"deletePerson\""
+  },
+  {
+    "level": "error",
+    "code": "XO270",
+    "file": "screens/people.html",
+    "line": 2,
+    "column": 34,
+    "message": "xo-confirm-kind does nothing without xo-confirm on the same element",
+    "fix": "Add xo-confirm=\"Question?\" beside it, or remove it"
+  }
+]</code></pre></section>
+</xo-tabs>
+<p>The rules come in families. Each code is explained on the <a href="codes.html">Error codes</a> page, and the MCP tool <a href="mcp.html"><code>explain_error</code></a> gives the same text to an assistant.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Codes</th><th>What they find</th></tr></thead>
+<tbody>
+<tr><td><a href="codes.html#xo201">XO201</a>, <a href="codes.html#xo202">XO202</a>, <a href="codes.html#xo203">XO203</a>, <a href="codes.html#xo204">XO204</a></td><td><strong>Operations in screens.</strong> A name in xo-click, xo-submit, get or op that is not in the synced API, or an operation used the wrong way round: a click that calls a read, a view that reads a write, and in JavaScript load on a write or mutate on a read.</td></tr>
+<tr><td><a href="codes.html#xo210">XO210</a></td><td><strong>Path parameters.</strong> A view whose operation has a {param} in its path and no p-param to fill it.</td></tr>
+<tr><td><a href="codes.html#xo220">XO220</a>, <a href="codes.html#xo221">XO221</a>, <a href="codes.html#xo222">XO222</a></td><td><strong>Forms and expressions.</strong> xo-submit away from a form, a form outside an xo-view (it never binds), an xo-each, xo-if or xo-body with no path.</td></tr>
+<tr><td><a href="codes.html#xo230">XO230</a></td><td><strong>Unknown names.</strong> An xo-* element or attribute that xoong does not define. Nearly always a typo; the message names the closest one.</td></tr>
+<tr><td><a href="codes.html#xo240">XO240</a>, <a href="codes.html#xo241">XO241</a>, <a href="codes.html#xo242">XO242</a>, <a href="codes.html#xo243">XO243</a></td><td><strong>Accessibility and images.</strong> A button without a name, a click that a keyboard cannot reach, an xo-image without alt, an img whose src is bound inside a view.</td></tr>
+<tr><td><a href="codes.html#xo250">XO250</a>, <a href="codes.html#xo251">XO251</a>, <a href="codes.html#xo252">XO252</a>, <a href="codes.html#xo253">XO253</a>, <a href="codes.html#xo254">XO254</a>, <a href="codes.html#xo255">XO255</a></td><td><strong>Tables, pagers, generated forms and selection.</strong> A table or pager asking for sorting, paging or filters that the operation does not offer, or sitting outside a view; a generated form with nothing to generate; xo-select and xo-selected used wrongly.</td></tr>
+<tr><td><a href="codes.html#xo260">XO260</a>, <a href="codes.html#xo261">XO261</a>, <a href="codes.html#xo262">XO262</a>, <a href="codes.html#xo263">XO263</a></td><td><strong>Routes and layouts.</strong> A route path that is missing, malformed or repeated, a layout that is not declared or has no outlet, a route parameter that the route does not have.</td></tr>
+<tr><td><a href="codes.html#xo270">XO270</a>, <a href="codes.html#xo271">XO271</a>, <a href="codes.html#xo272">XO272</a>, <a href="codes.html#xo273">XO273</a>, <a href="codes.html#xo274">XO274</a>, <a href="codes.html#xo275">XO275</a>, <a href="codes.html#xo276">XO276</a></td><td><strong>Attributes in the wrong place.</strong> An attribute that does nothing where it stands, a value outside its set or malformed, a name that the operation does not have, an attribute outside the element that gives it meaning.</td></tr>
+</tbody></table></div>
+
+<h2 id="xoong-dev">xoong dev</h2>
+<p>Serves the app while you work. It needs no bundler and no configuration beyond the proxy:</p>
+<ul>
+<li><strong>Static files</strong> from the root, with <code>Cache-Control: no-cache</code>. There is no live reload yet: refresh the page.</li>
+<li><strong>An import map.</strong> An HTML page that has none gets one before its first script, listing the installed xoong packages (and those named in <code>packages</code>), so <code>import '@xoong/data'</code> works as it is.</li>
+<li><strong>TypeScript.</strong> A <code>.ts</code> file is served as JavaScript, with its types stripped (erasable syntax only: no <code>enum</code>, <code>namespace</code> or parameter properties; lines and columns stay the same). Import your own files with the <code>.ts</code> extension.</li>
+<li><strong>A proxy</strong> for every prefix you give. <code>/api/people</code> reaches <code>http://localhost:8080</code> as <code>/people</code>: the prefix is removed, so put it in the target (<code>/api=http://localhost:8080/api</code>) to keep it. Whole path segments only (<code>/api</code> does not match <code>/apix</code>), the longest prefix first, bodies streamed both ways (server-sent events pass through), and a backend that does not answer gives a 502 with the reason.</li>
+<li><strong><code>--spa</code></strong> answers a path without a file extension with <code>index.html</code>, for an app with an <code>&lt;xo-router&gt;</code>.</li>
+<li><strong>Safe on a shared network.</strong> It listens on 127.0.0.1 only, serves nothing outside the root, hides folders that start with a dot (except <code>.xoong</code> and <code>.well-known</code>) and refuses a <code>Host</code> that is not local (<code>allowedHosts</code> adds names).</li>
+</ul>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080]... [--spa]</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--root</code></td><td><code>.</code></td><td>The folder to serve. xoong.config.json is read from it.</td></tr>
+<tr><td><code>--port</code></td><td><code>5173</code></td><td>The port, a number from 0 to 65535 (0 lets the system pick one). The server listens on 127.0.0.1 only.</td></tr>
+<tr><td><code>--proxy</code></td><td>none</td><td>Forward the requests under a prefix to a backend, written /prefix=http://host:port. It adds to proxy of xoong.config.json; for the same prefix the flag wins. May be given more than once.</td></tr>
+<tr><td><code>--spa</code></td><td>off</td><td>Answer every path without a file extension with index.html, for an app with an &lt;xo-router&gt;.</td></tr>
+</tbody></table></div>
+<pre class="plain" data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong dev
+xoong dev  http://127.0.0.1:5173   (root: /home/you/people-app)
+  proxy /api -&gt; http://localhost:8080</code></pre>
+<p>It runs until you stop it. It exits with 1 when it cannot start (a port in use, a <code>--port</code> that is not a number from 0 to 65535, an unreadable <code>xoong.config.json</code>). The inline import map is blocked by a strict policy, so never deploy what the dev server sends: use <code>xoong build</code>.</p>
+
+<h2 id="xoong-build">xoong build</h2>
+<p>Writes static files that run under a strict Content-Security-Policy: no import map, no inline script, no inline style. It starts from every <code>.html</code> page under the root and follows what each one references: scripts, stylesheets, images, the modules the scripts import, CSS <code>url()</code> and <code>@import</code>. Installed packages are found in <code>node_modules</code> and copied to the same URLs the dev server uses. Then:</p>
+<ul>
+<li>bare imports (<code>"@xoong/data"</code>) are rewritten to URLs, and the import map is dropped from the pages;</li>
+<li>TypeScript is stripped and <code>.ts</code> files are written as <code>.js</code>;</li>
+<li><code>src</code>, <code>poster</code>, a <code>&lt;link&gt;</code>'s <code>href</code> and every URL of a <code>srcset</code> are copied and, with <code>--base</code>, given the prefix. <code>&lt;a href&gt;</code> is left as written on purpose: a link to another page is for the router, or a plain relative link, to resolve;</li>
+<li>every page gets <code>&lt;link rel="modulepreload"&gt;</code> for the modules its scripts import, so the browser fetches the chain at once instead of one level at a time (<code>--no-preload</code> turns it off);</li>
+<li>nothing is minified or bundled: every output file is the one you wrote, readable in the browser's tools.</li>
+</ul>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]... [--no-preload]</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--root</code></td><td><code>.</code></td><td>The folder with the pages. Every .html file under it is a page.</td></tr>
+<tr><td><code>--out</code></td><td><code>dist</code></td><td>The output folder. It is never read as input, even when it sits inside the root.</td></tr>
+<tr><td><code>--base</code></td><td>none</td><td>The URL path the app is served under. Root-absolute URLs get this prefix. By default the app is served at /.</td></tr>
+<tr><td><code>--include</code></td><td>none</td><td>A file or folder (relative to the root) to publish although no page names it: data fetched from JavaScript, images named in code. May be given more than once.</td></tr>
+<tr><td><code>--exclude</code></td><td>none</td><td>Keep matching .html files out of the start list (partials, drafts). A file that a page references is still published. May be given more than once.</td></tr>
+<tr><td><code>--no-preload</code></td><td>off</td><td>Do not add &lt;link rel="modulepreload"&gt; to the pages.</td></tr>
+</tbody></table></div>
+<p>HTML that is not a page (a partial, a fixture, a draft) is kept out with <code>--exclude</code>; a file that a page references is still published. What the build cannot see, such as a <code>fetch()</code> of a data file or an image named in JavaScript, is added with <code>--include</code>.</p>
+<xo-tabs label="What changes" class="example">
+  <section xo-tab="src/main.ts"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
+<span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };</code></pre></section>
+  <section xo-tab="dist/src/main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'/@xoong/data/src/index.js'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'/@xoong/data/src/view.js'</span>;
+<span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };</code></pre></section>
+  <section xo-tab="With --base /admin"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'/admin/@xoong/data/src/index.js'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'/admin/@xoong/data/src/view.js'</span>;
+<span class="tok-k">import</span> operations <span class="tok-k">from</span> <span class="tok-s">'/admin/.xoong/operations.json'</span> with { type: <span class="tok-s">'json'</span> };</code></pre></section>
+</xo-tabs>
+<h3>The strict-CSP model</h3>
+<p>The build prints the policy its output is tested with, and writes it into <code>dist/build-report.json</code> next to the size of every file (raw and gzipped) and the warnings. It does not send the policy: your host sets the <code>Content-Security-Policy</code> header. <a href="arch-build.html#the-csp-model">The CSP model</a> explains why the runtime needs nothing the policy forbids.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong build <span class="tok-a">--out</span> dist
+built 23 files into /home/you/people-app/dist (135.5 KB, 47.6 KB gzip)
+
+runs under:  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'</code></pre>
+<p>The build warns about what that policy would block in your own pages: an inline <code>&lt;script&gt;</code>, a <code>style=""</code> attribute, an inline <code>&lt;style&gt;</code>. It also warns about a bare import it cannot resolve and a referenced file that does not exist. A warning does not fail the build (the exit code stays 0); it is printed and written to the report, so a CI job can fail on it.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code>warning: /index.html:2: a style="" attribute is blocked by style-src 'self'; use a class
+warning: /index.html:3: an inline &lt;script&gt; is blocked by script-src 'self'; move it to a file</code></pre>
+<xo-tabs label="build-report.json" class="example">
+  <section xo-tab="JSON"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"csp"</span>: <span class="tok-s">"default-src 'none'; script-src 'self'; ..."</span>,
+  <span class="tok-a">"files"</span>: [
+    { <span class="tok-a">"path"</span>: <span class="tok-s">"/index.html"</span>, <span class="tok-a">"bytes"</span>: <span class="tok-n">1927</span>, <span class="tok-a">"gzip"</span>: <span class="tok-n">551</span> },
+    { <span class="tok-a">"path"</span>: <span class="tok-s">"/src/main.js"</span>, <span class="tok-a">"bytes"</span>: <span class="tok-n">493</span>, <span class="tok-a">"gzip"</span>: <span class="tok-n">311</span> }
+  ],
+  <span class="tok-a">"warnings"</span>: []
+}</code></pre></section>
+</xo-tabs>
+<p>Serve <code>dist</code> as static files. With an <code>&lt;xo-router&gt;</code>, make the host answer every path under the base with the app's <code>index.html</code>. <a href="recipes.html#deployment">Recipes</a> has the deployment notes.</p>
+
+<h2 id="xoong-render">xoong render</h2>
+<p>Prerenders a page into plain HTML that already shows its data, for crawlers, for people without JavaScript and for the first paint. It runs the real <code>&lt;xo-view&gt;</code> runtime in Node and fetches the data from <code>--api</code>; in the browser the view draws again from the saved template, so nothing is hydrated. It needs <code>@xoong/ssr</code>, which is not part of <code>@xoong/xoong</code>: <code>npm install @xoong/ssr</code>. Without it the command stops and says so.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong render &lt;page.html&gt; <span class="tok-a">--api</span> &lt;url&gt; [--url /users/7] [--operations .xoong/operations.json] [--out file]</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--api</code></td><td><em>required</em></td><td>The base URL of the API the page reads its data from.</td></tr>
+<tr><td><code>--url</code></td><td>none</td><td>Render the route of this URL, for a page with an &lt;xo-router&gt;.</td></tr>
+<tr><td><code>--operations</code></td><td><code>.xoong/operations.json</code></td><td>The operations table that sync wrote.</td></tr>
+<tr><td><code>--out</code></td><td>none</td><td>Write the HTML to this file (its folders are created). Without it the HTML goes to standard output.</td></tr>
+</tbody></table></div>
+<p>For a page with an <code>&lt;xo-router&gt;</code>, <code>--url</code> renders the route of that URL, with its <code>&lt;title&gt;</code> and description. Public pages only: the data is as fresh as the last render, and a page that needs the visitor's session is drawn in the browser. <code>build</code> does not call it: run <code>render</code> for each public page, and publish the files.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong render index.html <span class="tok-a">--api</span> http://localhost:8080 <span class="tok-a">--out</span> out/index.html
+rendered index.html -&gt; out/index.html</code></pre>
+<p>See <a href="arch-build.html#prerendering-with-xoong-ssr">Prerendering with @xoong/ssr</a> for what the output contains and its limits.</p>
+
+<h2 id="xoong-i18n">xoong i18n</h2>
+<p>Two sub-commands keep translations honest. The text written in the HTML is the default of a key (<a href="how-it-works.html#language">Language</a>), so a catalog for the source language can be made from the pages themselves.</p>
+<h3>i18n extract</h3>
+<p>Lists the keys a project uses with their source text: <code>xo-t</code> in HTML (and in HTML written inside JavaScript template strings) and <code>text('key', 'default')</code> calls. The catalog is sorted by key. A key used with two different texts, or a text that is not a valid message, is reported on standard error and makes the exit code 1; the catalog is still written. Folders are walked without <code>node_modules</code>, <code>dist</code> and folders that start with a dot.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong i18n extract &lt;html|js files or folders&gt;... [--out catalogs/en.json]</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--out</code></td><td>none</td><td>Write the catalog to this file (its folders are created). Without it the JSON goes to standard output.</td></tr>
+</tbody></table></div>
+<h3>i18n check</h3>
+<p>Compares a translation with the source catalog and prints one line per problem: a key that is missing, a key the source does not use, a message that cannot be read, placeholders that differ from the source's. It ends with the number of problems, or <code>ok</code>, and exits with 1 when there are problems.</p>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong i18n check &lt;catalog.json&gt; <span class="tok-a">--source</span> &lt;en.json&gt;</code></pre>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--source</code></td><td><em>required</em></td><td>The source-language catalog, the file that i18n extract wrote. The translation is checked against it.</td></tr>
+</tbody></table></div>
+<pre class="plain" data-lang="bash" tabindex="0"><code><span class="tok-c">$</span> npx xoong i18n extract src <span class="tok-a">--out</span> catalogs/en.json
+5 messages -&gt; catalogs/en.json
+
+<span class="tok-c">$</span> npx xoong i18n check catalogs/vi.json <span class="tok-a">--source</span> catalogs/en.json
+catalogs/vi.json: "home.count" uses {count} but the source uses {n}
+catalogs/vi.json: missing "home.title"
+catalogs/vi.json: missing "search.hint"
+catalogs/vi.json: "extra.key" is not used by the source
+4 problems</code></pre>
+
+<h2 id="configuration">Configuration</h2>
+<p><code>xoong.config.json</code> holds what you would otherwise type on every run. All keys are optional, and a flag wins over the file. <code>dev</code> and <code>build</code> read it from their root folder (<code>--root</code>, the current folder by default); <code>check</code> reads it from the current folder. The other commands do not read it. A file that cannot be read stops the command with a message.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Key</th><th>Used by</th><th>Default</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>root</code></td><td>dev</td><td><code>.</code></td><td>The folder to serve. The <code>--root</code> flag wins.</td></tr>
+<tr><td><code>port</code></td><td>dev</td><td><code>5173</code></td><td>The port. The <code>--port</code> flag wins.</td></tr>
+<tr><td><code>proxy</code></td><td>dev</td><td>none</td><td>An object of prefixes and backends, <code>{ "/api": "http://localhost:8080" }</code>. It adds to the <code>--proxy</code> flags; for the same prefix the flag wins.</td></tr>
+<tr><td><code>spa</code></td><td>dev</td><td><code>false</code></td><td>The same as <code>--spa</code>.</td></tr>
+<tr><td><code>allowedHosts</code></td><td>dev</td><td><code>[]</code></td><td>Host names the dev server accepts besides localhost, 127.0.0.1 and ::1. Any other <code>Host</code> header gets a 403, which stops a web page from reaching your machine through DNS rebinding. Add a name when you reach the server through a tunnel.</td></tr>
+<tr><td><code>packages</code></td><td>dev, build</td><td><code>[]</code></td><td>Installed packages, besides xoong's own, whose browser code the app imports. They are served at <code>/@name</code>, listed in the import map and copied by the build.</td></tr>
+<tr><td><code>build.exclude</code></td><td>build</td><td><code>[]</code></td><td>Globs of HTML files that are not pages. They add to the <code>--exclude</code> flags of <code>build</code>.</td></tr>
+<tr><td><code>build.preload</code></td><td>build</td><td><code>true</code></td><td><code>false</code> turns off the <code>modulepreload</code> links, like <code>--no-preload</code>.</td></tr>
+<tr><td><code>check.exclude</code></td><td>check</td><td><code>[]</code></td><td>Globs of files and folders that <code>check</code> skips. They add to its <code>--exclude</code> flags.</td></tr>
+</tbody></table></div>
+<xo-tabs label="Example" class="example">
+  <section xo-tab="xoong.config.json"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"port"</span>: <span class="tok-n">5173</span>,
+  <span class="tok-a">"proxy"</span>: { <span class="tok-a">"/api"</span>: <span class="tok-s">"http://localhost:8080"</span> },
+  <span class="tok-a">"packages"</span>: [<span class="tok-s">"rainlet"</span>],
+  <span class="tok-a">"build"</span>: { <span class="tok-a">"exclude"</span>: [<span class="tok-s">"screens/**"</span>, <span class="tok-s">"*.draft.html"</span>], <span class="tok-a">"preload"</span>: <span class="tok-k">true</span> },
+  <span class="tok-a">"check"</span>: { <span class="tok-a">"exclude"</span>: [<span class="tok-s">"vendor/"</span>] }
+}</code></pre></section>
+</xo-tabs>
+<h3>Globs</h3>
+<p><code>--exclude</code> and the <code>exclude</code> keys take paths relative to the root (for <code>check</code>, the current folder) with <code>/</code> separators. <code>*</code> is any characters except <code>/</code>, <code>**</code> any characters including <code>/</code>, <code>?</code> one character, and a trailing <code>/</code> means the folder and everything in it. A pattern without a <code>/</code> matches that name at any depth (<code>*.draft.html</code>, <code>partials</code>). A folder that matches is skipped with all it holds.</p>
+
+<h2 id="hints">Hints</h2>
+<p><code>xoong.hints.json</code> lets the front end say what the OpenAPI document does not, without editing the backend's file. Give it to <code>sync</code> and <code>doctor</code> with <code>--hints</code>; it is not looked for on its own, so the same flag belongs in your <code>sync</code> script. A key that is not one of these is reported (<a href="codes.html#xo171">XO171</a>), because it would do nothing.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Key</th><th>Example</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>idNames</code></td><td><code>["id", "gid"]</code></td><td>Property names that identify a record, besides <code>id</code>. A schema that has one is an entity: its records are stored once and shared between screens.</td></tr>
+<tr><td><code>schemas</code></td><td><code>{ "SessionResponse": { "entity": "Session", "id": "session_id" } }</code></td><td>Which schemas are one entity (<code>entity</code>) and which property is its id (<code>id</code>), for documents you cannot edit.</td></tr>
+<tr><td><code>unwrap</code></td><td><code>"data"</code></td><td>Responses shaped <code>{ code, message, data }</code> are read as their <code>data</code>.</td></tr>
+<tr><td><code>idempotencyKeys</code></td><td><code>{ "sendMessage": "client_message_id" }</code></td><td>A fresh UUID is put into that field of the request body on every call of the operation.</td></tr>
+<tr><td><code>fields</code></td><td><code>{ "Person.email": { "label": "E-mail", "order": 2 } }</code></td><td>How a generated form draws a field, keyed by <code>Schema.property</code>: <code>label</code>, <code>hint</code>, <code>placeholder</code>, <code>order</code>, <code>group</code>, <code>hidden</code>, <code>readOnly</code> and <code>widget</code>. See <a href="forms.html">Forms</a>.</td></tr>
+</tbody></table></div>
+
+<h2 id="in-ci">In CI</h2>
+<p>Three steps cover a project: <code>sync</code> so the table is current (or commit <code>.xoong/</code> and skip it), <code>check</code> to fail on a screen that does not match the API, and <code>build</code> to prove the site builds. Each exits with 1 on a problem, which fails the job. <code>--format json</code> gives other tools the findings.</p>
+<xo-tabs label="Continuous integration" class="example">
+  <section xo-tab="GitHub Actions"><pre data-lang="yaml" tabindex="0"><code>name: xoong
+on: [push, pull_request]
+jobs:
+  screens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx xoong sync openapi.json --hints xoong.hints.json
+      - run: npx xoong check index.html src
+      - run: npx xoong build --out dist
+      # a warning of the build does not fail it: this step does
+      - run: jq -e '.warnings | length == 0' dist/build-report.json</code></pre></section>
+</xo-tabs>
+
+<h2 id="exit-codes">Exit codes</h2>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>0</code></td><td>done</td></tr>
+<tr><td><code>1</code></td><td>findings or a failure (also a refused option)</td></tr>
+<tr><td><code>2</code></td><td>unknown command or a missing argument</td></tr>
+</tbody></table></div>
+<ul>
+<li><code>sync</code> and <code>doctor</code>: 1 when the document has an error. Warnings do not fail.</li>
+<li><code>check</code>: 1 when a finding is an error. Warnings do not fail.</li>
+<li><code>i18n extract</code> and <code>i18n check</code>: 1 when there are problems.</li>
+<li><code>build</code>: 0 even with warnings; fail on <code>warnings</code> in <code>build-report.json</code> if you want to.</li>
+<li><code>dev</code>: runs until you stop it; 1 when it cannot start.</li>
+<li>No command at all prints the help and exits with 0. An unknown command, a missing argument or a missing required option prints the help and exits with 2. A refused option exits with 1.</li>
+</ul>
+<p><strong>See also:</strong> <a href="mcp.html">MCP server</a> · <a href="editor.html">Editor support</a> · <a href="codes.html">Error codes</a> · <a href="install.html">Install</a> · <a href="data.html">Data and tables</a> · <a href="recipes.html">Recipes</a></p>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="own-control.html"><small>Previous</small><span>Your own control</span></a><a rel="next" href="mcp.html"><small>Next</small><span>MCP server</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#install-and-run" aria-current="true">Install and run</a></li><li><a href="#the-commands-at-a-glance">The commands at a glance</a></li><li><a href="#xoong-sync">xoong sync</a></li><li><a href="#xoong-doctor">xoong doctor</a></li><li><a href="#xoong-new">xoong new</a></li><li><a href="#xoong-check">xoong check</a></li><li><a href="#xoong-dev">xoong dev</a></li><li><a href="#xoong-build">xoong build</a></li><li><a href="#xoong-render">xoong render</a></li><li><a href="#xoong-i18n">xoong i18n</a></li><li><a href="#configuration">Configuration</a></li><li><a href="#hints">Hints</a></li><li><a href="#in-ci">In CI</a></li><li><a href="#exit-codes">Exit codes</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

@@ -51,7 +51,7 @@ describe('prerendered page', () => {
     await page.goto(dev.url);
     await page.waitForFunction(() => !document.querySelector('template[data-xo-template]'), null, { timeout: 5000 }); // view restarted from the template
     expect(await page.$$eval('tbody tr', (r) => r.length)).toBe(2);
-    expect(await page.$$eval('thead th', (h) => h.map((x) => x.textContent.trim()))).toEqual(['name', 'E-mail', 'role', 'status', 'Actions']);
+    expect(await page.$$eval('thead th', (h) => h.map((x) => x.textContent.trim()))).toEqual(['Name', 'E-mail', 'Role', 'Status', 'Actions']);
     await page.click('tbody tr:nth-child(1) button:text("Disable")');
     await page.waitForFunction(() => document.querySelector('tbody tr').children[3].textContent.trim() === 'disabled', null, { timeout: 5000 });
     expect(errors).toEqual([]);

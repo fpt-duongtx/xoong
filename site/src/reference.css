@@ -1,0 +1,165 @@
+/*
+ * The Reference: the header buttons (Reference menu, Search), the pop-up menu with its sub-menu (site/src/reference-menu.js), the search dialog
+ * (site/src/search.js) and the Reference page (tools/site/reference-page.mjs). In the layer xoong-standard like site.css, loaded after it.
+ * Colours come from the --xo-color-* tokens, so every palette and both schemes follow; sizes are in rem or px like the kit's mist.css.
+ */
+@layer xoong-standard {
+
+/* ---- header: the Reference menu and the Search button ---- */
+.hdr-tools { display: flex; align-items: center; gap: 8px; }
+.hdr-btn {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 12px;
+  border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); background: var(--xo-color-surface); color: var(--xo-color-text);
+  font: 500 14px/1 var(--font, system-ui); text-decoration: none; white-space: nowrap; cursor: pointer; box-shadow: none; transform: none;
+}
+.hdr-btn:hover, .hdr-btn:active { background: var(--xo-color-subtle); color: var(--xo-color-text); border-color: var(--xo-color-control-border); transform: none; }
+.hdr-btn .ic { --xo-icon: 16px; vertical-align: 0; }
+.hdr-btn[aria-expanded="true"] { background: var(--xo-color-accent-soft); border-color: var(--xo-color-accent); color: var(--xo-color-accent-strong); }
+.hdr-ref .ic { transition: transform .15s ease; }
+.hdr-ref[aria-expanded="true"] .ic { transform: rotate(180deg); }
+.hdr-search .hdr-kbd { padding: 0 6px; font: 500 12px/20px var(--xo-font-mono, monospace); color: var(--xo-color-text-2); background: var(--xo-color-bg); border: 1px solid var(--xo-color-border); border-radius: 4px; min-width: 2.9rem; text-align: center; }
+@media (max-width: 63.99rem) { /* the icon alone; the word stays for screen readers: it is the button's name */
+  .hdr-search { position: relative; padding: 0 11px; }
+  .hdr-search .hdr-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .hdr-search .hdr-kbd { display: none; }
+}
+@media (max-width: 52rem) { .hdr-tools { margin-left: auto; } } /* the header wraps below this width: the tools sit at the right of the first row, over the links */
+@media (prefers-reduced-motion: reduce) { .hdr-ref .ic { transition: none; } }
+
+/* ---- the Reference menu: groups on the left, the entries of the highlighted group on the right ---- */
+.ref-pop {
+  position: fixed; inset: auto; margin: 0; padding: 0; z-index: 60; overflow: hidden;
+  width: min(52rem, calc(100vw - 1rem)); color: var(--xo-color-text);
+  background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: calc(var(--xo-radius) * 1.5); box-shadow: var(--xo-shadow-pop);
+}
+.ref-pop[hidden] { display: none; }
+.ref-pop-note { margin: 0; padding: 16px; color: var(--xo-color-text-2); }
+.ref-groups { display: grid; grid-template-columns: 13.5rem minmax(0, 1fr); grid-template-rows: repeat(var(--ref-n, 5), auto) 1fr; margin: 0; padding: 0; list-style: none; min-height: 18rem;
+  background: linear-gradient(var(--xo-color-border), var(--xo-color-border)) 13.5rem 0 / 1px 100% no-repeat, linear-gradient(var(--xo-color-bg), var(--xo-color-bg)) 0 0 / 13.5rem 100% no-repeat; } /* the left column's tint and rule: drawn here, so no grid item sits in it */
+.ref-groups > li { display: contents; }
+.ref-group {
+  grid-column: 1; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; margin: 0; padding: 0 14px; position: relative;
+  border: 0; border-radius: 0; background: transparent; color: var(--xo-color-text-2); font: 500 14px/1.2 var(--font, system-ui); text-align: start; cursor: pointer; box-shadow: none; transform: none;
+}
+.ref-group:hover { background: var(--xo-color-subtle); color: var(--xo-color-text); border: 0; }
+.ref-group.is-current, .ref-group.is-current:hover { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); font-weight: 600; box-shadow: inset 3px 0 0 var(--xo-color-accent); }
+.ref-group-name { flex: 1; }
+.ref-n { font-size: 12px; font-weight: 500; color: var(--xo-color-text-2); }
+.ref-group .ic { --xo-icon: 14px; vertical-align: 0; color: var(--xo-color-text-2); }
+.ref-group:focus-visible, .ref-entries a:focus-visible, .ref-all:focus-visible { outline-offset: -3px; }
+.ref-entries { grid-column: 2; grid-row: 1 / -1; min-width: 0; max-height: 25rem; overflow-y: auto; padding: 14px 16px 12px; }
+.ref-entries[hidden] { display: none; }
+.ref-entries-head { margin: 0 0 4px; font-size: 13px; line-height: 1.45; color: var(--xo-color-text-2); }
+.ref-all { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; padding: 2px 0; font-size: 13px; font-weight: 600; text-decoration: none; }
+.ref-all:hover { text-decoration: underline; }
+.ref-all .ic { --xo-icon: 14px; vertical-align: 0; }
+.ref-entries ul { margin: 0; padding: 0; list-style: none; columns: 3 11rem; column-gap: 8px; }
+.ref-entries li { break-inside: avoid; }
+.ref-entries ul a { display: block; padding: 5px 10px; border-radius: 6px; color: var(--xo-color-text); font: 500 13px/1.35 var(--xo-font-mono, monospace); text-decoration: none; overflow-wrap: anywhere; }
+.ref-entries ul a:hover { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); }
+@media (max-width: 51.99rem) {
+  .ref-pop { width: auto; border-radius: 0 0 var(--xo-radius) var(--xo-radius); overflow-y: auto; }
+  .ref-groups { display: block; min-height: 0; background: none; }
+  .ref-groups > li { display: block; border-bottom: 1px solid var(--xo-color-border); }
+  .ref-groups > li:last-child { border-bottom: 0; }
+  .ref-group { min-height: 48px; padding-inline: 16px; }
+  .ref-group .ic { transition: transform .15s ease; }
+  .ref-group[aria-expanded="true"] .ic { transform: rotate(90deg); }
+  .ref-entries { max-height: none; overflow: visible; padding: 4px 16px 14px 24px; }
+  .ref-entries ul { columns: 1; }
+  .ref-entries ul a { padding: 9px 10px; }
+}
+
+/* ---- the search dialog (the look of <xo-command>: its classes; the rows are links) ---- */
+dialog.xo-search { width: min(42rem, calc(100vw - 2rem)); margin: 9vh auto auto; }
+.xo-search .xo-command { width: 100%; }
+.xo-search .xo-command__input { height: 56px; }
+.xo-search .xo-command__input input { min-width: 0; font: inherit; font-size: 16px; color: var(--xo-color-text); }
+.search-close { display: inline-grid; place-items: center; flex: none; width: 36px; height: 36px; padding: 0; border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); background: transparent; color: var(--xo-color-text-2); cursor: pointer; box-shadow: none; transform: none; }
+.search-close:hover { background: var(--xo-color-subtle); color: var(--xo-color-text); border-color: var(--xo-color-border); }
+.search-close .ic { --xo-icon: 16px; vertical-align: 0; }
+.search-body { position: relative; height: min(25rem, calc(100dvh - 16rem)); overflow-y: auto; overscroll-behavior: contain; }
+.xo-search .xo-listbox { max-height: none; overflow: visible; }
+a.search-option { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 54px; padding: 6px 12px; color: var(--xo-color-text); text-decoration: none; box-sizing: border-box; }
+a.search-option:hover, a.search-option.xo-option--active, a.search-option[aria-selected="true"] { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); }
+.search-main { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+.search-title { overflow: hidden; font-size: 14px; font-weight: 600; line-height: 1.3; text-overflow: ellipsis; white-space: nowrap; }
+.search-title.mono { font-family: var(--xo-font-mono, monospace); font-size: 13px; }
+.search-sub { overflow: hidden; font-size: 12px; font-weight: 400; line-height: 1.35; color: var(--xo-color-text-2); text-overflow: ellipsis; white-space: nowrap; }
+a.search-option:hover .search-sub, a.search-option.xo-option--active .search-sub, a.search-option[aria-selected="true"] .search-sub { color: var(--xo-color-text); }
+.search-badge { flex: none; padding: 2px 9px; font-size: 11px; font-weight: 500; line-height: 1.5; color: var(--xo-color-text-2); background: var(--xo-color-subtle); border: 1px solid var(--xo-color-border); border-radius: 999px; }
+.search-empty { display: grid; gap: 4px; justify-items: start; padding: 28px 20px; }
+.search-empty p { margin: 0; }
+.search-hint { font-size: 15px; font-weight: 600; }
+.search-empty a { margin-top: 8px; font-weight: 600; }
+.xo-search .xo-command__foot { justify-content: space-between; min-height: 36px; align-items: center; box-sizing: border-box; color: var(--xo-color-text-2); }
+.search-count { min-width: 8rem; }
+@media (max-width: 40rem) {
+  dialog.xo-search { width: 100%; max-width: 100%; margin: 0; }
+  .xo-search .xo-command { border-radius: 0 0 calc(var(--xo-radius) * 1.5) calc(var(--xo-radius) * 1.5); border-top: 0; }
+  .search-body { height: min(28rem, calc(100dvh - 7.5rem)); }
+  .search-keys, .search-badge { display: none; }
+  .xo-search .xo-command__foot { justify-content: flex-start; }
+}
+
+/* ---- the Reference page ---- */
+html:has(.ref-entry) { scroll-behavior: auto; } /* a link of the menu or the search lands on its entry at once: the page is tens of thousands of pixels long, a smooth scroll would travel for seconds */
+.ref-filter { display: grid; gap: 4px; max-width: 30rem; margin: 1.25rem 0 .75rem; }
+.ref-filter[hidden] { display: none; }
+.ref-filter label { font-size: 14px; font-weight: 600; }
+.ref-filter-status { min-height: 1.4em; margin: 0; font-size: 13px; color: var(--xo-color-text-2); }
+.ref-jump ul { display: flex; flex-wrap: wrap; gap: 8px; margin: .75rem 0 1rem; padding: 0; list-style: none; }
+.ref-jump a { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border: 1px solid var(--xo-color-border); border-radius: 999px; background: var(--xo-color-surface); color: var(--xo-color-text); font-size: 14px; font-weight: 600; text-decoration: none; }
+.ref-jump a:hover { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); }
+.ref-jump a span { font-weight: 500; color: var(--xo-color-text-2); }
+.ref-types { margin: 0 0 1rem; font-size: 14px; }
+.ref-types summary { cursor: pointer; font-weight: 600; }
+.ref-group-intro { color: var(--xo-color-text-2); max-width: 60ch; }
+.ref-count { white-space: nowrap; }
+.ref-names { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: .75rem 0 0; padding: 0; list-style: none; }
+.ref-names[hidden], .ref-names li[hidden], .ref-entry[hidden], .ref-empty[hidden] { display: none; }
+.ref-names a { display: inline-block; padding: 2px 4px; border-radius: 6px; text-decoration: none; }
+.ref-names a:hover { background: var(--xo-color-accent-soft); }
+.ref-names code, .ref-entry h3 code { background: none; padding: 0; }
+.ref-entry { margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid var(--xo-color-border); scroll-margin-top: calc(var(--header-h, 4rem) + 1rem); max-width: 54rem; }
+.ref-entry h3 { margin: 0 0 .4rem; font-size: 1.3rem; line-height: 1.3; overflow-wrap: anywhere; }
+.ref-entry h3 code { font-size: inherit; font-weight: 700; }
+.ref-entry h4 { margin: 1.4rem 0 .5rem; font: 700 .8rem/1.3 var(--font, system-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--xo-color-text-2); }
+.ref-entry:target { background: linear-gradient(90deg, var(--xo-color-accent-soft), transparent 70%); border-radius: 0 0 var(--xo-radius) var(--xo-radius); }
+.ref-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 .75rem; }
+.ref-chip { display: inline-block; padding: 1px 10px; font-size: 12px; font-weight: 600; line-height: 1.7; color: var(--xo-color-text-2); background: var(--xo-color-subtle); border: 1px solid var(--xo-color-border); border-radius: 999px; }
+.ref-chip.pkg { color: var(--xo-color-accent-strong); background: var(--xo-color-accent-soft); border-color: transparent; }
+.ref-chip.warn { color: var(--xo-color-text); background: color-mix(in srgb, var(--xo-color-warning) 18%, var(--xo-color-surface)); border-color: color-mix(in srgb, var(--xo-color-warning) 45%, var(--xo-color-surface)); }
+.ref-import { font-size: 13px; overflow-wrap: anywhere; }
+.ref-table { width: 100%; margin: 0; font-size: 14px; }
+.ref-table th, .ref-table td { vertical-align: top; text-align: start; overflow-wrap: anywhere; }
+.ref-table tbody th { font-weight: 600; white-space: nowrap; overflow-wrap: normal; }
+.ref-table code { white-space: nowrap; }
+.ref-table td:not(:last-child) { white-space: nowrap; color: var(--xo-color-text-2); }
+.ref-table td:not(:last-child) code { color: var(--xo-color-text); }
+.ref-inline-meta { display: none; margin-top: 2px; font-size: 12px; font-weight: 400; color: var(--xo-color-text-2); white-space: normal; }
+.ref-values { display: block; margin-top: 4px; font-size: 13px; color: var(--xo-color-text-2); }
+.ref-values code { white-space: normal; }
+.ref-dash { color: var(--xo-color-text-2); }
+.ref-none { margin: 0; color: var(--xo-color-text-2); }
+.ref-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: .75rem 0; font-size: 14px; }
+.ref-facts dt { font-weight: 600; color: var(--xo-color-text-2); }
+.ref-facts dd { margin: 0; overflow-wrap: anywhere; }
+.ref-notes, .ref-events { margin: .75rem 0; padding-inline-start: 1.2rem; font-size: 14px; }
+.ref-events { list-style: none; padding: 0; }
+.ref-events li { margin: 2px 0; }
+.ref-guide { margin: 1rem 0 0; font-size: 14px; }
+.ref-label { margin-inline-end: 6px; padding: 1px 8px; font-size: 12px; font-weight: 600; color: var(--xo-color-text-2); background: var(--xo-color-subtle); border: 1px solid var(--xo-color-border); border-radius: 999px; }
+.ref-ts { margin-top: .75rem; font-size: 14px; }
+.ref-ts summary { cursor: pointer; font-weight: 600; }
+.ref-empty { margin: 2rem 0; font-weight: 600; }
+@media (max-width: 40rem) {
+  .ref-table .ref-col-type, .ref-table .ref-col-default, .ref-table td.ref-type, .ref-table td.ref-default { display: none; }
+  .ref-inline-meta { display: block; }
+  .ref-table tbody th { white-space: normal; overflow-wrap: anywhere; }
+  .ref-facts { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .ref-facts dd { margin-bottom: 8px; }
+  .ref-entry h3 { font-size: 1.15rem; }
+}
+
+}

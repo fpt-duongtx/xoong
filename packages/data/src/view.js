@@ -29,7 +29,7 @@
  *   xo-refresh        on click, fetch this view's data again ("Try again" after an error, a refresh button).
  * Events (bubbling, dispatched on the element that ran the action): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
  */
-import { effect, signal, batch } from '@xoong/core/signals';
+import { effect, signal, batch, untracked } from '@xoong/core/signals';
 import { XoElement, define } from '@xoong/core';
 import { isRef } from './store.js';
 import { getClient, acquireStream, configured, whenConfigured } from './default.js';
@@ -250,6 +250,20 @@ class XoView extends XoElement {
       this.toggleAttribute('data-refreshing', !!scope.vars?.$refreshing()); // for CSS: the old data is on screen while the new loads
       if (q.value?.status.value === 'loading') this.setAttribute('aria-busy', 'true'); else this.removeAttribute('aria-busy'); // for assistive technology: a request runs ($loading or $refreshing)
     }));
+
+    // A read that fails is told out as xo-error (bubbling, cancelable) from this view, so the screen can handle it in its own code:
+    //   view.addEventListener('xo-error', (e) => { e.preventDefault(); ...e.detail is the XoongError... })
+    // <xo-toast> shows it unless it was prevented, or `event.handled` says this view shows `$error` itself (or a 401 is left to onUnauthorized).
+    const handlesError = /\$error/.test(this.#tpl.map((n) => /** @type {any} */ (n).outerHTML ?? n.textContent).join(''));
+    let told;
+    this.#bound.push(effect(() => {
+      const e = q.value?.status.value === 'error' ? q.value.error.value : undefined;
+      if (!e || e === told) return;
+      told = e;
+      const event = Object.assign(new CustomEvent('xo-error', { detail: e, bubbles: true, composed: true, cancelable: true }), { handled: handlesError || e.status === 401 });
+      untracked(() => this.dispatchEvent(event));
+    }));
+    Object.defineProperty(this, 'error', { get: () => q.value?.error.value ?? null, configurable: true }); // the XoongError of the latest read, or null
 
     // Select the query and keep it observed while connected.
     let current = null;
@@ -575,7 +589,7 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
   let busy = false;
   // The events come from the element that ran the action, so they bubble through a dialog or panel around it up to the view (and the page).
   // An element the result just removed (a deleted row) cannot bubble: the view reports for it.
-  const emit = (name, detail) => (el.isConnected ? el : host).dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
+  const emit = (name, detail) => (el.isConnected ? el : host).dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true, cancelable: true })); // xo-error can be prevented: the screen handled it
   // A <form xo-submit> whose operation has a request schema gets the form model (ADR-0009): prefill, typed values, validation, dirty tracking.
   // It is attached now, not at the first click, so fields are filled and completed before anyone touches the form.
   let engine = null;

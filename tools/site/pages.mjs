@@ -5,6 +5,8 @@ import { architecturePages } from './architecture.mjs';
 import * as figures from './figures.mjs';
 import { dialogsPage } from './dialogs-page.mjs';
 import { recipesPage } from './recipes-page.mjs';
+import { cliPage, mcpPage, editorPage, codesPage } from './tooling-pages.mjs';
+import { referencePage } from './reference-page.mjs';
 
 /** The inside of a page of the design kit (design/brand-kit/<file>): its content column with the icon sprite it uses; the crumbs are made by the layout. */
 const kit = (file) => {
@@ -42,8 +44,8 @@ const TABLE = `
 <xo-view get="listPeople">
   <xo-table columns="name,email:E-mail,role" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
     <span slot="role" class="badge">{role}</span>
-    <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
-    <button slot="bulk" xo-click="deletePerson" xo-selected>Delete ticked</button>
+    <button class="danger" xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
+    <button slot="bulk" class="danger" xo-click="deletePerson" xo-selected>Delete ticked</button>
   </xo-table>
 </xo-view>`;
 
@@ -146,7 +148,7 @@ export const pages = [
     body: `
 <h1>xoong</h1>
 <p class="lead">Build data-driven web pages with HTML, plain CSS and your OpenAPI document. Custom elements in the Light DOM, no virtual DOM, no runtime dependencies in the core, no build step needed to try it.</p>
-${callout('note', '<strong>Status:</strong> a working prototype (0.x). It is not published to npm yet, so you install it from release files: see <a href="install.html">Install</a>.')}
+${callout('note', '<strong>Status:</strong> a working prototype (0.x). It is published to npm under the tag <code>next</code>: <code>npm install @xoong/xoong@next</code> (see <a href="install.html">Install</a>). The HTML syntax is still Draft and may change before 0.1.')}
 
 <h2>What you write</h2>
 <p>A screen is HTML. The table below reads <code>listPeople</code> from an OpenAPI operation; sorting, search, paging, selection, the confirm dialog and the toast are attributes. Try it: sort a column, type in the search box, tick rows.</p>
@@ -242,7 +244,8 @@ ${tabs('First screen', [
 </xo-view>`],
   ['main.js', 'js', START],
 ])}
-<p>Run <code>npx xoong check index.html</code> to lint the markup against your API; each message says how to fix it.</p>`,
+<p>Run <code>npx xoong check index.html</code> to lint the markup against your API; each message says how to fix it.</p>
+<p>Every command and option is on the <a href="cli.html">Command line</a> page; an AI assistant can use <a href="mcp.html">the MCP server</a>, and your editor can complete and explain the elements with <a href="editor.html">editor support</a>.</p>`,
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
@@ -251,8 +254,8 @@ ${tabs('First screen', [
     body: `
 <h1>How it works</h1>
 <p>xoong has three layers, and you can stop at any of them: a reactive core and base element, a data layer generated from OpenAPI, and ready-made admin parts on top.</p>
-${figures.life}
-<p>The picture is the whole idea. Your markup asks for data and the client answers from its cache or from the API. Every record is stored once, and only the DOM nodes that show a changed record are written. A write goes the same road and ends by refreshing what it touched. The sections below show the markup for each part; the <a href="arch-data-flow.html">Data flow</a> page has every step.</p>
+${figures.read}
+<p>The picture is the whole idea. The few lines on the left are all you write; they make the screen. The client asks your services for the data, keeps each record once, and writes only the DOM nodes that show it. A click goes the same road and ends by refreshing what it touched: see <a href="#actions-and-forms">Actions and forms</a> and the <a href="arch-data-flow.html">Data flow</a> page, which has every step.</p>
 
 <h2>Data</h2>
 <p><code>xoong sync</code> turns your OpenAPI document into <code>operations.json</code>. A <code>&lt;xo-view get="listPeople"&gt;</code> calls the operation, caches the answer in a shared store (records with the same id are shared between screens) and exposes <code>$loading</code>, <code>$error</code> and the data to the markup inside it. You never write a cache key, an HTTP client or an error handler.</p>
@@ -271,6 +274,7 @@ npx xoong sync openapi.json`],
 
 <h2>Actions and forms</h2>
 <p>Writes are attributes too. A button runs an operation; after it succeeds, every cached query whose path overlaps it is refetched, so lists stay current without extra code. A form with <code>&lt;xo-form op="createPerson"&gt;</code> is drawn from the request schema: nested objects, arrays and unions included. Validation comes from the same schema, with your own rules by path.</p>
+${figures.write}
 ${figures.form}
 ${tabs('Actions', [
   ['HTML', 'html', `
@@ -317,9 +321,9 @@ await setLocale('vi');`]])}
 <thead><tr><th>Package</th><th>What it is</th><th>Budget</th></tr></thead>
 <tbody>
 <tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.9 KB</td></tr>
-<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.2 KB</td></tr>
+<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.4 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
-<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>11.5 KB</td></tr>
+<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>12.5 KB</td></tr>
 <tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>30 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
 <tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5.6 KB</td></tr>
@@ -557,7 +561,7 @@ ${example({
 </div>
 <p class="toolbar"><button id="expand" type="button">Expand</button><button id="reset" type="button">Reset</button></p>
 <h3>Value</h3>
-<pre class="value"><code id="rt-out"></code></pre>`,
+<pre class="value" tabindex="0"><code id="rt-out"></code></pre>`,
   extra: [['JavaScript', 'js', { file: 'site/src/page-richtext.js' }]],
 })}
 
@@ -653,6 +657,11 @@ ${tabs('Shell', [['HTML', 'html', `
   ...architecturePages,
   dialogsPage,
   recipesPage,
+  cliPage,
+  mcpPage,
+  editorPage,
+  codesPage,
+  referencePage(() => pages),
   // ------------------------------------------------------------------------------------------------------------------------------
   {
     file: 'controls.html', section: 'docs', group: 'Controls', nav: 'Introduction', title: 'Controls',
@@ -1042,17 +1051,15 @@ ${example({
   preview: `
 <xo-view get="listPeople">
   <p class="toolbar"><button xo-open="#add">Add person</button></p>
-  <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
+  <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" column-picker selectable page-size="5" empty="Nobody here">
     <span slot="role" class="badge">{role}</span>
     <span slot="topics"><span class="badge" xo-each="topics">{.}</span></span>
-    <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
-    <button slot="bulk" xo-click="deletePerson" xo-selected xo-confirm="Delete the ticked people?">Delete ticked</button>
+    <button class="danger" xo-click="deletePerson" xo-confirm="Delete {name}?" xo-confirm-ok="Delete" xo-notice="Deleted">Delete</button>
+    <button slot="bulk" class="danger" xo-click="deletePerson" xo-selected xo-confirm="Delete the ticked people?" xo-confirm-ok="Delete">Delete ticked</button>
   </xo-table>
 </xo-view>
-<xo-dialog id="add">
-  <h2>Add person</h2>
-  <xo-view><xo-form op="createPerson" submit="Add"></xo-form></xo-view>
-  <button type="button" xo-close>Cancel</button>
+<xo-dialog id="add" heading="Add person">
+  <xo-view><xo-form op="createPerson" submit="Add"><button type="button" xo-close>Cancel</button></xo-form></xo-view>
 </xo-dialog>`,
   extra: [['main.js', 'js', { file: 'site/src/demo.js' }], ['api.js', 'js', { file: 'site/src/api.js' }]],
 })}

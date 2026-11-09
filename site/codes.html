@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Error codes · xoong</title>
+  <meta name="description" content="Every code that xoong check, xoong doctor and xoong sync print, with what it means and how to fix it.">
+  <meta property="og:title" content="Error codes · xoong">
+  <meta property="og:description" content="Every code that xoong check, xoong doctor and xoong sync print, with what it means and how to fix it.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Error codes</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html" aria-current="page">Error codes</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html" aria-current="page">Error codes</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Tools</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Error codes</span></div>
+
+<h1>Error codes</h1>
+<p class="lead">Everything xoong finds has a stable code, a place, a message that says what is wrong, and a fix. This page lists every code with the explanation that the MCP tool <code>explain_error</code> gives: the page is made from the same table, so they cannot differ. <code>XO2xx</code> codes come from <a href="cli.html#xoong-check"><code>xoong check</code></a>, and <code>XO1xx</code> codes from <a href="cli.html#xoong-doctor"><code>xoong doctor</code></a> and <a href="cli.html#xoong-sync"><code>xoong sync</code></a>.</p>
+
+<h2 id="what-a-finding-looks-like">What a finding looks like</h2>
+<p>An <em>error</em> makes the command exit with 1; a <em>warning</em> is printed and does not. The message says what is wrong, and <code>fix:</code> says what to do. The same finding, as text and as the JSON that <code>--format json</code> prints:</p>
+<xo-tabs label="A finding" class="example">
+  <section xo-tab="Text"><pre data-lang="bash" tabindex="0"><code>screens/people.html:2:11  error XO201  unknown operation "deletePersn" (closest: "deletePerson")
+    fix: Use "deletePerson"</code></pre></section>
+  <section xo-tab="JSON"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"level"</span>: <span class="tok-s">"error"</span>,
+  <span class="tok-a">"code"</span>: <span class="tok-s">"XO201"</span>,
+  <span class="tok-a">"file"</span>: <span class="tok-s">"screens/people.html"</span>,
+  <span class="tok-a">"line"</span>: <span class="tok-n">2</span>,
+  <span class="tok-a">"column"</span>: <span class="tok-n">11</span>,
+  <span class="tok-a">"message"</span>: <span class="tok-s">"unknown operation \"deletePersn\" (closest: \"deletePerson\")"</span>,
+  <span class="tok-a">"fix"</span>: <span class="tok-s">"Use \"deletePerson\""</span>
+}</code></pre></section>
+</xo-tabs>
+<p>Editors show the same message and fix on the line (<a href="editor.html">Editor support</a>), and an assistant reads them through <a href="mcp.html">the MCP server</a>. The first number after <code>XO</code> is the tool: 1 for the OpenAPI document, 2 for your screens.</p>
+
+<h2 id="xoong-check-xo2xx">xoong check (XO2xx)</h2>
+<h3>Operations in screens</h3>
+<p>A name in xo-click, xo-submit, get or op that is not in the synced API, or an operation used the wrong way round: a click that calls a read, a view that reads a write, and in JavaScript load on a write or mutate on a read.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo201"><code>XO201</code></span></td><td>An operation name in xo-click, xo-submit, &lt;xo-view get&gt; or &lt;xo-form op&gt; does not exist in the synced API. Use the closest name the message gives, or run <code>xoong sync</code> if the API changed.</td></tr>
+<tr><td><span id="xo202"><code>XO202</code></span></td><td>xo-click calls a GET operation. Reads are declared with &lt;xo-view get="..."&gt;; xo-click is for mutations.</td></tr>
+<tr><td><span id="xo203"><code>XO203</code></span></td><td>&lt;xo-view get&gt; uses an operation that is not GET. Use a GET operation for reading and xo-click/xo-submit for writes.</td></tr>
+<tr><td><span id="xo204"><code>XO204</code></span></td><td>client.load()/query() were given a write operation, or client.mutate()/stream() a GET. Reads: load/query. Writes: mutate.</td></tr>
+</tbody></table></div>
+<h3>Path parameters</h3>
+<p>A view whose operation has a {param} in its path and no p-param to fill it.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo210"><code>XO210</code></span></td><td>The view's operation has a path parameter such as {id}, but the view has no p-id attribute. Add p-id="..." or set view.params in JavaScript.</td></tr>
+</tbody></table></div>
+<h3>Forms and expressions</h3>
+<p>xo-submit away from a form, a form outside an xo-view (it never binds), an xo-each, xo-if or xo-body with no path.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo220"><code>XO220</code></span></td><td>xo-submit is only valid on a &lt;form&gt;. Move the attribute to the form element.</td></tr>
+<tr><td><span id="xo221"><code>XO221</code></span></td><td>xo-each, xo-if or xo-body has no path. Give it one, for example xo-each="items".</td></tr>
+<tr><td><span id="xo222"><code>XO222</code></span></td><td>&lt;form xo-submit&gt; must be inside an &lt;xo-view&gt;, otherwise it never binds. Wrap it in &lt;xo-view&gt; (without get is fine).</td></tr>
+</tbody></table></div>
+<h3>Unknown names</h3>
+<p>An xo-* element or attribute that xoong does not define. Nearly always a typo; the message names the closest one.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo230"><code>XO230</code></span></td><td>An xo-* element or attribute that xoong does not define, usually a typo. The message names the closest valid one.</td></tr>
+</tbody></table></div>
+<h3>Accessibility and images</h3>
+<p>A button without a name, a click that a keyboard cannot reach, an xo-image without alt, an img whose src is bound inside a view.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo240"><code>XO240</code></span></td><td>A button or link triggered by xo-click has no accessible name. Add visible text or aria-label.</td></tr>
+<tr><td><span id="xo241"><code>XO241</code></span></td><td>xo-click is on an element that keyboards cannot reach. Use a &lt;button&gt;, or add role="button" and tabindex="0".</td></tr>
+<tr><td><span id="xo242"><code>XO242</code></span></td><td>&lt;xo-image&gt; has no alt attribute. Describe the image, or write alt="" when it is only decoration.</td></tr>
+<tr><td><span id="xo243"><code>XO243</code></span></td><td>An &lt;img&gt; whose src or srcset has {data} inside an &lt;xo-view&gt; is requested by the browser with the literal text before the data is bound. Use &lt;xo-image src="{path}" alt="..."&gt; instead.</td></tr>
+</tbody></table></div>
+<h3>Tables, pagers, generated forms and selection</h3>
+<p>A table or pager asking for sorting, paging or filters that the operation does not offer, or sitting outside a view; a generated form with nothing to generate; xo-select and xo-selected used wrongly.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo250"><code>XO250</code></span></td><td>&lt;xo-table sortable&gt; needs a <code>sort</code> query parameter on the view's operation, and page-size (and every &lt;xo-pager&gt;) needs <code>limit</code> and <code>offset</code>. Add them to the API or remove the attribute or the pager.</td></tr>
+<tr><td><span id="xo251"><code>XO251</code></span></td><td>&lt;xo-table&gt; and &lt;xo-pager&gt; must be inside an &lt;xo-view get="..."&gt;, which supplies their data.</td></tr>
+<tr><td><span id="xo252"><code>XO252</code></span></td><td>&lt;xo-form op&gt; found no simple request fields to generate. Write the &lt;form xo-submit&gt; by hand.</td></tr>
+<tr><td><span id="xo253"><code>XO253</code></span></td><td>A filter box of &lt;xo-table filters="..."&gt; sets a query parameter of the same name, and the view's operation does not declare it. Add the parameter to the API or remove the filter.</td></tr>
+<tr><td><span id="xo254"><code>XO254</code></span></td><td>xo-selected only makes sense on an xo-click button, and xo-select on a checkbox. Move the attribute.</td></tr>
+<tr><td><span id="xo255"><code>XO255</code></span></td><td>This operation has no request schema (for example a multipart body), so &lt;xo-form&gt; can only draw simple fields, and the operation requires nested objects, arrays or unions: the generated form can never satisfy the server. Write the &lt;form xo-submit&gt; by hand.</td></tr>
+</tbody></table></div>
+<h3>Routes and layouts</h3>
+<p>A route path that is missing, malformed or repeated, a layout that is not declared or has no outlet, a route parameter that the route does not have.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo260"><code>XO260</code></span></td><td>A route path must start with "/" (or be "*" for not found) and each path may be declared once per router. Write xo-route="/users/:id".</td></tr>
+<tr><td><span id="xo261"><code>XO261</code></span></td><td>layout="x" on a route (or layout) names a layout that is not declared in the same &lt;xo-router&gt;. Declare &lt;template xo-layout="x"&gt;, or use the closest name the message gives.</td></tr>
+<tr><td><span id="xo262"><code>XO262</code></span></td><td>A layout template needs one element with xo-outlet where the route content is shown, for example &lt;main xo-outlet&gt;.</td></tr>
+<tr><td><span id="xo263"><code>XO263</code></span></td><td>p-x=":name" reads a route parameter: it only works inside a &lt;template xo-route="..."&gt; whose path contains :name. Fix the name, or use a fixed value or p-x="?query".</td></tr>
+</tbody></table></div>
+<h3>Attributes in the wrong place</h3>
+<p>An attribute that does nothing where it stands, a value outside its set or malformed, a name that the operation does not have, an attribute outside the element that gives it meaning.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo270"><code>XO270</code></span></td><td>An attribute that does nothing where it is. xo-then, xo-notice, xo-confirm, xo-body, xo-optimistic and xo-with tune an action, so they need xo-click or xo-submit on the same element (xo-with also works with xo-add); xo-keep needs xo-submit; xo-confirm-title, xo-confirm-ok, xo-confirm-cancel and xo-confirm-kind need xo-confirm; &lt;xo-dialog size&gt; needs heading. Move the attribute onto the element that has the action, or remove it.</td></tr>
+<tr><td><span id="xo271"><code>XO271</code></span></td><td>An attribute that takes one of a fixed set of values has another one, and the runtime silently uses the default. xo-confirm-kind: danger, warning, info, success. &lt;xo-dialog size&gt;: sm, wide, full. Use the closest value the message gives (call explain_syntax with the attribute to see them all).</td></tr>
+<tr><td><span id="xo272"><code>XO272</code></span></td><td>A value with a syntax of its own is malformed, and the runtime ignores it. xo-with and xo-optimistic: "field=value,other={path}". xo-param: "name=value", "name+=n", "name-=n" or "name~=value" (just the name on an &lt;input&gt;/&lt;select&gt;). xo-move: "path:up" or "path:down". xo-select: no value on a row checkbox, "all:&lt;list&gt;" on the header one.</td></tr>
+<tr><td><span id="xo273"><code>XO273</code></span></td><td>xo-open="#id" must name an &lt;xo-dialog&gt; (the id is not in this file, or it is on another element), and xo-close only closes the &lt;xo-dialog&gt; it is inside. Put the id on the &lt;xo-dialog&gt;, and the close button inside it.</td></tr>
+<tr><td><span id="xo274"><code>XO274</code></span></td><td>xo-with (and the field name of xo-selected="ids") adds a field to the request body, and the operation has no such field (or no request body at all). Use list_operations to see the body fields; the message names the closest one.</td></tr>
+<tr><td><span id="xo275"><code>XO275</code></span></td><td>xo-param sets a view parameter, and the view's operation does not take it as a path or query parameter, so the request does not change (the value is still available as {name} in the view). Add the parameter to the API, or remove xo-param.</td></tr>
+<tr><td><span id="xo276"><code>XO276</code></span></td><td>An attribute outside the element that gives it meaning: xo-route and xo-layout belong on a &lt;template&gt; that is a direct child of &lt;xo-router&gt;; xo-tab inside &lt;xo-tabs&gt;; xo-menu-trigger inside &lt;xo-menu&gt;; xo-guard on a &lt;form xo-submit&gt;; xo-add, xo-remove, xo-move and xo-drag inside a &lt;form xo-submit&gt;.</td></tr>
+</tbody></table></div>
+
+<h2 id="xoong-doctor-and-xoong-sync-xo1xx">xoong doctor and xoong sync (XO1xx)</h2>
+<h3>The document and its identity</h3>
+<p>No paths at all, or an x-xoong-id that names nothing or disagrees between the schemas of one entity.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo100"><code>XO100</code></span></td><td>The OpenAPI document has no "paths". Add a paths object (or declare webhooks/components only if that is intended).</td></tr>
+<tr><td><span id="xo101"><code>XO101</code></span></td><td>x-xoong-id names a property that the schema does not have. Name existing properties or remove it.</td></tr>
+<tr><td><span id="xo102"><code>XO102</code></span></td><td>Two schemas that are one entity (a hint or x-xoong-entity maps them together) use different id properties. Use the same id property for every schema of one entity.</td></tr>
+</tbody></table></div>
+<h3>Operations</h3>
+<p>A missing or repeated operationId, an undeclared path parameter, and what the document asks for that xoong does not do (a required header, cookies, HEAD or OPTIONS, servers, a query style).</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo110"><code>XO110</code></span></td><td>An operation has no operationId, so xoong made one up (the message says which). Add an operationId: it is the stable name used in xo-click, &lt;xo-view get&gt; and the typed client.</td></tr>
+<tr><td><span id="xo111"><code>XO111</code></span></td><td>Two operations have the same operationId. Make them unique.</td></tr>
+<tr><td><span id="xo112"><code>XO112</code></span></td><td>A {param} of the path is not declared under parameters with in: path. Declare it so the type is known.</td></tr>
+<tr><td><span id="xo113"><code>XO113</code></span></td><td>The document asks for something that changes what a call needs or does, and xoong does not apply it (one finding per kind, naming a few operations): a required header parameter (such as X-Tenant-Id: send it with configure({ headers: () =&gt; ({ ... }) })), a cookie parameter (the browser sends its own; configure({ credentials: 'include' }) for another origin), HEAD, OPTIONS or TRACE operations (not generated: use fetch()), servers (requests go to the page's origin: configure({ baseUrl })), or a query parameter with explode: false, deepObject or pipeDelimited/spaceDelimited (xoong sends name=a&amp;name=b and writes no object: pass the text the server expects). operations.json is not changed by any of these.</td></tr>
+</tbody></table></div>
+<h3>Responses</h3>
+<p>A GET without an application/json success schema, so no types or cache can be made.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo120"><code>XO120</code></span></td><td>A GET operation has no application/json success schema, so no types or cache can be generated for it. Describe the response.</td></tr>
+</tbody></table></div>
+<h3>Error responses</h3>
+<p>An operation that documents no 4xx, 5xx or default response.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo130"><code>XO130</code></span></td><td>An operation documents no error responses. Document 4xx/5xx or default (application/problem+json) so errors have a shape.</td></tr>
+</tbody></table></div>
+<h3>Entities</h3>
+<p>A schema with an id-like property that is not treated as an entity, so its records are not shared between screens.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo140"><code>XO140</code></span></td><td>A schema has an id-like property but is not treated as an entity, so its records are stored inline and not shared between screens. If instances repeat across responses, add the hint { "schemas": { "Name": { "id": "prop" } } } or x-xoong-id; otherwise ignore.</td></tr>
+</tbody></table></div>
+<h3>References</h3>
+<p>A $ref that points nowhere, or outside the document.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo150"><code>XO150</code></span></td><td>A $ref points to something that does not exist in the document. Define the target or remove the reference.</td></tr>
+<tr><td><span id="xo151"><code>XO151</code></span></td><td>An external $ref is not resolved by xoong. Bundle the document so every reference is local (for example with redocly bundle).</td></tr>
+</tbody></table></div>
+<h3>Unions</h3>
+<p>Members of a union that cannot be told apart, in a response or in a request body.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo160"><code>XO160</code></span></td><td>A response contains a union of entities that cannot be told apart, so they are not stored in the shared entity store. Give the members a property with one fixed value each, or an OpenAPI discriminator.</td></tr>
+<tr><td><span id="xo161"><code>XO161</code></span></td><td>A union in a request body cannot be told apart, so a generated form draws it as free-form. Add a discriminator, or a property with a different fixed value (const or one-value enum) in each member.</td></tr>
+</tbody></table></div>
+<h3>The hints file</h3>
+<p>A key of xoong.hints.json that does nothing, or a hint that names something the document does not have.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
+<tbody>
+<tr><td><span id="xo170"><code>XO170</code></span></td><td>The hint idempotencyKeys.&lt;operationId&gt; names a field that the request body does not have. Name an existing body property or remove the hint.</td></tr>
+<tr><td><span id="xo171"><code>XO171</code></span></td><td>xoong.hints.json has a key xoong does not know (usually a typo), so it does nothing. The keys are idNames, schemas, unwrap, idempotencyKeys and fields.</td></tr>
+<tr><td><span id="xo172"><code>XO172</code></span></td><td>A hint refers to something the document does not have: a fields key must be "Schema.property" of an existing schema, and idempotencyKeys must name an existing operationId. Use the closest name the message gives.</td></tr>
+</tbody></table></div>
+<p><strong>See also:</strong> <a href="cli.html">Command line</a> · <a href="mcp.html">MCP server</a> · <a href="editor.html">Editor support</a></p>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="editor.html"><small>Previous</small><span>Editor support</span></a><a rel="next" href="arch-overview.html"><small>Next</small><span>Layers</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#what-a-finding-looks-like" aria-current="true">What a finding looks like</a></li><li><a href="#xoong-check-xo2xx">xoong check (XO2xx)</a></li><li><a href="#xoong-doctor-and-xoong-sync-xo1xx">xoong doctor and xoong sync (XO1xx)</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

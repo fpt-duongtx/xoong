@@ -151,6 +151,35 @@ Conflict policy (editing the same field concurrently) is last-writer-wins by
 * One global handler (toast, redirect on 401, etc.) plus an optional per-view
   override. Retry and token refresh are configured once, not per call.
 
+**No failure is silent.** Where each kind shows up:
+
+| What failed | What the person sees | What the developer sees |
+|---|---|---|
+| A read (`<xo-view get>`) | `$error` (`status`, `code`, `detail`) wherever the view uses it, and always an `xo-error` event from the view. `<xo-toast>` shows it unless the view already shows `$error` (`event.handled`), a 401 (left to `onUnauthorized`), or your code prevented it. | `onError`; without one, a server or network failure (status 0 or 5xx) is written to the console with the operation and the status. |
+| An action (`xo-click`, `xo-submit`, `client.mutate`) | The toast (`xo-error`); on a form the field messages next to the inputs and a summary. | `onError`, and the `xo-error` event. |
+| A form that is not valid | The messages next to the fields, `aria-invalid`, a summary; nothing is sent (`xo-invalid`). | The same event. |
+| A mistake in the markup (an unknown operation, a path parameter with no value, a bad `xo-param`, `xo-open` with no dialog) | The screen keeps working; the broken part is marked. | `console.error` or `console.warn` that names the attribute and how to fix it; `xoong check` finds most of them before the browser does. |
+| A stream (`live`) | After a gap the screen refetches. | `connectStream({ onStatus, onError })`. |
+| A format function that throws | The plain value. | One `console.error` naming the format. |
+| An effect that keeps re-triggering itself | Nothing hangs. | An error that names the effect. |
+
+### Handle an error on your own screen
+
+Three ways to receive a failed call, from the markup to the code; use whichever fits the screen, they do not exclude each other.
+
+* **In the markup:** `$error` (`status`, `code`, `detail`, `fields`) inside the view: `<p xo-if="$error" role="alert">{$error.detail}</p>`, and `xo-refresh` on a "Try again" button.
+* **As an event:** every failed read and action raises `xo-error` (`detail` is the `XoongError`) on the view, button or form that made the call. It bubbles and it is **cancelable**: listen on the view, the section or the page and call `event.preventDefault()` to say "I handle this", and `<xo-toast>` stays quiet. `event.handled` is `true` when the view already shows `$error` or when a 401 goes to `onUnauthorized`.
+* **In JavaScript:** `view.error` is the `XoongError` of the latest read (or `null`); `getClient().query(...)` and `load(...)` give the same error on the query and as a rejected promise; `configure({ onError })` is the one global handler and runs first, for every failure.
+
+```js
+const view = document.querySelector('#orders');
+view.addEventListener('xo-error', (event) => {
+  event.preventDefault();                                   // no toast for this one
+  const { status, code, detail, fields } = event.detail;    // a XoongError
+  if (status === 403) showUpgradeBanner(); else showInlineError(detail);
+});
+```
+
 ## One client, one place for paths and settings
 
 Everything that talks to the API goes through the one client that `configure()` made, and `getClient()` returns it. `baseUrl`, `headers` (a CSRF token, auth), `credentials`, `retry`, `onUnauthorized`, `onError` and `fetch` are set there once; a widget does not carry its own copy and does not call `fetch` itself.

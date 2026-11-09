@@ -28,14 +28,21 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
   <script type="module" src="src/demo.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html">Docs</a>
@@ -83,6 +90,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -94,6 +105,13 @@
     <h2>Extend</h2>
     <a href="recipes.html">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -112,7 +130,7 @@
     <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
     </div>
   </nav></details>
-  <div class="shell">
+  <div class="shell no-rail">
     <nav class="side" aria-label="Documentation">
       <div class="grp">
       <h2>Start</h2>
@@ -143,6 +161,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -154,6 +176,13 @@
       <h2>Extend</h2>
       <a href="recipes.html">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -190,32 +219,28 @@
   <section xo-tab="Preview"><div class="preview">
     <xo-view get="listPeople">
       <p class="toolbar"><button xo-open="#add">Add person</button></p>
-      <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
+      <xo-table columns="name,email:E-mail,role,topics:Topics" sortable filters="name:Search by name" column-picker selectable page-size="5" empty="Nobody here">
         <span slot="role" class="badge">{role}</span>
         <span slot="topics"><span class="badge" xo-each="topics">{.}</span></span>
-        <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
-        <button slot="bulk" xo-click="deletePerson" xo-selected xo-confirm="Delete the ticked people?">Delete ticked</button>
+        <button class="danger" xo-click="deletePerson" xo-confirm="Delete {name}?" xo-confirm-ok="Delete" xo-notice="Deleted">Delete</button>
+        <button slot="bulk" class="danger" xo-click="deletePerson" xo-selected xo-confirm="Delete the ticked people?" xo-confirm-ok="Delete">Delete ticked</button>
       </xo-table>
     </xo-view>
-    <xo-dialog id="add">
-      <h2 id="add-person">Add person</h2>
-      <xo-view><xo-form op="createPerson" submit="Add"></xo-form></xo-view>
-      <button type="button" xo-close>Cancel</button>
+    <xo-dialog id="add" heading="Add person">
+      <xo-view><xo-form op="createPerson" submit="Add"><button type="button" xo-close>Cancel</button></xo-form></xo-view>
     </xo-dialog>
   </div></section>
   <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
   &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#add"</span>&gt;Add person&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
-  &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role,topics:Topics"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
+  &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role,topics:Topics"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">column-picker</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
     &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"role"</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;
     &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"topics"</span>&gt;&lt;<span class="tok-t">span</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"topics"</span>&gt;<span class="tok-i">{.}</span>&lt;/<span class="tok-t">span</span>&gt;&lt;/<span class="tok-t">span</span>&gt;
-    &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
-    &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"bulk"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-selected</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete the ticked people?"</span>&gt;Delete ticked&lt;/<span class="tok-t">button</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">class</span>=<span class="tok-s">"danger"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-confirm-ok</span>=<span class="tok-s">"Delete"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"bulk"</span> <span class="tok-a">class</span>=<span class="tok-s">"danger"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-selected</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete the ticked people?"</span> <span class="tok-a">xo-confirm-ok</span>=<span class="tok-s">"Delete"</span>&gt;Delete ticked&lt;/<span class="tok-t">button</span>&gt;
   &lt;/<span class="tok-t">xo-table</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;
-&lt;<span class="tok-t">xo-dialog</span> <span class="tok-a">id</span>=<span class="tok-s">"add"</span>&gt;
-  &lt;<span class="tok-t">h2</span>&gt;Add person&lt;/<span class="tok-t">h2</span>&gt;
-  &lt;<span class="tok-t">xo-view</span>&gt;&lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add"</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;
-  &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Cancel&lt;/<span class="tok-t">button</span>&gt;
+&lt;<span class="tok-t">xo-dialog</span> <span class="tok-a">id</span>=<span class="tok-s">"add"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Add person"</span>&gt;
+  &lt;<span class="tok-t">xo-view</span>&gt;&lt;<span class="tok-t">xo-form</span> <span class="tok-a">op</span>=<span class="tok-s">"createPerson"</span> <span class="tok-a">submit</span>=<span class="tok-s">"Add"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Cancel&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">xo-form</span>&gt;&lt;/<span class="tok-t">xo-view</span>&gt;
 &lt;/<span class="tok-t">xo-dialog</span>&gt;</code></pre></section>
   <section xo-tab="main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// The demo pages: the data layer, the admin parts and the rich widgets, pointed at the in-page API.</span>
 <span class="tok-k">import</span> <span class="tok-s">'./api.js'</span>;
@@ -296,10 +321,6 @@ configure({ api: operations, baseUrl: <span class="tok-s">''</span>, fetch: hand
 <p>The <em>api.js</em> tab is the whole backend of this page. Replace <code>fetch: handle</code> with a <code>baseUrl</code> and the same markup talks to a real server.</p>
 <nav class="pager" aria-label="Pages"><a rel="prev" href="arch-tooling.html"><small>Previous</small><span>Tooling and tests</span></a><span></span></nav>
     </main>
-    <aside class="rail" aria-label="On this page">
-      <h2>On this page</h2>
-      <ol><li><a href="#people-admin" aria-current="true">People admin</a></li><li><a href="#add-person">Add person</a></li></ol>
-    </aside>
   </div>
   <footer class="foot">
     <div class="wrap">

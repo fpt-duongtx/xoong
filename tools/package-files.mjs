@@ -147,6 +147,6 @@ for (const dir of readdirSync(new URL('packages/', root)).sort()) {
   writeFileSync(pkgUrl, JSON.stringify(pkg, null, 2) + '\n');
   writeFileSync(new URL(`packages/${dir}/LICENSE`, root), license);
   const install = dir === 'xoong' ? '' : `\n## Install\n\n\`\`\`bash\nnpm install ${pkg.name}\n\`\`\`\n`;
-  writeFileSync(new URL(`packages/${dir}/README.md`, root), `# ${pkg.name}\n\n${t.intro}\n${install}\n## Use\n${t.use}\n\n## More\n\n* Documentation and demos: ${REPO}#readme\n* Source: ${REPO}/tree/main/packages/${dir}\n* All packages share one version number and are released together: ${REPO}/releases\n* xoong is a working prototype (0.0.x): the HTML syntax is still Draft.\n\nMIT licence.\n`);
+  writeFileSync(new URL(`packages/${dir}/README.md`, root), `# ${pkg.name}\n\n${t.intro}\n${install}\n## Use\n${t.use}\n\n## More\n\n* Documentation, guides and live demos: https://fpt-duongtx.github.io/xoong/\n* Source: ${REPO}/tree/main/packages/${dir}\n* All packages share one version number and are released together: ${REPO}/releases\n* xoong is a working prototype (0.0.x): the HTML syntax is still Draft.\n\nMIT licence.\n`);
 }
 console.log('wrote LICENSE, README.md and publishConfig for every package');

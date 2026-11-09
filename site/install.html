@@ -28,13 +28,20 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
@@ -82,6 +89,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -93,6 +104,13 @@
     <h2>Extend</h2>
     <a href="recipes.html">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -142,6 +160,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -153,6 +175,13 @@
       <h2>Extend</h2>
       <a href="recipes.html">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -188,14 +217,14 @@
 <h2 id="2-or-use-a-release-file">2. Or use a release file</h2>
 <p>Each GitHub Release has one tarball per package and a <code>consume.json</code> that says what to copy into your <code>package.json</code>. Use it to try an unreleased tag or to work without the registry.</p>
 <xo-tabs label="Release files" class="example">
-  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>gh release download v0.0.46 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>gh release download v0.0.47 <span class="tok-a">-R</span> fpt-duongtx/xoong <span class="tok-a">-D</span> vendor/xoong</code></pre></section>
   <section xo-tab="package.json"><pre data-lang="json" tabindex="0"><code>{
   <span class="tok-a">"dependencies"</span>: {
-    <span class="tok-a">"@xoong/xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-xoong-0.0.46.tgz"</span>,
-    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.46.tgz"</span>
+    <span class="tok-a">"@xoong/xoong"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-xoong-0.0.47.tgz"</span>,
+    <span class="tok-a">"@xoong/ui"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-ui-0.0.47.tgz"</span>
   },
   <span class="tok-a">"overrides"</span>: {
-    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.46.tgz"</span>
+    <span class="tok-a">"@xoong/core"</span>: <span class="tok-s">"file:./vendor/xoong/xoong-core-0.0.47.tgz"</span>
   }
 }</code></pre></section>
 </xo-tabs>
@@ -231,6 +260,7 @@ npx xoong build <span class="tok-a">--out</span> dist       <span class="tok-c">
 configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</code></pre></section>
 </xo-tabs>
 <p>Run <code>npx xoong check index.html</code> to lint the markup against your API; each message says how to fix it.</p>
+<p>Every command and option is on the <a href="cli.html">Command line</a> page; an AI assistant can use <a href="mcp.html">the MCP server</a>, and your editor can complete and explain the elements with <a href="editor.html">editor support</a>.</p>
 <nav class="pager" aria-label="Pages"><a rel="prev" href="overview.html"><small>Previous</small><span>Overview</span></a><a rel="next" href="how-it-works.html"><small>Next</small><span>How it works</span></a></nav>
     </main>
     <aside class="rail" aria-label="On this page">

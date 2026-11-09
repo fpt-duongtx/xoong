@@ -28,13 +28,20 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
@@ -82,6 +89,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -93,6 +104,13 @@
     <h2>Extend</h2>
     <a href="recipes.html" aria-current="page">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -142,6 +160,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -153,6 +175,13 @@
       <h2>Extend</h2>
       <a href="recipes.html" aria-current="page">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -234,6 +263,23 @@ ws.onmessage = (message) =&gt; {
 connectStream({ client: getClient(), url: <span class="tok-s">'/events'</span>, EventSource: EventSourcePolyfill });</code></pre></section>
 </xo-tabs>
 <p>A record pushed with an id the store already knows updates every view that shows it. A <em>new</em> record does not appear in a list that is already loaded; ask the list to refetch (<code>invalidateAll()</code> or a <code>resync</code> event).</p>
+
+<h2 id="errors">Errors</h2>
+<h3>Handle a failed call on your own screen</h3>
+<p>By default a failed action or read reaches the person through <code>&lt;xo-toast&gt;</code>. To handle it yourself, listen for <code>xo-error</code>: it bubbles from the view, button or form that made the call, and <code>preventDefault()</code> says "this one is mine" so the toast stays quiet. <code>view.error</code> is the latest read error; <code>configure({ onError })</code> is the one global handler and runs first.</p>
+<xo-tabs label="xo-error" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> view = document.querySelector(<span class="tok-s">'#orders'</span>);                  <span class="tok-c">// an &lt;xo-view&gt;</span>
+
+view.addEventListener(<span class="tok-s">'xo-error'</span>, (event) =&gt; {
+  event.preventDefault();                                        <span class="tok-c">// no toast for this one</span>
+  <span class="tok-k">const</span> { status, code, detail, fields } = event.detail;         <span class="tok-c">// a XoongError</span>
+  <span class="tok-k">if</span> (status === <span class="tok-n">403</span>) showUpgradeBanner();
+  <span class="tok-k">else</span> showInlineError(detail);
+});
+
+view.error;                                                       <span class="tok-c">// the XoongError of the latest read, or null</span></code></pre></section>
+</xo-tabs>
+<p>A page can also listen once for everything: <code>document.addEventListener('xo-error', report)</code> sends every failure to your error tracker, whether or not it was prevented.</p>
 
 <h2 id="sign-in">Sign-in</h2>
 <h3>Refresh the token and retry once</h3>
@@ -415,7 +461,7 @@ define(<span class="tok-s">'x-time-ago'</span>, TimeAgo);</code></pre></section>
 
 <h2 id="known-limits">Known limits</h2>
 <p>These are found, understood and not fixed: each one is a trade-off or waits for a real need. The workaround is on the same line, so nobody has to find out the hard way.</p>
-<div class="table-wrap"><table>
+<div class="table-wrap" tabindex="0"><table>
 <thead><tr><th>Limit</th><th>What happens</th><th>What to do</th></tr></thead>
 <tbody>
 <tr><td>A pager needs <code>total</code></td><td><code>&lt;xo-table page-size&gt;</code> and <code>&lt;xo-pager&gt;</code> on an API that answers <code>items</code> and <code>has_more</code> draw no Previous or Next.</td><td>Add <code>total</code> to the response, or page with <code>xo-param</code> buttons and a cursor (see Load more).</td></tr>
@@ -436,7 +482,7 @@ define(<span class="tok-s">'x-time-ago'</span>, TimeAgo);</code></pre></section>
     </main>
     <aside class="rail" aria-label="On this page">
       <h2>On this page</h2>
-      <ol><li><a href="#lists-and-refreshing" aria-current="true">Lists and refreshing</a></li><li><a href="#sign-in">Sign-in</a></li><li><a href="#files">Files</a></li><li><a href="#forms">Forms</a></li><li><a href="#routing">Routing</a></li><li><a href="#language-formats-and-time">Language, formats and time</a></li><li><a href="#deployment">Deployment</a></li><li><a href="#known-limits">Known limits</a></li></ol>
+      <ol><li><a href="#lists-and-refreshing" aria-current="true">Lists and refreshing</a></li><li><a href="#errors">Errors</a></li><li><a href="#sign-in">Sign-in</a></li><li><a href="#files">Files</a></li><li><a href="#forms">Forms</a></li><li><a href="#routing">Routing</a></li><li><a href="#language-formats-and-time">Language, formats and time</a></li><li><a href="#deployment">Deployment</a></li><li><a href="#known-limits">Known limits</a></li></ol>
     </aside>
   </div>
   <footer class="foot">

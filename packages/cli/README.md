@@ -24,7 +24,7 @@ Exit code: 0 done, 1 findings or a failure, 2 an unknown command or a missing ar
 
 ## More
 
-* Documentation and demos: https://github.com/fpt-duongtx/xoong#readme
+* Documentation, guides and live demos: https://fpt-duongtx.github.io/xoong/
 * Source: https://github.com/fpt-duongtx/xoong/tree/main/packages/cli
 * All packages share one version number and are released together: https://github.com/fpt-duongtx/xoong/releases
 * xoong is a working prototype (0.0.x): the HTML syntax is still Draft.

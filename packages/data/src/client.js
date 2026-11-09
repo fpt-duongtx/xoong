@@ -193,7 +193,8 @@ export function createClient(options) {
 
   function fail(err) {
     if (err.status === 401) onUnauthorized?.(err);
-    onError?.(err);
+    if (onError) onError(err);
+    else if (!err.status || err.status >= 500) console.error(`xoong: ${err.operation ?? 'request'} failed (${err.status || 'no answer'}): ${err.message}`, err); // nobody asked to handle errors: a server or network failure is never silent
   }
 
   class Query {

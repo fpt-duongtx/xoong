@@ -28,14 +28,21 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
   <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
@@ -83,6 +90,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -94,6 +105,13 @@
     <h2>Extend</h2>
     <a href="recipes.html">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -143,6 +161,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -154,6 +176,13 @@
       <h2>Extend</h2>
       <a href="recipes.html">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -231,28 +260,30 @@
 </tbody></table></div>
 <p>The same test also fails when <code>data</code> imports something from <code>core</code> that is not one of its public entries (<code>@xoong/core</code>, <code>/signals</code>, <code>/closest</code>, <code>/syntax</code>), when a runtime package imports tooling (<code>cli</code>, <code>server</code>, <code>mcp</code>, <code>test</code>), and when a pure-logic module touches <code>document</code> or <code>window</code> while it loads. That last rule keeps <code>signals.js</code> and everything in <code>data</code> except <code>view.js</code> importable from plain Node, which is how the tools and the prerenderer reuse them.</p>
 <p>How does a lower package use a higher one, then? It does not: the higher package <strong>registers</strong> itself into a seam the lower one provides. Importing <code>@xoong/forms</code> calls <code>setFormEngine()</code>; importing <code>@xoong/i18n</code> calls <code>setTranslator()</code>, <code>setTextProvider()</code> and <code>setLocaleSource()</code>; the router calls <code>setParamSource()</code> and <code>setUrlSync()</code>; <code>@xoong/ui</code> calls <code>setConfirm()</code>. Without the higher package the lower one still works, with a plain default (English text, the browser's <code>confirm()</code>, the History API directly).</p>
-<figure class="dg-fig dg-anim">
+<figure class="dg-fig dg-anim" data-dur="7" data-steps="[[&quot;1&quot;,&quot;Your app imports @xoong/forms. On load, forms calls setFormEngine({ attach }) from @xoong/data, and data keeps the function.&quot;,&quot;0.4&quot;,&quot;1.18&quot;],[&quot;2&quot;,&quot;When an xo-view draws a form with xo-submit for an operation that has a request schema, data calls the registered attach with the form, its schema and its record.&quot;,&quot;2.1&quot;,&quot;2.88&quot;],[&quot;3&quot;,&quot;attach returns an engine, the form model of that form. Data keeps it and detaches it when the view goes away.&quot;,&quot;3.3&quot;,&quot;4.08&quot;]]">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: a higher package registering into a seam of a lower one">
-<svg class="dg dg-sm" viewBox="0 0 460 278" role="img" aria-labelledby="ov-seam-t ov-seam-d">
+<svg class="dg dg-sm" viewBox="0 0 460 354" role="img" aria-labelledby="ov-seam-t ov-seam-d">
 <title id="ov-seam-t">A higher package registers into a seam of a lower one</title>
-<desc id="ov-seam-d">Two participants: @xoong/forms, the higher package, and @xoong/data, the lower one. 1. When @xoong/forms is imported, it calls setFormEngine with its attach function; data keeps it. A note says that later, an xo-view draws a form with xo-submit. 2. Data calls the registered attach with the form, its request schema and its record. 3. Attach returns an engine, the form model of that form, and data detaches it again when the view goes away. When the animation plays, a dot travels along each arrow in the order of the steps: the registration when forms is imported, then, after a pause at the note, the call back into forms and its answer.</desc>
+<desc id="ov-seam-d">Two participants: @xoong/forms, the higher package, and @xoong/data, the lower one. Above the arrows is the code that makes the first step happen, in a window named main.js. The code window shows main.js: import '@xoong/data/view'; import '@xoong/forms';. Steps: 1. Your app imports @xoong/forms. On load, forms calls setFormEngine({ attach }) from @xoong/data, and data keeps the function. 2. When an xo-view draws a form with xo-submit for an operation that has a request schema, data calls the registered attach with the form, its schema and its record. 3. attach returns an engine, the form model of that form. Data keeps it and detaches it when the view goes away. When the animation plays, a dot travels along each arrow in the order of the steps, while the line of code that causes the step is lit: the registration when forms is imported, then, after a pause at the note, the call back into forms and its answer.</desc>
 <defs><marker id="ov-seam-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="ov-seam-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="8" y="10" width="214" height="38" rx="8"/><text class="dg-t" x="115" y="29">@xoong/forms</text></g>
 <g class="dg-node"><rect class="dg-box" x="238" y="10" width="214" height="38" rx="8"/><text class="dg-t" x="345" y="29">@xoong/data</text></g>
-<path class="dg-life" d="M115 48 L115 272"/>
-<path class="dg-life" d="M345 48 L345 272"/>
-<path class="dg-line" d="M115 102 L345 102" marker-end="url(#ov-seam-a)"/>
-<text class="dg-sub dg-lab" x="230" y="75">when imported:</text>
-<text class="dg-sub dg-lab" x="230" y="90">setFormEngine({ attach })</text>
-<g class="dg-node"><rect class="dg-box dg-k-soft" x="12" y="126" width="436" height="36" rx="8"/><text class="dg-t" x="230" y="144">Later: xo-view draws a form with xo-submit</text></g>
-<path class="dg-line" d="M345 199 L115 199" marker-end="url(#ov-seam-a)"/>
-<text class="dg-sub dg-lab" x="230" y="187">attach(form, { schema, ... })</text>
-<path class="dg-line dg-dash" d="M115 244 L345 244" marker-end="url(#ov-seam-a)"/>
-<text class="dg-sub dg-lab" x="230" y="232">returns an engine</text>
-<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M115 102 L345 102" marker-end="url(#ov-seam-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.062;0.08;0.2;0.246;1"/></path><path class="dg-hot" d="M345 199 L115 199" marker-end="url(#ov-seam-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.323;0.342;0.462;0.508;1"/></path><path class="dg-hot dg-dash" d="M115 244 L345 244" marker-end="url(#ov-seam-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.508;0.526;0.646;0.692;1"/></path><rect class="dg-glow" x="8" y="10" width="214" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.062;0.08;0.088;0.115;0.446;0.465;0.523;0.562;1"/></rect><rect class="dg-glow" x="238" y="10" width="214" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.185;0.203;0.238;0.277;0.323;0.342;0.35;0.377;0.631;0.649;0.685;0.723;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M115 102 L345 102" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.062;0.2;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.062;0.085;0.177;0.2;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M345 199 L115 199" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.323;0.462;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.323;0.346;0.438;0.462;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M115 244 L345 244" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.508;0.646;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.508;0.531;0.623;0.646;1"/></circle></g>
+<path class="dg-life" d="M115 48 L115 348"/>
+<path class="dg-life" d="M345 48 L345 348"/>
+<g aria-hidden="true"><foreignObject x="84" y="56" width="292" height="74"><div class="window dg-code"><div class="bar"><i></i><i></i><i></i><span>main.js</span></div><pre><code><span class="tok-k">import</span> <span class="tok-s">'@xoong/data/view'</span>;
+<span class="tok-k">import</span> <span class="tok-s">'@xoong/forms'</span>;</code></pre></div></foreignObject></g>
+<path class="dg-line" d="M115 196 L345 196" marker-end="url(#ov-seam-a)"/>
+<text class="dg-sub dg-lab" x="230" y="169">1 when imported:</text>
+<text class="dg-sub dg-lab" x="230" y="184">setFormEngine({ attach })</text>
+<g class="dg-node"><rect class="dg-box dg-k-soft" x="12" y="214" width="436" height="36" rx="8"/><text class="dg-t" x="230" y="232">Later: xo-view draws a form with xo-submit</text></g>
+<path class="dg-line" d="M345 287 L115 287" marker-end="url(#ov-seam-a)"/>
+<text class="dg-sub dg-lab" x="230" y="275">2 attach(form, { schema, ... })</text>
+<path class="dg-line dg-dash" d="M115 326 L345 326" marker-end="url(#ov-seam-a)"/>
+<text class="dg-sub dg-lab" x="230" y="314">3 returns an engine</text>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M115 196 L345 196" marker-end="url(#ov-seam-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.057;0.074;0.186;0.229;1"/></path><path class="dg-hot" d="M345 287 L115 287" marker-end="url(#ov-seam-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.3;0.317;0.429;0.471;1"/></path><path class="dg-hot dg-dash" d="M115 326 L345 326" marker-end="url(#ov-seam-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.471;0.489;0.6;0.643;1"/></path><rect class="dg-glow" x="8" y="10" width="214" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.057;0.074;0.082;0.107;0.414;0.431;0.486;0.521;1"/></rect><rect class="dg-glow" x="238" y="10" width="214" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.171;0.189;0.221;0.257;0.3;0.317;0.325;0.35;0.586;0.603;0.636;0.671;1"/></rect><rect class="dg-band" x="88" y="105" width="284" height="18" rx="3" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;0.4;0.4;0;0" keyTimes="0;0.05;0.067;0.171;0.2;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M115 196 L345 196" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.057;0.186;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.057;0.071;0.171;0.186;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M345 287 L115 287" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.3;0.429;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.3;0.314;0.414;0.429;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M115 326 L345 326" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.471;0.6;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.471;0.486;0.586;0.6;1"/></circle></g>
 </svg>
 </div>
-<div class="dg-cap"><p class="hint">The higher package registers itself when it is imported; the lower package calls it back later. Nothing imports upward. Dashed: the answer. <span class="dg-motion">In motion, a dot travels along each arrow in the order of the steps: the registration when forms is imported, then, after a pause at the note, the call back into forms and its answer.</span></p></div>
+<p class="hint">The higher package registers itself when it is imported; the lower package calls it back later. Nothing imports upward. Dashed: the answer. <span class="dg-motion">In motion, a dot travels along each arrow in the order of the steps, while the line of code that causes the step is lit: the registration when forms is imported, then, after a pause at the note, the call back into forms and its answer. Use the slider, or press a number, to look at one step.</span></p>
 </figure>
 <xo-tabs label="A seam" class="example">
   <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// packages/forms/src/index.js: forms import data, so data cannot import forms.</span>
@@ -325,7 +356,7 @@ setFormEngine({ attach: attachForm });</code></pre></section>
 <li><code>docs/decisions/</code>: the decision records (0001 to 0010)</li>
 </ul>
 
-<nav class="pager" aria-label="Pages"><a rel="prev" href="own-control.html"><small>Previous</small><span>Your own control</span></a><a rel="next" href="arch-data-flow.html"><small>Next</small><span>Data flow</span></a></nav>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="codes.html"><small>Previous</small><span>Error codes</span></a><a rel="next" href="arch-data-flow.html"><small>Next</small><span>Data flow</span></a></nav>
     </main>
     <aside class="rail" aria-label="On this page">
       <h2>On this page</h2>

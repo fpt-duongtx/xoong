@@ -28,14 +28,21 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
   <script type="module" src="src/demo.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
@@ -83,6 +90,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -94,6 +105,13 @@
     <h2>Extend</h2>
     <a href="recipes.html">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -143,6 +161,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -154,6 +176,13 @@
       <h2>Extend</h2>
       <a href="recipes.html">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -177,7 +206,7 @@
 
 <h1>xoong</h1>
 <p class="lead">Build data-driven web pages with HTML, plain CSS and your OpenAPI document. Custom elements in the Light DOM, no virtual DOM, no runtime dependencies in the core, no build step needed to try it.</p>
-<aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p><strong>Status:</strong> a working prototype (0.x). It is not published to npm yet, so you install it from release files: see <a href="install.html">Install</a>.</p></aside>
+<aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p><strong>Status:</strong> a working prototype (0.x). It is published to npm under the tag <code>next</code>: <code>npm install @xoong/xoong@next</code> (see <a href="install.html">Install</a>). The HTML syntax is still Draft and may change before 0.1.</p></aside>
 
 <h2 id="what-you-write">What you write</h2>
 <p>A screen is HTML. The table below reads <code>listPeople</code> from an OpenAPI operation; sorting, search, paging, selection, the confirm dialog and the toast are attributes. Try it: sort a column, type in the search box, tick rows.</p>
@@ -186,16 +215,16 @@
     <xo-view get="listPeople">
       <xo-table columns="name,email:E-mail,role" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
         <span slot="role" class="badge">{role}</span>
-        <button xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
-        <button slot="bulk" xo-click="deletePerson" xo-selected>Delete ticked</button>
+        <button class="danger" xo-click="deletePerson" xo-confirm="Delete {name}?" xo-notice="Deleted">Delete</button>
+        <button slot="bulk" class="danger" xo-click="deletePerson" xo-selected>Delete ticked</button>
       </xo-table>
     </xo-view>
   </div></section>
   <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
   &lt;<span class="tok-t">xo-table</span> <span class="tok-a">columns</span>=<span class="tok-s">"name,email:E-mail,role"</span> <span class="tok-a">sortable</span> <span class="tok-a">filters</span>=<span class="tok-s">"name:Search by name"</span> <span class="tok-a">selectable</span> <span class="tok-a">page-size</span>=<span class="tok-s">"5"</span> <span class="tok-a">empty</span>=<span class="tok-s">"Nobody here"</span>&gt;
     &lt;<span class="tok-t">span</span> <span class="tok-a">slot</span>=<span class="tok-s">"role"</span> <span class="tok-a">class</span>=<span class="tok-s">"badge"</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">span</span>&gt;
-    &lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
-    &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"bulk"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-selected</span>&gt;Delete ticked&lt;/<span class="tok-t">button</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">class</span>=<span class="tok-s">"danger"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"bulk"</span> <span class="tok-a">class</span>=<span class="tok-s">"danger"</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-selected</span>&gt;Delete ticked&lt;/<span class="tok-t">button</span>&gt;
   &lt;/<span class="tok-t">xo-table</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
   <section xo-tab="main.js"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;

@@ -1,4 +1,5 @@
 // @ts-check
+import { readFileSync } from 'node:fs';
 import { mkdir, writeFile, copyFile, access } from 'node:fs/promises';
 import { join, basename, resolve } from 'node:path';
 import { analyze, runtimeTable, generateDts } from './openapi.js';
@@ -73,7 +74,7 @@ ${view}
 /**
  * Create a project folder from an OpenAPI document.
  * @param {string} dir  target folder (created; must not contain files we would overwrite)
- * @param {{ spec: string, title?: string, link?: string }} options  `link`: path to a checkout of xoong; the project then depends on its packages by path (they are not published yet)
+ * @param {{ spec: string, title?: string, link?: string }} options  `link`: path to a checkout of xoong; the project then depends on its packages by path instead of from npm
  */
 export async function scaffold(dir, { spec, title, link }) {
   const target = resolve(dir);
@@ -85,7 +86,9 @@ export async function scaffold(dir, { spec, title, link }) {
   const name = basename(target).toLowerCase().replace(/[^a-z0-9-]/g, '-') || 'xoong-app';
   const pick = pickListScreen(a);
   const heading = title ?? doc.info?.title ?? name;
-  const pkg = (n) => (link ? `file:${resolve(link, 'packages', n)}` : '*');
+  // The packages are released together under one version: the project asks for the version of this CLI, not `*` (which npm reads as `latest`, an older release than `next`)
+  const version = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
+  const pkg = (n) => (link ? `file:${resolve(link, 'packages', n)}` : version);
 
   await mkdir(join(target, 'src'), { recursive: true });
   await mkdir(join(target, 'test'), { recursive: true });

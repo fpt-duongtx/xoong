@@ -1,7 +1,9 @@
 // @ts-check
+import { USAGE } from './usage.js';
+
 /**
- * The commands of `xoong` and the options each one accepts. `cli.js` refuses everything else (a typo such as `--exclud` used to be
- * ignored without a word), and a test keeps `xoong --help` in step with this table.
+ * The commands of `xoong` and the options each one accepts, made from the table in usage.js (the same one `xoong --help` and the documentation
+ * site are made from). `cli.js` refuses everything else: a typo such as `--exclud` used to be ignored without a word.
  *
  *   args       how many positional arguments: a number, or '+' for one or more
  *   values     options that take a value (`--out dist`); a repeatable one may appear several times
@@ -9,20 +11,16 @@
  *   required   options the command cannot run without (the help is shown instead)
  *   repeatable options that collect every occurrence (`--exclude a --exclude b`)
  */
-export const COMMANDS = {
-  sync: { args: 1, values: ['--out', '--hints'], flags: [], required: [], repeatable: [] },
-  doctor: { args: 1, values: ['--hints'], flags: ['--all'], required: [], repeatable: [] },
-  new: { args: 1, values: ['--spec', '--title', '--link'], flags: [], required: ['--spec'], repeatable: [] },
-  check: { args: '+', values: ['--operations', '--format', '--exclude'], flags: [], required: [], repeatable: ['--exclude'] },
-  render: { args: 1, values: ['--api', '--url', '--operations', '--out'], flags: [], required: ['--api'], repeatable: [] },
-  'i18n extract': { args: '+', values: ['--out'], flags: [], required: [], repeatable: [] },
-  'i18n check': { args: 1, values: ['--source'], flags: [], required: ['--source'], repeatable: [] },
-  build: { args: 0, values: ['--root', '--out', '--base', '--include', '--exclude'], flags: ['--no-preload'], required: [], repeatable: ['--include', '--exclude'] },
-  dev: { args: 0, values: ['--root', '--port', '--proxy'], flags: ['--spa'], required: [], repeatable: ['--proxy'] },
-};
+export const COMMANDS = Object.fromEntries(USAGE.map((c) => [c.name, {
+  args: c.count,
+  values: c.options.filter((o) => o.value !== undefined).map((o) => o.flag),
+  flags: c.options.filter((o) => o.value === undefined).map((o) => o.flag),
+  required: c.options.filter((o) => o.required).map((o) => o.flag),
+  repeatable: c.options.filter((o) => o.repeatable).map((o) => o.flag),
+}]));
 
-/** Option values with a fixed set of choices. */
-export const CHOICES = { check: { '--format': ['text', 'json'] } };
+/** Option values with a fixed set of choices, per command. */
+export const CHOICES = Object.fromEntries(USAGE.filter((c) => c.options.some((o) => o.choices)).map((c) => [c.name, Object.fromEntries(c.options.filter((o) => o.choices).map((o) => [o.flag, o.choices]))]));
 
 /**
  * @param {string} name a key of COMMANDS

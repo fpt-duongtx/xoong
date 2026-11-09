@@ -66,11 +66,11 @@ describe('<xo-pager>', () => {
     const tiles = () => screen.$$('.tile').map((t) => t.textContent);
     expect(tiles()).toEqual(['n1', 'n2']);
     expect(screen.$('.xo-range').textContent).toBe('1–2 of 5');
-    expect(screen.$$('nav.xo-pager button').map((b) => b.textContent)).toEqual(['Next']);
+    expect(screen.$$('nav.xo-pager button').map((b) => b.getAttribute('aria-label'))).toEqual(['Next']);
     screen.$('nav.xo-pager button').click();
     await wait(80);
     expect(tiles()).toEqual(['n3', 'n4']);
-    expect(screen.$$('nav.xo-pager button').map((b) => b.textContent)).toEqual(['Previous', 'Next']);
+    expect(screen.$$('nav.xo-pager button').map((b) => b.getAttribute('aria-label'))).toEqual(['Previous', 'Next']);
   });
 });
 

@@ -65,6 +65,22 @@ import { EventSourcePolyfill } from 'event-source-polyfill';       // the native
 connectStream({ client: getClient(), url: '/events', EventSource: EventSourcePolyfill });`)}
 <p>A record pushed with an id the store already knows updates every view that shows it. A <em>new</em> record does not appear in a list that is already loaded; ask the list to refetch (<code>invalidateAll()</code> or a <code>resync</code> event).</p>
 
+<h2>Errors</h2>
+<h3>Handle a failed call on your own screen</h3>
+<p>By default a failed action or read reaches the person through <code>&lt;xo-toast&gt;</code>. To handle it yourself, listen for <code>xo-error</code>: it bubbles from the view, button or form that made the call, and <code>preventDefault()</code> says "this one is mine" so the toast stays quiet. <code>view.error</code> is the latest read error; <code>configure({ onError })</code> is the one global handler and runs first.</p>
+${js('xo-error', `
+const view = document.querySelector('#orders');                  // an <xo-view>
+
+view.addEventListener('xo-error', (event) => {
+  event.preventDefault();                                        // no toast for this one
+  const { status, code, detail, fields } = event.detail;         // a XoongError
+  if (status === 403) showUpgradeBanner();
+  else showInlineError(detail);
+});
+
+view.error;                                                       // the XoongError of the latest read, or null`)}
+<p>A page can also listen once for everything: <code>document.addEventListener('xo-error', report)</code> sends every failure to your error tracker, whether or not it was prevented.</p>
+
 <h2>Sign-in</h2>
 <h3>Refresh the token and retry once</h3>
 <p>Wrap <code>fetch</code>: on a 401, refresh and send the request again; give up to <code>onUnauthorized</code>. If several requests fail together, share one refresh promise (not exercised here).</p>

@@ -111,7 +111,16 @@
   .xo-table .xo-actions { text-align: end; white-space: nowrap; } /* a table cell stays a cell (display: flex dropped its border) */
   .xo-table .xo-actions > * + * { margin-inline-start: var(--xo-space-2); }
   .xo-bulk { display: flex; align-items: center; gap: var(--xo-space-2); padding: var(--xo-space-2); background: var(--xo-color-bg); border-bottom: 1px solid var(--xo-color-border); }
-  .xo-filters { display: flex; flex-wrap: wrap; gap: var(--xo-space-2); padding: var(--xo-space-2); border-bottom: 1px solid var(--xo-color-border); }
+  .xo-filters { display: flex; flex-wrap: wrap; gap: var(--xo-space-2); align-items: center; padding: var(--xo-space-2); border-bottom: 1px solid var(--xo-color-border); }
+  /* column-picker: a "Columns" dropdown at the right end of the filter row; a checked box shows its column */
+  .xo-columns { position: relative; margin-inline-start: auto; }
+  .xo-columns > summary { list-style: none; cursor: pointer; padding: var(--xo-space-1) var(--xo-space-2); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); }
+  .xo-columns > summary::-webkit-details-marker { display: none; }
+  .xo-columns > summary::after { content: "▾"; margin-inline-start: var(--xo-space-2); }
+  .xo-columns-panel { position: absolute; inset-inline-end: 0; top: calc(100% + var(--xo-space-1)); z-index: 30; display: grid; gap: 2px; min-width: 12rem; max-height: 20rem; overflow: auto; padding: var(--xo-space-1); background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); box-shadow: 0 8px 24px rgb(0 0 0 / 0.18); }
+  .xo-columns-panel label { display: flex; align-items: center; gap: var(--xo-space-2); padding: var(--xo-space-1) var(--xo-space-2); border-radius: var(--xo-radius); cursor: pointer; }
+  .xo-columns-panel label:hover { background: var(--xo-color-subtle); }
+  .xo-table [data-col][hidden] { display: none !important; } /* a hidden column stays hidden in the card layout too */
   .xo-toast { z-index: var(--xo-z-toast, 60); position: fixed; inset-block-end: var(--xo-space-4); inset-inline-end: var(--xo-space-4); max-width: 24rem; margin: 0; padding: var(--xo-space-2) var(--xo-space-3); color: var(--xo-color-danger); background: var(--xo-color-surface); border: 1px solid var(--xo-color-danger); border-radius: var(--xo-radius); }
   .xo-toast[hidden] { display: none; }
   .xo-pager { display: flex; gap: var(--xo-space-2); justify-content: flex-end; padding: var(--xo-space-2); }
@@ -135,7 +144,8 @@
   .xo-field:has(input[type="checkbox"]) { display: flex; align-items: center; gap: var(--xo-space-2); }
   .xo-field:has(> :is(input, select, textarea, xo-combobox, xo-tags, xo-richtext)[required]) > :first-child::after { content: " *"; color: var(--xo-color-danger); } /* a field that must be filled in */
   .xo-error { color: var(--xo-color-danger); font-size: var(--xo-text-small); }
-  .xo-form > .xo-submit { justify-self: start; color: var(--xo-color-accent-text); background: var(--xo-color-accent); border-color: transparent; }
+  .xo-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--xo-space-2); } /* the submit button and the buttons put inside <xo-form> */
+  .xo-form > .xo-submit, .xo-form-actions > .xo-submit { justify-self: start; color: var(--xo-color-accent-text); background: var(--xo-color-accent); border-color: transparent; }
 
   xo-view:not(:defined):not(:has(> template[data-xo-template])) { visibility: hidden; } /* raw {name} templates are not shown while the script loads; a prerendered view (@xoong/ssr keeps its template aside) is the content and stays visible */
   .xo-confirm { max-width: 26rem; padding: var(--xo-space-4); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
@@ -167,6 +177,9 @@
   xo-dialog > dialog.xo-modal--full { width: min(96rem, calc(100vw - 2rem)); }
   .xo-modal__head { display: flex; align-items: center; justify-content: space-between; gap: var(--xo-space-3); padding: var(--xo-space-2) var(--xo-space-2) var(--xo-space-2) var(--xo-space-3); border-bottom: 1px solid var(--xo-color-border); }
   .xo-modal__head h2 { margin: 0; padding: 0; border: 0; font-size: 1.1rem; }
-  .xo-modal__body { flex: 1; min-height: 0; padding: var(--xo-space-3); overflow: auto; }
+  .xo-modal__body { --xo-modal-pad: var(--xo-space-3); flex: 1; min-height: 0; padding: var(--xo-modal-pad); overflow: auto; }
+  /* a form in a dialog uses the dialog's width (the 28rem cap is for a form on a page), and its buttons stay at the bottom while the fields scroll */
+  xo-dialog > dialog { --xo-form-max-width: none; }
+  .xo-modal__body .xo-form-actions { position: sticky; bottom: calc(-1 * var(--xo-modal-pad)); z-index: 1; margin: 0 calc(-1 * var(--xo-modal-pad)) calc(-1 * var(--xo-modal-pad)); padding: var(--xo-space-2) var(--xo-modal-pad); background: var(--xo-color-surface); border-top: 1px solid var(--xo-color-border); }
   .xo-modal__foot { display: flex; align-items: center; justify-content: flex-end; gap: var(--xo-space-2); padding: var(--xo-space-2) var(--xo-space-3); border-top: 1px solid var(--xo-color-border); }
 }

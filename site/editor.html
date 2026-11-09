@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor support · xoong</title>
+  <meta name="description" content="Completion and hover for xo-* elements and attributes with HTML custom data, and the language server xoong-lsp with live checks, completion, hover and quick fixes.">
+  <meta property="og:title" content="Editor support · xoong">
+  <meta property="og:description" content="Completion and hover for xo-* elements and attributes with HTML custom data, and the language server xoong-lsp with live checks, completion, hover and quick fixes.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Editor support</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html" aria-current="page">Editor support</a>
+    <a href="codes.html">Error codes</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html" aria-current="page">Editor support</a>
+      <a href="codes.html">Error codes</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Tools</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Editor support</span></div>
+
+<h1>Editor support</h1>
+<p class="lead">The mistakes <code>xoong check</code> reports can show up while you type. There are two ways to get that, and they work together: HTML custom data, which gives completion and hover in VS Code with nothing to install, and a language server, <code>xoong-lsp</code>, which adds the checks themselves, quick fixes and completion in any editor that speaks LSP.</p>
+
+<h2 id="which-one">Which one</h2>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Compared</th><th>HTML custom data</th><th>Language server</th></tr></thead>
+<tbody>
+<tr><td>Gives you</td><td>Completion and hover for every <code>xo-*</code> element and attribute, the operation names, the fixed values</td><td>The same, and the findings of <code>xoong check</code> as you type, with quick fixes</td></tr>
+<tr><td>Needs</td><td>The file <code>xoong sync</code> writes, and one setting</td><td><code>@xoong/lsp</code>, and an editor that can start a language server</td></tr>
+<tr><td>Works in</td><td>VS Code (and tools that read its HTML custom data format)</td><td>Any editor with an LSP client, for HTML, JavaScript and TypeScript files</td></tr>
+<tr><td>Checks your code</td><td>No</td><td>Yes</td></tr>
+</tbody></table></div>
+
+<h2 id="html-custom-data-in-vs-code">HTML custom data in VS Code</h2>
+<p><a href="cli.html#xoong-sync"><code>xoong sync</code></a> writes <code>.xoong/xoong.html-data.json</code> next to <code>operations.json</code>, and so does <a href="cli.html#xoong-new"><code>xoong new</code></a>. It is the format that VS Code's HTML language service reads. Point the editor at it once, in <code>.vscode/settings.json</code>:</p>
+<xo-tabs label="VS Code" class="example">
+  <section xo-tab=".vscode/settings.json"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"html.customData"</span>: [<span class="tok-s">"./.xoong/xoong.html-data.json"</span>]
+}</code></pre></section>
+  <section xo-tab="xoong.html-data.json (excerpt)"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"version"</span>: <span class="tok-n">1.1</span>,
+  <span class="tok-a">"globalAttributes"</span>: [
+    {
+      <span class="tok-a">"name"</span>: <span class="tok-s">"xo-click"</span>,
+      <span class="tok-a">"description"</span>: <span class="tok-s">"Call an operation when clicked: \"METHOD /path/{param}\" or an operationId. Params come from the current item, then the view's p-* params."</span>,
+      <span class="tok-a">"valueSet"</span>: <span class="tok-s">"xo-mutations"</span>
+    }
+  ],
+  <span class="tok-a">"valueSets"</span>: [
+    {
+      <span class="tok-a">"name"</span>: <span class="tok-s">"xo-mutations"</span>,
+      <span class="tok-a">"values"</span>: [
+        {
+          <span class="tok-a">"name"</span>: <span class="tok-s">"DELETE /api/people/{id}"</span>
+        },
+        {
+          <span class="tok-a">"name"</span>: <span class="tok-s">"POST /api/people"</span>
+        },
+        {
+          <span class="tok-a">"name"</span>: <span class="tok-s">"PUT /api/people/{id}"</span>
+        },
+        {
+          <span class="tok-a">"name"</span>: <span class="tok-s">"createPerson"</span>
+        },
+        {
+          <span class="tok-a">"name"</span>: <span class="tok-s">"deletePerson"</span>
+        },
+        {
+          <span class="tok-a">"name"</span>: <span class="tok-s">"updatePerson"</span>
+        }
+      ]
+    }
+  ]
+}</code></pre></section>
+</xo-tabs>
+<p>You then get, in HTML files:</p>
+<ul>
+<li>completion and hover documentation for every <code>xo-*</code> element and attribute, with the attributes of the element you are in;</li>
+<li>the real operation names for <code>xo-click</code>, <code>xo-submit</code>, <code>&lt;xo-view get&gt;</code> and <code>&lt;xo-form op&gt;</code>: mutations for the first two and for <code>op</code>, reads for <code>get</code>;</li>
+<li><code>p-&lt;name&gt;</code> attributes for the path parameters of your API on a view;</li>
+<li>the values of attributes that take a fixed set (<code>xo-confirm-kind</code>, <code>&lt;xo-dialog size&gt;</code>, the sizes and statuses of the controls).</li>
+</ul>
+<p>The file is made again by every <code>sync</code>, so it follows the API. It only offers; it does not check, and it does not fix.</p>
+
+<h2 id="the-language-server">The language server</h2>
+<p><code>xoong-lsp</code> is a language server for the Language Server Protocol, over standard input and output. It finds <code>.xoong/operations.json</code> from the workspace folder upward and reads it again when it changes; saving a file checks it again, which also picks up a fresh <code>xoong sync</code>. It needs no options.</p>
+<xo-tabs label="Install" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npm install <span class="tok-a">--save-dev</span> @xoong/lsp@next
+npx xoong sync openapi.json
+npx xoong-lsp                <span class="tok-c"># started by your editor, not by hand</span></code></pre></section>
+</xo-tabs>
+<p>Any editor with a language-server client can run it: the command is <code>npx xoong-lsp</code>, the files are HTML, JavaScript and TypeScript, and the root is the folder with <code>.xoong/</code>. In Neovim:</p>
+<xo-tabs label="Neovim" class="example">
+  <section xo-tab="init.lua"><pre data-lang="lua" tabindex="0"><code>vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'html', 'javascript', 'typescript' },
+  callback = function(args)
+    vim.lsp.start({
+      name = 'xoong',
+      cmd = { 'npx', 'xoong-lsp' },
+      root_dir = vim.fs.root(args.buf, '.xoong'),
+    })
+  end,
+})</code></pre></section>
+</xo-tabs>
+<p>VS Code has no setting that starts an arbitrary language server, so there the custom data above is what you use; an extension that wraps the server is planned.</p>
+
+<h2 id="what-it-gives-you">What it gives you</h2>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Feature</th><th>What you get</th></tr></thead>
+<tbody>
+<tr><td><strong>Diagnostics</strong></td><td>The findings of <code>xoong check</code>, with the same code, message and fix, in HTML files and in JavaScript and TypeScript files (<code>html`...`</code> templates and <code>client.*</code> calls). A new rule shows up in the editor without any change to it. Errors and warnings keep their level.</td></tr>
+<tr><td><strong>Operation names</strong></td><td>Completion inside <code>xo-click</code>, <code>xo-submit</code> and <code>op</code> offers mutations; inside <code>get</code> it offers reads, written as paths. It filters by what you typed.</td></tr>
+<tr><td><strong>Names</strong></td><td>Completion of <code>xo-*</code> elements after <code>&lt;xo-</code>, of the attributes of the element you are in (<code>page-size</code> inside <code>&lt;xo-pager </code>, on a tag that spans several lines too), of <code>p-&lt;param&gt;</code> on a <code>&lt;xo-view&gt;</code>, and of the <code>xo-*</code> attributes.</td></tr>
+<tr><td><strong>Values</strong></td><td>Completion of the fixed sets (<code>xo-confirm-kind="</code>, <code>&lt;xo-dialog size="</code>) and of the ids of the <code>&lt;xo-dialog&gt;</code>s of the file inside <code>xo-open="</code>.</td></tr>
+<tr><td><strong>Hover</strong></td><td>What an element, an <code>xo-*</code> attribute or an attribute of an element does, and the values it takes; what <code>p-id</code>, <code>p-id="?id"</code> and <code>p-id=":id"</code> mean.</td></tr>
+<tr><td><strong>Quick fixes</strong></td><td>Replace an unknown operation (<a href="codes.html#xo201">XO201</a>), a misspelled <code>xo-*</code> attribute or element (<a href="codes.html#xo230">XO230</a>) or a value outside its set (<a href="codes.html#xo271">XO271</a>) with the closest one.</td></tr>
+<tr><td><strong>No table yet</strong></td><td>Without <code>.xoong/operations.json</code> a file gets one information message: run <code>xoong sync</code>. Nothing else is reported until it exists.</td></tr>
+</tbody></table></div>
+<p>The packages' tests cover each of these. A test also fails when an element or attribute is added to the syntax lists and the server cannot complete or explain it.</p>
+
+<h2 id="limits">Limits</h2>
+<ul>
+<li>There is <strong>no VS Code extension</strong> yet, and no commands, status bar or snippets. Lint presets and SARIF output are planned.</li>
+<li>Completion of <code>{field}</code> paths does not know the scope yet, hover does not show the types of an operation, and there is no go to definition.</li>
+<li>The editor sends the whole text of a file on every change (full document sync), which is fine for screens and not meant for huge files.</li>
+<li>It checks what the editor sends it. Tell your editor which file types to use it for.</li>
+</ul>
+<p><strong>See also:</strong> <a href="cli.html">Command line</a> · <a href="mcp.html">MCP server</a> · <a href="codes.html">Error codes</a> · <a href="arch-tooling.html#editors-html-data-and-the-language-server">How it is built</a></p>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="mcp.html"><small>Previous</small><span>MCP server</span></a><a rel="next" href="codes.html"><small>Next</small><span>Error codes</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#which-one" aria-current="true">Which one</a></li><li><a href="#html-custom-data-in-vs-code">HTML custom data in VS Code</a></li><li><a href="#the-language-server">The language server</a></li><li><a href="#what-it-gives-you">What it gives you</a></li><li><a href="#limits">Limits</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

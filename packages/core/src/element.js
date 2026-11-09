@@ -92,7 +92,7 @@ export class XoElement extends Base {
 
   /** Dispatch a bubbling CustomEvent. */
   emit(name, detail) {
-    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
+    this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true, cancelable: true }));
   }
 }
 

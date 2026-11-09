@@ -53,5 +53,8 @@ export function format(name, value, loc) {
     if (!warned.has(name)) { warned.add(name); console.error(`xoong: unknown format "${name}" in {path | ${name}} (known: ${[...formats.keys()].join(', ')})`); }
     return typeof value === 'object' ? JSON.stringify(value) : String(value);
   }
-  try { return fn(value, loc); } catch { return String(value); }
+  try { return fn(value, loc); } catch (e) {
+    if (!warned.has(`throw:${name}`)) { warned.add(`throw:${name}`); console.error(`xoong: the format "${name}" threw: ${/** @type {Error} */ (e)?.message ?? e}. The plain value is shown.`); }
+    return String(value);
+  }
 }

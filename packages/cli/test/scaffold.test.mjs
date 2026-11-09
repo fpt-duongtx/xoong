@@ -11,6 +11,16 @@ const fixture = new URL('./fixture.json', import.meta.url).pathname;
 const chat = new URL('../../../examples/chat/openapi.json', import.meta.url).pathname;
 
 describe('xoong new', () => {
+  it('asks for the version of this CLI for every @xoong package, not "*" (npm reads that as latest, an older release)', async () => {
+    const dir = join(await mkdtemp(join(tmpdir(), 'xoong-new-')), 'versions');
+    await scaffold(dir, { spec: fixture });
+    const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf8'));
+    const own = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8')).version;
+    const wanted = Object.entries({ ...pkg.dependencies, ...pkg.devDependencies }).filter(([name]) => name.startsWith('@xoong/'));
+    expect(wanted.length).toBeGreaterThan(3);
+    for (const [name, range] of wanted) expect(range, name).toBe(own);
+  });
+
   it('creates a project whose first screen passes `xoong check` against its own generated table', async () => {
     const dir = join(await mkdtemp(join(tmpdir(), 'xoong-new-')), 'my-app');
     const result = await scaffold(dir, { spec: fixture });

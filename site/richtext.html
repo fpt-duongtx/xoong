@@ -28,8 +28,11 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
   <script type="module" src="src/demo.js"></script>
   <script type="module" src="src/page-richtext.js"></script>
 </head>
@@ -37,6 +40,10 @@
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
@@ -84,6 +91,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -95,6 +106,13 @@
     <h2>Extend</h2>
     <a href="recipes.html">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -144,6 +162,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -155,6 +177,13 @@
       <h2>Extend</h2>
       <a href="recipes.html">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -193,14 +222,14 @@
     </div>
     <p class="toolbar"><button id="expand" type="button">Expand</button><button id="reset" type="button">Reset</button></p>
     <h3>Value</h3>
-    <pre class="value"><code id="rt-out"></code></pre>
+    <pre class="value" tabindex="0"><code id="rt-out"></code></pre>
   </div></section>
   <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"resizable"</span>&gt;
   &lt;<span class="tok-t">xo-richtext</span> <span class="tok-a">id</span>=<span class="tok-s">"demo-editor"</span> <span class="tok-a">name</span>=<span class="tok-s">"body"</span> <span class="tok-a">label</span>=<span class="tok-s">"Body"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Write something"</span> <span class="tok-a">media</span>&gt;&lt;/<span class="tok-t">xo-richtext</span>&gt;
 &lt;/<span class="tok-t">div</span>&gt;
 &lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">id</span>=<span class="tok-s">"expand"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Expand&lt;/<span class="tok-t">button</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">id</span>=<span class="tok-s">"reset"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Reset&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
 &lt;<span class="tok-t">h3</span>&gt;Value&lt;/<span class="tok-t">h3</span>&gt;
-&lt;<span class="tok-t">pre</span> <span class="tok-a">class</span>=<span class="tok-s">"value"</span>&gt;&lt;<span class="tok-t">code</span> <span class="tok-a">id</span>=<span class="tok-s">"rt-out"</span>&gt;&lt;/<span class="tok-t">code</span>&gt;&lt;/<span class="tok-t">pre</span>&gt;</code></pre></section>
+&lt;<span class="tok-t">pre</span> <span class="tok-a">class</span>=<span class="tok-s">"value"</span> <span class="tok-a">tabindex</span>=<span class="tok-s">"0"</span>&gt;&lt;<span class="tok-t">code</span> <span class="tok-a">id</span>=<span class="tok-s">"rt-out"</span>&gt;&lt;/<span class="tok-t">code</span>&gt;&lt;/<span class="tok-t">pre</span>&gt;</code></pre></section>
   <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// The rich text page: a start value, the media hook and a live view of the sanitised value.</span>
 <span class="tok-k">const</span> editor = document.querySelector(<span class="tok-s">'#demo-editor'</span>);
 <span class="tok-k">const</span> out = document.querySelector(<span class="tok-s">'#rt-out'</span>);

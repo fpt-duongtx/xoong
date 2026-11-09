@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { COMMANDS, parseArgs } from '../src/args.js';
+import { USAGE, EXIT_CODES, helpText } from '../src/usage.js';
 
 const run = promisify(execFile);
 const cli = new URL('../src/cli.js', import.meta.url).pathname;
@@ -49,7 +50,7 @@ describe('parseArgs', () => {
 });
 
 describe('xoong --help matches what the code accepts', () => {
-  const help = readFileSync(cli, 'utf8').match(/const HELP = `([\s\S]*?)`;/)[1];
+  const help = helpText(); // usage.js is the one table: the help, COMMANDS and the documentation page are made from it
   const lines = help.split('\n').filter((l) => /^ {2}\S/.test(l));
   const lineOf = (name) => lines.find((l) => l.trim().startsWith(`${name} `));
 
@@ -65,11 +66,25 @@ describe('xoong --help matches what the code accepts', () => {
     expect(lines.filter((l) => !l.startsWith('  --')).length).toBe(Object.keys(COMMANDS).length); // no command in the help that the code does not have
   });
 
+  it('the table has every command once, the exit codes the help names, and no option twice in a command', () => {
+    expect(new Set(USAGE.map((c) => c.name)).size).toBe(USAGE.length);
+    expect(help).toContain(`Exit code: ${EXIT_CODES.map((e) => `${e.code} ${e.text}`).join(', ')}.`);
+    for (const c of USAGE) {
+      expect(new Set(c.options.map((o) => o.flag)).size, c.name).toBe(c.options.length);
+      for (const o of c.options) expect(o.doc, `${c.name} ${o.flag} needs a description for the documentation`).toMatch(/\S/);
+    }
+  });
+
+  it('cli.js reads every option the table lists (an option that is listed and never read would be accepted and ignored)', () => {
+    const source = readFileSync(cli, 'utf8');
+    for (const c of USAGE) for (const o of c.options) expect(source, `${c.name} ${o.flag}`).toContain(`'${o.flag}'`);
+  });
+
   it('prints it for --help anywhere, -h and help, and does nothing else', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'xoong-help-'));
     for (const args of [['--help'], ['-h'], ['help'], ['check', '--help'], ['i18n', 'extract', '-h'], ['dev', '--port', '1', '--help']]) {
       const { stdout } = await xoong(args, { cwd: dir });
-      expect(stdout, args.join(' ')).toContain('xoong <command>');
+      expect(stdout, args.join(' ')).toBe(`${helpText()}\n`); // console.log adds the last newline
     }
     expect(await readdir(dir)).toEqual([]);
   });

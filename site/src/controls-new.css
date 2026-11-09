@@ -945,4 +945,31 @@ xo-image[ratio="21/9"]:not(:defined) { aspect-ratio: 21 / 9; }
 xo-image[ratio="3/4"]:not(:defined) { aspect-ratio: 3 / 4; }
 xo-image[ratio="2/3"]:not(:defined) { aspect-ratio: 2 / 3; }
 
+/* ---- xo-table: bulk bar without a layout shift, column picker, icon pager, form actions ---- */
+/* the bulk bar (div.xo-bulk, a direct child before .xo-filters) takes the cell of the filter row: ticking a row moves nothing */
+.xo-table:has(> .xo-filters) { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; }
+.xo-table:has(> .xo-filters) > .xo-filters, .xo-table:has(> .xo-filters) > .xo-bulk { grid-row: 1; grid-column: 1; }
+.xo-table:has(> .xo-filters) > .xo-bulk { z-index: 1; align-self: stretch; background: color-mix(in srgb, var(--xo-color-accent-soft) 100%, var(--xo-color-surface)); border-bottom: 0; }
+.xo-table:has(> .xo-bulk):has(> .xo-filters) > .xo-filters { visibility: hidden; }
+.xo-table > .xo-bulk { display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 56px; color: var(--xo-color-accent-strong); font-size: 14px; font-weight: 600; }
+/* column picker: details.xo-columns (summary + .xo-columns-panel) at the end of the filter row */
+.xo-filters { display: flex; align-items: center; flex-wrap: wrap; }
+details.xo-columns { position: relative; margin-inline-start: auto; }
+details.xo-columns > summary { display: inline-flex; align-items: center; gap: 8px; height: var(--xo-control-height); padding: 0 14px; font: 500 14px/1 var(--font); color: var(--xo-color-text); list-style: none; cursor: pointer; background: var(--xo-color-surface); border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius); user-select: none; }
+details.xo-columns > summary::-webkit-details-marker { display: none; }
+details.xo-columns > summary::after { content: ""; width: 16px; height: 16px; background: currentcolor; mask: var(--ic-chevron-down) center / contain no-repeat; -webkit-mask: var(--ic-chevron-down) center / contain no-repeat; transition: rotate .15s; }
+details.xo-columns[open] > summary::after { rotate: 180deg; }
+details.xo-columns > summary:hover { background: var(--xo-color-subtle); }
+details.xo-columns > summary:focus-visible { outline: var(--xo-focus); outline-offset: 2px; }
+.xo-columns-panel { position: absolute; inset-inline-end: 0; top: calc(100% + 6px); z-index: 5; display: grid; gap: 2px; min-width: 13rem; max-height: min(20rem, 60vh); padding: 6px; overflow: auto; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: calc(var(--xo-radius) * 1.5); box-shadow: var(--xo-shadow-pop); }
+.xo-columns-panel label { display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 10px; font-size: 14px; color: var(--xo-color-text); border-radius: 8px; cursor: pointer; }
+.xo-columns-panel label:hover { background: var(--xo-color-subtle); }
+.xo-columns-panel label:has(input:focus-visible) { outline: var(--xo-focus); outline-offset: -2px; }
+.xo-table:has(details.xo-columns[open]) { min-height: 18rem; }
+/* pager: Previous and Next are icon buttons */
+.xo-pager button.icon-only { display: inline-grid; place-items: center; width: var(--xo-control-height-sm); height: var(--xo-control-height-sm); min-height: 0; padding: 0; }
+.xo-pager button.icon-only svg { width: 20px; height: 20px; }
+/* xo-form: the submit and the extra buttons in one row */
+.xo-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
 }

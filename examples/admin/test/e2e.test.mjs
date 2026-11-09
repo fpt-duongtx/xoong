@@ -14,7 +14,7 @@ let backend, dev, browser, page1, page2;
 const errors = [];
 const names = (page) => page.$$eval('tbody tr', (rows) => rows.map((r) => r.children[0].textContent.trim()));
 const statuses = (page) => page.$$eval('tbody tr', (rows) => rows.map((r) => r.children[3].textContent.trim()));
-const pager = (page) => page.$$eval('.xo-pager button', (b) => b.map((x) => x.textContent.trim()));
+const pager = (page) => page.$$eval('.xo-pager button', (b) => b.map((x) => x.getAttribute('aria-label')));
 const waitNames = (page, expected) => page.waitForFunction((want) => JSON.stringify([...document.querySelectorAll('tbody tr')].map((r) => r.children[0].textContent.trim())) === JSON.stringify(want), expected, { timeout: 5000 });
 const waitRows = (page, n) => page.waitForFunction((count) => document.querySelectorAll('tbody tr').length === count, n, { timeout: 5000 });
 
@@ -53,10 +53,10 @@ describe('admin example in a real browser (declarations only, no application Jav
   });
 
   it('paging asks the server for the next page and Previous goes back', async () => {
-    await page1.click('.xo-pager button:text("Next")');
+    await page1.click('.xo-pager button[aria-label="Next"]');
     await waitNames(page1, ['Alan Turing']);
     expect(await pager(page1)).toEqual(['Previous']);
-    await page1.click('.xo-pager button:text("Previous")');
+    await page1.click('.xo-pager button[aria-label="Previous"]');
     await waitNames(page1, ['Ada Lovelace', 'Grace Hopper']);
   });
 
@@ -97,7 +97,7 @@ describe('admin example in a real browser (declarations only, no application Jav
     await expect.poll(() => backend.users.size).toBe(4);
     expect(await page1.inputValue('dialog input[name=name]')).toBe(''); // the form was reset
     // the other tab got a resync event and refetched; the new person is on its second page
-    await page2.click('.xo-pager button:text("Next")');
+    await page2.click('.xo-pager button[aria-label="Next"]');
     await waitNames(page2, ['Alan Turing', 'Dana Scott']);
   });
 

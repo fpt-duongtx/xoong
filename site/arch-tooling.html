@@ -28,14 +28,21 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
   <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
@@ -83,6 +90,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -94,6 +105,13 @@
     <h2>Extend</h2>
     <a href="recipes.html">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -143,6 +161,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -154,6 +176,13 @@
       <h2>Extend</h2>
       <a href="recipes.html">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -179,11 +208,11 @@
 <p class="lead">The tools exist so that a mistake is caught where it is made, with a message that contains the fix. One rule engine serves the command line, the editor and AI assistants, and the tests run the real framework with only the network replaced.</p>
 
 <h2 id="one-check-engine">One check engine</h2>
-<figure class="dg-fig dg-anim">
+<figure class="dg-fig dg-anim" data-dur="7" data-steps="[[&quot;1&quot;,&quot;You run xoong check, or your editor or your AI assistant does. The check engine takes three inputs: operations.json (from xoong sync), the list of xo-* names in syntax.js, and your HTML, JS and TS files.&quot;,&quot;0.3&quot;,&quot;1.58&quot;],[&quot;2&quot;,&quot;The engine produces findings with codes XO2xx, each with a fix. The three front ends show the same findings: xoong check in the terminal and CI, xoong-lsp in your editor, xoong-mcp for AI assistants.&quot;,&quot;2.5&quot;,&quot;3.78&quot;]]">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: one check engine, three front ends">
-<svg class="dg dg-sm" viewBox="0 0 590 290" role="img" aria-labelledby="tl-engine-t tl-engine-d">
+<svg class="dg dg-sm" viewBox="0 0 590 372" role="img" aria-labelledby="tl-engine-t tl-engine-d">
 <title id="tl-engine-t">One check engine, three front ends</title>
-<desc id="tl-engine-d">Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants. When the animation plays, dots go from the three inputs into the engine together, and then out to the three front ends together: one set of findings, shown three ways.</desc>
+<desc id="tl-engine-d">Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants. At the bottom is the command that runs the first of them, in a terminal window. The code window shows Terminal: npx xoong check index.html. Steps: 1. You run xoong check, or your editor or your AI assistant does. The check engine takes three inputs: operations.json (from xoong sync), the list of xo-* names in syntax.js, and your HTML, JS and TS files. 2. The engine produces findings with codes XO2xx, each with a fix. The three front ends show the same findings: xoong check in the terminal and CI, xoong-lsp in your editor, xoong-mcp for AI assistants. When the animation plays, dots go from the three inputs into the engine together, and then out to the three front ends together, while the command is lit: one set of findings, shown three ways.</desc>
 <defs><marker id="tl-engine-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="tl-engine-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="10" y="14" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="44">operations.json</text><text class="dg-sub" x="110" y="64">from xoong sync</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="104" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="134">syntax.js</text><text class="dg-sub" x="110" y="154">every xo-* name</text></g>
@@ -192,16 +221,20 @@
 <g class="dg-node"><rect class="dg-box" x="432" y="14" width="150" height="74" rx="8"/><text class="dg-t" x="507" y="44">xoong check</text><text class="dg-sub" x="507" y="64">CLI and CI</text></g>
 <g class="dg-node"><rect class="dg-box" x="432" y="104" width="150" height="74" rx="8"/><text class="dg-t" x="507" y="126">xoong-lsp</text><text class="dg-sub" x="507" y="146">diagnostics,</text><text class="dg-sub" x="507" y="162">completion, hover</text></g>
 <g class="dg-node"><rect class="dg-box" x="432" y="194" width="150" height="74" rx="8"/><text class="dg-t" x="507" y="216">xoong-mcp</text><text class="dg-sub" x="507" y="236">tools: check,</text><text class="dg-sub" x="507" y="252">explain_error</text></g>
+<g aria-hidden="true"><foreignObject x="190" y="296" width="230" height="58"><div class="window dg-code"><div class="bar"><i></i><i></i><i></i><span>Terminal</span></div><pre><code>npx xoong check index.html</code></pre></div></foreignObject></g>
+<path class="dg-line" d="M305 296 L305 244" marker-end="url(#tl-engine-a)"/>
 <path class="dg-line" d="M210 51 L250 100" marker-end="url(#tl-engine-a)"/>
 <path class="dg-line" d="M210 141 L250 150" marker-end="url(#tl-engine-a)"/>
+<text class="dg-lab" x="222" y="134">1</text>
 <path class="dg-line" d="M210 231 L250 200" marker-end="url(#tl-engine-a)"/>
 <path class="dg-line" d="M400 100 L432 51" marker-end="url(#tl-engine-a)"/>
 <path class="dg-line" d="M400 150 L432 141" marker-end="url(#tl-engine-a)"/>
+<text class="dg-lab" x="416" y="132">2</text>
 <path class="dg-line" d="M400 200 L432 231" marker-end="url(#tl-engine-a)"/>
-<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M210 51 L250 100" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.262;0.308;1"/></path><path class="dg-hot" d="M210 141 L250 150" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.262;0.308;1"/></path><path class="dg-hot" d="M210 231 L250 200" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.262;0.308;1"/></path><path class="dg-hot" d="M400 100 L432 51" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.403;0.6;0.646;1"/></path><path class="dg-hot" d="M400 150 L432 141" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.403;0.6;0.646;1"/></path><path class="dg-hot" d="M400 200 L432 231" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.403;0.6;0.646;1"/></path><rect class="dg-glow" x="10" y="14" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="10" y="104" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="10" y="194" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="250" y="54" width="150" height="190" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.246;0.265;0.3;0.338;0.385;0.403;0.412;0.438;1"/></rect><rect class="dg-glow" x="432" y="14" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.585;0.603;0.638;0.677;1"/></rect><rect class="dg-glow" x="432" y="104" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.585;0.603;0.638;0.677;1"/></rect><rect class="dg-glow" x="432" y="194" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.585;0.603;0.638;0.677;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M210 51 L250 100" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.262;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.238;0.262;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M210 141 L250 150" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.262;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.238;0.262;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M210 231 L250 200" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.262;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.238;0.262;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M400 100 L432 51" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.385;0.6;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.408;0.577;0.6;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M400 150 L432 141" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.385;0.6;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.408;0.577;0.6;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M400 200 L432 231" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.385;0.6;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.408;0.577;0.6;1"/></circle></g>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M210 51 L250 100" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.243;0.286;1"/></path><path class="dg-hot" d="M210 141 L250 150" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.243;0.286;1"/></path><path class="dg-hot" d="M210 231 L250 200" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.243;0.286;1"/></path><path class="dg-hot" d="M400 100 L432 51" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.357;0.374;0.557;0.6;1"/></path><path class="dg-hot" d="M400 150 L432 141" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.357;0.374;0.557;0.6;1"/></path><path class="dg-hot" d="M400 200 L432 231" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.357;0.374;0.557;0.6;1"/></path><rect class="dg-glow" x="10" y="14" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.068;0.093;1"/></rect><rect class="dg-glow" x="10" y="104" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.068;0.093;1"/></rect><rect class="dg-glow" x="10" y="194" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.068;0.093;1"/></rect><rect class="dg-glow" x="250" y="54" width="150" height="190" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.229;0.246;0.279;0.314;0.357;0.374;0.382;0.407;1"/></rect><rect class="dg-glow" x="432" y="14" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.543;0.56;0.593;0.629;1"/></rect><rect class="dg-glow" x="432" y="104" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.543;0.56;0.593;0.629;1"/></rect><rect class="dg-glow" x="432" y="194" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.543;0.56;0.593;0.629;1"/></rect><rect class="dg-band" x="194" y="329" width="222" height="18" rx="3" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;0.4;0.4;0;0;0.4;0.4;0;0" keyTimes="0;0.036;0.053;0.229;0.257;0.35;0.367;0.543;0.571;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M210 51 L250 100" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.043;0.243;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.057;0.229;0.243;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M210 141 L250 150" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.043;0.243;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.057;0.229;0.243;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M210 231 L250 200" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.043;0.243;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.057;0.229;0.243;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M400 100 L432 51" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.357;0.557;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.357;0.371;0.543;0.557;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M400 150 L432 141" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.357;0.557;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.357;0.371;0.543;0.557;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M400 200 L432 231" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.357;0.557;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.357;0.371;0.543;0.557;1"/></circle></g>
 </svg>
 </div>
-<div class="dg-cap"><p class="hint">A new rule is written once and appears in every front end with the same message and the same fix. <span class="dg-motion">In motion, dots go from the three inputs into the engine together, and then out to the three front ends together: one set of findings, shown three ways.</span></p></div>
+<p class="hint">A new rule is written once and appears in every front end with the same message and the same fix. <span class="dg-motion">In motion, dots go from the three inputs into the engine together, and then out to the three front ends together, while the command is lit: one set of findings, shown three ways. Use the slider, or press a number, to look at one step.</span></p>
 </figure>
 <p><code>xoong check &lt;files or folders&gt;</code> lints screens against your API. The engine is <code>checkHtml(source, table, file)</code> for HTML and <code>checkScript(source, table, file)</code> for JavaScript and TypeScript. It parses HTML with <code>parse5</code> and keeps exact line and column. In scripts it reads the HTML inside <code>html`...`</code> templates and the operation named in a string passed to <code>client.load</code>, <code>query</code>, <code>mutate</code> or <code>stream</code>, on something that looks like a client (<code>client</code>, <code>apiClient</code>, <code>getClient()</code>, <code>xo</code>); a name built at run time is not checked. It knows your operations from <code>operations.json</code> and the framework's names from <code>syntax.js</code>.</p>
 <p>Every finding has a stable code, a place, a message and a fix. The output, and the process exit code (1 when there is an error), are the same in the terminal and in CI:</p>

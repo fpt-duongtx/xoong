@@ -42,7 +42,7 @@ describe('<xo-table>', () => {
 
   it('expands into a plain table with labelled headers and one row per item', async () => {
     screen = await mount(html(), { api: mockApi(table, { listUsers: list }) });
-    expect(screen.texts('thead th')).toEqual(['name', 'E-mail']);
+    expect(screen.texts('thead th')).toEqual(['Name', 'E-mail']);
     expect(screen.texts('tbody tr td:first-child')).toEqual(all.map((u) => u.name));
     expect(screen.$('thead button')).toBeNull(); // not sortable unless asked
     expect(screen.$('.xo-pager')).toBeNull();
@@ -73,13 +73,13 @@ describe('<xo-table>', () => {
     screen = await mount(html('page-size="2" sortable'), { api });
     expect(api.calls[0].query).toEqual({ limit: '2' });
     expect(screen.texts('tbody tr td:first-child')).toEqual(['User 1', 'User 2']);
-    expect(screen.texts('.xo-pager button')).toEqual(['Next']);
+    expect(screen.$$('.xo-pager button').map((b) => b.getAttribute('aria-label'))).toEqual(['Next']);
     await screen.click('.xo-pager button');
     expect(api.calls.at(-1).query).toEqual({ limit: '2', offset: '2' });
-    expect(screen.texts('.xo-pager button')).toEqual(['Previous', 'Next']);
+    expect(screen.$$('.xo-pager button').map((b) => b.getAttribute('aria-label'))).toEqual(['Previous', 'Next']);
     await screen.click('.xo-pager button:last-child');
     expect(screen.texts('tbody tr td:first-child')).toEqual(['User 5']);
-    expect(screen.texts('.xo-pager button')).toEqual(['Previous']);
+    expect(screen.$$('.xo-pager button').map((b) => b.getAttribute('aria-label'))).toEqual(['Previous']);
     await screen.click('.xo-pager button'); // Previous really goes back (regression: "offset-=2" was parsed as a param named "offset-")
     expect(api.calls.every((c) => !('offset-' in c.query))).toBe(true);
     expect(screen.texts('tbody tr td:first-child')).toEqual(['User 3', 'User 4']);
@@ -105,7 +105,7 @@ describe('<xo-table> filters and custom cells', () => {
     const api = mockApi(ft, { listUsers: byName });
     screen = await mount('<xo-view get="/users"><xo-table columns="name,email" filters="name"></xo-table></xo-view>', { api });
     const input = screen.$('.xo-filters input');
-    expect(input.getAttribute('aria-label')).toBe('name'); // the label (default: the field name) is the accessible name
+    expect(input.getAttribute('aria-label')).toBe('Name'); // the label (default: the column's header) is the accessible name
     input.value = 'User 3';
     input.dispatchEvent(new Event('input', { bubbles: true }));
     await new Promise((r) => setTimeout(r, 300));
@@ -139,6 +139,7 @@ describe('<xo-toast>', () => {
     await new Promise((r) => setTimeout(r, 120));
     expect(toast().hidden).toBe(true);
     screen.container.dispatchEvent(new CustomEvent('xo-error', { bubbles: true, detail: new Error('boom') }));
+    await Promise.resolve(); // the toast decides after the event has gone round, so a handler anywhere can prevent it
     expect(toast().textContent).toBe('boom');
     screen.container.dispatchEvent(new CustomEvent('xo-done', { bubbles: true }));
     expect(toast().hidden).toBe(true);
@@ -331,7 +332,7 @@ describe('xo-table cards', () => {
     await screen.settle();
     expect(screen.$('.xo-table').classList.contains('xo-cards')).toBe(true);
     const cells = [...screen.$$('tbody td[data-label]')];
-    expect(cells.map((c) => c.dataset.label)).toEqual(['name', 'E-mail', 'Role']);
+    expect(cells.map((c) => c.dataset.label)).toEqual(['Name', 'E-mail', 'Role']);
     expect(cells.map((c) => [c.hasAttribute('data-title'), c.hasAttribute('data-status')])).toEqual([[false, false], [true, false], [false, true]]);
     expect(screen.$('td.xo-actions')).not.toBeNull();
   });

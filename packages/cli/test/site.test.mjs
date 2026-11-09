@@ -12,7 +12,7 @@ import { focusStates, weak } from '../../../tools/focus.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'dialogs', 'combobox', 'carousel', 'more-controls', 'own-control', 'recipes', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand', 'live-admin', 'live-landing'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'dialogs', 'combobox', 'carousel', 'more-controls', 'own-control', 'recipes', 'cli', 'mcp', 'editor', 'codes', 'reference', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand', 'live-admin', 'live-landing'];
 const DOCS = PAGES.filter((n) => !['index', 'brand', 'live-admin', 'live-landing'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
@@ -64,7 +64,7 @@ describe('documentation site', () => {
       expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
       expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length + 2 : 0); // + the two full-page demos (admin, landing) listed under "Live demos"
       expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
-      if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit', 'theme-builder', 'brand', 'live-admin', 'live-landing'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
+      if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit', 'theme-builder', 'reference', 'brand', 'live-admin', 'live-landing'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
     }
   }, 240000);
@@ -287,6 +287,7 @@ describe('documentation site', () => {
       const m = await small.evaluate(() => ({ scroll: document.documentElement.scrollWidth, width: innerWidth, header: document.querySelector('header.top')?.getBoundingClientRect().height ?? 0 })); // the live demo pages are whole apps with their own header
       expect(m.scroll, `${name} scrolls sideways`).toBeLessThanOrEqual(m.width);
       expect(m.header, `${name} header`).toBeLessThanOrEqual(110);
+      if (!['live-admin', 'live-landing'].includes(name)) expect(await axe(small), `${name}: axe at 390px (a scrollable table frame must be focusable)`).toEqual([]);
     }
     await small.context().close();
   }, 180000);
@@ -338,6 +339,256 @@ describe('documentation site', () => {
     clean();
   });
 
+  describe('the Reference menu and the search', () => {
+    const active = () => page.evaluate(() => document.activeElement?.id || document.activeElement?.textContent?.trim());
+    const expanded = () => page.$$eval('#ref-menu .ref-group', (b) => b.map((x) => x.getAttribute('aria-expanded')));
+    const idle = (urls, word) => expect(urls.some((u) => u.includes(word)), `${word} is loaded only when something opens`).toBe(false);
+
+    it('the Reference menu: groups on the left, the entries of the highlighted group on the right; hover, arrows and Enter; Escape gives the focus back', async () => {
+      await open('install');
+      expect(await page.$$('header .hdr-tools a[href="reference.html"]'), 'the links to the Reference are upgraded to buttons').toHaveLength(0);
+      const requests = [];
+      const log = (r) => requests.push(r.url());
+      page.on('request', log);
+      await page.waitForSelector('button[data-ref-menu]');
+      idle(requests, 'search-index');
+      await page.click('button[data-ref-menu]');
+      await page.waitForSelector('#ref-menu:not([hidden]) .ref-group');
+      page.off('request', log);
+      expect(requests.some((u) => u.includes('search-index')), 'the entries are fetched when it first opens').toBe(true);
+      expect(await page.getAttribute('button[data-ref-menu]', 'aria-expanded')).toBe('true');
+      expect(await page.getAttribute('button[data-ref-menu]', 'aria-controls')).toBe('ref-menu');
+      expect(await texts('#ref-menu .ref-group-name')).toEqual(['Elements', 'Directives', 'Events', 'JavaScript API', 'Template syntax']);
+      expect(await expanded()).toEqual(['true', 'false', 'false', 'false', 'false']);
+      expect(await page.isVisible('#ref-ge-elements a:text-is("xo-dialog")')).toBe(true);
+      expect(await page.isVisible('#ref-ge-directives')).toBe(false);
+      const box = (selector) => page.$eval(selector, (el) => { const r = el.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top }; });
+      expect((await box('#ref-ge-elements')).left, 'the entries are on the right of the groups').toBeGreaterThan((await box('#ref-gb-elements')).right - 1);
+      await page.hover('#ref-gb-events'); // hover highlights a group
+      await page.waitForSelector('#ref-ge-events:not([hidden])');
+      expect(await expanded()).toEqual(['false', 'false', 'true', 'false', 'false']);
+      await page.focus('#ref-gb-elements'); // focus highlights a group, ArrowDown moves to the next
+      expect(await expanded()).toEqual(['true', 'false', 'false', 'false', 'false']);
+      await page.keyboard.press('ArrowDown');
+      expect(await active()).toBe('ref-gb-directives');
+      expect(await expanded()).toEqual(['false', 'true', 'false', 'false', 'false']);
+      await page.keyboard.press('ArrowRight'); // into the entries
+      expect(await active()).toBe('xo-each');
+      await page.keyboard.press('ArrowDown');
+      expect(await active()).toBe('xo-if');
+      await page.keyboard.press('ArrowLeft'); // back to the group
+      expect(await active()).toBe('ref-gb-directives');
+      await page.keyboard.press('ArrowUp');
+      expect(await active()).toBe('ref-gb-elements');
+      await page.keyboard.press('ArrowRight');
+      for (const _ of [1, 2, 3]) await page.keyboard.press('ArrowDown'); // xo-view, xo-table, xo-form, xo-dialog
+      expect(await active()).toBe('xo-dialog');
+      await Promise.all([page.waitForURL(/reference\.html#xo-dialog$/), page.keyboard.press('Enter')]); // Enter follows the link to its anchor
+      await page.waitForSelector('#xo-dialog');
+      await page.waitForFunction(() => { const r = document.getElementById('xo-dialog').getBoundingClientRect(); return r.top >= 0 && r.top < innerHeight / 2; }); // scrolled to the entry, under the header
+      expect(await text('#xo-dialog h3')).toBe('<xo-dialog>');
+      expect(await page.isVisible('#ref-menu')).toBe(false);
+      await page.click('button[data-ref-menu]'); // Escape closes and returns the focus to the button
+      await page.waitForSelector('#ref-menu:not([hidden]) .ref-group');
+      await page.keyboard.press('Escape');
+      expect(await page.isVisible('#ref-menu')).toBe(false);
+      expect(await page.getAttribute('button[data-ref-menu]', 'aria-expanded')).toBe('false');
+      expect(await page.evaluate(() => document.activeElement?.matches('button[data-ref-menu]'))).toBe(true);
+      await page.keyboard.press('ArrowDown'); // ArrowDown on the button opens it and enters the groups
+      await page.waitForSelector('#ref-menu:not([hidden]) .ref-group');
+      expect(await page.evaluate(() => document.activeElement?.classList.contains('ref-group'))).toBe(true);
+      await page.mouse.click(5, 300); // a click outside closes it
+      expect(await page.isVisible('#ref-menu')).toBe(false);
+      clean();
+    });
+
+    it('the Reference menu below 52rem is a full-width list: a group opens under its name', async () => {
+      const small = await (await browser.newContext({ viewport: { width: 390, height: 800 } })).newPage();
+      small.on('pageerror', (e) => errors.push(e.message));
+      await small.goto(`${base}install.html`);
+      await small.waitForSelector('button[data-ref-menu]');
+      expect(await small.$eval('header.top', (h) => h.getBoundingClientRect().height)).toBeLessThanOrEqual(110);
+      await small.click('button[data-ref-menu]');
+      await small.waitForSelector('#ref-menu:not([hidden]) .ref-group');
+      const width = await small.$eval('#ref-menu', (el) => el.getBoundingClientRect().width);
+      expect(width).toBeGreaterThanOrEqual(388);
+      expect(await small.$$eval('#ref-menu .ref-group', (b) => b.map((x) => x.getAttribute('aria-expanded')))).toEqual(['false', 'false', 'false', 'false', 'false']);
+      expect(await small.$eval('#ref-menu .ref-group', (b) => b.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+      await small.click('#ref-gb-events');
+      expect(await small.isVisible('#ref-ge-events a:text-is("xo-done")')).toBe(true);
+      const g = await small.$eval('#ref-gb-events', (b) => b.getBoundingClientRect().bottom);
+      expect(await small.$eval('#ref-ge-events', (e) => e.getBoundingClientRect().top), 'the entries are under their group').toBeGreaterThanOrEqual(g - 1);
+      expect(await small.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      expect(await axe(small), 'axe with the menu open at 390px').toEqual([]);
+      await small.click('#ref-ge-events a:text-is("xo-error")');
+      await small.waitForURL(/reference\.html#event-xo-error$/);
+      await small.context().close();
+    });
+
+    it('search: Ctrl+K opens it, "confirm" finds the directive and the Dialogs page with their group labels, the count is announced, Enter opens the best hit', async () => {
+      await open('install');
+      const requests = [];
+      const log = (r) => requests.push(r.url());
+      page.on('request', log);
+      await page.waitForSelector('button[data-search]');
+      idle(requests, 'search-index');
+      await page.keyboard.press('Control+k');
+      await page.waitForSelector('dialog.xo-search[open]');
+      page.off('request', log);
+      expect(await page.evaluate(() => document.activeElement?.getAttribute('role'))).toBe('combobox');
+      await page.waitForFunction(() => document.querySelector('.search-count')?.textContent === 'Suggested pages'); // an empty query offers a few pages
+      expect(await page.$$('.xo-search [role=option]')).toHaveLength(6);
+      await page.keyboard.type('confirm');
+      await page.waitForFunction(() => document.querySelectorAll('.xo-search [role=option]').length > 3);
+      expect(requests.some((u) => u.includes('search-index')), 'the index is fetched when it first opens').toBe(true);
+      const hrefs = await page.$$eval('.xo-search [role=option]', (a) => a.map((x) => x.getAttribute('href')));
+      expect(hrefs.some((h) => h.endsWith('/reference.html#xo-confirm'))).toBe(true);
+      expect(hrefs.some((h) => /\/dialogs\.html(#|$)/.test(h))).toBe(true);
+      const badges = await texts('.xo-search .search-badge');
+      expect(badges).toHaveLength(hrefs.length);
+      expect(badges.every(Boolean)).toBe(true);
+      expect(badges).toContain('Directive');
+      expect(badges).toContain('Overlays');
+      await page.waitForFunction(() => /^\d+ results$/.test(document.querySelector('.search-count').textContent)); // announced politely, after a pause
+      expect(await page.getAttribute('.xo-search .search-count', 'role')).toBe('status');
+      expect(await page.getAttribute('.xo-search input', 'aria-expanded')).toBe('true');
+      expect(await page.getAttribute('.xo-search [role=listbox]', 'aria-label')).toBe('Results');
+      const first = await page.$eval('.xo-search [role=option][aria-selected=true]', (a) => a.id);
+      expect(await page.getAttribute('.xo-search input', 'aria-activedescendant')).toBe(first);
+      await page.keyboard.press('ArrowDown');
+      expect(await page.getAttribute('.xo-search input', 'aria-activedescendant')).not.toBe(first);
+      await page.keyboard.press('ArrowUp');
+      await page.fill('.xo-search input', 'CONFÍRM'); // case and accents do not matter
+      await page.waitForFunction(() => document.querySelector('.xo-search [role=option] .search-title')?.textContent === 'confirm()');
+      await Promise.all([page.waitForURL(/reference\.html#api-confirm$/), page.keyboard.press('Enter')]);
+      await page.waitForSelector('#api-confirm');
+      expect(await page.isVisible('dialog.xo-search')).toBe(false);
+      clean();
+    });
+
+    it('search: a click on a result goes there; Escape closes it and the focus goes back to the button; "/" opens it only outside a field', async () => {
+      await open('install');
+      await page.click('button[data-search]');
+      await page.waitForSelector('dialog.xo-search[open]');
+      await page.keyboard.type('xo-tabs');
+      await page.waitForSelector('.xo-search [role=option] .search-title:text-is("xo-tabs")');
+      await page.keyboard.press('Escape'); // closes, and the focus is where it was: on the button
+      expect(await page.isVisible('dialog.xo-search')).toBe(false);
+      expect(await page.evaluate(() => document.activeElement?.matches('button[data-search]'))).toBe(true);
+      await page.keyboard.press('Control+k'); // the second time it starts empty again
+      expect(await page.inputValue('.xo-search input')).toBe('');
+      await page.keyboard.press('Escape');
+      await page.evaluate(() => document.activeElement?.blur());
+      await page.keyboard.press('/'); // no field has the focus
+      await page.waitForSelector('dialog.xo-search[open]');
+      expect(await page.inputValue('.xo-search input')).toBe(''); // the slash opened it, it was not typed
+      await page.click('.xo-search .search-close'); // the Close button (a phone has no Escape key)
+      expect(await page.isVisible('dialog.xo-search')).toBe(false);
+      await page.click('button[data-search]');
+      await page.keyboard.type('pager');
+      await page.waitForSelector('.xo-search [role=option] .search-title:text-is("xo-pager")');
+      await Promise.all([page.waitForURL(/reference\.html#xo-pager$/), page.click('.xo-search [role=option] .search-title:text-is("xo-pager")')]);
+      await open('forms'); // a field has the focus: "/" is a character
+      await page.waitForSelector('.xo-form [name=name]');
+      await page.focus('.xo-form [name=name]');
+      await page.keyboard.type('a/b');
+      expect(await page.inputValue('.xo-form [name=name]')).toBe('a/b');
+      expect(await page.isVisible('dialog.xo-search')).toBe(false);
+      clean();
+    });
+
+    it('search: no results is a friendly message that does not move the dialog; synonyms and accents find things', async () => {
+      await open('install');
+      await page.keyboard.press('Control+k');
+      await page.keyboard.type('confirm');
+      await page.waitForFunction(() => document.querySelectorAll('.xo-search [role=option]').length > 3);
+      const height = () => page.$eval('.xo-search .xo-command', (el) => Math.round(el.getBoundingClientRect().height));
+      const withResults = await height();
+      await page.fill('.xo-search input', 'zzzqqqxx');
+      await page.waitForSelector('.xo-search .search-empty:not([hidden])');
+      expect(await text('.xo-search .search-empty')).toContain('No results for “zzzqqqxx”');
+      expect(await page.getAttribute('.xo-search input', 'aria-expanded')).toBe('false');
+      expect(await page.isVisible('.xo-search [role=listbox]')).toBe(false);
+      await page.waitForFunction(() => document.querySelector('.search-count').textContent === '0 results');
+      expect(await height(), 'no layout shift between results and the empty state').toBe(withResults);
+      await page.fill('.xo-search input', 'popup'); // a synonym of dialog
+      await page.waitForSelector('.xo-search [role=option] .search-title:text-is("xo-dialog")');
+      await page.fill('.xo-search input', 'dialóg'); // an accent that is not in the text
+      await page.waitForSelector('.xo-search [role=option] .search-title:text-is("xo-dialog")');
+      await page.fill('.xo-search input', 'grid');
+      await page.waitForSelector('.xo-search [role=option] .search-title:text-is("xo-table")');
+      await page.keyboard.press('Escape');
+      // the module the dialog uses, in the browser: "dong" finds a title with "Đồng" (the site has none, so this is a fixture)
+      const found = await page.evaluate(`(async () => { // a string: the test runner would rewrite a dynamic import inside a function
+        const { prepare, search, fold } = await import(${JSON.stringify(`${base}src/search-core.js`)});
+        const items = [{ title: 'Đồng bộ dữ liệu', url: 'x.html', group: 'Guides', kind: 'page', text: '' }, { title: 'Other', url: 'y.html', group: 'Guides', kind: 'page', text: '' }];
+        return { hits: search(prepare(items), 'DONG').map((i) => i.url), folded: fold('Đồng ĐỒNG') };
+      })()`);
+      expect(found).toEqual({ hits: ['x.html'], folded: 'dong dong' });
+      clean();
+    });
+
+    it('search at 390px is a full-width sheet at the top with a Close button and no overflow; a tap on a result goes there', async () => {
+      const small = await (await browser.newContext({ viewport: { width: 390, height: 800 } })).newPage();
+      small.on('pageerror', (e) => errors.push(e.message));
+      await small.goto(`${base}install.html`);
+      await small.waitForSelector('button[data-search]');
+      expect(await small.$eval('button[data-search] .hdr-label', (el) => el.getBoundingClientRect().width), 'the icon alone: the word is for screen readers').toBeLessThanOrEqual(1);
+      expect(await small.getByRole('button', { name: 'Search', exact: true }).count()).toBe(1); // its accessible name
+      expect((await small.$eval('button[data-search]', (b) => b.getBoundingClientRect())).height).toBeGreaterThanOrEqual(40);
+      await small.click('button[data-search]');
+      await small.waitForSelector('dialog.xo-search[open]');
+      await small.keyboard.type('table');
+      await small.waitForFunction(() => document.querySelectorAll('.xo-search [role=option]').length > 3);
+      const sheet = await small.$eval('dialog.xo-search', (d) => { const r = d.getBoundingClientRect(); return { left: r.left, width: r.width, top: r.top }; });
+      expect(sheet).toEqual({ left: 0, width: 390, top: 0 });
+      expect(await small.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      expect((await small.$eval('.xo-search .search-close', (b) => b.getBoundingClientRect())).width).toBeGreaterThanOrEqual(36);
+      expect(await axe(small), 'axe with the search open at 390px').toEqual([]);
+      await Promise.all([small.waitForURL(/reference\.html#xo-table$/), small.click('.xo-search [role=option]')]); // the first hit for "table"
+      await small.context().close();
+    });
+
+    it('the search index is fetched once for the menu and the search together', async () => {
+      await open('install');
+      const requests = [];
+      const log = (r) => requests.push(r.url());
+      page.on('request', log);
+      await page.click('button[data-ref-menu]');
+      await page.waitForSelector('#ref-menu:not([hidden]) .ref-group');
+      await page.keyboard.press('Escape');
+      await page.keyboard.press('Control+k');
+      await page.waitForFunction(() => document.querySelectorAll('.xo-search [role=option]').length > 0);
+      page.off('request', log);
+      expect(requests.filter((u) => u.includes('search-index.json'))).toHaveLength(1);
+      clean();
+    });
+
+    it('the Reference page: every entry is a section with an anchor, the filter box finds entries, and a link to #xo-confirm lands on it', async () => {
+      await open('reference');
+      const total = JSON.parse(await readFile(join(repo, 'site/reference.json'), 'utf8')).groups.reduce((n, g) => n + g.count, 0);
+      expect(total).toBeGreaterThan(150);
+      expect(await page.$$('.ref-entry')).toHaveLength(total);
+      expect(await page.isVisible('#ref-filter')).toBe(true); // shown by the script (hidden without one)
+      expect(await page.$$eval('#xo-dialog table.ref-table tbody tr', (r) => r.length)).toBe(3); // heading, size, dismiss
+      expect((await texts('#xo-dialog table.ref-table tbody tr:nth-child(2) td')).slice(0, 2)).toEqual(['choice', '40rem']);
+      expect(await text('#xo-dialog table.ref-table tbody tr:nth-child(2) td:last-child')).toContain('One of sm, wide, full');
+      await page.fill('#ref-filter-input', 'modal');
+      await page.waitForFunction(() => document.querySelectorAll('.ref-entry:not([hidden])').length < 30);
+      expect(await page.isVisible('#xo-dialog')).toBe(true);
+      expect(await page.isVisible('#xo-pager')).toBe(false);
+      expect(await text('#ref-filter-status')).toMatch(new RegExp(`^\\d+ of ${total} entries$`));
+      await page.fill('#ref-filter-input', 'zzzz qqqq');
+      await page.waitForFunction(() => document.querySelectorAll('.ref-entry:not([hidden])').length === 0);
+      expect(await page.isVisible('#ref-empty')).toBe(true);
+      await page.fill('#ref-filter-input', '');
+      await page.waitForFunction(() => document.querySelectorAll('.ref-entry[hidden]').length === 0);
+      await page.goto(`${base}reference.html#xo-confirm`);
+      await page.waitForFunction(() => { const r = document.getElementById('xo-confirm').getBoundingClientRect(); return r.top >= 0 && r.top < innerHeight / 2; });
+      clean();
+    });
+  });
+
   describe('accessibility (axe-core, WCAG 2.0 and 2.1 A and AA)', () => {
     const scan = async (label) => {
       const found = await axe(page);
@@ -383,6 +634,33 @@ describe('documentation site', () => {
       }
       await page.emulateMedia({ colorScheme: 'light' });
     }, 480000);
+
+    for (const [palette, colorScheme] of [['mist', 'light'], ['calm', 'light'], ['mist', 'dark'], ['ember', 'dark']]) {
+      it(`open states of the Reference menu and the search in ${palette} and ${colorScheme}`, async () => {
+        await page.emulateMedia({ colorScheme });
+        await open('dialogs');
+        await scheme(colorScheme, palette);
+        await page.click('button[data-ref-menu]');
+        await page.waitForSelector('#ref-menu:not([hidden]) .ref-group');
+        await scan(`reference menu open (${palette}, ${colorScheme})`);
+        await page.hover('#ref-gb-api');
+        await page.waitForSelector('#ref-ge-api:not([hidden])');
+        await scan(`reference menu, JavaScript API (${palette}, ${colorScheme})`);
+        await page.keyboard.press('Escape');
+        await page.click('button[data-search]');
+        await page.waitForSelector('dialog.xo-search[open]');
+        await scan(`search open, suggestions (${palette}, ${colorScheme})`);
+        await page.keyboard.type('modal');
+        await page.waitForFunction(() => document.querySelectorAll('.xo-search [role=option]').length > 3);
+        await page.waitForTimeout(350);
+        await scan(`search with a query (${palette}, ${colorScheme})`);
+        await page.fill('.xo-search input', 'zzzqqq');
+        await page.waitForSelector('.xo-search .search-empty:not([hidden])');
+        await scan(`search without results (${palette}, ${colorScheme})`);
+        await page.keyboard.press('Escape');
+        await scheme('light', 'mist');
+      }, 60000);
+    }
 
     it('open states: a menu list, a dialog, the rich text More menu, the confirm dialog', async () => {
       await open('menu');

@@ -280,3 +280,12 @@ button.xo-confirm-ok:hover:not(:disabled) { background: color-mix(in srgb, var(-
 @media (max-width: 30rem) { .xo-confirm-actions { flex-direction: column-reverse; } .xo-confirm-actions button { width: 100%; } }
 /* titled xo-dialog: dialog.xo-modal in a small size */
 dialog.xo-modal--sm { width: min(26rem, calc(100vw - 2rem)); }
+
+/* modal with a form: the head stays on top and the action row (div.xo-form-actions, submit first) stays at the bottom while the body scrolls */
+.xo-modal__body { --xo-modal-pad: 20px; padding: var(--xo-modal-pad); }
+.xo-modal__body .xo-form { max-width: none; }
+.xo-modal__body .xo-form-actions { display: flex; flex-wrap: wrap; align-items: center; position: sticky; bottom: calc(-1 * var(--xo-modal-pad)); z-index: 1; justify-content: flex-end; gap: 8px; margin: var(--xo-modal-pad) calc(-1 * var(--xo-modal-pad)) calc(-1 * var(--xo-modal-pad)); padding: 12px var(--xo-modal-pad) max(12px, env(safe-area-inset-bottom)); background: var(--xo-color-surface); border-top: 1px solid var(--xo-color-border); box-shadow: 0 -10px 14px -12px color-mix(in srgb, var(--xo-color-text) 30%, transparent); }
+.xo-modal__body .xo-form-actions > .xo-submit { order: 2; }
+/* a dialog that has its own foot (editor dialogs): the form's row stays an ordinary row, no second bar */
+dialog.xo-modal:has(> .xo-modal__foot) .xo-modal__body .xo-form-actions { position: static; margin: 0; padding: 0; background: none; border: 0; box-shadow: none; }
+@media (max-width: 47.99rem) { .xo-modal__body .xo-form-actions { flex-direction: row; } .xo-modal__head, .xo-modal__foot { padding-inline: 16px; } .xo-modal__body { --xo-modal-pad: 16px; } }

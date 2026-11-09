@@ -187,11 +187,12 @@ describe("xoong's own strings", () => {
     screen = await mount('<xo-view get="list"><xo-table columns="name" selectable page-size="2"><button slot="bulk" xo-click="list" xo-selected>Go</button></xo-table></xo-view>', { api: mockApi(table, { list: ({ query }) => ({ items: rows.slice(Number(query.offset ?? 0), Number(query.offset ?? 0) + 2), total: 5 }) }) });
     await tick();
     expect(screen.text('.xo-range')).toBe('1–2 trong tổng số 5');
-    expect(screen.text('.xo-pager button')).toBe('Sau');
+    expect(screen.$('.xo-pager button').getAttribute('aria-label')).toBe('Sau');
+    expect(screen.$('.xo-pager button').getAttribute('title')).toBe('Sau');
     expect(screen.$('tbody input[type=checkbox]').getAttribute('aria-label')).toBe('Chọn dòng');
     expect(screen.$('.xo-pager').getAttribute('aria-label')).toBe('Phân trang');
     await screen.click('.xo-pager button');
-    expect(screen.text('.xo-pager button')).toBe('Trước');
+    expect(screen.$('.xo-pager button').getAttribute('aria-label')).toBe('Trước');
     const box = screen.$('tbody input[type=checkbox]');
     box.checked = true;
     box.dispatchEvent(new Event('change', { bubbles: true }));

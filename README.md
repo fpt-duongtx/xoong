@@ -3,7 +3,9 @@
 > A small, standards-first web framework. Declare a screen, point it at an
 > OpenAPI document, write plain CSS. That is the whole job.
 
-**Status: working prototype (0.0.x), not published.** The core, data layer, CLI, dev server and test
+**Documentation, guides, live demos and the reference: <https://fpt-duongtx.github.io/xoong/>**
+
+**Status: working prototype (0.0.x), published to npm under the tag `next`** (`npm install @xoong/xoong@next`). The core, data layer, CLI, dev server and test
 helpers exist and are tested (150+ tests, including a real-browser end-to-end run of
 [`examples/admin`](examples/admin)). The HTML syntax is still **Draft** and may change before 0.1.
 Parts that are still planned (stream gateway, VS Code extension, lint presets) are marked as such in

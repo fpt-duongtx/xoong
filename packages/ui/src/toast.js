@@ -18,7 +18,8 @@ class XoToast extends XoElement {
   /** @type {HTMLElement | null} */ #error = null;
   /** @type {HTMLElement | null} */ #status = null;
   #timers = /** @type {Record<string, any>} */ ({});
-  #onError = (/** @type {Event} */ e) => this.#show('error', { message: this.#text(/** @type {any} */ (e).detail) });
+  // Decided after the event has gone round (a microtask): a handler anywhere, even on the document and registered later, can prevent it; a view that shows `$error` itself marks it handled
+  #onError = (/** @type {Event} */ e) => queueMicrotask(() => { if (!e.defaultPrevented && !(/** @type {any} */ (e).handled)) this.#show('error', { message: this.#text(/** @type {any} */ (e).detail) }); });
   #onNotice = (/** @type {Event} */ e) => this.#show('status', /** @type {any} */ (e).detail ?? {});
   #onDone = () => this.#hide('error');
 

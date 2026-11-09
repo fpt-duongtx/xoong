@@ -8,7 +8,7 @@ An admin area is built from four things, all declarations:
 |---|---|
 | `xoong.css` | Design tokens (custom properties in `@layer xoong.tokens`), base styles, the admin layout and the look of the elements below. Plain CSS; override tokens on `:root`. |
 | `<xo-table>` | A table for a list: columns, server-side sorting, server-side paging, row actions. |
-| `<xo-form>` | A form generated from the request schema of an operation, with server field errors. |
+| `<xo-form>` | A form generated from the request schema of an operation, with server field errors. Elements put inside it (a Cancel button) are drawn beside the submit button, in one row. |
 | `<xo-dialog>` | A modal on the native `<dialog>`; with `heading` a titled window (header, body, `slot="footer"` footer; `size`, `dismiss`). |
 | `<xo-toast>` | Shows the message of the latest `xo-error` on the page. |
 
@@ -46,7 +46,7 @@ browser. Its application script is only `configure()`.
 * `xo-then="/articles/{id}"` on an xo-click or xo-submit goes to that path after success: `{id}` comes from the result (the created record), then from the item acted on (`xo-then="/articles"` after a delete). `<xo-router>` navigates; without a router the browser loads the path.
 * `xo-confirm="Delete {title}?"` asks first in a native dialog (`confirm()` from `@xoong/ui` replaces the browser's, labels in `confirmLabels`); `xo-confirm-title`, `xo-confirm-ok`, `xo-confirm-cancel` and `xo-confirm-kind` (`danger`, `warning`, `info`, `success`) tune it. `xo-notice="Saved"` raises a toast
   after success; from JavaScript `toast.show({ message, action: { label: 'Undo', run } })`.
-* Table: `empty="..."` or a `<template slot="empty">`, `filters="q:Search"`, `page-sizes="10,25,50"`, "1–3 of 5" text, and a column format `publishedAt:Published:datetime`
+* Table: `column-picker` adds a "Columns" dropdown at the right of the search row to show and hide columns (`hidden-columns="email"` starts with some hidden, `columns-key="people"` remembers the choice in this browser, `xo-columns-change` tells your code); a header without a label is the field name in words (`createdAt` is "Created at"); Previous and Next are icon buttons (named by `aria-label`). `empty="..."` or a `<template slot="empty">`, `filters="q:Search"`, `page-sizes="10,25,50"`, "1–3 of 5" text, and a column format `publishedAt:Published:datetime`
   (date, datetime, time, relative, number, localized); the same formats work anywhere as `{publishedAt | datetime}`.
 
 ## Router: `<xo-router>`

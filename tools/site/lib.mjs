@@ -103,7 +103,7 @@ const TOP = [['home', 'index.html', 'Home'], ['docs', 'overview.html', 'Docs'], 
 export const codeCard = (name, lang, src) => `<div class="window"><div class="bar"><i></i><i></i><i></i><span>${esc(name)}</span></div>${code(lang, src)}</div>`;
 
 /** The order of the sidebar groups: what you do first, then how you build, then reference, then the inside. A page names its group; this decides where it sits. */
-const GROUP_ORDER = ['Start', 'Guides', 'Overlays', 'Controls', 'Design', 'Extend', 'Architecture', 'Live demos'];
+const GROUP_ORDER = ['Start', 'Guides', 'Overlays', 'Controls', 'Reference', 'Design', 'Extend', 'Tools', 'Architecture', 'Live demos'];
 /** Full-page demos: not documentation pages (they have their own layout), so they are listed in the sidebar but are not in the Previous/Next pager. */
 const EXTRA = { 'Live demos': [{ file: 'live-admin.html', nav: 'Admin app' }, { file: 'live-landing.html', nav: 'Landing site' }] };
 const rank = (group) => (GROUP_ORDER.includes(group) ? GROUP_ORDER.indexOf(group) : GROUP_ORDER.length);
@@ -127,7 +127,7 @@ ${side.replace(/^/gm, '    ')}
   const used = new Set();
   const heads = [];
   // a table that is wider than the column scrolls inside its own frame (focusable, so the keyboard can scroll it)
-  const framed = page.body.replace(/(<div class="table-wrap"[^>]*>\s*)?(<table\b[\s\S]*?<\/table>)/g, (m, wrap, table) => (wrap ? m : `<div class="table-wrap" tabindex="0">${table}</div>`));
+  const framed = page.body.replace(/<div class="table-wrap"(?![^>]*tabindex)/g, '<div class="table-wrap" tabindex="0"').replace(/(<div class="table-wrap"[^>]*>\s*)?(<table\b[\s\S]*?<\/table>)/g, (m, wrap, table) => (wrap ? m : `<div class="table-wrap" tabindex="0">${table}</div>`));
   const bodyHtml = framed.replace(/<h2>(.*?)<\/h2>/g, (_, inner) => {
     const plain = inner.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, '');
     let id = plain.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
@@ -185,13 +185,20 @@ ${page.body}
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
-  <script type="module" src="src/site.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.body.includes('dg-anim') ? '\n  <script type="module" src="src/diagrams.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}${page.classic ? `\n  <script src="src/${page.classic}" defer></script>` : ''}
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.body.includes('dg-anim') ? '\n  <script type="module" src="src/diagrams.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}${page.classic ? `\n  <script src="src/${page.classic}" defer></script>` : ''}
 </head>
 <body${page.group ? ' class="shell-page"' : ''}>
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         ${top}
         <xo-menu class="palette" label="Colour palette" value="mist">

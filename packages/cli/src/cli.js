@@ -5,25 +5,13 @@ import { startDev, parseProxyFlags, loadConfig } from './dev.js';
 import { checkFiles, formatFindings } from './check.js';
 import { scaffold } from './scaffold.js';
 import { COMMANDS, parseArgs } from './args.js';
+import { helpText } from './usage.js';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 
-const HELP = `xoong <command>
-
-  sync <openapi.json|yaml|url> [--out .xoong] [--hints hints.json]   generate operations.json and api.d.ts
-  doctor <openapi.json|yaml|url> [--hints hints.json] [--all]   audit the OpenAPI document for xoong
-  new <folder> --spec <openapi.json|yaml|url> [--title "My app"] [--link <xoong checkout>]   create a project with a first screen
-  check <file|folder>... [--operations .xoong/operations.json] [--format text|json] [--exclude glob]...   check HTML screens
-  render <page.html> --api <url> [--url /users/7] [--operations .xoong/operations.json] [--out file]   prerender a page (a route, with --url) with its data (needs @xoong/ssr)
-  build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]... [--no-preload]   static output for strict-CSP hosting (no import map, no inline code)
-  i18n extract <html|js files or folders>... [--out catalogs/en.json]   list xo-t keys with their source text
-  i18n check <catalog.json> --source <en.json>   missing keys, wrong placeholders, invalid messages
-  dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080]... [--spa]   serve the app (static, proxy, .ts)
-  --version   print the version
-
-Options that do not exist are refused. Exit code: 0 done, 1 findings or a failure (also a refused option), 2 unknown command or a missing argument.
-`;
+// The help is made from the table in usage.js, the one the parser and the documentation site use as well.
+const HELP = helpText();
 
 const [cmd, ...rest] = process.argv.slice(2);
 if (cmd === '--version' || cmd === '-v') { console.log(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version); process.exit(0); }
@@ -53,7 +41,7 @@ try {
     process.exitCode = errors ? 1 : 0;
   } else if (cmd === 'new') {
     const result = await scaffold(a.args[0], { spec: a.value('--spec'), title: a.value('--title'), link: a.value('--link') });
-    console.log(`created ${result.dir}\n  first screen: ${result.screen ?? 'none (no list operation found)'}\n  next: cd ${a.args[0]} && npm install && npm run dev\n  ${a.value('--link') ? '(packages linked from ' + a.value('--link') + ')' : '(the @xoong/* packages are not published yet: run again with --link <path to the xoong repository>)'}`);
+    console.log(`created ${result.dir}\n  first screen: ${result.screen ?? 'none (no list operation found)'}\n  next: cd ${a.args[0]} && npm install && npm run dev\n  ${a.value('--link') ? '(packages linked from ' + a.value('--link') + ')' : '(the @xoong/* packages come from npm; to use a checkout of the xoong repository instead, run again with --link <path to the xoong repository>)'}`);
   } else if (cmd === 'check') {
     const opsFile = a.value('--operations', '.xoong/operations.json');
     let table;

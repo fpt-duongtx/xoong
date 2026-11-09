@@ -21,7 +21,7 @@ import '@xoong/controls';          // everything, or one: '@xoong/controls/carou
 
 ## More
 
-* Documentation and demos: https://github.com/fpt-duongtx/xoong#readme
+* Documentation, guides and live demos: https://fpt-duongtx.github.io/xoong/
 * Source: https://github.com/fpt-duongtx/xoong/tree/main/packages/controls
 * All packages share one version number and are released together: https://github.com/fpt-duongtx/xoong/releases
 * xoong is a working prototype (0.0.x): the HTML syntax is still Draft.

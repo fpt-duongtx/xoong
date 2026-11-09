@@ -74,7 +74,8 @@ export const EXPLANATIONS = {
   XO172: 'A hint refers to something the document does not have: a fields key must be "Schema.property" of an existing schema, and idempotencyKeys must name an existing operationId. Use the closest name the message gives.',
 };
 
-const TOOLS = [
+/** The tools, as `tools/list` returns them (the documentation site builds its table of tools from this list). */
+export const TOOLS = [
   { name: 'get_spec', description: 'Return xoong\'s whole public API as one short document (llms.txt). Read it before writing xoong code.', inputSchema: { type: 'object', properties: {} } },
   { name: 'list_operations', description: 'List the operations of the synced API: id, method, path, query parameters and request body fields. Use these exact names in xo-click, xo-submit and <xo-view get>.', inputSchema: { type: 'object', properties: { filter: { type: 'string', description: 'Only operations whose id or path contains this text.' } } } },
   { name: 'check', description: 'Run `xoong check` on HTML source text and return findings with line, column, message and fix. Fix every error before showing code to the user.', inputSchema: { type: 'object', properties: { html: { type: 'string', description: 'The HTML source of a screen.' }, script: { type: 'string', description: 'JavaScript or TypeScript source instead of html: checks html`...` templates and client.load/query/mutate/stream calls.' } } } },

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP server · xoong</title>
+  <meta name="description" content="xoong-mcp gives an AI assistant the spec, the operations of your API, the checker and an explanation of every error, over the Model Context Protocol.">
+  <meta property="og:title" content="MCP server · xoong">
+  <meta property="og:description" content="xoong-mcp gives an AI assistant the spec, the operations of your API, the checker and an explanation of every error, over the Model Context Protocol.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">MCP server</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html" aria-current="page">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html" aria-current="page">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Tools</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>MCP server</span></div>
+
+<h1>MCP server</h1>
+<p class="lead">The Model Context Protocol (MCP) is an open standard for connecting AI assistants to programs that offer them tools: the assistant starts the program, asks which tools it has, and calls them. <code>xoong-mcp</code> is that program for xoong. It gives an assistant the spec, the real operation names of your API, the checker and an explanation of every error, so the screens it writes pass <code>xoong check</code> instead of guessing attributes.</p>
+
+<h2 id="what-the-assistant-gets">What the assistant gets</h2>
+<p>Six tools make a loop. The assistant reads the spec, looks up the operations, writes the screen, checks it and fixes what the message says, before it shows you any code.</p>
+<ol>
+<li><code>get_spec</code>: read <code>llms.txt</code>, the whole public API in one short document.</li>
+<li><code>list_operations</code>: the operation names of your API, so it never invents one.</li>
+<li>Write the screen.</li>
+<li><code>check</code>: run <a href="cli.html#xoong-check"><code>xoong check</code></a> on the HTML (or the script) it wrote. Each finding has a line, a column, a message and the fix.</li>
+<li><code>explain_error</code> or <code>explain_syntax</code> when the message is not enough: what a code means, what an element or attribute does and which values it takes.</li>
+<li><code>search_docs</code> for anything else in the documentation.</li>
+</ol>
+<p>Back to step 3 until <code>check</code> says <code>No findings.</code> The server also sends this advice itself, in the <code>instructions</code> of its <code>initialize</code> reply.</p>
+
+<h2 id="install-and-register">Install and register</h2>
+<p>The server reads <code>.xoong/operations.json</code>, so run <a href="cli.html#xoong-sync"><code>xoong sync</code></a> in the project first. Then install the package, which has one program, <code>xoong-mcp</code>, and register it with your assistant as a server that runs over standard input and output (stdio).</p>
+<xo-tabs label="Register xoong-mcp" class="example">
+  <section xo-tab="Claude Code"><pre data-lang="bash" tabindex="0"><code>npm install <span class="tok-a">--save-dev</span> @xoong/mcp@next
+npx xoong sync openapi.json
+
+<span class="tok-c"># for you, in this project</span>
+claude mcp add xoong <span class="tok-a">--</span> npx xoong-mcp
+
+<span class="tok-c"># for everyone who clones the project (writes .mcp.json)</span>
+claude mcp add <span class="tok-a">--scope</span> project xoong <span class="tok-a">--</span> npx xoong-mcp
+
+claude mcp list</code></pre></section>
+  <section xo-tab="Claude Desktop"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"mcpServers"</span>: {
+    <span class="tok-a">"xoong"</span>: {
+      <span class="tok-a">"command"</span>: <span class="tok-s">"npx"</span>,
+      <span class="tok-a">"args"</span>: [<span class="tok-s">"-y"</span>, <span class="tok-s">"@xoong/mcp@next"</span>, <span class="tok-s">"--operations"</span>, <span class="tok-s">"/path/to/my-app/.xoong/operations.json"</span>]
+    }
+  }
+}</code></pre></section>
+  <section xo-tab="Cursor"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"mcpServers"</span>: {
+    <span class="tok-a">"xoong"</span>: { <span class="tok-a">"command"</span>: <span class="tok-s">"npx"</span>, <span class="tok-a">"args"</span>: [<span class="tok-s">"xoong-mcp"</span>] }
+  }
+}</code></pre></section>
+  <section xo-tab="Any client"><pre data-lang="json" tabindex="0"><code>{
+  <span class="tok-a">"mcpServers"</span>: {
+    <span class="tok-a">"xoong"</span>: {
+      <span class="tok-a">"command"</span>: <span class="tok-s">"npx"</span>,
+      <span class="tok-a">"args"</span>: [<span class="tok-s">"xoong-mcp"</span>, <span class="tok-s">"--operations"</span>, <span class="tok-s">".xoong/operations.json"</span>, <span class="tok-s">"--docs"</span>, <span class="tok-s">"docs"</span>]
+    }
+  }
+}</code></pre></section>
+</xo-tabs>
+<p>Claude Desktop keeps its servers in <code>claude_desktop_config.json</code> (macOS: <code>~/Library/Application Support/Claude/</code>, Windows: <code>%APPDATA%\Claude\</code>); it does not know your project folder, so the path of <code>operations.json</code> is absolute and <code>npx -y</code> fetches the package. Cursor reads <code>.cursor/mcp.json</code> in the project, or <code>~/.cursor/mcp.json</code> for every project. Other clients use the same <code>mcpServers</code> shape; look for the place in their documentation.</p>
+<p>To see that it answers without an assistant, send it one message:</p>
+<xo-tabs label="A smoke test" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>printf <span class="tok-s">'%s\n'</span> <span class="tok-s">'{"jsonrpc":"2.0","id":1,"method":"tools/list"}'</span> | npx xoong-mcp</code></pre></section>
+</xo-tabs>
+
+<h2 id="where-it-finds-its-files">Where it finds its files</h2>
+<p>The server looks for the table of operations and for the project's docs in the folder it is started from. Three options change that; none is required.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>--operations &lt;file&gt;</code></td><td><code>.xoong/operations.json</code></td><td>The table that <code>xoong sync</code> wrote. It is read again on every call.</td></tr>
+<tr><td><code>--llms &lt;file&gt;</code></td><td>the spec packed with the package</td><td>A spec to give <code>get_spec</code> instead of the xoong one. If the packed one is missing, <code>llms.txt</code> in the folder is the last resort.</td></tr>
+<tr><td><code>--docs &lt;folder&gt;</code></td><td>a <code>docs</code> folder in the working folder, if there is one</td><td>The project's own documentation. <code>search_docs</code> searches it first, then the xoong documentation.</td></tr>
+</tbody></table></div>
+<p>If a file is missing, the tool that needs it answers with an error that says what to do (<code>run `xoong sync &lt;openapi&gt;` first or pass --operations &lt;file&gt;</code>), and the other tools keep working.</p>
+
+<h2 id="the-tools">The tools</h2>
+<p>This table is made from the definitions in the server's source, so it is what <code>tools/list</code> returns.</p>
+<div class="table-wrap" tabindex="0"><table class="names">
+<thead><tr><th>Tool</th><th>What it does</th><th>Input</th></tr></thead>
+<tbody>
+<tr><td><code>get_spec</code></td><td>Returns llms.txt, the whole public API in one short document. Read it before writing xoong code.</td><td>none</td></tr>
+<tr><td><code>list_operations</code></td><td>The operation names to use in <code>xo-click</code>, <code>xo-submit</code> and <code>&lt;xo-view get&gt;</code>, each with its method and path, query parameters and request fields (a <code>*</code> marks a required one). Without a filter it lists all. The table is read again on every call, so a new <code>xoong sync</code> needs no restart.</td><td><code>filter</code> (string): Only operations whose id or path contains this text.</td></tr>
+<tr><td><code>check</code></td><td>Runs <code>xoong check</code> on the text it is given and returns the findings (code, line, column, message, fix), or <code>No findings.</code> Give <code>html</code> or <code>script</code>: one of the two is needed. It takes text, not a file name, so it checks what the assistant is about to write.</td><td><code>html</code> (string): The HTML source of a screen.<br><code>script</code> (string): JavaScript or TypeScript source instead of html: checks html`...` templates and client.load/query/mutate/stream calls.</td></tr>
+<tr><td><code>explain_error</code></td><td>What a code means and how to fix it: the <code>XO2xx</code> codes of <code>xoong check</code> and the <code>XO1xx</code> codes of <code>xoong doctor</code> and <code>xoong sync</code>. Capitals do not matter. An unknown code gets the list of known ones.</td><td><code>code</code> (string, required)</td></tr>
+<tr><td><code>explain_syntax</code></td><td>What an element or attribute does, which attributes an element has and which values they take. Without a name it lists every element and attribute. A name that does not exist gets suggestions, so an assistant asks before it invents an attribute.</td><td><code>name</code> (string): An element (xo-table or &lt;xo-table&gt;), an attribute (xo-then), or an attribute of an element ("xo-table page-size").</td></tr>
+<tr><td><code>search_docs</code></td><td>A case-insensitive search of the <code>.md</code> files, line by line, up to 40 lines, with file names and line numbers. It searches the project's own docs folder first, then the xoong documentation (marked <code>xoong/</code> when both are searched).</td><td><code>query</code> (string, required)</td></tr>
+</tbody></table></div>
+<p>Errors of the tools are not protocol errors: the reply has <code>isError: true</code> and a text the assistant can act on, such as the closest name for an unknown attribute. <code>explain_error</code> knows two families of codes: <code>XO2xx</code> from <code>xoong check</code> and <code>XO1xx</code> from <code>xoong doctor</code> and <code>xoong sync</code>. They are all on the <a href="codes.html">Error codes</a> page, which is made from the same table.</p>
+
+<h2 id="a-session-recorded">A session, recorded</h2>
+<p>This is a real exchange. When the page is generated, the site starts <code>xoong-mcp</code>, sends it the messages below over standard input (JSON-RPC 2.0, one message per line) and prints what comes back, on the site's own demo API. The first message is shown as it goes over the wire; the others are shortened to the tool and its arguments, and a tool's reply is the text of its <code>content</code>. An assistant does all of this for you; what you see is its answer.</p>
+<pre class="plain" data-lang="json" tabindex="0"><code>&gt; {<span class="tok-a">"jsonrpc"</span>:<span class="tok-s">"2.0"</span>,<span class="tok-a">"id"</span>:<span class="tok-n">1</span>,<span class="tok-a">"method"</span>:<span class="tok-s">"initialize"</span>,<span class="tok-a">"params"</span>:{<span class="tok-a">"protocolVersion"</span>:<span class="tok-s">"2024-11-05"</span>,<span class="tok-a">"capabilities"</span>:{},<span class="tok-a">"clientInfo"</span>:{<span class="tok-a">"name"</span>:<span class="tok-s">"assistant"</span>,<span class="tok-a">"version"</span>:<span class="tok-s">"1"</span>}}}
+&lt; {
+    "protocolVersion": "2024-11-05",
+    "capabilities": {
+      "tools": {}
+    },
+    "serverInfo": {
+      "name": "xoong",
+      "version": "0.0.47"
+    },
+    "instructions": "Call get_spec first. Write xoong screens, then call check on the HTML and fix every error from its message. Never invent an xo-* attribute or an operation: explain_syntax says what an element or attribute does, list_operations gives the real operation names, explain_error explains a code."
+  }
+
+&gt; tools/list
+&lt; get_spec, list_operations, check, explain_error, explain_syntax, search_docs   (each with its description and input schema)
+
+&gt; tools/call list_operations {"filter":"delete"}
+&lt; [
+    {
+      "id": "deletePerson",
+      "call": "DELETE /api/people/{id}"
+    }
+  ]
+
+&gt; tools/call check {"html":"&lt;xo-view get=\"GET /api/people\"&gt;\n  &lt;button xo-click=\"deletePersn\"&gt;Delete&lt;/button&gt;\n&lt;/xo-view&gt;"}
+&lt; [
+    {
+      "level": "error",
+      "code": "XO201",
+      "file": "screen.html",
+      "line": 2,
+      "column": 11,
+      "message": "unknown operation \"deletePersn\" (closest: \"deletePerson\")",
+      "fix": "Use \"deletePerson\""
+    }
+  ]
+
+&gt; tools/call explain_error {"code":"XO201"}
+&lt; XO201: An operation name in xo-click, xo-submit, &lt;xo-view get&gt; or &lt;xo-form op&gt; does not exist in the synced API. Use the closest name the message gives, or run `xoong sync` if the API changed.
+
+&gt; tools/call explain_syntax {"name":"xo-dialog size"}
+&lt; &lt;xo-dialog size&gt;: `sm`, `wide` or `full` (the default is 40rem).
+  Values: sm, wide, full.
+
+&gt; tools/call check {"html":"&lt;xo-view get=\"GET /api/people\"&gt;\n  &lt;button xo-click=\"deletePerson\"&gt;Delete&lt;/button&gt;\n&lt;/xo-view&gt;"}
+&lt; No findings.</code></pre>
+<p>The assistant sent a misspelled operation, <code>deletePersn</code>. <code>check</code> answered with the code, the place and the closest name; <code>explain_error</code> said what <code>XO201</code> means; the second <code>check</code> came back clean.</p>
+
+<h2 id="what-it-does-not-do-yet">What it does not do yet</h2>
+<ul>
+<li><strong>No <code>scaffold</code> tool.</strong> The assistant writes the screens; a tool that generates a view, form or admin screen for an operation is planned.</li>
+<li><strong>No resources and no prompts.</strong> It declares the <code>tools</code> capability only. The spec and the docs are reached through the tools <code>get_spec</code> and <code>search_docs</code>.</li>
+<li><strong>It reads, and does not run or write.</strong> It never runs <code>sync</code>, <code>doctor</code>, <code>build</code> or <code>dev</code>, and never writes a file. Run <code>xoong sync</code> yourself when the API changes.</li>
+<li><strong><code>check</code> takes text, not file names.</strong> To check files, run <a href="cli.html#xoong-check"><code>xoong check</code></a>.</li>
+<li><strong>Standard input and output only</strong>, no HTTP transport. It speaks protocol version 2024-11-05 and answers <code>initialize</code>, <code>ping</code>, <code>tools/list</code> and <code>tools/call</code>; it is written without an SDK, and its only dependency is <code>@xoong/cli</code>.</li>
+</ul>
+
+<h2 id="the-spec-and-the-docs-come-with-the-package">The spec and the docs come with the package</h2>
+<p>The npm tarball may hold <code>src/</code> only, so before the package is packed a script (<code>prepack.mjs</code>) copies <code>llms.txt</code> and the <code>docs/*.md</code> files into <code>src/</code>; the copies are generated, not committed, and removed again afterwards. That is why <code>get_spec</code> and <code>search_docs</code> work in a project that installed <code>@xoong/mcp</code> from npm. In the xoong repository the server reads the files at the root. A test packs a copy of the package into a <code>node_modules</code> layout and asks it for the spec from an empty project.</p>
+
+<h2 id="without-mcp">Without MCP</h2>
+<p>An assistant that cannot run a server can still work from two things. <a href="https://github.com/fpt-duongtx/xoong/blob/main/llms.txt"><code>llms.txt</code></a>, at the root of the repository, is what <code>get_spec</code> returns: attach it or paste it. And <code>npx xoong check --format json</code> gives it the same findings that the <code>check</code> tool does; paste them back. Without <code>list_operations</code>, give it the operation names from <code>.xoong/operations.json</code>. A test keeps <code>llms.txt</code> honest: it stays within a token budget, names only commands that exist and documents every attribute the code defines.</p>
+<p><strong>See also:</strong> <a href="cli.html">Command line</a> · <a href="editor.html">Editor support</a> · <a href="codes.html">Error codes</a> · <a href="arch-tooling.html#for-ai-assistants-llms-txt-and-the-mcp-server">How it is built</a></p>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="cli.html"><small>Previous</small><span>Command line</span></a><a rel="next" href="editor.html"><small>Next</small><span>Editor support</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#what-the-assistant-gets" aria-current="true">What the assistant gets</a></li><li><a href="#install-and-register">Install and register</a></li><li><a href="#where-it-finds-its-files">Where it finds its files</a></li><li><a href="#the-tools">The tools</a></li><li><a href="#a-session-recorded">A session, recorded</a></li><li><a href="#what-it-does-not-do-yet">What it does not do yet</a></li><li><a href="#the-spec-and-the-docs-come-with-the-package">The spec and the docs come with the package</a></li><li><a href="#without-mcp">Without MCP</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

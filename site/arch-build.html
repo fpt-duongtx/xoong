@@ -28,14 +28,21 @@
   <link rel="stylesheet" href="src/shell.css">
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
   <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
       <nav aria-label="Main">
         <a href="index.html">Home</a>
         <a href="overview.html" aria-current="page">Docs</a>
@@ -83,6 +90,10 @@
     <a href="controls-demo.html">All controls</a>
     </div>
     <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
@@ -94,6 +105,13 @@
     <h2>Extend</h2>
     <a href="recipes.html">Recipes</a>
     <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
     </div>
     <div class="grp">
     <h2>Architecture</h2>
@@ -143,6 +161,10 @@
       <a href="controls-demo.html">All controls</a>
       </div>
       <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
@@ -154,6 +176,13 @@
       <h2>Extend</h2>
       <a href="recipes.html">Recipes</a>
       <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
       </div>
       <div class="grp">
       <h2>Architecture</h2>
@@ -203,27 +232,33 @@ npx xoong render index.html <span class="tok-a">--api</span> http://localhost:80
 <p>Not yet: live reload and SCSS compilation.</p>
 
 <h2 id="release-xoong-build">Release: xoong build</h2>
-<figure class="dg-fig dg-anim">
+<figure class="dg-fig dg-anim" data-dur="7" data-steps="[[&quot;1&quot;,&quot;You run xoong build. It starts from every HTML page under the root and follows what each one references: scripts, stylesheets, images, the modules the scripts import, CSS url() and any files named with --include. Installed @xoong packages are found in node_modules.&quot;,&quot;0.3&quot;,&quot;1.08&quot;],[&quot;2&quot;,&quot;Each file is rewritten as it is copied: bare imports become URLs, TypeScript is stripped, the import map is dropped and the --base prefix is applied.&quot;,&quot;1.3&quot;,&quot;2.08&quot;],[&quot;3&quot;,&quot;The build warns about anything the strict policy would block: an inline script, a style attribute, an inline style element.&quot;,&quot;2.3&quot;,&quot;3.08&quot;],[&quot;4&quot;,&quot;The result is dist/: your files, rewritten, plus build-report.json.&quot;,&quot;3.3&quot;,&quot;4.08&quot;]]">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: what xoong build does">
-<svg class="dg dg-sm" viewBox="0 0 570 480" role="img" aria-labelledby="bd-build-t bd-build-d">
+<svg class="dg dg-sm" viewBox="0 0 580 480" role="img" aria-labelledby="bd-build-t bd-build-d">
 <title id="bd-build-t">What xoong build does</title>
-<desc id="bd-build-d">Every HTML page under the root is the start. The build follows what each page references: scripts, stylesheets and images, the modules the scripts import, CSS urls, and any files named with --include. Installed @xoong packages are found in node_modules and copied to the same URLs the dev server uses. It then rewrites bare imports to URLs, strips TypeScript, drops the import map and applies the --base prefix. It warns about anything the strict policy would block: an inline script, a style attribute, an inline style element. The result is the dist folder: the files you wrote, plus build-report.json. When the animation plays, a dot goes down the steps in order: the pages and the installed packages are followed together, then the files are rewritten, checked, and written to dist.</desc>
+<desc id="bd-build-d">Every HTML page under the root is the start. The build follows what each page references: scripts, stylesheets and images, the modules the scripts import, CSS urls, and any files named with --include. Installed @xoong packages are found in node_modules and copied to the same URLs the dev server uses. It then rewrites bare imports to URLs, strips TypeScript, drops the import map and applies the --base prefix. It warns about anything the strict policy would block: an inline script, a style attribute, an inline style element. The result is the dist folder: the files you wrote, plus build-report.json. At the top right is the command that starts it, in a terminal window. The code window shows Terminal: npx xoong build --out dist. Steps: 1. You run xoong build. It starts from every HTML page under the root and follows what each one references: scripts, stylesheets, images, the modules the scripts import, CSS url() and any files named with --include. Installed @xoong packages are found in node_modules. 2. Each file is rewritten as it is copied: bare imports become URLs, TypeScript is stripped, the import map is dropped and the --base prefix is applied. 3. The build warns about anything the strict policy would block: an inline script, a style attribute, an inline style element. 4. The result is dist/: your files, rewritten, plus build-report.json. When the animation plays, a dot goes down the steps in order, while the command is lit: the pages and the installed packages are followed together, then the files are rewritten, checked, and written to dist.</desc>
 <defs><marker id="bd-build-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="bd-build-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="10" y="14" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="36">HTML pages</text><text class="dg-sub" x="170" y="56">every .html file under --root</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="100" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="122">Follow references</text><text class="dg-sub" x="170" y="142">script, link, img; module imports;</text><text class="dg-sub" x="170" y="158">CSS url(); --include files</text></g>
-<g class="dg-node"><rect class="dg-box" x="390" y="100" width="170" height="74" rx="8"/><text class="dg-t" x="475" y="122">Installed packages</text><text class="dg-sub" x="475" y="142">@xoong/* from</text><text class="dg-sub" x="475" y="158">node_modules</text></g>
+<g class="dg-node"><rect class="dg-box" x="390" y="100" width="180" height="74" rx="8"/><text class="dg-t" x="480" y="122">Installed packages</text><text class="dg-sub" x="480" y="142">@xoong/* from</text><text class="dg-sub" x="480" y="158">node_modules</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="202" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="224">Rewrite</text><text class="dg-sub" x="170" y="244">bare imports to URLs, TypeScript stripped,</text><text class="dg-sub" x="170" y="260">import map dropped, --base prefix</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="304" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="326">Warn</text><text class="dg-sub" x="170" y="346">what a strict policy blocks: inline script,</text><text class="dg-sub" x="170" y="362">style attribute, style element</text></g>
 <g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="406" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="428">dist/</text><text class="dg-sub" x="170" y="448">your files, rewritten, plus build-report.json</text></g>
+<g aria-hidden="true"><foreignObject x="364" y="14" width="206" height="58"><div class="window dg-code"><div class="bar"><i></i><i></i><i></i><span>Terminal</span></div><pre><code>npx xoong build <span class="tok-a">--out</span> dist</code></pre></div></foreignObject></g>
+<path class="dg-line" d="M364 43 L330 43" marker-end="url(#bd-build-a)"/>
 <path class="dg-line" d="M170 72 L170 100" marker-end="url(#bd-build-a)"/>
+<text class="dg-lab dg-start" x="180" y="86">1</text>
 <path class="dg-line" d="M170 174 L170 202" marker-end="url(#bd-build-a)"/>
+<text class="dg-lab dg-start" x="180" y="188">2</text>
 <path class="dg-line" d="M170 276 L170 304" marker-end="url(#bd-build-a)"/>
+<text class="dg-lab dg-start" x="180" y="290">3</text>
 <path class="dg-line" d="M170 378 L170 406" marker-end="url(#bd-build-a)"/>
+<text class="dg-lab dg-start" x="180" y="392">4</text>
 <path class="dg-line" d="M390 137 L330 137" marker-end="url(#bd-build-a)"/>
-<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M170 72 L170 100" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.185;0.231;1"/></path><path class="dg-hot" d="M170 174 L170 202" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.2;0.218;0.338;0.385;1"/></path><path class="dg-hot" d="M170 276 L170 304" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.354;0.372;0.492;0.538;1"/></path><path class="dg-hot" d="M170 378 L170 406" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.508;0.526;0.646;0.692;1"/></path><path class="dg-hot" d="M390 137 L330 137" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.185;0.231;1"/></path><rect class="dg-glow" x="10" y="14" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="10" y="100" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.169;0.188;0.223;0.262;1"/></rect><rect class="dg-glow" x="390" y="100" width="170" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="10" y="202" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.323;0.342;0.377;0.415;1"/></rect><rect class="dg-glow" x="10" y="304" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.477;0.495;0.531;0.569;1"/></rect><rect class="dg-glow" x="10" y="406" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.631;0.649;0.685;0.723;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M170 72 L170 100" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.185;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.162;0.185;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M170 174 L170 202" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.2;0.338;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.2;0.223;0.315;0.338;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M170 276 L170 304" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.354;0.492;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.354;0.377;0.469;0.492;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M170 378 L170 406" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.508;0.646;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.508;0.531;0.623;0.646;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M390 137 L330 137" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.185;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.162;0.185;1"/></circle></g>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M170 72 L170 100" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.171;0.214;1"/></path><path class="dg-hot" d="M170 174 L170 202" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.186;0.203;0.314;0.357;1"/></path><path class="dg-hot" d="M170 276 L170 304" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.329;0.346;0.457;0.5;1"/></path><path class="dg-hot" d="M170 378 L170 406" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.471;0.489;0.6;0.643;1"/></path><path class="dg-hot" d="M390 137 L330 137" marker-end="url(#bd-build-ah)" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.171;0.214;1"/></path><rect class="dg-glow" x="10" y="14" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.068;0.093;1"/></rect><rect class="dg-glow" x="10" y="100" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.157;0.174;0.207;0.243;1"/></rect><rect class="dg-glow" x="390" y="100" width="180" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.06;0.068;0.093;1"/></rect><rect class="dg-glow" x="10" y="202" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.3;0.317;0.35;0.386;1"/></rect><rect class="dg-glow" x="10" y="304" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.443;0.46;0.493;0.529;1"/></rect><rect class="dg-glow" x="10" y="406" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.586;0.603;0.636;0.671;1"/></rect><rect class="dg-band" x="368" y="47" width="198" height="18" rx="3" opacity="0"><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;0.4;0.4;0;0" keyTimes="0;0.036;0.053;0.586;0.614;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M170 72 L170 100" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.043;0.171;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.057;0.157;0.171;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M170 174 L170 202" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.186;0.314;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.186;0.2;0.3;0.314;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M170 276 L170 304" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.329;0.457;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.329;0.343;0.443;0.457;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M170 378 L170 406" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.471;0.6;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.471;0.486;0.586;0.6;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7s" begin="0s" repeatCount="indefinite" path="M390 137 L330 137" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.043;0.171;1"/><animate attributeName="opacity" dur="7s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.043;0.057;0.157;0.171;1"/></circle></g>
 </svg>
 </div>
-<div class="dg-cap"><p class="hint">No bundling and no minifying: each file in the output is the file you wrote, with its imports rewritten. <span class="dg-motion">In motion, a dot goes down the steps in order: the pages and the installed packages are followed together, then the files are rewritten, checked, and written to dist.</span></p></div>
+<p class="hint">No bundling and no minifying: each file in the output is the file you wrote, with its imports rewritten. <span class="dg-motion">In motion, a dot goes down the steps in order, while the command is lit: the pages and the installed packages are followed together, then the files are rewritten, checked, and written to dist. Use the slider, or press a number, to look at one step.</span></p>
 </figure>
 <ul>
 <li><strong>Input.</strong> Every <code>.html</code> file under <code>--root</code> (not <code>node_modules</code>, not dot folders, not the output folder). From each page it follows <code>&lt;script src&gt;</code>, <code>&lt;link href&gt;</code>, <code>&lt;img src&gt;</code> and the like, then the imports of each script, then the <code>url()</code> and <code>@import</code> of each stylesheet. Links to other pages are left as they are.</li>

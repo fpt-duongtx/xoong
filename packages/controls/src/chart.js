@@ -26,13 +26,13 @@ class XoChart extends XoElement {
   set rows(v) { this.#rows = (Array.isArray(v) ? v : []).map((r, i) => (typeof r === 'number' ? { label: String(i + 1), value: r } : { label: String(r.label), value: Number(r.value) })); if (this.#built) this.#draw(); }
 
   connected() {
-    if (!this.#rows.length && this.data) { try { this.rows = JSON.parse(this.data); } catch { /* not JSON: no data */ } }
+    if (!this.#rows.length && this.data) { try { this.rows = JSON.parse(this.data); } catch { console.warn('xoong: <xo-chart data> is not valid JSON: the chart has no data'); } }
     this.#built = true;
     this.#draw();
   }
   attributeChangedCallback(attr, old, value) {
     super.attributeChangedCallback(attr, old, value);
-    if (attr === 'data' && this.#built) { try { this.rows = JSON.parse(value ?? '[]'); } catch { this.rows = []; } } else if (this.#built) this.#draw();
+    if (attr === 'data' && this.#built) { try { this.rows = JSON.parse(value ?? '[]'); } catch { console.warn('xoong: <xo-chart data> is not valid JSON: the chart has no data'); this.rows = []; } } else if (this.#built) this.#draw();
   }
 
   #draw() {
