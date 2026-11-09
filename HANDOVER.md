@@ -65,6 +65,28 @@ the Reference page and menu, universal search (Ctrl/Cmd+K), Tools pages (CLI, MC
 Recipes page, Dialogs page, animated architecture figures with a step bar. Edge-case scan result: `CHANGELOG.md` 0.0.46, and the
 "Known limits" table of the Recipes page lists what is deliberately not fixed.
 
+**Saving credits: run the benchmark scripts yourself.** Running measurement scripts costs nothing (it is only commands on your machine);
+credit is spent only when an assistant reads output, writes or edits code, or reasons. So do the measuring by hand and ask an
+assistant only to read and summarise the final results. All stage A data is committed in `benchmarks/results/` (`perf-baseline.json`,
+`profile-before-lazy.json`, `profile.json`, `rerender.json`, `runtime.json`, `cli.json`, `mcp.json`, `effort.json`, `install.json`);
+the numbers are from an Apple M1 (8 GB), Chromium 158, Node 26: do not mix them with numbers from another machine, rerun everything
+there. The competitor apps have lockfiles in `benchmarks/apps/*` but no `node_modules`: install them first as `benchmarks/README.md`
+says (separate from the root lockfile and CI; Angular 22 needs Node 24.15 or newer). Then, from `benchmarks/`:
+
+```bash
+npm ci
+node runtime.mjs         # the four-stack runtime table (real Chromium, h2, strict CSP, 5 runs)
+node cli.mjs             # CLI speed
+node mcp.mjs             # MCP server speed
+node effort.mjs          # lines, files, packages
+node rerender.mjs        # re-render probe
+node perf/profile.mjs    # where xoong's time and bytes go -> results/profile.json; `node perf/report.mjs` regenerates perf/PROFILE.md
+```
+
+Keep the machine idle and plugged in while measuring (the scripts record the load average and discard noisy runs); treat install
+times as an order of magnitude only (network). Results land in `benchmarks/results/*.json`; the site page, home block and READMEs are
+generated from them only when `benchmarks/results/publish.json` says `{ "publish": true }`.
+
 **Unfinished work, in the owner's order of priority:**
 
 1. **Benchmarks** (`benchmarks/`, its README explains everything; publish switch `benchmarks/results/publish.json` is `false`, so the
