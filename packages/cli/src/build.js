@@ -20,6 +20,7 @@
 import { readFile, writeFile, mkdir, readdir, stat, copyFile, realpath } from 'node:fs/promises';
 import { basename, dirname, join, relative, resolve, extname, posix, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
+import { createRequire } from 'node:module';
 import { parse } from 'parse5';
 import { findPackages, packagePath, stripTypes } from '@xoong/server/node';
 import { loadConfig } from './dev.js';
@@ -116,7 +117,7 @@ export function preloadModules(written, basePath) {
  * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[], preload?: boolean }} [options]
  * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string }>}
  */
-export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, preload, packages: extra } = {}) {
+export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, preload, minify, packages: extra } = {}) {
   const rootDir = await realpath(resolve(root)); // real path: packages are found by theirs, so an app inside a symlinked package must compare equal
   // the output folder may not exist yet: resolve the part that does
   const realOut = async (p) => { try { return await realpath(p); } catch { const up = dirname(p); return up === p ? p : join(await realOut(up), basename(p)); } };
@@ -298,6 +299,21 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
 
   if (preload ?? (await loadConfig(rootDir)).build?.preload ?? true) preloadModules(written, basePath);
 
+  let minified = false;
+  if (minify ?? (await loadConfig(rootDir)).build?.minify ?? false) {
+    const esbuild = findEsbuild(rootDir);
+    if (!esbuild) warnings.push('--minify: esbuild is not installed in this project (npm install --save-dev esbuild); the output is not minified');
+    else {
+      for (const [outPath, content] of written) {
+        if (typeof content !== 'string') continue;
+        if (/\.m?js$/.test(outPath)) written.set(outPath, (await esbuild.transform(content, { loader: 'js', format: 'esm', target: 'esnext', minify: true, legalComments: 'none' })).code);
+        else if (outPath.endsWith('.css')) written.set(outPath, (await esbuild.transform(content, { loader: 'css', minify: true, legalComments: 'none' })).code);
+      }
+      for (const [outPath, content] of written) if (outPath.endsWith('.json')) written.set(outPath, JSON.stringify(JSON.parse(content.toString())));
+      minified = true;
+    }
+  }
+
   const report = [];
   for (const [outPath, content] of written) {
     const dest = join(outDir, outPath);
@@ -307,7 +323,12 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     report.push({ path: outPath, bytes: buf.length, gzip: gzipSync(buf).length });
   }
   report.sort((a, b) => a.path.localeCompare(b.path));
-  await writeFile(join(outDir, 'build-report.json'), JSON.stringify({ csp: CSP, files: report, warnings }, null, 2) + '\n');
+  await writeFile(join(outDir, 'build-report.json'), JSON.stringify({ csp: CSP, minified, files: report, warnings }, null, 2) + '\n');
   void copyFile;
-  return { out: outDir, files: report, warnings, csp: CSP };
+  return { out: outDir, files: report, warnings, csp: CSP, minified };
+}
+
+/** esbuild as the project has it installed (xoong does not depend on it); null when it is not there. */
+function findEsbuild(rootDir) {
+  try { return createRequire(join(rootDir, 'package.json'))('esbuild'); } catch { return null; }
 }

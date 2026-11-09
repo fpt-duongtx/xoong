@@ -4,6 +4,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createServer } from 'node:http';
 import { readFile, readdir, stat, mkdtemp, writeFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { Readable } from 'node:stream';
 import { build, CSP } from '../src/build.js';
@@ -155,4 +156,80 @@ describe('xoong build: options and warnings', () => {
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-empty-'));
     await expect(build({ root, out: join(root, 'dist') })).rejects.toThrow(/no \.html page/);
   });
+});
+
+describe('xoong build --minify', () => {
+  const project = async (extra = {}) => {
+    const dir = await mkdtemp(join(tmpdir(), 'xoong-min-'));
+    await writeFile(join(dir, 'index.html'), '<!doctype html><title>t</title><link rel="stylesheet" href="/app.css"><script type="module" src="/main.js"></script><p id="p">x</p>');
+    await writeFile(join(dir, 'main.js'), 'import { greet } from "./lib.js";\n// a comment that costs bytes\nconst message   =   greet( "hello" );\ndocument.getElementById("p").textContent = message;\n');
+    await writeFile(join(dir, 'lib.js'), 'export function greet(  value  ) {\n  /* spaces and comments */\n  return value + "!";\n}\n');
+    await writeFile(join(dir, 'app.css'), '/* comment */\np {\n  color :  red ;\n}\n');
+    for (const [name, text] of Object.entries(extra)) { await mkdir(join(dir, 'node_modules', name), { recursive: true }); await writeFile(join(dir, 'node_modules', name, 'package.json'), JSON.stringify({ name, main: 'index.js' })); await writeFile(join(dir, 'node_modules', name, 'index.js'), text); }
+    return dir;
+  };
+  const outside = async (name) => join(await mkdtemp(join(tmpdir(), 'xoong-minout-')), name); // outputs next to the project, not inside it (a folder inside the root is searched for pages)
+  // a stand-in for esbuild: the build only needs `transform(code, options)` to return `{ code }`
+  const stub = 'exports.transform = async (code, o) => ({ code: "/*min:" + o.loader + (o.minify ? ":minify" : "") + "*/" + code.replace(/\\/\\*[\\s\\S]*?\\*\\/|\\/\\/.*$/gm, "").replace(/\\s+/g, " ") });';
+
+  it('uses the esbuild the project has installed for scripts and stylesheets, and rewrites imports as usual', async () => {
+    const dir = await project({ esbuild: stub });
+    const plainOut = await outside('plain'), minOut = await outside('min');
+    const plain = await build({ root: dir, out: plainOut });
+    const min = await build({ root: dir, out: minOut, minify: true });
+    expect(min.minified).toBe(true);
+    const js = await readFile(join(minOut, 'main.js'), 'utf8');
+    expect(js.startsWith('/*min:js:minify*/')).toBe(true);
+    expect(js).toContain('"/lib.js"'); // the import is still rewritten to a root URL
+    expect((await readFile(join(minOut, 'app.css'), 'utf8')).startsWith('/*min:css:minify*/')).toBe(true);
+    expect(min.files.reduce((n, f) => n + f.bytes, 0)).toBeLessThan(plain.files.reduce((n, f) => n + f.bytes, 0));
+    expect(await readFile(join(minOut, 'index.html'), 'utf8')).toContain('modulepreload'); // the pages are as before
+  });
+
+  it('is on by default only when asked: not by default, and "build": { "minify": true } in xoong.config.json asks', async () => {
+    const dir = await project({ esbuild: stub });
+    expect((await build({ root: dir, out: await outside('a') })).minified).toBe(false);
+    await writeFile(join(dir, 'xoong.config.json'), JSON.stringify({ build: { minify: true } }));
+    expect((await build({ root: dir, out: await outside('b') })).minified).toBe(true);
+    expect((await build({ root: dir, out: await outside('c'), minify: false })).minified).toBe(false);
+  });
+
+  it('without esbuild in the project it warns and writes the files as they are (no failure)', async () => {
+    const dir = await project();
+    const out = await outside('out');
+    const r = await build({ root: dir, out, minify: true });
+    expect(r.minified).toBe(false);
+    expect(r.warnings.join('\n')).toMatch(/--minify: esbuild is not installed/);
+    expect(await readFile(join(out, 'main.js'), 'utf8')).toContain('// a comment that costs bytes');
+  });
+});
+
+describe('xoong build --minify with the real esbuild (when the project has it)', () => {
+  const esbuildHere = existsSync(join(repo, 'benchmarks/apps/xoong/node_modules/esbuild'));
+  it.skipIf(!esbuildHere)('the minified benchmark screen is smaller and runs in the browser under the policy', async () => {
+    const app = join(repo, 'benchmarks/apps/xoong');
+    await sync(join(repo, 'benchmarks/shared/openapi.json'), { out: join(app, '.xoong'), hints: join(app, 'xoong.hints.json') });
+    const out = join(await mkdtemp(join(tmpdir(), 'xoong-minreal-')), 'dist');
+    const plainOut = join(await mkdtemp(join(tmpdir(), 'xoong-plainreal-')), 'dist');
+    const plain = await build({ root: app, out: plainOut });
+    const min = await build({ root: app, out });
+    void min;
+    const m = await build({ root: app, out: join(out, '..', 'min'), minify: true });
+    expect(m.minified).toBe(true);
+    expect(m.files.reduce((n, f) => n + f.gzip, 0)).toBeLessThan(plain.files.reduce((n, f) => n + f.gzip, 0) * 0.7);
+    const { serve } = await import('../../../benchmarks/lib/serve.mjs');
+    const server = await serve({ root: join(out, '..', 'min'), rows: 50, csp: CSP });
+    const browser = await launchChromium();
+    const page = await browser.newPage();
+    const violations = [];
+    page.on('console', (c) => { if (/Content Security Policy|Refused to/.test(c.text())) violations.push(c.text()); });
+    page.on('pageerror', (e) => violations.push(e.message));
+    await page.goto(server.url);
+    await page.waitForSelector('tbody tr');
+    expect(await page.locator('tbody tr').count()).toBe(10);
+    await page.getByRole('button', { name: 'Name' }).click();
+    await page.waitForSelector('th[aria-sort="ascending"]');
+    expect(violations).toEqual([]);
+    await browser.close(); await server.close();
+  }, 120000);
 });

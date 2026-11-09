@@ -40,4 +40,11 @@ await measure('xoong (npm install @xoong/xoong, from tarballs)', async (dir) => 
   const c = JSON.parse(await readFile(join(tarballs, 'consume.json'), 'utf8'));
   await writeFile(join(dir, 'package.json'), JSON.stringify({ name: 'bench-xoong-install', private: true, dependencies: { '@xoong/xoong': c.dependencies['@xoong/xoong'] }, overrides: c.overrides }));
 }, ['install']);
+await measure('xoong + esbuild (npm install @xoong/xoong esbuild, for --minify)', async (dir) => {
+  const tarballs = join(dir, 'vendor'); await mkdir(tarballs);
+  await pack(tarballs, { prefix: './vendor' });
+  const c = JSON.parse(await readFile(join(tarballs, 'consume.json'), 'utf8'));
+  const esbuild = JSON.parse(await readFile(join(apps.xoong.dir, 'package.json'), 'utf8')).devDependencies.esbuild;
+  await writeFile(join(dir, 'package.json'), JSON.stringify({ name: 'bench-xoong-min-install', private: true, dependencies: { '@xoong/xoong': c.dependencies['@xoong/xoong'] }, devDependencies: { esbuild }, overrides: c.overrides }));
+}, ['install']);
 await writeFile(out, JSON.stringify(result, null, 1) + '\n');

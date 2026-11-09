@@ -28,10 +28,10 @@ import { readFileSync } from 'node:fs';
 const execFileSyncRead = (p) => readFileSync(p);
 
 /**
- * @param {{ root: string, protocol?: 'http1' | 'h2', csp?: string, rows?: number, spa?: boolean, transform?: (pathname: string, body: Buffer) => Buffer }} o
+ * @param {{ root: string, protocol?: 'http1' | 'h2', csp?: string, rows?: number, spa?: boolean, transform?: (pathname: string, body: Buffer) => Buffer, handler?: (req: any, res: any, url: URL) => boolean | Promise<boolean> }} o
  * @returns {Promise<{ url: string, close: () => Promise<void>, api: ReturnType<typeof createApi>, requests: string[] }>}
  */
-export async function serve({ root, protocol = 'http1', csp, rows = 10000, spa = false, transform }) {
+export async function serve({ root, protocol = 'http1', csp, rows = 10000, spa = false, transform, handler }) {
   const api = createApi({ rows });
   const cache = new Map();
   const requests = [];
@@ -39,6 +39,7 @@ export async function serve({ root, protocol = 'http1', csp, rows = 10000, spa =
     try {
       const url = new URL(req.url, 'http://x');
       requests.push(`${req.method} ${url.pathname}`);
+      if (handler && (await handler(req, res, url))) return;
       if (await api.handle(req, res)) return;
       let file = normalize(join(root, decodeURIComponent(url.pathname)));
       if (!file.startsWith(root)) { res.statusCode = 403; return res.end(); }

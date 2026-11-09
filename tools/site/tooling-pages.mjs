@@ -113,6 +113,7 @@ const CONFIG_KEYS = [
   ['packages', 'dev, build', '[]', 'Installed packages, besides xoong\'s own, whose browser code the app imports. They are served at <code>/@name</code>, listed in the import map and copied by the build.'],
   ['build.exclude', 'build', '[]', 'Globs of HTML files that are not pages. They add to the <code>--exclude</code> flags of <code>build</code>.'],
   ['build.preload', 'build', 'true', '<code>false</code> turns off the <code>modulepreload</code> links, like <code>--no-preload</code>.'],
+  ['build.minify', 'build', 'false', '<code>true</code> minifies scripts, stylesheets and JSON with the esbuild the project has installed, like <code>--minify</code>; without esbuild the build warns and does not minify.'],
   ['check.exclude', 'check', '[]', 'Globs of files and folders that <code>check</code> skips. They add to its <code>--exclude</code> flags.'],
 ];
 
@@ -258,6 +259,7 @@ xoong dev  http://127.0.0.1:5173   (root: /home/you/people-app)
 <li>TypeScript is stripped and ${c('.ts')} files are written as ${c('.js')};</li>
 <li>${c('src')}, ${c('poster')}, a ${c('<link>')}'s ${c('href')} and every URL of a ${c('srcset')} are copied and, with ${c('--base')}, given the prefix. ${c('<a href>')} is left as written on purpose: a link to another page is for the router, or a plain relative link, to resolve;</li>
 <li>every page gets ${c('<link rel="modulepreload">')} for the modules its scripts import, so the browser fetches the chain at once instead of one level at a time (${c('--no-preload')} turns it off);</li>
+<li>with ${c('--minify')} (or ${c('build.minify')}), scripts, stylesheets and JSON are minified by the esbuild your project has installed (xoong does not depend on it; without it the build warns and goes on). Two risks: esbuild renames local identifiers (code that reads <code>Function.name</code> or a class's <code>name</code> sees short names), and without esbuild the flag is only a warning, so check that it is in your <code>devDependencies</code>.</li>
 <li>nothing is minified or bundled: every output file is the one you wrote, readable in the browser's tools.</li>
 </ul>
 ${reference('build')}

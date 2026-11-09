@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Accounts</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <script type="module" src="/main.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Accounts</h1>
+    <xo-view get="listAccounts" p-limit="?limit">
+      <p xo-if="$loading">Loading…</p>
+      <section xo-each="items">
+        <h2>{name}</h2>
+        <article xo-each="orders">
+          <h3>Order {id} <small xo-if="status=overdue">overdue</small><small xo-if="status!=overdue">{status}</small></h3>
+          <ul>
+            <li xo-each="items"><span>{sku}</span> x <b>{qty}</b> <button xo-click="bumpItem">+1</button></li>
+          </ul>
+        </article>
+      </section>
+    </xo-view>
+  </main>
+</body>
+</html>

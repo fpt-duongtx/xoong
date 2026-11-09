@@ -7,7 +7,7 @@ tarball per package and a `consume.json`. All packages share the version number.
 
 ```bash
 # in your project (the repository is public: `gh` needs no sign-in for it)
-gh release download v0.0.50 -R fpt-duongtx/xoong -D vendor/xoong
+gh release download v0.0.51 -R fpt-duongtx/xoong -D vendor/xoong
 ```
 
 Then copy `dependencies` (only what you import) and the whole `overrides` from `vendor/xoong/consume.json` into your `package.json`
@@ -15,8 +15,8 @@ Then copy `dependencies` (only what you import) and the whole `overrides` from `
 
 ```json
 {
-  "dependencies": { "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-0.0.50.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.50.tgz" },
-  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.50.tgz", "...": "every package listed in consume.json" }
+  "dependencies": { "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-0.0.51.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.51.tgz" },
+  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.51.tgz", "...": "every package listed in consume.json" }
 }
 ```
 
@@ -40,6 +40,7 @@ the output is tested with ([security.md](security.md)). Serve `dist` as static f
 `<xo-router>`. Nothing is minified or bundled yet: the files are the ones you wrote, and `dist/build-report.json` lists sizes (also gzipped).
 Every `.html` file under the root is a page. HTML that is not (partials, fixtures, drafts) is kept out with `--exclude <glob>` (repeatable) or `"build": { "exclude": ["screens/**", "*.draft.html"] }` in `xoong.config.json`: paths relative to the root, `*` stays in a folder, `**` crosses folders, a name without `/` matches at any depth, a trailing `/` is a folder. A file that a page references is still published. `xoong check` takes `--exclude` too, and `"check": { "exclude": [...] }` in the config.
 The build also lists, on every page, the modules its scripts import as `<link rel="modulepreload">` (static imports only; a dynamic `import()` stays lazy), so the browser fetches the whole chain at once instead of one import level at a time. `--no-preload` or `"build": { "preload": false }` turns it off.
+`--minify` (or `"build": { "minify": true }`) minifies the scripts, stylesheets and JSON with the **esbuild your project has installed** (`npm install --save-dev esbuild`); xoong does not depend on it. The imports are rewritten as before and the output still runs under the strict policy; without esbuild installed the build warns and writes the files as they are. The default stays unminified, so the output is the code you wrote. Two risks to know: esbuild renames local identifiers, so code that reads `Function.name` or a class's `name` sees the short names (keep such names explicit), and the flag does nothing without esbuild (the build only warns, so check that esbuild is in your `devDependencies` if the size matters in CI). On the benchmark screen it takes the 92 KB (gzip) of the shipped files to about 49 KB.
 The build follows `src`, `poster`, a `<link>`'s `href` and every URL of a `srcset` (`<img>`, `<source>`, and `imagesrcset` of `<link rel="preload">`): each file is copied and, with `--base`, prefixed, and the descriptors (`1x`, `480w`) stay. `<a href>` is left as written on purpose: a link to another page is for the router, or a plain relative link, to resolve.
 
 ## What a drop promises

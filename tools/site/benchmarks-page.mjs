@@ -14,9 +14,9 @@ export const hasBenchmarks = dataOk && published;
 
 const REPO = 'https://github.com/fpt-duongtx/xoong';
 export const BENCH_URL = `${REPO}/tree/main/benchmarks`;
-const VARIANT_NAMES = { xoong: 'xoong', 'xoong-nopreload': 'xoong, no modulepreload', 'xoong-http1': 'xoong, HTTP/1.1', react: 'React stack', vue: 'Vue stack', angular: 'Angular stack' };
-const IDS = ['xoong', 'xoong-nopreload', 'xoong-http1', 'react', 'vue', 'angular'];
-const STACKS = ['xoong', 'react', 'vue', 'angular'];
+const VARIANT_NAMES = { xoong: 'xoong (default, readable)', 'xoong-min': 'xoong --minify (needs esbuild)', 'xoong-nopreload': 'xoong, no modulepreload', 'xoong-http1': 'xoong, HTTP/1.1', react: 'React stack', vue: 'Vue stack', angular: 'Angular stack' };
+const IDS = ['xoong', 'xoong-min', 'xoong-nopreload', 'xoong-http1', 'react', 'vue', 'angular'];
+const STACKS = ['xoong', 'xoong-min', 'react', 'vue', 'angular'];
 
 // ---- formatting -----------------------------------------------------------------------------------------------------------------
 const n = (x, d = 0) => Number(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -221,7 +221,7 @@ function headlines() {
   const row = (what, f, fmt, href) => ({ what, values: STACKS.map(f), fmt, href });
   return [
     row('Browser JS, CSS and HTML, brotli', sz, kb, '#what-gets-delivered'),
-    row('Third-party packages in the browser build', (id) => (id === 'xoong' ? 0 : E.stacks[id].dependencies.runtimeInBrowser), n, '#what-gets-delivered'),
+    row('Third-party packages in the browser build', (id) => (id.startsWith('xoong') ? 0 : E.stacks[id].dependencies.runtimeInBrowser), n, '#what-gets-delivered'),
     row('Screen usable, slow 4G and 4x slower CPU', (id) => m(id, 'usable'), ms, '#load-and-interaction-throttled'),
     row('Show 1,000 rows, unthrottled', (id) => p(id, 'render1000'), ms, '#load-and-interaction-unthrottled'),
     row('Lines written for the same screen', L, n, '#effort-the-same-screen-written-four-times'),
@@ -229,7 +229,7 @@ function headlines() {
   ].map((r) => ({ ...r, cells: r.values.map((v) => r.fmt(v)) }));
 }
 /** "xoong is lowest in 4 of 6 rows": said by the data, so it cannot flatter. */
-const standing = () => { const h = headlines(); const lowest = h.filter((r) => r.values[0] <= Math.min(...r.values)).length; return `xoong has the lowest number in ${lowest} of ${h.length} rows; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row.`; };
+const standing = () => { const h = headlines(); const lowest = (i) => h.filter((r) => r.values[i] <= Math.min(...r.values)).length; return `xoong (default, readable) has the lowest number in ${lowest(0)} of ${h.length} rows and xoong --minify (the like-for-like column: the others ship minified bundles, and esbuild is counted for it) in ${lowest(1)}; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row.`; };
 
 export function homeBenchmarks(on = hasBenchmarks) {
   if (!on || !dataOk) return '';
@@ -239,7 +239,7 @@ export function homeBenchmarks(on = hasBenchmarks) {
     <div class="wrap">
       <div class="head"><span class="eyebrow">Measured, not promised</span><h2>The same screen, four ways.</h2><p>A people list with server-side sort, search and paging, bulk delete and an add dialog, built in xoong, React, Vue and Angular, run in real Chromium. Median of ${n(R.runs)} runs on one machine (${esc(env.machine.split(',')[0])}); the spread, the method and what was not measured are on the <a href="benchmarks.html">benchmarks page</a>, and every number comes from a script you can run.</p></div>
       <div class="table-wrap" tabindex="0"><table aria-label="The same admin screen in xoong, a React stack, a Vue stack and an Angular stack">
-        <thead><tr><th scope="col">Metric</th><th scope="col">xoong</th><th scope="col">React stack</th><th scope="col">Vue stack</th><th scope="col">Angular stack</th></tr></thead>
+        <thead><tr><th scope="col">Metric</th><th scope="col">xoong (default)</th><th scope="col">xoong --minify</th><th scope="col">React stack</th><th scope="col">Vue stack</th><th scope="col">Angular stack</th></tr></thead>
         <tbody>
 ${rows}
         </tbody>
@@ -254,15 +254,15 @@ export function readmeTable({ links = true, cli = false, on = hasBenchmarks } = 
   if (!on || !dataOk) return '';
   const h = headlines();
   const lines = [
-    '| The same people screen | xoong | React stack | Vue stack | Angular stack |',
-    '|---|---|---|---|---|',
+    '| The same people screen | xoong (default, readable) | xoong --minify (needs esbuild) | React stack | Vue stack | Angular stack |',
+    '|---|---|---|---|---|---|',
     ...h.map((r) => `| ${r.what} | ${r.cells.map(plain).join(' | ')} |`),
   ];
   const sync = C.sync['generated, 500 operations'];
   const extra = cli
     ? `\n\`xoong sync\` of a generated 500-operation API: ${plain(ms(sync.xoong.median))} (\`openapi-typescript\` ${esc(C.versions['openapi-typescript'])}: ${plain(ms(sync['openapi-typescript'].median))}); \`xoong --version\`: ${plain(ms(C.startup['xoong --version'].median))}, of which Node starts in ${plain(ms(C.startup['node (empty script)'].median))}.\n`
     : '';
-  return `Median of ${R.runs} runs in real Chromium on ${R.environment.machine.split(',')[0]} (${R.environment.date}); React stack = React + TanStack Query and Table + React Hook Form + zod, Vue stack = Vue + TanStack + vee-validate + zod, Angular stack = Angular with signals and reactive forms and no extra library; every library a stack needs counts in full. The slow case is a 4x slower CPU and slow 4G. One machine, one screen: the spread, the method and what was not measured are on ${links ? 'the [benchmarks page](https://fpt-duongtx.github.io/xoong/benchmarks.html) and in [benchmarks/](' + BENCH_URL + ')' : 'the benchmarks page'}.\n\n${lines.join('\n')}\n\n${standing()} Lines of code and packages are proxies for effort, not time.\n${extra}`;
+  return `Median of ${R.runs} runs in real Chromium on ${R.environment.machine.split(',')[0]} (${R.environment.date}); React stack = React + TanStack Query and Table + React Hook Form + zod, Vue stack = Vue + TanStack + vee-validate + zod, Angular stack = Angular with signals and reactive forms and no extra library; xoong has two columns because its default output is unminified and readable while the others ship minified bundles, and the --minify column counts esbuild too; every library a stack needs counts in full. The slow case is a 4x slower CPU and slow 4G. One machine, one screen: the spread, the method and what was not measured are on ${links ? 'the [benchmarks page](https://fpt-duongtx.github.io/xoong/benchmarks.html) and in [benchmarks/](' + BENCH_URL + ')' : 'the benchmarks page'}.\n\n${lines.join('\n')}\n\n${standing()} Lines of code and packages are proxies for effort, not time.\n${extra}`;
 }
 
 /** READMEs of @xoong/cli and @xoong/mcp: the numbers of their own tool, with the comparison that was measured (and where none was). */

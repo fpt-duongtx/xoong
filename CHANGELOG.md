@@ -156,6 +156,12 @@ breaking: none.
 
 * Added: `@xoong/ui/mist.css` (`src/mist.css`): the Mist look (the Rainlet design system) as one self-sufficient stylesheet for an app: the tokens and a dark scheme, the `--xo-*` mapping straight from them, the component skin and the controls of the Mist spec, in the layer `xoong-mist`, without the documentation site's chrome. Generated from the design kit by `tools/build-mist.mjs`; `test/mist.test.mjs` checks it is up to date, self-contained and draws 40px controls and the Mist primary in a page with only the four framework files.
 
+## 0.0.51 (build --minify, rows keep their identity, a memory leak in lists, pager step)
+
+breaking: none.
+
+* Added (cli): `xoong build --minify` (or `"build": { "minify": true }`) minifies the scripts, stylesheets and JSON with the esbuild your project has installed (no bundling; strict-CSP output; the readable output stays the default). Without esbuild it warns and writes the files as they are. `@xoong/cli` gets no dependency. Names are mangled, so code that relies on `Function.name` or class names should not use it.
+
 ## 0.0.50 (rows keep their identity, a memory leak in lists, pager step)
 
 breaking: none.

@@ -37,7 +37,7 @@ async function walk(dir, skip) {
   return files;
 }
 
-const SKIP = new Set(['node_modules', 'dist', 'dist-nopreload', '.xoong', '.angular', 'package-lock.json', 'package.json', 'vite.config.js', 'xoong.hints.json', 'angular.json', 'tsconfig.json']);
+const SKIP = new Set(['node_modules', 'dist', 'dist-nopreload', 'dist-min', 'xoong.config.json', '.xoong', '.angular', 'package-lock.json', 'package.json', 'vite.config.js', 'xoong.hints.json', 'angular.json', 'tsconfig.json']);
 const CONFIG = ['package.json', 'vite.config.js', 'xoong.hints.json', 'angular.json', 'tsconfig.json'];
 const lock = JSON.parse(await readFile(join(repo, 'package-lock.json'), 'utf8'));
 
@@ -88,6 +88,18 @@ for (const [id, app] of Object.entries(apps).filter(([, a]) => !a.variantOf)) {
     entry.libraries = Object.fromEntries(Object.entries(pinned(app.dir)).map(([name, version]) => [name, { version, for: PURPOSE[name] ?? (() => { throw new Error(`say what ${name} is for in PURPOSE`); })(), shipped: name in pkg.dependencies }]));
   }
   result.stacks[id] = entry;
+}
+// the minified build needs esbuild, which counts in full (the default build needs nothing more)
+{
+  const base = result.stacks.xoong;
+  const esbuildDir = join(apps.xoong.dir, 'node_modules');
+  const installedEsbuild = Object.keys(JSON.parse(await readFile(join(esbuildDir, '.package-lock.json'), 'utf8')).packages).map((k) => k.replace(/^node_modules\//, ''));
+  const version = JSON.parse(await readFile(join(esbuildDir, 'esbuild/package.json'), 'utf8')).version;
+  result.stacks['xoong-min'] = {
+    ...base,
+    dependencies: { ...base.dependencies, direct: base.dependencies.direct + 1, installedTotal: base.dependencies.installedTotal + installedEsbuild.length, installedThirdParty: [...base.dependencies.installedThirdParty, ...installedEsbuild], note: base.dependencies.note + '; xoong build --minify also needs esbuild (a build tool, never in the browser), counted here with its platform package' },
+    libraries: { esbuild: { version, for: 'minifier used by xoong build --minify (and its platform binary)', shipped: false } },
+  };
 }
 await writeFile(out, JSON.stringify(result, null, 1) + '\n');
 for (const [id, s] of Object.entries(result.stacks)) console.log(id, s.files, 'files', JSON.stringify(s.loc), JSON.stringify(s.dependencies).slice(0, 160));
