@@ -165,7 +165,7 @@ class Effect {
   run() {
     if (this.disposed) return;
     this.cleanup?.();
-    for (const dep of [...this.deps]) unsubscribe(dep, this);
+    for (const dep of this.deps) unsubscribe(dep, this); // unsubscribing changes the source's set, not this one: no copy needed
     this.deps.clear();
     const prev = active;
     active = this;
@@ -180,7 +180,7 @@ class Effect {
     this.disposed = true;
     pending.delete(this);
     this.cleanup?.();
-    for (const dep of [...this.deps]) unsubscribe(dep, this);
+    for (const dep of this.deps) unsubscribe(dep, this);
     this.deps.clear();
   }
 }

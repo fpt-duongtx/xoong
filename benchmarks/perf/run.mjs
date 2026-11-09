@@ -63,13 +63,12 @@ async function step(page, cdp, fn) {
   return { ms, script: b.script - a.script, layout: b.layout - a.layout, style: b.style - a.style };
 }
 
+/** Median and spread of every number, at any depth, over the runs of one scenario. */
 const collect = (runs) => {
-  const out = {};
-  for (const key of Object.keys(runs[0])) {
-    const v = runs.map((r) => r[key]);
-    if (typeof v[0] === 'number') { const s = summary(v); for (const k of ['median', 'min', 'max', 'q1', 'q3']) s[k] = round(s[k], key === 'bytes' || key === 'nodes' || key === 'heapKB' ? 0 : 1); s.runs = s.runs.map((x) => round(x, 1)); out[key] = s; } else out[key] = runs[0][key];
-  }
-  return out;
+  const first = runs[0];
+  if (typeof first === 'number') { const s = summary(runs); for (const k of ['median', 'min', 'max', 'q1', 'q3']) s[k] = round(s[k], 1); s.runs = s.runs.map((x) => round(x, 1)); return s; }
+  if (first && typeof first === 'object') return Object.fromEntries(Object.keys(first).map((k) => [k, collect(runs.map((r) => r[k]))]));
+  return first;
 };
 const repeatSteps = async (name, scenario) => {
   const per = {};
@@ -80,7 +79,7 @@ const repeatSteps = async (name, scenario) => {
   const out = {};
   for (const [k, runs] of Object.entries(per)) out[k] = collect(runs);
   results.workloads[name] = out;
-  log(name.padEnd(8), Object.entries(out).map(([k, v]) => `${k}: ${v.ms?.median ?? v.usable?.median ?? ''}`).join(' | '));
+  const ms = out.ms?.ms ?? out.ms; log(name.padEnd(52), ms?.median !== undefined ? `${ms.median} ms (${ms.min} to ${ms.max})` : '');
 };
 
 async function open(base, { cpu = 1, init, rows } = {}) {

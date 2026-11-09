@@ -326,7 +326,7 @@ await setLocale('vi');`]])}
 <tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.9 KB</td></tr>
 <tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.8 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
-<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>12.5 KB</td></tr>
+<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>12.8 KB</td></tr>
 <tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>37 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
 <tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5.7 KB</td></tr>

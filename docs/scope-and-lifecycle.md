@@ -68,6 +68,15 @@ which waits for the data (`xoong check` warns about the plain `<img>`, XO243).
 While a request runs the view has `aria-busy="true"` (and `data-refreshing` when the old result is still shown). When a request fails the global `onError` runs first, then the view (or the button or form that made the call) emits `xo-error`, which bubbles and can be prevented to handle the error in your own code (`view.error` holds the latest read error); when an action succeeds it emits `xo-done`. These events (`xo-done`, `xo-error`, `xo-invalid`, `xo-notice`) are dispatched on the element that ran the action (the button or form), so they bubble through a dialog or panel around it, up to the view and the page; a button the result removed (a deleted row) reports from the view instead. On an invalid submit the order
 is `xo-reveal` (the tab with the first invalid field is shown) and then `xo-invalid`.
 
+## What loads when: the router and the question dialogs
+
+`import '@xoong/ui'` registers the table, pager, form, dialog and toast at once. Two larger parts load only when they are needed, and the exports stay the same:
+
+* **`router`** (and `<xo-router>`, 21 KB): `router.js` loads when a `<xo-router>` is on the page (at start, or added later) or when `router` is first used. `xoong build` adds a `modulepreload` for it to a page that has `<xo-router>`; a page without one never fetches it. The exported `router` is an object from the start. Until the module has loaded, `router.current` is `null`, `router.navigate()` waits for the module and then goes (it still resolves with `true` when the navigation happened), and `router.guard()` / `router.beforeNavigate()` return the remover at once and register when the module has loaded (calling the remover before that cancels the registration). A route view (`p-id=":id"`) waits for the router as before.
+* **`confirm`, `alert`, `prompt`, `ask`** and the built-in question behind `xo-confirm` (`dialogs.js`, 10 KB): the module loads on the first question. They were already asynchronous; the first question waits for the module (one request), the following ones present at once. `confirmLabels` exists from the start.
+
+The schema-driven form (`@xoong/forms`, `<xo-form>`) is not lazy: its engine attaches while the view binds, so a form's prefill, leave guard and first paint of a prerendered form depend on it being there.
+
 ## Parameters: `p-*`, `url-params`, `?param`
 
 | You write | What it means | Changes later? |

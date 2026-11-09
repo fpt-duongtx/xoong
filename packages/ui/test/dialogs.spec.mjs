@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, beforeAll } from 'vitest';
 import '@xoong/ui';
 import { confirm, alert, prompt, ask } from '@xoong/ui';
 
@@ -7,6 +7,8 @@ const dialog = () => document.querySelector('dialog.xo-confirm');
 const buttons = () => [...document.querySelectorAll('dialog.xo-confirm button')];
 const click = (label) => buttons().find((b) => b.textContent === label).click();
 afterEach(() => { document.body.innerHTML = ''; });
+// the dialogs load on the first question (the next ones present at once): load them before the tests that read the DOM right after asking
+beforeAll(async () => { const first = confirm('warm up'); await wait(20); dialog().dispatchEvent(new Event('cancel')); dialog().dispatchEvent(new Event('close')); await first; });
 
 describe('confirm()', () => {
   it('asks with Cancel and Confirm; no kind keeps the plain look (no icon, no heading)', async () => {

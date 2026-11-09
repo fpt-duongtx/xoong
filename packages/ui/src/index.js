@@ -5,7 +5,7 @@ import './pager.js';
 import './form.js';
 import './dialog.js';
 import './toast.js';
-export { router } from './router.js';
+export { router } from './router-lazy.js'; // router.js loads when a <xo-router> is on the page or `router` is first used
 export { toast } from './toast.js';
-export { confirm, alert, prompt, ask, labels as confirmLabels } from './dialogs.js';
+export { confirm, alert, prompt, ask, confirmLabels } from './dialogs-lazy.js'; // dialogs.js loads on the first question
 export { setConfirm } from '@xoong/data/view';

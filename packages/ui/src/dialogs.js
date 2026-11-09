@@ -12,11 +12,11 @@
  * a question, OK for a notice, the field for a prompt). `confirm` replaces the browser's confirm() as soon as @xoong/ui is imported, so `xo-confirm="..."`
  * and the leave-page question of a dirty form use it too; `xo-confirm-title`, `xo-confirm-ok`, `xo-confirm-cancel` and `xo-confirm-kind` on the button tune that one.
  */
-import { setConfirm } from '@xoong/data/view';
 import { text } from '@xoong/core';
 
 /** The button texts; replace them for another wording or language. */
-export const labels = { ok: 'Confirm', cancel: 'Cancel' };
+import { confirmLabels as labels } from './dialogs-lazy.js';
+export { labels };
 
 const ICONS = {
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
@@ -169,9 +169,3 @@ export function ask(message, options) {
   const first = buttons.findIndex((b) => b.cancel);
   return present({ ...options, message, buttons, choices: true, focus: first < 0 ? Math.max(0, buttons.findIndex((b) => b.primary)) : first }).then((r) => (r.choice ? r.choice.value : null));
 }
-
-setConfirm((message, context) => {
-  const el = context?.element;
-  const attr = (/** @type {string} */ name) => el?.getAttribute(name) ?? undefined;
-  return confirm(message, { title: attr('xo-confirm-title'), ok: attr('xo-confirm-ok'), cancel: attr('xo-confirm-cancel'), kind: /** @type {any} */ (attr('xo-confirm-kind')) });
-});

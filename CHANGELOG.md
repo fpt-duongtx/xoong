@@ -156,6 +156,13 @@ breaking: none.
 
 * Added: `@xoong/ui/mist.css` (`src/mist.css`): the Mist look (the Rainlet design system) as one self-sufficient stylesheet for an app: the tokens and a dark scheme, the `--xo-*` mapping straight from them, the component skin and the controls of the Mist spec, in the layer `xoong-mist`, without the documentation site's chrome. Generated from the design kit by `tools/build-mist.mjs`; `test/mist.test.mjs` checks it is up to date, self-contained and draws 40px controls and the Mist primary in a page with only the four framework files.
 
+## 0.0.52 (the router and the built-in dialogs load on demand)
+
+breaking: none (the exports are unchanged; `router.current` is `null` until the router module has loaded, `guard()` and `beforeNavigate()` register when it loads).
+
+* Changed (ui): `router.js` loads only when a `<xo-router>` is on the page (at start or added later) or when `router` is first used; `dialogs.js` (confirm, alert, prompt, ask) loads on the first question. A page without them no longer fetches them: the people screen loads 10.7% less JavaScript (about 9 KB gzip). `xoong build` follows the lazy `import()` targets (also under `--base`) and preloads `router.js` only on pages that have `<xo-router>`; `@xoong/ssr` imports the router for prerendering. The schema form engine stays eager (prefill order, the leave guard and the first paint of a prerendered form depend on it). `@xoong/ui` budget 12.8 KB (the eager part is 7.65 KB gzip).
+* Internal: `benchmarks/perf/` holds the profile of where time and bytes go (layout and style are 53% of creating 10,000 rows and are shared by every stack; xoong's own JavaScript is 18%); two allocation trims (−6% per row).
+
 ## 0.0.51 (build --minify, rows keep their identity, a memory leak in lists, pager step)
 
 breaking: none.

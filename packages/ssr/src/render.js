@@ -33,6 +33,7 @@ async function boot() {
   Object.defineProperty(g, 'location', { get: () => window.location, configurable: true }); // p-id="?id" reads it
   await import('@xoong/data/view'); // registers <xo-view>
   await import('@xoong/ui'); // registers <xo-table>, <xo-form>, ...
+  await import('@xoong/ui/router'); // a prerendered page must have its <xo-router> now, not after a lazy load
   return /** @type {{ configure: any }} */ (await import('@xoong/data'));
 }
 

@@ -364,12 +364,14 @@ function parsePlan(text) {
   });
   return bound ? parts.filter((p) => p !== '') : null;
 }
-const evalParts = (parts, scope, lookup) =>
-  parts.map((p) => {
-    if (typeof p === 'string') return p;
-    const v = lookup(scope, p.path);
-    return p.fmt ? format(p.fmt, v) : v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
-  }).join('');
+const evalParts = (parts, scope, lookup) => {
+  let text = '';
+  for (const p of parts) { // no intermediate array: a binding re-runs often
+    if (typeof p === 'string') text += p;
+    else { const v = lookup(scope, p.path); text += p.fmt ? format(p.fmt, v) : v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); }
+  }
+  return text;
+};
 
 function bindNode(node, scope, ctx, disposers) {
   const { lookup } = ctx;

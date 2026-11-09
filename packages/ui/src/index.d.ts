@@ -34,6 +34,10 @@ export const confirmLabels: { ok: string; cancel: string };
 /** Show a notice in <xo-toast>. */
 export const toast: { show(notice: { message: string; kind?: string; action?: { label: string; run: () => unknown }; timeout?: number }): void };
 
+/**
+ * The router. It is an object from the start; router.js loads when a <xo-router> is on the page or when `router` is first used.
+ * Until then `current` is null, `navigate()` waits for the module, and `guard()` / `beforeNavigate()` return the remover at once and register when it has loaded.
+ */
 export const router: {
   /** Go to a path relative to the base. Resolves with true when the navigation happened. */
   navigate(path: string, options?: { replace?: boolean }): Promise<boolean>;

@@ -1,0 +1,3821 @@
+{
+ "environment": {
+  "date": "2026-11-09",
+  "machine": "Apple M1, 8 cores, 8 GB RAM",
+  "os": "Darwin 25.2.0 (arm64)",
+  "node": "v26.0.0",
+  "xoong": "0.0.51",
+  "commit": "461cbfb",
+  "browser": "Chromium 158.0.8127.18"
+ },
+ "bytes": {
+  "flat": {
+   "files": [
+    {
+     "url": "/@xoong/data/src/view.js",
+     "raw": 54989,
+     "gzip": 17945,
+     "brotli": 15856
+    },
+    {
+     "url": "/@xoong/data/src/client.js",
+     "raw": 22235,
+     "gzip": 7506,
+     "brotli": 6646
+    },
+    {
+     "url": "/@xoong/ui/src/router.js",
+     "raw": 20699,
+     "gzip": 6790,
+     "brotli": 5909
+    },
+    {
+     "url": "/@xoong/forms/src/form-model.js",
+     "raw": 19561,
+     "gzip": 6463,
+     "brotli": 5696
+    },
+    {
+     "url": "/@xoong/ui/src/xoong.css",
+     "raw": 17368,
+     "gzip": 4252,
+     "brotli": 3638
+    },
+    {
+     "url": "/@xoong/forms/src/form-dom.js",
+     "raw": 16517,
+     "gzip": 5606,
+     "brotli": 4905
+    },
+    {
+     "url": "/@xoong/forms/src/schema.js",
+     "raw": 13463,
+     "gzip": 4115,
+     "brotli": 3543
+    },
+    {
+     "url": "/@xoong/data/src/store.js",
+     "raw": 11301,
+     "gzip": 3790,
+     "brotli": 3326
+    },
+    {
+     "url": "/@xoong/ui/src/form.js",
+     "raw": 11127,
+     "gzip": 4126,
+     "brotli": 3542
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "raw": 10863,
+     "gzip": 3638,
+     "brotli": 3076
+    },
+    {
+     "url": "/@xoong/ui/src/table.js",
+     "raw": 10511,
+     "gzip": 4009,
+     "brotli": 3427
+    },
+    {
+     "url": "/@xoong/ui/src/dialogs.js",
+     "raw": 9606,
+     "gzip": 3199,
+     "brotli": 2784
+    },
+    {
+     "url": "/@xoong/core/src/html.js",
+     "raw": 6028,
+     "gzip": 2340,
+     "brotli": 1967
+    },
+    {
+     "url": "/@xoong/core/src/signals.js",
+     "raw": 6027,
+     "gzip": 2044,
+     "brotli": 1756
+    },
+    {
+     "url": "/@xoong/ui/src/dialog.js",
+     "raw": 5389,
+     "gzip": 2149,
+     "brotli": 1824
+    },
+    {
+     "url": "/@xoong/core/src/element.js",
+     "raw": 4441,
+     "gzip": 1860,
+     "brotli": 1568
+    },
+    {
+     "url": "/@xoong/ui/src/toast.js",
+     "raw": 4073,
+     "gzip": 1607,
+     "brotli": 1307
+    },
+    {
+     "url": "/@xoong/data/src/format.js",
+     "raw": 3733,
+     "gzip": 1647,
+     "brotli": 1396
+    },
+    {
+     "url": "/@xoong/data/src/options.js",
+     "raw": 3318,
+     "gzip": 1479,
+     "brotli": 1273
+    },
+    {
+     "url": "/index.html",
+     "raw": 3291,
+     "gzip": 902,
+     "brotli": 691
+    },
+    {
+     "url": "/@xoong/ui/src/pager.js",
+     "raw": 2873,
+     "gzip": 1365,
+     "brotli": 1111
+    },
+    {
+     "url": "/@xoong/data/src/default.js",
+     "raw": 2590,
+     "gzip": 1096,
+     "brotli": 942
+    },
+    {
+     "url": "/@xoong/ui/src/router-lazy.js",
+     "raw": 1716,
+     "gzip": 808,
+     "brotli": 692
+    },
+    {
+     "url": "/@xoong/ui/src/dialogs-lazy.js",
+     "raw": 1662,
+     "gzip": 699,
+     "brotli": 592
+    },
+    {
+     "url": "/@xoong/core/src/text.js",
+     "raw": 1532,
+     "gzip": 785,
+     "brotli": 640
+    }
+   ],
+   "byPackage": {
+    "@xoong/core": {
+     "raw": 30297,
+     "gzip": 11413,
+     "brotli": 9626,
+     "files": 7
+    },
+    "@xoong/data": {
+     "raw": 104786,
+     "gzip": 36915,
+     "brotli": 32302,
+     "files": 12
+    },
+    "@xoong/forms": {
+     "raw": 50243,
+     "gzip": 16545,
+     "brotli": 14434,
+     "files": 4
+    },
+    "@xoong/ui": {
+     "raw": 68583,
+     "gzip": 25244,
+     "brotli": 21577,
+     "files": 11
+    },
+    "@xoong/ui css": {
+     "raw": 17368,
+     "gzip": 4252,
+     "brotli": 3638,
+     "files": 1
+    },
+    "other": {
+     "raw": 3291,
+     "gzip": 902,
+     "brotli": 691,
+     "files": 1
+    },
+    "page code": {
+     "raw": 246,
+     "gzip": 157,
+     "brotli": 133,
+     "files": 1
+    }
+   },
+   "total": {
+    "raw": 274814,
+    "gzip": 95428,
+    "brotli": 82401
+   },
+   "fileCount": 37
+  },
+  "nested 200x5x4": {
+   "files": [
+    {
+     "url": "/@xoong/data/src/view.js",
+     "raw": 54989,
+     "gzip": 17945,
+     "brotli": 15856
+    },
+    {
+     "url": "/@xoong/data/src/client.js",
+     "raw": 22235,
+     "gzip": 7506,
+     "brotli": 6646
+    },
+    {
+     "url": "/@xoong/ui/src/router.js",
+     "raw": 20699,
+     "gzip": 6790,
+     "brotli": 5909
+    },
+    {
+     "url": "/@xoong/forms/src/form-model.js",
+     "raw": 19561,
+     "gzip": 6463,
+     "brotli": 5696
+    },
+    {
+     "url": "/@xoong/ui/src/xoong.css",
+     "raw": 17368,
+     "gzip": 4252,
+     "brotli": 3638
+    },
+    {
+     "url": "/@xoong/forms/src/form-dom.js",
+     "raw": 16517,
+     "gzip": 5606,
+     "brotli": 4905
+    },
+    {
+     "url": "/@xoong/forms/src/schema.js",
+     "raw": 13463,
+     "gzip": 4115,
+     "brotli": 3543
+    },
+    {
+     "url": "/@xoong/data/src/store.js",
+     "raw": 11301,
+     "gzip": 3790,
+     "brotli": 3326
+    },
+    {
+     "url": "/@xoong/ui/src/form.js",
+     "raw": 11127,
+     "gzip": 4126,
+     "brotli": 3542
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "raw": 10863,
+     "gzip": 3638,
+     "brotli": 3076
+    },
+    {
+     "url": "/@xoong/ui/src/table.js",
+     "raw": 10511,
+     "gzip": 4009,
+     "brotli": 3427
+    },
+    {
+     "url": "/@xoong/ui/src/dialogs.js",
+     "raw": 9606,
+     "gzip": 3199,
+     "brotli": 2784
+    },
+    {
+     "url": "/@xoong/core/src/html.js",
+     "raw": 6028,
+     "gzip": 2340,
+     "brotli": 1967
+    },
+    {
+     "url": "/@xoong/core/src/signals.js",
+     "raw": 6027,
+     "gzip": 2044,
+     "brotli": 1756
+    },
+    {
+     "url": "/@xoong/ui/src/dialog.js",
+     "raw": 5389,
+     "gzip": 2149,
+     "brotli": 1824
+    },
+    {
+     "url": "/@xoong/core/src/element.js",
+     "raw": 4441,
+     "gzip": 1860,
+     "brotli": 1568
+    },
+    {
+     "url": "/@xoong/ui/src/toast.js",
+     "raw": 4073,
+     "gzip": 1607,
+     "brotli": 1307
+    },
+    {
+     "url": "/@xoong/data/src/format.js",
+     "raw": 3733,
+     "gzip": 1647,
+     "brotli": 1396
+    },
+    {
+     "url": "/@xoong/data/src/options.js",
+     "raw": 3318,
+     "gzip": 1479,
+     "brotli": 1273
+    },
+    {
+     "url": "/@xoong/ui/src/pager.js",
+     "raw": 2873,
+     "gzip": 1365,
+     "brotli": 1111
+    },
+    {
+     "url": "/index.html",
+     "raw": 2697,
+     "gzip": 633,
+     "brotli": 485
+    },
+    {
+     "url": "/@xoong/data/src/default.js",
+     "raw": 2590,
+     "gzip": 1096,
+     "brotli": 942
+    },
+    {
+     "url": "/@xoong/ui/src/router-lazy.js",
+     "raw": 1716,
+     "gzip": 808,
+     "brotli": 692
+    },
+    {
+     "url": "/@xoong/ui/src/dialogs-lazy.js",
+     "raw": 1662,
+     "gzip": 699,
+     "brotli": 592
+    },
+    {
+     "url": "/@xoong/core/src/text.js",
+     "raw": 1532,
+     "gzip": 785,
+     "brotli": 640
+    }
+   ],
+   "byPackage": {
+    "@xoong/core": {
+     "raw": 30297,
+     "gzip": 11413,
+     "brotli": 9626,
+     "files": 7
+    },
+    "@xoong/data": {
+     "raw": 104786,
+     "gzip": 36915,
+     "brotli": 32302,
+     "files": 12
+    },
+    "@xoong/forms": {
+     "raw": 50243,
+     "gzip": 16545,
+     "brotli": 14434,
+     "files": 4
+    },
+    "@xoong/ui": {
+     "raw": 68380,
+     "gzip": 25075,
+     "brotli": 21456,
+     "files": 10
+    },
+    "@xoong/ui css": {
+     "raw": 17368,
+     "gzip": 4252,
+     "brotli": 3638,
+     "files": 1
+    },
+    "other": {
+     "raw": 2697,
+     "gzip": 633,
+     "brotli": 485,
+     "files": 1
+    },
+    "page code": {
+     "raw": 246,
+     "gzip": 157,
+     "brotli": 133,
+     "files": 1
+    }
+   },
+   "total": {
+    "raw": 274017,
+    "gzip": 94990,
+    "brotli": 82074
+   },
+   "fileCount": 36
+  },
+  "examples/admin": {
+   "files": [
+    {
+     "url": "/@xoong/data/src/view.js",
+     "raw": 54989,
+     "gzip": 17945,
+     "brotli": 15856
+    },
+    {
+     "url": "/@xoong/data/src/client.js",
+     "raw": 22235,
+     "gzip": 7506,
+     "brotli": 6646
+    },
+    {
+     "url": "/@xoong/ui/src/router.js",
+     "raw": 20699,
+     "gzip": 6790,
+     "brotli": 5909
+    },
+    {
+     "url": "/@xoong/forms/src/form-model.js",
+     "raw": 19561,
+     "gzip": 6463,
+     "brotli": 5696
+    },
+    {
+     "url": "/@xoong/ui/src/xoong.css",
+     "raw": 17368,
+     "gzip": 4252,
+     "brotli": 3638
+    },
+    {
+     "url": "/@xoong/forms/src/form-dom.js",
+     "raw": 16517,
+     "gzip": 5606,
+     "brotli": 4905
+    },
+    {
+     "url": "/@xoong/forms/src/schema.js",
+     "raw": 13463,
+     "gzip": 4115,
+     "brotli": 3543
+    },
+    {
+     "url": "/@xoong/data/src/store.js",
+     "raw": 11301,
+     "gzip": 3790,
+     "brotli": 3326
+    },
+    {
+     "url": "/@xoong/ui/src/form.js",
+     "raw": 11127,
+     "gzip": 4126,
+     "brotli": 3542
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "raw": 10863,
+     "gzip": 3638,
+     "brotli": 3076
+    },
+    {
+     "url": "/@xoong/ui/src/table.js",
+     "raw": 10511,
+     "gzip": 4009,
+     "brotli": 3427
+    },
+    {
+     "url": "/@xoong/ui/src/dialogs.js",
+     "raw": 9606,
+     "gzip": 3199,
+     "brotli": 2784
+    },
+    {
+     "url": "/@xoong/core/src/html.js",
+     "raw": 6028,
+     "gzip": 2340,
+     "brotli": 1967
+    },
+    {
+     "url": "/@xoong/core/src/signals.js",
+     "raw": 6027,
+     "gzip": 2044,
+     "brotli": 1756
+    },
+    {
+     "url": "/@xoong/ui/src/dialog.js",
+     "raw": 5389,
+     "gzip": 2149,
+     "brotli": 1824
+    },
+    {
+     "url": "/@xoong/core/src/element.js",
+     "raw": 4441,
+     "gzip": 1860,
+     "brotli": 1568
+    },
+    {
+     "url": "/@xoong/ui/src/toast.js",
+     "raw": 4073,
+     "gzip": 1607,
+     "brotli": 1307
+    },
+    {
+     "url": "/@xoong/data/src/format.js",
+     "raw": 3733,
+     "gzip": 1647,
+     "brotli": 1396
+    },
+    {
+     "url": "/@xoong/data/src/options.js",
+     "raw": 3318,
+     "gzip": 1479,
+     "brotli": 1273
+    },
+    {
+     "url": "/index.html",
+     "raw": 3138,
+     "gzip": 815,
+     "brotli": 620
+    },
+    {
+     "url": "/@xoong/ui/src/pager.js",
+     "raw": 2873,
+     "gzip": 1365,
+     "brotli": 1111
+    },
+    {
+     "url": "/@xoong/data/src/default.js",
+     "raw": 2590,
+     "gzip": 1096,
+     "brotli": 942
+    },
+    {
+     "url": "/@xoong/ui/src/router-lazy.js",
+     "raw": 1716,
+     "gzip": 808,
+     "brotli": 692
+    },
+    {
+     "url": "/@xoong/ui/src/dialogs-lazy.js",
+     "raw": 1662,
+     "gzip": 699,
+     "brotli": 592
+    },
+    {
+     "url": "/@xoong/core/src/text.js",
+     "raw": 1532,
+     "gzip": 785,
+     "brotli": 640
+    }
+   ],
+   "byPackage": {
+    "@xoong/core": {
+     "raw": 30297,
+     "gzip": 11413,
+     "brotli": 9626,
+     "files": 7
+    },
+    "@xoong/data": {
+     "raw": 104786,
+     "gzip": 36915,
+     "brotli": 32302,
+     "files": 12
+    },
+    "@xoong/forms": {
+     "raw": 50243,
+     "gzip": 16545,
+     "brotli": 14434,
+     "files": 4
+    },
+    "@xoong/ui": {
+     "raw": 68380,
+     "gzip": 25075,
+     "brotli": 21456,
+     "files": 10
+    },
+    "@xoong/ui css": {
+     "raw": 17368,
+     "gzip": 4252,
+     "brotli": 3638,
+     "files": 1
+    },
+    "other": {
+     "raw": 3138,
+     "gzip": 815,
+     "brotli": 620,
+     "files": 1
+    },
+    "other css": {
+     "raw": 188,
+     "gzip": 166,
+     "brotli": 140,
+     "files": 1
+    },
+    "page code": {
+     "raw": 433,
+     "gzip": 243,
+     "brotli": 198,
+     "files": 1
+    }
+   },
+   "total": {
+    "raw": 274833,
+    "gzip": 95424,
+    "brotli": 82414
+   },
+   "fileCount": 37
+  },
+  "docs: reference.html": {
+   "files": [
+    {
+     "url": "/reference.html",
+     "raw": 353723,
+     "gzip": 47844,
+     "brotli": 37837
+    },
+    {
+     "url": "/arch-data-flow.html",
+     "raw": 82518,
+     "gzip": 16687,
+     "brotli": 13560
+    },
+    {
+     "url": "/how-it-works.html",
+     "raw": 75790,
+     "gzip": 12280,
+     "brotli": 9692
+    },
+    {
+     "url": "/cli.html",
+     "raw": 57293,
+     "gzip": 14095,
+     "brotli": 11851
+    },
+    {
+     "url": "/arch-forms.html",
+     "raw": 56524,
+     "gzip": 12718,
+     "brotli": 10605
+    },
+    {
+     "url": "/@xoong/data/src/view.js",
+     "raw": 54989,
+     "gzip": 17945,
+     "brotli": 15856
+    },
+    {
+     "url": "/src/controls-new.css",
+     "raw": 54772,
+     "gzip": 10595,
+     "brotli": 9295
+    },
+    {
+     "url": "/live-kit/css/controls-new.css",
+     "raw": 54655,
+     "gzip": 10541,
+     "brotli": 9248
+    },
+    {
+     "url": "/controls-demo.html",
+     "raw": 50343,
+     "gzip": 9083,
+     "brotli": 7421
+    },
+    {
+     "url": "/arch-routing.html",
+     "raw": 49430,
+     "gzip": 10853,
+     "brotli": 8867
+    },
+    {
+     "url": "/arch-rendering.html",
+     "raw": 48573,
+     "gzip": 11172,
+     "brotli": 9233
+    },
+    {
+     "url": "/more-controls.html",
+     "raw": 47789,
+     "gzip": 8767,
+     "brotli": 7246
+    },
+    {
+     "url": "/dialogs.html",
+     "raw": 42203,
+     "gzip": 8143,
+     "brotli": 6717
+    },
+    {
+     "url": "/data.html",
+     "raw": 41422,
+     "gzip": 6867,
+     "brotli": 5695
+    },
+    {
+     "url": "/recipes.html",
+     "raw": 41389,
+     "gzip": 10233,
+     "brotli": 8557
+    },
+    {
+     "url": "/arch-build.html",
+     "raw": 40823,
+     "gzip": 9901,
+     "brotli": 8200
+    },
+    {
+     "url": "/arch-tooling.html",
+     "raw": 40676,
+     "gzip": 9888,
+     "brotli": 8195
+    },
+    {
+     "url": "/arch-overview.html",
+     "raw": 36838,
+     "gzip": 8629,
+     "brotli": 7226
+    },
+    {
+     "url": "/forms.html",
+     "raw": 35286,
+     "gzip": 6260,
+     "brotli": 5243
+    },
+    {
+     "url": "/@xoong/richtext/src/richtext.js",
+     "raw": 34461,
+     "gzip": 9642,
+     "brotli": 8429
+    },
+    {
+     "url": "/codes.html",
+     "raw": 32703,
+     "gzip": 7798,
+     "brotli": 6471
+    },
+    {
+     "url": "/demo.html",
+     "raw": 31928,
+     "gzip": 6352,
+     "brotli": 5355
+    },
+    {
+     "url": "/focus-audit.html",
+     "raw": 31846,
+     "gzip": 6584,
+     "brotli": 5489
+    },
+    {
+     "url": "/src/brand.css",
+     "raw": 31121,
+     "gzip": 7785,
+     "brotli": 6788
+    },
+    {
+     "url": "/live-kit/css/brand.css",
+     "raw": 31011,
+     "gzip": 7733,
+     "brotli": 6740
+    }
+   ],
+   "byPackage": {
+    "other": {
+     "raw": 1675035,
+     "gzip": 328354,
+     "brotli": 269712,
+     "files": 41
+    },
+    "@xoong/controls": {
+     "raw": 217068,
+     "gzip": 80750,
+     "brotli": 68501,
+     "files": 40
+    },
+    "@xoong/controls css": {
+     "raw": 23257,
+     "gzip": 4962,
+     "brotli": 4297,
+     "files": 1
+    },
+    "@xoong/core": {
+     "raw": 30297,
+     "gzip": 11413,
+     "brotli": 9626,
+     "files": 7
+    },
+    "@xoong/data": {
+     "raw": 104786,
+     "gzip": 36915,
+     "brotli": 32302,
+     "files": 12
+    },
+    "@xoong/forms": {
+     "raw": 50243,
+     "gzip": 16545,
+     "brotli": 14434,
+     "files": 4
+    },
+    "@xoong/richtext": {
+     "raw": 42437,
+     "gzip": 12738,
+     "brotli": 11099,
+     "files": 3
+    },
+    "@xoong/richtext css": {
+     "raw": 4930,
+     "gzip": 1471,
+     "brotli": 1217,
+     "files": 1
+    },
+    "@xoong/ui": {
+     "raw": 68380,
+     "gzip": 25075,
+     "brotli": 21456,
+     "files": 10
+    },
+    "@xoong/ui css": {
+     "raw": 17368,
+     "gzip": 4252,
+     "brotli": 3638,
+     "files": 1
+    },
+    "other css": {
+     "raw": 460960,
+     "gzip": 102459,
+     "brotli": 88457,
+     "files": 27
+    },
+    "page code": {
+     "raw": 86842,
+     "gzip": 32256,
+     "brotli": 27370,
+     "files": 18
+    }
+   },
+   "total": {
+    "raw": 2781603,
+    "gzip": 657190,
+    "brotli": 552109
+   },
+   "fileCount": 165
+  }
+ },
+ "coverage": {
+  "flat: create 1,000 rows": {
+   "totalBytes": 223627,
+   "unusedBytes": 100064,
+   "unusedShare": 0.4474593854945959,
+   "byPackage": {
+    "@xoong/core": {
+     "bytes": 30297,
+     "unused": 13823
+    },
+    "@xoong/data": {
+     "bytes": 104781,
+     "unused": 47578
+    },
+    "@xoong/forms": {
+     "bytes": 50243,
+     "unused": 22611
+    },
+    "@xoong/ui": {
+     "bytes": 38060,
+     "unused": 16052
+    },
+    "page code": {
+     "bytes": 246,
+     "unused": 0
+    }
+   },
+   "worstFiles": [
+    {
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "bytes": 54985,
+     "unused": 23408
+    },
+    {
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "bytes": 22235,
+     "unused": 12170
+    },
+    {
+     "url": "/@xoong/forms/src/form-model.js",
+     "pkg": "@xoong/forms",
+     "bytes": 19561,
+     "unused": 9085
+    },
+    {
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "bytes": 13463,
+     "unused": 6872
+    },
+    {
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "bytes": 16517,
+     "unused": 6654
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "bytes": 10863,
+     "unused": 6249
+    },
+    {
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "bytes": 11118,
+     "unused": 5389
+    },
+    {
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "bytes": 6028,
+     "unused": 4719
+    },
+    {
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "bytes": 11301,
+     "unused": 4378
+    },
+    {
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "bytes": 5389,
+     "unused": 3211
+    },
+    {
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "bytes": 10509,
+     "unused": 3110
+    },
+    {
+     "url": "/@xoong/ui/src/toast.js",
+     "pkg": "@xoong/ui",
+     "bytes": 4073,
+     "unused": 2754
+    }
+   ],
+   "neverCalledBiggestFunctions": [
+    {
+     "fn": "handler",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 5040,
+     "calls": 0
+    },
+    {
+     "fn": "columnPicker",
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "size": 2057,
+     "calls": 0
+    },
+    {
+     "fn": "checkValue",
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "size": 1884,
+     "calls": 0
+    },
+    {
+     "fn": "mutate",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1834,
+     "calls": 0
+    },
+    {
+     "fn": "bindArrayAction",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 1782,
+     "calls": 0
+    },
+    {
+     "fn": "fieldErrors",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1721,
+     "calls": 0
+    },
+    {
+     "fn": "stream",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1634,
+     "calls": 0
+    },
+    {
+     "fn": "onInput",
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "size": 1398,
+     "calls": 0
+    },
+    {
+     "fn": "#modal",
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "size": 1310,
+     "calls": 0
+    },
+    {
+     "fn": "array",
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "size": 1281,
+     "calls": 0
+    },
+    {
+     "fn": "instantiate",
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "size": 1256,
+     "calls": 0
+    },
+    {
+     "fn": "showFieldErrors",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 1152,
+     "calls": 0
+    },
+    {
+     "fn": "applyEvent",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 1114,
+     "calls": 0
+    },
+    {
+     "fn": "compile",
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "size": 1099,
+     "calls": 0
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "size": 1079,
+     "calls": 0
+    }
+   ]
+  },
+  "flat: create 10,000 rows": {
+   "totalBytes": 223627,
+   "unusedBytes": 100018,
+   "unusedShare": 0.4472536858250569,
+   "byPackage": {
+    "@xoong/core": {
+     "bytes": 30297,
+     "unused": 13823
+    },
+    "@xoong/data": {
+     "bytes": 104781,
+     "unused": 47532
+    },
+    "@xoong/forms": {
+     "bytes": 50243,
+     "unused": 22611
+    },
+    "@xoong/ui": {
+     "bytes": 38060,
+     "unused": 16052
+    },
+    "page code": {
+     "bytes": 246,
+     "unused": 0
+    }
+   },
+   "worstFiles": [
+    {
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "bytes": 54985,
+     "unused": 23362
+    },
+    {
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "bytes": 22235,
+     "unused": 12170
+    },
+    {
+     "url": "/@xoong/forms/src/form-model.js",
+     "pkg": "@xoong/forms",
+     "bytes": 19561,
+     "unused": 9085
+    },
+    {
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "bytes": 13463,
+     "unused": 6872
+    },
+    {
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "bytes": 16517,
+     "unused": 6654
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "bytes": 10863,
+     "unused": 6249
+    },
+    {
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "bytes": 11118,
+     "unused": 5389
+    },
+    {
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "bytes": 6028,
+     "unused": 4719
+    },
+    {
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "bytes": 11301,
+     "unused": 4378
+    },
+    {
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "bytes": 5389,
+     "unused": 3211
+    },
+    {
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "bytes": 10509,
+     "unused": 3110
+    },
+    {
+     "url": "/@xoong/ui/src/toast.js",
+     "pkg": "@xoong/ui",
+     "bytes": 4073,
+     "unused": 2754
+    }
+   ],
+   "neverCalledBiggestFunctions": [
+    {
+     "fn": "handler",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 5040,
+     "calls": 0
+    },
+    {
+     "fn": "columnPicker",
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "size": 2057,
+     "calls": 0
+    },
+    {
+     "fn": "checkValue",
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "size": 1884,
+     "calls": 0
+    },
+    {
+     "fn": "mutate",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1834,
+     "calls": 0
+    },
+    {
+     "fn": "bindArrayAction",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 1782,
+     "calls": 0
+    },
+    {
+     "fn": "fieldErrors",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1721,
+     "calls": 0
+    },
+    {
+     "fn": "stream",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1634,
+     "calls": 0
+    },
+    {
+     "fn": "onInput",
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "size": 1398,
+     "calls": 0
+    },
+    {
+     "fn": "#modal",
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "size": 1310,
+     "calls": 0
+    },
+    {
+     "fn": "array",
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "size": 1281,
+     "calls": 0
+    },
+    {
+     "fn": "instantiate",
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "size": 1256,
+     "calls": 0
+    },
+    {
+     "fn": "showFieldErrors",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 1152,
+     "calls": 0
+    },
+    {
+     "fn": "applyEvent",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 1114,
+     "calls": 0
+    },
+    {
+     "fn": "compile",
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "size": 1099,
+     "calls": 0
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "size": 1079,
+     "calls": 0
+    }
+   ]
+  },
+  "nested 200x5x4": {
+   "totalBytes": 223627,
+   "unusedBytes": 134124,
+   "unusedShare": 0.5997665755923927,
+   "byPackage": {
+    "@xoong/core": {
+     "bytes": 30297,
+     "unused": 14389
+    },
+    "@xoong/data": {
+     "bytes": 104781,
+     "unused": 53578
+    },
+    "@xoong/forms": {
+     "bytes": 50243,
+     "unused": 41135
+    },
+    "@xoong/ui": {
+     "bytes": 38060,
+     "unused": 25022
+    },
+    "page code": {
+     "bytes": 246,
+     "unused": 0
+    }
+   },
+   "worstFiles": [
+    {
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "bytes": 54985,
+     "unused": 28990
+    },
+    {
+     "url": "/@xoong/forms/src/form-model.js",
+     "pkg": "@xoong/forms",
+     "bytes": 19561,
+     "unused": 17042
+    },
+    {
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "bytes": 16517,
+     "unused": 14762
+    },
+    {
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "bytes": 22235,
+     "unused": 12497
+    },
+    {
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "bytes": 13463,
+     "unused": 9331
+    },
+    {
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "bytes": 11118,
+     "unused": 8500
+    },
+    {
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "bytes": 10509,
+     "unused": 7210
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "bytes": 10863,
+     "unused": 6249
+    },
+    {
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "bytes": 6028,
+     "unused": 4719
+    },
+    {
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "bytes": 11301,
+     "unused": 4469
+    },
+    {
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "bytes": 5389,
+     "unused": 3751
+    },
+    {
+     "url": "/@xoong/ui/src/toast.js",
+     "pkg": "@xoong/ui",
+     "bytes": 4073,
+     "unused": 2754
+    }
+   ],
+   "neverCalledBiggestFunctions": [
+    {
+     "fn": "createForm",
+     "url": "/@xoong/forms/src/form-model.js",
+     "pkg": "@xoong/forms",
+     "size": 15008,
+     "calls": 0
+    },
+    {
+     "fn": "attach",
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "size": 14034,
+     "calls": 0
+    },
+    {
+     "fn": "handler",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 5040,
+     "calls": 0
+    },
+    {
+     "fn": "(anonymous)",
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "size": 4870,
+     "calls": 0
+    },
+    {
+     "fn": "bindParam",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 3462,
+     "calls": 0
+    },
+    {
+     "fn": "(anonymous)",
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "size": 3367,
+     "calls": 0
+    },
+    {
+     "fn": "columnPicker",
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "size": 2057,
+     "calls": 0
+    },
+    {
+     "fn": "checkValue",
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "size": 1884,
+     "calls": 0
+    },
+    {
+     "fn": "mutate",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1834,
+     "calls": 0
+    },
+    {
+     "fn": "bindArrayAction",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 1782,
+     "calls": 0
+    },
+    {
+     "fn": "fieldErrors",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1721,
+     "calls": 0
+    },
+    {
+     "fn": "walk",
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "size": 1703,
+     "calls": 0
+    },
+    {
+     "fn": "stream",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1634,
+     "calls": 0
+    },
+    {
+     "fn": "normalize",
+     "url": "/@xoong/forms/src/form-model.js",
+     "pkg": "@xoong/forms",
+     "size": 1397,
+     "calls": 0
+    },
+    {
+     "fn": "#modal",
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "size": 1310,
+     "calls": 0
+    }
+   ]
+  },
+  "examples/admin": {
+   "totalBytes": 223814,
+   "unusedBytes": 103556,
+   "unusedShare": 0.4626877675212453,
+   "byPackage": {
+    "@xoong/core": {
+     "bytes": 30297,
+     "unused": 13823
+    },
+    "@xoong/data": {
+     "bytes": 104781,
+     "unused": 49860
+    },
+    "@xoong/forms": {
+     "bytes": 50243,
+     "unused": 22611
+    },
+    "@xoong/ui": {
+     "bytes": 38060,
+     "unused": 17262
+    },
+    "page code": {
+     "bytes": 433,
+     "unused": 0
+    }
+   },
+   "worstFiles": [
+    {
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "bytes": 54985,
+     "unused": 25865
+    },
+    {
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "bytes": 22235,
+     "unused": 12451
+    },
+    {
+     "url": "/@xoong/forms/src/form-model.js",
+     "pkg": "@xoong/forms",
+     "bytes": 19561,
+     "unused": 9085
+    },
+    {
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "bytes": 13463,
+     "unused": 6872
+    },
+    {
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "bytes": 16517,
+     "unused": 6654
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "bytes": 10863,
+     "unused": 6249
+    },
+    {
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "bytes": 11118,
+     "unused": 5437
+    },
+    {
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "bytes": 6028,
+     "unused": 4719
+    },
+    {
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "bytes": 11301,
+     "unused": 4616
+    },
+    {
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "bytes": 10509,
+     "unused": 4018
+    },
+    {
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "bytes": 5389,
+     "unused": 3211
+    },
+    {
+     "url": "/@xoong/ui/src/toast.js",
+     "pkg": "@xoong/ui",
+     "bytes": 4073,
+     "unused": 2754
+    }
+   ],
+   "neverCalledBiggestFunctions": [
+    {
+     "fn": "handler",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 5040,
+     "calls": 0
+    },
+    {
+     "fn": "columnPicker",
+     "url": "/@xoong/ui/src/table.js",
+     "pkg": "@xoong/ui",
+     "size": 2057,
+     "calls": 0
+    },
+    {
+     "fn": "checkValue",
+     "url": "/@xoong/forms/src/schema.js",
+     "pkg": "@xoong/forms",
+     "size": 1884,
+     "calls": 0
+    },
+    {
+     "fn": "mutate",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1834,
+     "calls": 0
+    },
+    {
+     "fn": "bindArrayAction",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 1782,
+     "calls": 0
+    },
+    {
+     "fn": "fieldErrors",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1721,
+     "calls": 0
+    },
+    {
+     "fn": "stream",
+     "url": "/@xoong/data/src/client.js",
+     "pkg": "@xoong/data",
+     "size": 1634,
+     "calls": 0
+    },
+    {
+     "fn": "onInput",
+     "url": "/@xoong/forms/src/form-dom.js",
+     "pkg": "@xoong/forms",
+     "size": 1398,
+     "calls": 0
+    },
+    {
+     "fn": "#modal",
+     "url": "/@xoong/ui/src/dialog.js",
+     "pkg": "@xoong/ui",
+     "size": 1310,
+     "calls": 0
+    },
+    {
+     "fn": "array",
+     "url": "/@xoong/ui/src/form.js",
+     "pkg": "@xoong/ui",
+     "size": 1281,
+     "calls": 0
+    },
+    {
+     "fn": "instantiate",
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "size": 1256,
+     "calls": 0
+    },
+    {
+     "fn": "showFieldErrors",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 1152,
+     "calls": 0
+    },
+    {
+     "fn": "applyEvent",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 1114,
+     "calls": 0
+    },
+    {
+     "fn": "compile",
+     "url": "/@xoong/core/src/html.js",
+     "pkg": "@xoong/core",
+     "size": 1099,
+     "calls": 0
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "size": 1079,
+     "calls": 0
+    }
+   ]
+  },
+  "docs: reference.html": {
+   "totalBytes": 275035,
+   "unusedBytes": 188656,
+   "unusedShare": 0.685934517425055,
+   "byPackage": {
+    "page code": {
+     "bytes": 28742,
+     "unused": 18776
+    },
+    "@xoong/controls": {
+     "bytes": 217026,
+     "unused": 155240
+    },
+    "@xoong/core": {
+     "bytes": 29267,
+     "unused": 14640
+    }
+   },
+   "worstFiles": [
+    {
+     "url": "/@xoong/controls/src/combobox.js",
+     "pkg": "@xoong/controls",
+     "bytes": 17827,
+     "unused": 14278
+    },
+    {
+     "url": "/@xoong/controls/src/date.js",
+     "pkg": "@xoong/controls",
+     "bytes": 15115,
+     "unused": 13048
+    },
+    {
+     "url": "/@xoong/controls/src/carousel.js",
+     "pkg": "@xoong/controls",
+     "bytes": 14004,
+     "unused": 11648
+    },
+    {
+     "url": "/@xoong/controls/src/tree.js",
+     "pkg": "@xoong/controls",
+     "bytes": 12848,
+     "unused": 10007
+    },
+    {
+     "url": "/src/reference-menu.js",
+     "pkg": "page code",
+     "bytes": 9428,
+     "unused": 7430
+    },
+    {
+     "url": "/src/search.js",
+     "pkg": "page code",
+     "bytes": 8965,
+     "unused": 6660
+    },
+    {
+     "url": "/@xoong/controls/src/color.js",
+     "pkg": "@xoong/controls",
+     "bytes": 8330,
+     "unused": 6621
+    },
+    {
+     "url": "/@xoong/core/src/control.js",
+     "pkg": "@xoong/core",
+     "bytes": 10863,
+     "unused": 6249
+    },
+    {
+     "url": "/@xoong/controls/src/file.js",
+     "pkg": "@xoong/controls",
+     "bytes": 7084,
+     "unused": 5754
+    },
+    {
+     "url": "/@xoong/controls/src/otp.js",
+     "pkg": "@xoong/controls",
+     "bytes": 6969,
+     "unused": 5517
+    },
+    {
+     "url": "/@xoong/controls/src/command.js",
+     "pkg": "@xoong/controls",
+     "bytes": 6540,
+     "unused": 5316
+    },
+    {
+     "url": "/@xoong/controls/src/breadcrumb.js",
+     "pkg": "@xoong/controls",
+     "bytes": 6802,
+     "unused": 5315
+    }
+   ],
+   "neverCalledBiggestFunctions": [
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/controls/src/carousel.js",
+     "pkg": "@xoong/controls",
+     "size": 9658,
+     "calls": 0
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/controls/src/breadcrumb.js",
+     "pkg": "@xoong/controls",
+     "size": 4489,
+     "calls": 0
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/controls/src/command.js",
+     "pkg": "@xoong/controls",
+     "size": 3965,
+     "calls": 0
+    },
+    {
+     "fn": "#build",
+     "url": "/@xoong/controls/src/color.js",
+     "pkg": "@xoong/controls",
+     "size": 3942,
+     "calls": 0
+    },
+    {
+     "fn": "#build",
+     "url": "/@xoong/controls/src/combobox.js",
+     "pkg": "@xoong/controls",
+     "size": 3801,
+     "calls": 0
+    },
+    {
+     "fn": "#draw",
+     "url": "/@xoong/controls/src/date.js",
+     "pkg": "@xoong/controls",
+     "size": 3596,
+     "calls": 0
+    },
+    {
+     "fn": "#draw",
+     "url": "/@xoong/controls/src/chart.js",
+     "pkg": "@xoong/controls",
+     "size": 3236,
+     "calls": 0
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/controls/src/rating.js",
+     "pkg": "@xoong/controls",
+     "size": 3194,
+     "calls": 0
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/controls/src/popover.js",
+     "pkg": "@xoong/controls",
+     "size": 2751,
+     "calls": 0
+    },
+    {
+     "fn": "render",
+     "url": "/src/search.js",
+     "pkg": "page code",
+     "size": 2245,
+     "calls": 0
+    },
+    {
+     "fn": "connected",
+     "url": "/@xoong/controls/src/date.js",
+     "pkg": "@xoong/controls",
+     "size": 2191,
+     "calls": 0
+    },
+    {
+     "fn": "#build",
+     "url": "/@xoong/controls/src/alert.js",
+     "pkg": "@xoong/controls",
+     "size": 2143,
+     "calls": 0
+    },
+    {
+     "fn": "build",
+     "url": "/src/search.js",
+     "pkg": "page code",
+     "size": 2050,
+     "calls": 0
+    },
+    {
+     "fn": "connected",
+     "url": "/@xoong/controls/src/stepper.js",
+     "pkg": "@xoong/controls",
+     "size": 1961,
+     "calls": 0
+    },
+    {
+     "fn": "#draw",
+     "url": "/@xoong/controls/src/stat.js",
+     "pkg": "@xoong/controls",
+     "size": 1951,
+     "calls": 0
+    }
+   ]
+  }
+ },
+ "cpu": {
+  "flat: create 1,000 rows": {
+   "measuredMs": 82,
+   "sampledMs": 117,
+   "topSelf": [
+    {
+     "fn": "(program)",
+     "ms": 75.1,
+     "pct": 64
+    },
+    {
+     "fn": "(idle)",
+     "ms": 18.2,
+     "pct": 15.5
+    },
+    {
+     "fn": "bindNode src/view.js:375",
+     "ms": 6.5,
+     "pct": 5.6
+    },
+    {
+     "fn": "(garbage collector)",
+     "ms": 2.9,
+     "pct": 2.5
+    },
+    {
+     "fn": "cloneNode",
+     "ms": 2.7,
+     "pct": 2.3
+    },
+    {
+     "fn": "denormalize src/store.js:105",
+     "ms": 0.9,
+     "pct": 0.8
+    },
+    {
+     "fn": "after",
+     "ms": 0.9,
+     "pct": 0.8
+    },
+    {
+     "fn": "(anonymous) src/view.js:379",
+     "ms": 0.7,
+     "pct": 0.6
+    },
+    {
+     "fn": "track src/signals.js:22",
+     "ms": 0.6,
+     "pct": 0.5
+    },
+    {
+     "fn": "request src/client.js:160",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "(anonymous) src/view.js:555",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "(anonymous) src/store.js:57",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "signal src/signals.js:97",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "slot src/store.js:38",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "parseInterpolation src/view.js:347",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "hasAttribute",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "getAttributeNames",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "bindSelect src/view.js:832",
+     "ms": 0.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "bump src/store.js:37",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "toggleAttribute",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "(anonymous) src/view.js:558",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "querySelector",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "lookup src/view.js:77",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "(anonymous) src/view.js:571",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "effect src/signals.js:193",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "append",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "(anonymous) src/store.js:115",
+     "ms": 0.3,
+     "pct": 0.2
+    },
+    {
+     "fn": "batch src/signals.js:212",
+     "ms": 0.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "(anonymous)",
+     "ms": 0.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "Signal src/signals.js:66",
+     "ms": 0.1,
+     "pct": 0.1
+    }
+   ],
+   "topTotal": [
+    {
+     "fn": "(root)",
+     "ms": 117.4,
+     "pct": 100
+    },
+    {
+     "fn": "(program)",
+     "ms": 75.1,
+     "pct": 64
+    },
+    {
+     "fn": "(anonymous) src/client.js:243",
+     "ms": 19,
+     "pct": 16.1
+    },
+    {
+     "fn": "(idle)",
+     "ms": 18.2,
+     "pct": 15.5
+    },
+    {
+     "fn": "batch src/signals.js:212",
+     "ms": 17.9,
+     "pct": 15.3
+    },
+    {
+     "fn": "run src/signals.js:164",
+     "ms": 16.6,
+     "pct": 14.1
+    },
+    {
+     "fn": "flush src/signals.js:29",
+     "ms": 16.6,
+     "pct": 14.1
+    },
+    {
+     "fn": "(anonymous) src/view.js:558",
+     "ms": 15.9,
+     "pct": 13.6
+    },
+    {
+     "fn": "(anonymous) src/view.js:571",
+     "ms": 14.5,
+     "pct": 12.4
+    },
+    {
+     "fn": "makeRow src/view.js:540",
+     "ms": 13.9,
+     "pct": 11.9
+    },
+    {
+     "fn": "(anonymous) src/view.js:555",
+     "ms": 11,
+     "pct": 9.4
+    },
+    {
+     "fn": "bindNode src/view.js:375",
+     "ms": 10.6,
+     "pct": 9
+    },
+    {
+     "fn": "(garbage collector)",
+     "ms": 2.9,
+     "pct": 2.5
+    },
+    {
+     "fn": "cloneNode",
+     "ms": 2.7,
+     "pct": 2.3
+    },
+    {
+     "fn": "effect src/signals.js:193",
+     "ms": 2,
+     "pct": 1.7
+    }
+   ],
+   "byPackage": {
+    "(native / GC / idle)": {
+     "ms": 102.5,
+     "pct": 87.3
+    },
+    "@xoong/data": {
+     "ms": 13,
+     "pct": 11.1
+    },
+    "@xoong/core": {
+     "ms": 1.8,
+     "pct": 1.5
+    },
+    "@xoong/ui": {
+     "ms": 0.1,
+     "pct": 0.1
+    }
+   }
+  },
+  "flat: create 10,000 rows": {
+   "measuredMs": 699,
+   "sampledMs": 742,
+   "topSelf": [
+    {
+     "fn": "(program)",
+     "ms": 551.1,
+     "pct": 74.3
+    },
+    {
+     "fn": "bindNode src/view.js:375",
+     "ms": 43.3,
+     "pct": 5.8
+    },
+    {
+     "fn": "(garbage collector)",
+     "ms": 31.7,
+     "pct": 4.3
+    },
+    {
+     "fn": "cloneNode",
+     "ms": 18.7,
+     "pct": 2.5
+    },
+    {
+     "fn": "after",
+     "ms": 8.7,
+     "pct": 1.2
+    },
+    {
+     "fn": "(idle)",
+     "ms": 7.9,
+     "pct": 1.1
+    },
+    {
+     "fn": "track src/signals.js:22",
+     "ms": 7.5,
+     "pct": 1
+    },
+    {
+     "fn": "(anonymous) src/view.js:379",
+     "ms": 6.6,
+     "pct": 0.9
+    },
+    {
+     "fn": "denormalize src/store.js:105",
+     "ms": 5.3,
+     "pct": 0.7
+    },
+    {
+     "fn": "slot src/store.js:38",
+     "ms": 5.2,
+     "pct": 0.7
+    },
+    {
+     "fn": "hasAttribute",
+     "ms": 4.9,
+     "pct": 0.7
+    },
+    {
+     "fn": "(anonymous) src/store.js:57",
+     "ms": 4.4,
+     "pct": 0.6
+    },
+    {
+     "fn": "getAttribute",
+     "ms": 3.2,
+     "pct": 0.4
+    },
+    {
+     "fn": "getAttributeNames",
+     "ms": 3,
+     "pct": 0.4
+    },
+    {
+     "fn": "parseInterpolation src/view.js:347",
+     "ms": 2.6,
+     "pct": 0.3
+    },
+    {
+     "fn": "append",
+     "ms": 2.5,
+     "pct": 0.3
+    },
+    {
+     "fn": "makeRow src/view.js:540",
+     "ms": 2.4,
+     "pct": 0.3
+    },
+    {
+     "fn": "request src/client.js:160",
+     "ms": 2.3,
+     "pct": 0.3
+    },
+    {
+     "fn": "(anonymous) src/view.js:571",
+     "ms": 2.2,
+     "pct": 0.3
+    },
+    {
+     "fn": "addEventListener",
+     "ms": 2,
+     "pct": 0.3
+    },
+    {
+     "fn": "run src/signals.js:164",
+     "ms": 1.9,
+     "pct": 0.3
+    },
+    {
+     "fn": "isSelected src/view.js:123",
+     "ms": 1.7,
+     "pct": 0.2
+    },
+    {
+     "fn": "lookup src/view.js:77",
+     "ms": 1.7,
+     "pct": 0.2
+    },
+    {
+     "fn": "MutationObserver.observe.childList src/options.js:53",
+     "ms": 1.7,
+     "pct": 0.2
+    },
+    {
+     "fn": "(anonymous) src/router-lazy.js:25",
+     "ms": 1.4,
+     "pct": 0.2
+    },
+    {
+     "fn": "scan src/options.js:47",
+     "ms": 1.4,
+     "pct": 0.2
+    },
+    {
+     "fn": "normalize src/store.js:251",
+     "ms": 1.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "querySelectorAll",
+     "ms": 1.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "Effect src/signals.js:154",
+     "ms": 1.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "(anonymous) src/view.js:558",
+     "ms": 1,
+     "pct": 0.1
+    }
+   ],
+   "topTotal": [
+    {
+     "fn": "(root)",
+     "ms": 742,
+     "pct": 100
+    },
+    {
+     "fn": "(program)",
+     "ms": 551.1,
+     "pct": 74.3
+    },
+    {
+     "fn": "(anonymous) src/client.js:243",
+     "ms": 140.6,
+     "pct": 19
+    },
+    {
+     "fn": "batch src/signals.js:212",
+     "ms": 132.9,
+     "pct": 17.9
+    },
+    {
+     "fn": "run src/signals.js:164",
+     "ms": 122,
+     "pct": 16.4
+    },
+    {
+     "fn": "flush src/signals.js:29",
+     "ms": 122,
+     "pct": 16.4
+    },
+    {
+     "fn": "(anonymous) src/view.js:558",
+     "ms": 121,
+     "pct": 16.3
+    },
+    {
+     "fn": "(anonymous) src/view.js:571",
+     "ms": 109.8,
+     "pct": 14.8
+    },
+    {
+     "fn": "makeRow src/view.js:540",
+     "ms": 105.1,
+     "pct": 14.2
+    },
+    {
+     "fn": "(anonymous) src/view.js:555",
+     "ms": 83.6,
+     "pct": 11.3
+    },
+    {
+     "fn": "bindNode src/view.js:375",
+     "ms": 83.2,
+     "pct": 11.2
+    },
+    {
+     "fn": "(garbage collector)",
+     "ms": 31.7,
+     "pct": 4.3
+    },
+    {
+     "fn": "effect src/signals.js:193",
+     "ms": 22.5,
+     "pct": 3
+    },
+    {
+     "fn": "cloneNode",
+     "ms": 18.7,
+     "pct": 2.5
+    },
+    {
+     "fn": "(anonymous) src/view.js:379",
+     "ms": 16.2,
+     "pct": 2.2
+    }
+   ],
+   "byPackage": {
+    "(native / GC / idle)": {
+     "ms": 636.9,
+     "pct": 85.8
+    },
+    "@xoong/data": {
+     "ms": 90.7,
+     "pct": 12.2
+    },
+    "@xoong/core": {
+     "ms": 12.7,
+     "pct": 1.7
+    },
+    "@xoong/ui": {
+     "ms": 1.7,
+     "pct": 0.2
+    }
+   }
+  },
+  "nested 200x5x4: load and render": {
+   "measuredMs": 744,
+   "sampledMs": 737,
+   "topSelf": [
+    {
+     "fn": "(idle)",
+     "ms": 548.5,
+     "pct": 74.4
+    },
+    {
+     "fn": "(program)",
+     "ms": 114.4,
+     "pct": 15.5
+    },
+    {
+     "fn": "(garbage collector)",
+     "ms": 20,
+     "pct": 2.7
+    },
+    {
+     "fn": "bindNode src/view.js:375",
+     "ms": 11.9,
+     "pct": 1.6
+    },
+    {
+     "fn": "cloneNode",
+     "ms": 5.4,
+     "pct": 0.7
+    },
+    {
+     "fn": "flush src/view.js:570",
+     "ms": 4.4,
+     "pct": 0.6
+    },
+    {
+     "fn": "denormalize src/store.js:105",
+     "ms": 2.6,
+     "pct": 0.3
+    },
+    {
+     "fn": "(anonymous) src/view.js:571",
+     "ms": 2.2,
+     "pct": 0.3
+    },
+    {
+     "fn": "bindEach src/view.js:524",
+     "ms": 1.8,
+     "pct": 0.2
+    },
+    {
+     "fn": "track src/signals.js:22",
+     "ms": 1.6,
+     "pct": 0.2
+    },
+    {
+     "fn": "lookup src/view.js:77",
+     "ms": 1.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "slot src/store.js:38",
+     "ms": 1.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "run src/signals.js:164",
+     "ms": 1.2,
+     "pct": 0.2
+    },
+    {
+     "fn": "(anonymous) src/view.js:379",
+     "ms": 1.1,
+     "pct": 0.1
+    },
+    {
+     "fn": "makeRow src/view.js:540",
+     "ms": 1,
+     "pct": 0.1
+    },
+    {
+     "fn": "signal src/signals.js:97",
+     "ms": 0.9,
+     "pct": 0.1
+    },
+    {
+     "fn": "bindIf src/view.js:492",
+     "ms": 0.8,
+     "pct": 0.1
+    },
+    {
+     "fn": "(anonymous) src/view.js:558",
+     "ms": 0.8,
+     "pct": 0.1
+    },
+    {
+     "fn": "(anonymous) src/view.js:555",
+     "ms": 0.8,
+     "pct": 0.1
+    },
+    {
+     "fn": "normalize src/store.js:251",
+     "ms": 0.8,
+     "pct": 0.1
+    },
+    {
+     "fn": "addEventListener",
+     "ms": 0.8,
+     "pct": 0.1
+    },
+    {
+     "fn": "batch src/signals.js:212",
+     "ms": 0.7,
+     "pct": 0.1
+    },
+    {
+     "fn": "parseInterpolation src/view.js:347",
+     "ms": 0.7,
+     "pct": 0.1
+    },
+    {
+     "fn": "createComment",
+     "ms": 0.7,
+     "pct": 0.1
+    },
+    {
+     "fn": "evalParts src/view.js:366",
+     "ms": 0.7,
+     "pct": 0.1
+    }
+   ]
+  }
+ },
+ "calls": {
+  "flat: create 1,000 rows": {
+   "rows": 1000,
+   "topByCalls": [
+    {
+     "fn": "isRef",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 65,
+     "calls": 20244,
+     "perRow": 20.244
+    },
+    {
+     "fn": "parseInterpolation",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 263,
+     "calls": 17136,
+     "perRow": 17.136
+    },
+    {
+     "fn": "bindNode",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 4941,
+     "calls": 14116,
+     "perRow": 14.116
+    },
+    {
+     "fn": "track",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 104,
+     "calls": 13328,
+     "perRow": 13.328
+    },
+    {
+     "fn": "get value",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 58,
+     "calls": 13328,
+     "perRow": 13.328
+    },
+    {
+     "fn": "deref",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 64,
+     "calls": 8088,
+     "perRow": 8.088
+    },
+    {
+     "fn": "denormalize",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 822,
+     "calls": 7076,
+     "perRow": 7.076
+    },
+    {
+     "fn": "slot",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 115,
+     "calls": 6020,
+     "perRow": 6.02
+    },
+    {
+     "fn": "value",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 19,
+     "calls": 6000,
+     "perRow": 6
+    },
+    {
+     "fn": "run",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 408,
+     "calls": 5095,
+     "perRow": 5.095
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 82,
+     "calls": 5045,
+     "perRow": 5.045
+    },
+    {
+     "fn": "Effect",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 39,
+     "calls": 5045,
+     "perRow": 5.045
+    },
+    {
+     "fn": "effect",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 266,
+     "calls": 5045,
+     "perRow": 5.045
+    },
+    {
+     "fn": "read",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 47,
+     "calls": 5010,
+     "perRow": 5.01
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 50,
+     "calls": 4064,
+     "perRow": 4.064
+    },
+    {
+     "fn": "Signal",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 49,
+     "calls": 4064,
+     "perRow": 4.064
+    },
+    {
+     "fn": "signal",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 28,
+     "calls": 4064,
+     "perRow": 4.064
+    },
+    {
+     "fn": "peek",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 36,
+     "calls": 4056,
+     "perRow": 4.056
+    },
+    {
+     "fn": "splitPath",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 244,
+     "calls": 4051,
+     "perRow": 4.051
+    },
+    {
+     "fn": "lookup",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 504,
+     "calls": 4051,
+     "perRow": 4.051
+    },
+    {
+     "fn": "walk",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 160,
+     "calls": 4043,
+     "perRow": 4.043
+    },
+    {
+     "fn": "evalParts",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 337,
+     "calls": 4014,
+     "perRow": 4.014
+    },
+    {
+     "fn": "(anonymous)",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 97,
+     "calls": 4003,
+     "perRow": 4.003
+    },
+    {
+     "fn": "keyOf",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 47,
+     "calls": 3020,
+     "perRow": 3.02
+    },
+    {
+     "fn": "set value",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 178,
+     "calls": 2045,
+     "perRow": 2.045
+    },
+    {
+     "fn": "batch",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 134,
+     "calls": 2026,
+     "perRow": 2.026
+    },
+    {
+     "fn": "tick",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 112,
+     "calls": 2020,
+     "perRow": 2.02
+    },
+    {
+     "fn": "keys",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 108,
+     "calls": 2005,
+     "perRow": 2.005
+    },
+    {
+     "fn": "flush",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 1088,
+     "calls": 1075,
+     "perRow": 1.075
+    },
+    {
+     "fn": "notify",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 57,
+     "calls": 1075,
+     "perRow": 1.075
+    }
+   ]
+  },
+  "flat: create 10,000 rows": {
+   "rows": 10000,
+   "topByCalls": [
+    {
+     "fn": "isRef",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 65,
+     "calls": 200238,
+     "perRow": 20.0238
+    },
+    {
+     "fn": "parseInterpolation",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 263,
+     "calls": 170134,
+     "perRow": 17.0134
+    },
+    {
+     "fn": "bindNode",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 4941,
+     "calls": 140116,
+     "perRow": 14.0116
+    },
+    {
+     "fn": "track",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 104,
+     "calls": 130318,
+     "perRow": 13.0318
+    },
+    {
+     "fn": "get value",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 58,
+     "calls": 130318,
+     "perRow": 13.0318
+    },
+    {
+     "fn": "deref",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 64,
+     "calls": 80082,
+     "perRow": 8.0082
+    },
+    {
+     "fn": "denormalize",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 822,
+     "calls": 70076,
+     "perRow": 7.0076
+    },
+    {
+     "fn": "slot",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 115,
+     "calls": 60020,
+     "perRow": 6.002
+    },
+    {
+     "fn": "value",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 19,
+     "calls": 60000,
+     "perRow": 6
+    },
+    {
+     "fn": "run",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 408,
+     "calls": 50093,
+     "perRow": 5.0093
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 82,
+     "calls": 50045,
+     "perRow": 5.0045
+    },
+    {
+     "fn": "Effect",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 39,
+     "calls": 50045,
+     "perRow": 5.0045
+    },
+    {
+     "fn": "effect",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 266,
+     "calls": 50045,
+     "perRow": 5.0045
+    },
+    {
+     "fn": "read",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 47,
+     "calls": 50010,
+     "perRow": 5.001
+    },
+    {
+     "fn": "<instance_members_initializer>",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 50,
+     "calls": 40064,
+     "perRow": 4.0064
+    },
+    {
+     "fn": "Signal",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 49,
+     "calls": 40064,
+     "perRow": 4.0064
+    },
+    {
+     "fn": "signal",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 28,
+     "calls": 40064,
+     "perRow": 4.0064
+    },
+    {
+     "fn": "peek",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 36,
+     "calls": 40056,
+     "perRow": 4.0056
+    },
+    {
+     "fn": "splitPath",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 244,
+     "calls": 40049,
+     "perRow": 4.0049
+    },
+    {
+     "fn": "lookup",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 504,
+     "calls": 40049,
+     "perRow": 4.0049
+    },
+    {
+     "fn": "walk",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 160,
+     "calls": 40041,
+     "perRow": 4.0041
+    },
+    {
+     "fn": "evalParts",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 337,
+     "calls": 40012,
+     "perRow": 4.0012
+    },
+    {
+     "fn": "(anonymous)",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 97,
+     "calls": 40003,
+     "perRow": 4.0003
+    },
+    {
+     "fn": "keyOf",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 47,
+     "calls": 30020,
+     "perRow": 3.002
+    },
+    {
+     "fn": "set value",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 178,
+     "calls": 20045,
+     "perRow": 2.0045
+    },
+    {
+     "fn": "batch",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 134,
+     "calls": 20026,
+     "perRow": 2.0026
+    },
+    {
+     "fn": "tick",
+     "url": "/@xoong/data/src/store.js",
+     "pkg": "@xoong/data",
+     "size": 112,
+     "calls": 20020,
+     "perRow": 2.002
+    },
+    {
+     "fn": "keys",
+     "url": "/@xoong/data/src/view.js",
+     "pkg": "@xoong/data",
+     "size": 108,
+     "calls": 20005,
+     "perRow": 2.0005
+    },
+    {
+     "fn": "flush",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 1088,
+     "calls": 10075,
+     "perRow": 1.0075
+    },
+    {
+     "fn": "notify",
+     "url": "/@xoong/core/src/signals.js",
+     "pkg": "@xoong/core",
+     "size": 57,
+     "calls": 10073,
+     "perRow": 1.0073
+    }
+   ]
+  }
+ },
+ "alloc": {
+  "flat: create 1,000 rows": {
+   "rows": 1000,
+   "totalKB": 7674,
+   "bytesPerRow": 7858,
+   "top": [
+    {
+     "fn": "bindNode src/view.js:375",
+     "kb": 2346,
+     "bytesPerRow": 2402,
+     "pct": 30.6
+    },
+    {
+     "fn": "Set (native)",
+     "kb": 787.6,
+     "bytesPerRow": 807,
+     "pct": 10.3
+    },
+    {
+     "fn": "denormalize src/store.js:105",
+     "kb": 456.9,
+     "bytesPerRow": 468,
+     "pct": 6
+    },
+    {
+     "fn": "effect src/signals.js:193",
+     "kb": 389,
+     "bytesPerRow": 398,
+     "pct": 5.1
+    },
+    {
+     "fn": "run src/signals.js:164",
+     "kb": 376,
+     "bytesPerRow": 385,
+     "pct": 4.9
+    },
+    {
+     "fn": "makeRow src/view.js:540",
+     "kb": 340.3,
+     "bytesPerRow": 348,
+     "pct": 4.4
+    },
+    {
+     "fn": "add (native)",
+     "kb": 286.2,
+     "bytesPerRow": 293,
+     "pct": 3.7
+    },
+    {
+     "fn": "lookup src/view.js:77",
+     "kb": 274.5,
+     "bytesPerRow": 281,
+     "pct": 3.6
+    },
+    {
+     "fn": "evalParts src/view.js:366",
+     "kb": 242,
+     "bytesPerRow": 248,
+     "pct": 3.2
+    },
+    {
+     "fn": "bindSelect src/view.js:832",
+     "kb": 236.3,
+     "bytesPerRow": 242,
+     "pct": 3.1
+    },
+    {
+     "fn": "filter (native)",
+     "kb": 219.2,
+     "bytesPerRow": 224,
+     "pct": 2.9
+    },
+    {
+     "fn": "next (native)",
+     "kb": 171.1,
+     "bytesPerRow": 175,
+     "pct": 2.2
+    },
+    {
+     "fn": "values (native)",
+     "kb": 165.4,
+     "bytesPerRow": 169,
+     "pct": 2.2
+    },
+    {
+     "fn": "bindAction src/view.js:611",
+     "kb": 159.6,
+     "bytesPerRow": 163,
+     "pct": 2.1
+    },
+    {
+     "fn": "walk src/view.js:90",
+     "kb": 155.8,
+     "bytesPerRow": 160,
+     "pct": 2
+    },
+    {
+     "fn": "upsert src/store.js:49",
+     "kb": 120.8,
+     "bytesPerRow": 124,
+     "pct": 1.6
+    },
+    {
+     "fn": "set value src/signals.js:76",
+     "kb": 119.1,
+     "bytesPerRow": 122,
+     "pct": 1.6
+    },
+    {
+     "fn": "request src/client.js:160",
+     "kb": 115.7,
+     "bytesPerRow": 118,
+     "pct": 1.5
+    },
+    {
+     "fn": "refKey src/store.js:6",
+     "kb": 97.1,
+     "bytesPerRow": 99,
+     "pct": 1.3
+    },
+    {
+     "fn": "set (native)",
+     "kb": 85.8,
+     "bytesPerRow": 88,
+     "pct": 1.1
+    }
+   ]
+  },
+  "flat: create 10,000 rows": {
+   "rows": 10000,
+   "totalKB": 63267,
+   "bytesPerRow": 6479,
+   "top": [
+    {
+     "fn": "bindNode src/view.js:375",
+     "kb": 26410.8,
+     "bytesPerRow": 2704,
+     "pct": 41.7
+    },
+    {
+     "fn": "Set (native)",
+     "kb": 7437.6,
+     "bytesPerRow": 762,
+     "pct": 11.8
+    },
+    {
+     "fn": "denormalize src/store.js:105",
+     "kb": 4053.3,
+     "bytesPerRow": 415,
+     "pct": 6.4
+    },
+    {
+     "fn": "add (native)",
+     "kb": 3364.7,
+     "bytesPerRow": 345,
+     "pct": 5.3
+    },
+    {
+     "fn": "makeRow src/view.js:540",
+     "kb": 3342.8,
+     "bytesPerRow": 342,
+     "pct": 5.3
+    },
+    {
+     "fn": "upsert src/store.js:49",
+     "kb": 1443.1,
+     "bytesPerRow": 148,
+     "pct": 2.3
+    },
+    {
+     "fn": "bindAction src/view.js:611",
+     "kb": 1423.8,
+     "bytesPerRow": 146,
+     "pct": 2.3
+    },
+    {
+     "fn": "filter (native)",
+     "kb": 1375.6,
+     "bytesPerRow": 141,
+     "pct": 2.2
+    },
+    {
+     "fn": "set (native)",
+     "kb": 1344.6,
+     "bytesPerRow": 138,
+     "pct": 2.1
+    },
+    {
+     "fn": "set value src/signals.js:76",
+     "kb": 1251.7,
+     "bytesPerRow": 128,
+     "pct": 2
+    },
+    {
+     "fn": "run src/signals.js:164",
+     "kb": 1232.4,
+     "bytesPerRow": 126,
+     "pct": 1.9
+    },
+    {
+     "fn": "evalParts src/view.js:366",
+     "kb": 1194.4,
+     "bytesPerRow": 122,
+     "pct": 1.9
+    },
+    {
+     "fn": "effect src/signals.js:193",
+     "kb": 1172.7,
+     "bytesPerRow": 120,
+     "pct": 1.9
+    },
+    {
+     "fn": "request src/client.js:160",
+     "kb": 992.6,
+     "bytesPerRow": 102,
+     "pct": 1.6
+    },
+    {
+     "fn": "lookup src/view.js:77",
+     "kb": 906.3,
+     "bytesPerRow": 93,
+     "pct": 1.4
+    },
+    {
+     "fn": "next (native)",
+     "kb": 703.1,
+     "bytesPerRow": 72,
+     "pct": 1.1
+    },
+    {
+     "fn": "(anonymous) src/view.js:571",
+     "kb": 535.4,
+     "bytesPerRow": 55,
+     "pct": 0.8
+    },
+    {
+     "fn": "walk src/view.js:90",
+     "kb": 487.4,
+     "bytesPerRow": 50,
+     "pct": 0.8
+    },
+    {
+     "fn": "normalize src/store.js:251",
+     "kb": 473.4,
+     "bytesPerRow": 48,
+     "pct": 0.7
+    },
+    {
+     "fn": "keys (native)",
+     "kb": 414.3,
+     "bytesPerRow": 42,
+     "pct": 0.7
+    }
+   ]
+  }
+ },
+ "trace": {
+  "xoong: create 1,000 rows": {
+   "measuredMs": 76,
+   "layoutMs": 28,
+   "styleMs": 9,
+   "prePaintMs": 6,
+   "paintMs": 2,
+   "jsMicrotasksMs": 0,
+   "jsFunctionCallMs": 3,
+   "gcMainThreadMs": 5,
+   "gcBackgroundMarkingMs": 0,
+   "compileMs": 1
+  },
+  "xoong: create 10,000 rows": {
+   "measuredMs": 608,
+   "layoutMs": 286,
+   "styleMs": 94,
+   "prePaintMs": 48,
+   "paintMs": 12,
+   "jsMicrotasksMs": 0,
+   "jsFunctionCallMs": 19,
+   "gcMainThreadMs": 59,
+   "gcBackgroundMarkingMs": 177,
+   "compileMs": 1
+  },
+  "Angular (context): create 10,000 rows": {
+   "measuredMs": 584,
+   "layoutMs": 357,
+   "styleMs": 68,
+   "prePaintMs": 44,
+   "paintMs": 12,
+   "jsMicrotasksMs": 0,
+   "jsFunctionCallMs": 172,
+   "gcMainThreadMs": 49,
+   "gcBackgroundMarkingMs": 145,
+   "compileMs": 1
+  }
+ },
+ "load": {
+  "flat, h1, no throttle": {
+   "ttfb": 5.3,
+   "requests": 34,
+   "bytes": 73363,
+   "jsRequests": 33,
+   "graphReady": 294.8,
+   "firstFetch": 300.4,
+   "firstRow": 308.6,
+   "definitions": 3,
+   "definitionsMs": 0.3,
+   "firstDefine": 295.7,
+   "lastDefine": 296.4,
+   "slowest": [
+    [
+     ".xoong/operations.json",
+     290,
+     295
+    ],
+    [
+     "src/main.js",
+     9,
+     290
+    ],
+    [
+     "src/toast.js",
+     9,
+     289
+    ]
+   ],
+   "defines": [
+    [
+     "xo-view",
+     0.3
+    ],
+    [
+     "xo-dialog",
+     0
+    ],
+    [
+     "xo-toast",
+     0
+    ]
+   ]
+  },
+  "flat, h2, slow 4G": {
+   "ttfb": 179.2,
+   "requests": 34,
+   "bytes": 73363,
+   "jsRequests": 33,
+   "graphReady": 844.3,
+   "firstFetch": 851.4,
+   "firstRow": 1019,
+   "definitions": 3,
+   "definitionsMs": 0.5,
+   "firstDefine": 846,
+   "lastDefine": 847,
+   "slowest": [
+    [
+     "src/view.js",
+     189,
+     844
+    ],
+    [
+     ".xoong/operations.json",
+     638,
+     802
+    ],
+    [
+     "src/form-dom.js",
+     189,
+     787
+    ]
+   ],
+   "defines": [
+    [
+     "xo-view",
+     0.5
+    ],
+    [
+     "xo-dialog",
+     0
+    ],
+    [
+     "xo-toast",
+     0
+    ]
+   ]
+  },
+  "flat, h1, slow 4G": {
+   "ttfb": 151.2,
+   "requests": 34,
+   "bytes": 73363,
+   "jsRequests": 33,
+   "graphReady": 1423.3,
+   "firstFetch": 1435.4,
+   "firstRow": 1601.8,
+   "definitions": 3,
+   "definitionsMs": 1.5,
+   "firstDefine": 1426.8,
+   "lastDefine": 1429.4,
+   "slowest": [
+    [
+     ".xoong/operations.json",
+     1266,
+     1423
+    ],
+    [
+     "src/main.js",
+     162,
+     1266
+    ],
+    [
+     "src/toast.js",
+     162,
+     1245
+    ]
+   ],
+   "defines": [
+    [
+     "xo-view",
+     1.3
+    ],
+    [
+     "xo-dialog",
+     0.2
+    ],
+    [
+     "xo-toast",
+     0
+    ]
+   ]
+  },
+  "flat no modulepreload, h2, slow 4G": {
+   "ttfb": 154.9,
+   "requests": 34,
+   "bytes": 73363,
+   "jsRequests": 33,
+   "graphReady": 1036.9,
+   "firstFetch": 1047,
+   "firstRow": 1213.4,
+   "definitions": 3,
+   "definitionsMs": 0.7,
+   "firstDefine": 1039.6,
+   "lastDefine": 1040.8,
+   "slowest": [
+    [
+     "src/invalidate.js",
+     872,
+     1037
+    ],
+    [
+     "src/closest.js",
+     872,
+     1029
+    ],
+    [
+     "src/control.js",
+     788,
+     1001
+    ]
+   ],
+   "defines": [
+    [
+     "xo-view",
+     0.6
+    ],
+    [
+     "xo-dialog",
+     0.1
+    ],
+    [
+     "xo-toast",
+     0
+    ]
+   ]
+  },
+  "flat minified, h2, slow 4G": {
+   "ttfb": 153.6,
+   "requests": 34,
+   "bytes": 39532,
+   "jsRequests": 33,
+   "graphReady": 716.5,
+   "firstFetch": 727.6,
+   "firstRow": 884.3,
+   "definitions": 3,
+   "definitionsMs": 1.4,
+   "firstDefine": 719.5,
+   "lastDefine": 722,
+   "slowest": [
+    [
+     ".xoong/operations.json",
+     560,
+     717
+    ],
+    [
+     "src/view.js",
+     170,
+     659
+    ],
+    [
+     "src/client.js",
+     170,
+     631
+    ]
+   ],
+   "defines": [
+    [
+     "xo-view",
+     1.2
+    ],
+    [
+     "xo-dialog",
+     0.2
+    ],
+    [
+     "xo-toast",
+     0
+    ]
+   ]
+  },
+  "nested, h2, slow 4G": {
+   "ttfb": 153.9,
+   "requests": 34,
+   "bytes": 73164,
+   "jsRequests": 33,
+   "graphReady": 823.2,
+   "firstFetch": 829.8,
+   "firstRow": 171.4,
+   "definitions": 3,
+   "definitionsMs": 0.8,
+   "firstDefine": 825.6,
+   "lastDefine": 827.3,
+   "slowest": [
+    [
+     "src/view.js",
+     169,
+     823
+    ],
+    [
+     ".xoong/operations.json",
+     573,
+     772
+    ],
+    [
+     "src/client.js",
+     168,
+     765
+    ]
+   ],
+   "defines": [
+    [
+     "xo-view",
+     0.8
+    ],
+    [
+     "xo-dialog",
+     0
+    ],
+    [
+     "xo-toast",
+     0
+    ]
+   ]
+  },
+  "examples/admin, h2, slow 4G": {
+   "ttfb": 154.5,
+   "requests": 35,
+   "bytes": 73506,
+   "jsRequests": 33,
+   "graphReady": 830,
+   "firstFetch": 841.2,
+   "firstRow": 1004.5,
+   "definitions": 3,
+   "definitionsMs": 1,
+   "firstDefine": 836.6,
+   "lastDefine": 838,
+   "slowest": [
+    [
+     "src/view.js",
+     163,
+     830
+    ],
+    [
+     ".xoong/operations.json",
+     616,
+     788
+    ],
+    [
+     "src/form-model.js",
+     163,
+     772
+    ]
+   ],
+   "defines": [
+    [
+     "xo-view",
+     0.9
+    ],
+    [
+     "xo-dialog",
+     0.1
+    ],
+    [
+     "xo-toast",
+     0
+    ]
+   ]
+  },
+  "docs reference.html, h2, slow 4G": {
+   "ttfb": 373.3,
+   "requests": 71,
+   "bytes": 166409,
+   "jsRequests": 52,
+   "graphReady": 1467.4,
+   "firstFetch": null,
+   "firstRow": 563.4,
+   "definitions": 39,
+   "definitionsMs": 1.2,
+   "firstDefine": 1475.3,
+   "lastDefine": 1477.1,
+   "slowest": [
+    [
+     "fonts/be-vietnam-pro-latin-600-normal.woff2",
+     1514,
+     1830
+    ],
+    [
+     "src/controls-new.css",
+     388,
+     1474
+    ],
+    [
+     "src/control.js",
+     389,
+     1467
+    ]
+   ],
+   "defines": [
+    [
+     "xo-menu",
+     0.5
+    ],
+    [
+     "xo-theme-toggle",
+     0.4
+    ],
+    [
+     "xo-tabs",
+     0.1
+    ],
+    [
+     "xo-textarea",
+     0.1
+    ],
+    [
+     "xo-drawer",
+     0.1
+    ],
+    [
+     "xo-combobox",
+     0
+    ]
+   ]
+  }
+ },
+ "init": {},
+ "updates": {
+  "change one field (disable one row)": {
+   "ms": 65.7,
+   "layoutMs": 35.4,
+   "styleMs": 0.5,
+   "effectRuns": 19,
+   "effectRunsBySource": [
+    [
+     "() => { const text = evalParts(parts, scope, lookup); if (node.data !== text) node.data = ",
+     5
+    ],
+    [
+     "() => { const v = ctx.lookup(scope, path); const truthy = literal !== undefined ? String(v",
+     5
+    ],
+    [
+     "() => { this.toggleAttribute('data-refreshing', !!scope.vars?.$refreshing()); // for CSS: ",
+     2
+    ],
+    [
+     "() => { const { limit, offset } = this.#params.value; const total = q.value?.status.value ",
+     2
+    ],
+    [
+     "() => { const e = q.value?.status.value === 'error' ? q.value.error.value : undefined; if ",
+     2
+    ],
+    [
+     "() => { const list = ctx.lookup(scope, path); const items = (Array.isArray(list) ? list : ",
+     1
+    ]
+   ],
+   "nodesAdded": 0,
+   "nodesRemoved": 0,
+   "attributeWrites": 6,
+   "textWrites": 1
+  },
+  "sort by name": {
+   "ms": 19.6,
+   "layoutMs": 45.7,
+   "styleMs": 12.2,
+   "effectRuns": 4406,
+   "effectRunsBySource": [
+    [
+     "() => { const text = evalParts(parts, scope, lookup); if (node.data !== text) node.data = ",
+     3502
+    ],
+    [
+     "() => { const list = keys(); el.checked = list.length > 0 && list.every((k) => host.isSele",
+     877
+    ],
+    [
+     "() => { const v = ctx.lookup(scope, path); const truthy = literal !== undefined ? String(v",
+     10
+    ],
+    [
+     "() => { const cur = ctx.host.params[name]; const want = evalParts(parseInterpolation(rawVa",
+     6
+    ],
+    [
+     "() => { const v = ctx.host.params[name]; const text = v == null ? '' : String(v); if (el.v",
+     2
+    ],
+    [
+     "() => { const { limit, offset } = this.#params.value; const total = q.value?.status.value ",
+     2
+    ]
+   ],
+   "nodesAdded": 937,
+   "nodesRemoved": 937,
+   "attributeWrites": 7,
+   "textWrites": 0
+  },
+  "filter (search 11 of 1,000)": {
+   "ms": 308.4,
+   "layoutMs": 6.3,
+   "styleMs": 2.3,
+   "effectRuns": 530,
+   "effectRunsBySource": [
+    [
+     "() => { const text = evalParts(parts, scope, lookup); if (node.data !== text) node.data = ",
+     402
+    ],
+    [
+     "() => { const list = keys(); el.checked = list.length > 0 && list.every((k) => host.isSele",
+     102
+    ],
+    [
+     "() => { const v = ctx.lookup(scope, path); const truthy = literal !== undefined ? String(v",
+     10
+    ],
+    [
+     "() => { const cur = ctx.host.params[name]; const want = evalParts(parseInterpolation(rawVa",
+     5
+    ],
+    [
+     "() => { const v = ctx.host.params[name]; const text = v == null ? '' : String(v); if (el.v",
+     2
+    ],
+    [
+     "() => { const { limit, offset } = this.#params.value; const total = q.value?.status.value ",
+     2
+    ]
+   ],
+   "nodesAdded": 100,
+   "nodesRemoved": 990,
+   "attributeWrites": 4,
+   "textWrites": 1
+  },
+  "tick one row": {
+   "ms": 13.5,
+   "layoutMs": 0.2,
+   "styleMs": 0.2,
+   "effectRuns": 4,
+   "effectRunsBySource": [
+    [
+     "() => { const list = keys(); el.checked = list.length > 0 && list.every((k) => host.isSele",
+     2
+    ],
+    [
+     "() => { const v = ctx.lookup(scope, path); const truthy = literal !== undefined ? String(v",
+     1
+    ],
+    [
+     "() => { const text = evalParts(parts, scope, lookup); if (node.data !== text) node.data = ",
+     1
+    ]
+   ],
+   "nodesAdded": 1,
+   "nodesRemoved": 0,
+   "attributeWrites": 0,
+   "textWrites": 1
+  }
+ }
+}

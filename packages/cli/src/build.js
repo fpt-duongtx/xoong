@@ -108,6 +108,8 @@ export function preloadModules(written, basePath) {
     if (!entries.length) continue;
     const seen = new Set(entries);
     for (const entry of entries) follow(entry, seen);
+    const router = [...written.keys()].find((k) => k.endsWith('/@xoong/ui/src/router.js')); // loaded lazily, so a page that has <xo-router> asks for it now
+    if (router && /<xo-router[\s>]/i.test(html) && !seen.has(router)) { seen.add(router); follow(router, seen); }
     const links = [...seen].filter((p) => !entries.includes(p) && !have.has(p)).sort().map((p) => `<link rel="modulepreload" href="${basePath}${p}">`);
     if (links.length) written.set(page, `${html.slice(0, first)}${links.join('\n')}\n${html.slice(first)}`);
   }
