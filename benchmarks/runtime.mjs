@@ -19,6 +19,7 @@ export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; con
 
 const VARIANTS = [
   { id: 'xoong', label: 'xoong (xoong build, modulepreload)', app: 'xoong', dist: 'dist', protocol: 'h2' },
+  { id: 'xoong-min', label: 'xoong, minified (xoong build --minify)', app: 'xoong', dist: 'dist-min', protocol: 'h2' },
   { id: 'xoong-nopreload', label: 'xoong, no modulepreload', app: 'xoong', dist: 'dist-nopreload', protocol: 'h2' },
   { id: 'xoong-http1', label: 'xoong over HTTP/1.1', app: 'xoong', dist: 'dist', protocol: 'http1' },
   { id: 'react', label: 'React + TanStack + RHF + zod (vite build)', app: 'react', dist: 'dist', protocol: 'h2' },

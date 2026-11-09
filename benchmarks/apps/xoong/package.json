@@ -1,0 +1,6 @@
+{
+  "name": "bench-xoong",
+  "private": true,
+  "description": "The xoong screen. xoong itself comes from the repository (workspace); esbuild is only for the optional minified build (xoong build --minify), where the project provides it.",
+  "devDependencies": { "esbuild": "0.28.2" }
+}

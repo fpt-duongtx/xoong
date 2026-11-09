@@ -81,6 +81,7 @@ export const USAGE = [
       { flag: '--include', value: 'path', repeatable: true, doc: 'A file or folder (relative to the root) to publish although no page names it: data fetched from JavaScript, images named in code.' },
       { flag: '--exclude', value: 'glob', repeatable: true, doc: 'Keep matching .html files out of the start list (partials, drafts). A file that a page references is still published.' },
       { flag: '--no-preload', doc: 'Do not add <link rel="modulepreload"> to the pages.' },
+      { flag: '--minify', doc: 'Minify the scripts and stylesheets (and JSON) with the esbuild your project has installed; the output stays strict-CSP and the imports are rewritten as usual. Without esbuild installed the build warns and writes the files as they are.' },
     ],
   },
   {

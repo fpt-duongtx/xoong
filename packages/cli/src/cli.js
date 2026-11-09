@@ -76,10 +76,10 @@ try {
     process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'build') {
     const { build, CSP } = await import('./build.js');
-    const r = await build({ root: a.value('--root', '.'), out: a.value('--out', 'dist'), base: a.value('--base', ''), include: a.all('--include'), exclude: a.all('--exclude'), preload: a.has('--no-preload') ? false : undefined });
+    const r = await build({ root: a.value('--root', '.'), out: a.value('--out', 'dist'), base: a.value('--base', ''), include: a.all('--include'), exclude: a.all('--exclude'), preload: a.has('--no-preload') ? false : undefined, minify: a.has('--minify') ? true : undefined });
     const total = r.files.reduce((n, f) => n + f.bytes, 0);
     const gz = r.files.reduce((n, f) => n + f.gzip, 0);
-    console.log(`built ${r.files.length} files into ${r.out} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);
+    console.log(`built ${r.files.length} files into ${r.out}${r.minified ? ' (minified)' : ''} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);
     for (const w of r.warnings) console.warn(`warning: ${w}`);
     console.log(`\nruns under:  Content-Security-Policy: ${CSP}`);
   } else if (cmd === 'dev') {

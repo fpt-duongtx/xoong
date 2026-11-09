@@ -15,21 +15,6 @@ import '@xoong/xoong/ui';
 ```
 More parts, installed separately: `@xoong/controls`, `@xoong/richtext`, `@xoong/i18n`, `@xoong/test`, `@xoong/ssr`, `@xoong/mcp`, `@xoong/lsp`.
 
-## Measured, not promised
-
-Median of 5 runs in real Chromium on Apple M1 (2026-11-09); React stack = React + TanStack Query and Table + React Hook Form + zod, Vue stack = Vue + TanStack + vee-validate + zod, Angular stack = Angular with signals and reactive forms and no extra library; every library a stack needs counts in full. The slow case is a 4x slower CPU and slow 4G. One machine, one screen: the spread, the method and what was not measured are on the [benchmarks page](https://fpt-duongtx.github.io/xoong/benchmarks.html) and in [benchmarks/](https://github.com/fpt-duongtx/xoong/tree/main/benchmarks).
-
-| The same people screen | xoong | React stack | Vue stack | Angular stack |
-|---|---|---|---|---|
-| Browser JS, CSS and HTML, brotli | 80.2 kB | 102.2 kB | 64.0 kB | 59.0 kB |
-| Third-party packages in the browser build | 0 | 7 | 6 | 7 |
-| Screen usable, slow 4G and 4x slower CPU | 1,056 ms | 1,105 ms | 872 ms | 872 ms |
-| Show 1,000 rows, unthrottled | 97.2 ms | 84.7 ms | 102 ms | 69.8 ms |
-| Lines written for the same screen | 39 | 213 | 180 | 229 |
-| Packages npm installs for the screen | 12 | 52 | 83 | 362 |
-
-xoong has the lowest number in 3 of 6 rows; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row. Lines of code and packages are proxies for effort, not time.
-
 ## More
 
 * Documentation, guides and live demos: https://fpt-duongtx.github.io/xoong/

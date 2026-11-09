@@ -65,7 +65,7 @@ const PURPOSE = {
   rxjs: 'observables (required by the framework; used here for the search debounce)', tslib: 'TypeScript helpers', '@angular/build': 'esbuild-based builder', '@angular/cli': 'the ng command', '@angular/compiler-cli': 'ahead-of-time compiler', typescript: 'TypeScript compiler',
 };
 const result = { environment: environment(), method: 'non-blank, non-comment lines of the files a developer writes (sources, markup, stylesheet); package.json, lockfiles, vite config and the OpenAPI document are not counted (config is listed apart); JSX is counted as script', stacks: {} };
-for (const [id, app] of Object.entries(apps)) {
+for (const [id, app] of Object.entries(apps).filter(([, a]) => !a.variantOf)) {
   const files = (await walk(app.dir, SKIP)).sort();
   const per = {};
   const total = { markup: 0, script: 0, style: 0 };

@@ -21,8 +21,8 @@ export function pagerMarkup({ pageSize, sizes = [] }) {
 <nav class="xo-pager" aria-label="Pagination" xo-t="aria-label:xoong.table.pagination">
   <span class="xo-range" xo-if="total" xo-t="xoong.table.range">{$from}–{$to} of {total}</span>${sizes.length ? `
   <select class="xo-page-size" xo-param="limit" aria-label="Rows per page" xo-t="aria-label:xoong.table.rowsPerPage">${sizes.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}</select>` : ''}
-  <button type="button" class="icon-only xo-pager-prev" xo-if="$hasPrev" xo-param="offset-=${pageSize}" aria-label="Previous" title="Previous" xo-t="aria-label:xoong.table.previous; title:xoong.table.previous">${chevron('m15 6-6 6 6 6')}</button>
-  <button type="button" class="icon-only xo-pager-next" xo-if="$hasNext" xo-param="offset+=${pageSize}" aria-label="Next" title="Next" xo-t="aria-label:xoong.table.next; title:xoong.table.next">${chevron('m9 6 6 6-6 6')}</button>
+  <button type="button" class="icon-only xo-pager-prev" xo-if="$hasPrev" xo-param="offset-={limit}" aria-label="Previous" title="Previous" xo-t="aria-label:xoong.table.previous; title:xoong.table.previous">${chevron('m15 6-6 6 6 6')}</button>
+  <button type="button" class="icon-only xo-pager-next" xo-if="$hasNext" xo-param="offset+={limit}" aria-label="Next" title="Next" xo-t="aria-label:xoong.table.next; title:xoong.table.next">${chevron('m9 6 6 6-6 6')}</button>
 </nav>`;
 }
 

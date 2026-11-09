@@ -28,10 +28,10 @@ import { readFileSync } from 'node:fs';
 const execFileSyncRead = (p) => readFileSync(p);
 
 /**
- * @param {{ root: string, protocol?: 'http1' | 'h2', csp?: string, rows?: number, spa?: boolean }} o
+ * @param {{ root: string, protocol?: 'http1' | 'h2', csp?: string, rows?: number, spa?: boolean, transform?: (pathname: string, body: Buffer) => Buffer }} o
  * @returns {Promise<{ url: string, close: () => Promise<void>, api: ReturnType<typeof createApi>, requests: string[] }>}
  */
-export async function serve({ root, protocol = 'http1', csp, rows = 10000, spa = false }) {
+export async function serve({ root, protocol = 'http1', csp, rows = 10000, spa = false, transform }) {
   const api = createApi({ rows });
   const cache = new Map();
   const requests = [];
@@ -50,7 +50,7 @@ export async function serve({ root, protocol = 'http1', csp, rows = 10000, spa =
       const headers = { 'content-type': TYPES[ext] ?? 'application/octet-stream', 'cache-control': 'no-cache' };
       if (csp && ext === '.html') headers['content-security-policy'] = csp;
       let body = cache.get(file);
-      if (!body) { body = { raw: await readFile(file) }; cache.set(file, body); }
+      if (!body) { body = { raw: await readFile(file) }; if (transform) body.raw = transform(url.pathname, body.raw); cache.set(file, body); }
       const accept = String(req.headers['accept-encoding'] ?? '');
       let out = body.raw;
       if (COMPRESSIBLE.has(ext)) {

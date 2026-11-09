@@ -1,0 +1,499 @@
+{
+ "environment": {
+  "date": "2026-11-09",
+  "machine": "Apple M1, 8 cores, 8 GB RAM",
+  "os": "Darwin 25.2.0 (arm64)",
+  "node": "v26.0.0",
+  "xoong": "0.0.49",
+  "commit": "7ea88dc",
+  "browser": "Chromium 158.0.8127.18"
+ },
+ "method": "MutationObserver on document.body (childList, attributes, characterData; nodes counted with their descendants); \"rows kept\" = rows that are the same element as before the action",
+ "scenarios": {
+  "Disable one person": {
+   "xoong": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 6,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 18
+   },
+   "react": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 6012,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "vue": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 10,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "angular": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 0,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "xoongBefore": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 6,
+    "text": 4005,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 5018
+   }
+  },
+  "Tick one row": {
+   "xoong": {
+    "added": 5,
+    "removed": 0,
+    "attributes": 0,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 3
+   },
+   "react": {
+    "added": 5,
+    "removed": 0,
+    "attributes": 3009,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "vue": {
+    "added": 6,
+    "removed": 1,
+    "attributes": 6,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "angular": {
+    "added": 4,
+    "removed": 0,
+    "attributes": 0,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "xoongBefore": {
+    "added": 5,
+    "removed": 0,
+    "attributes": 0,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 1003
+   }
+  },
+  "Untick it again": {
+   "xoong": {
+    "added": 0,
+    "removed": 5,
+    "attributes": 0,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 2
+   },
+   "react": {
+    "added": 0,
+    "removed": 5,
+    "attributes": 3009,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "vue": {
+    "added": 1,
+    "removed": 6,
+    "attributes": 6,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "angular": {
+    "added": 0,
+    "removed": 4,
+    "attributes": 0,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "xoongBefore": {
+    "added": 0,
+    "removed": 5,
+    "attributes": 0,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 1002
+   }
+  },
+  "Sort by name": {
+   "xoong": {
+    "added": 13062,
+    "removed": 13062,
+    "attributes": 7,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 29
+   },
+   "react": {
+    "added": 13090,
+    "removed": 13090,
+    "attributes": 6013,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "vue": {
+    "added": 22344,
+    "removed": 22344,
+    "attributes": 16,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "angular": {
+    "added": 13090,
+    "removed": 13090,
+    "attributes": 1,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "xoongBefore": {
+    "added": 13062,
+    "removed": 13062,
+    "attributes": 7,
+    "text": 4002,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 5029
+   }
+  },
+  "Type a letter in the add dialog (nothing else changes)": {
+   "xoong": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 1,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 10
+   },
+   "react": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 7,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "vue": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 1,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "angular": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 7,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "xoongBefore": {
+    "added": 0,
+    "removed": 0,
+    "attributes": 1,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 10
+   }
+  },
+  "Add one person, who is not on this page (the list is fetched again)": {
+   "xoong": {
+    "added": 12,
+    "removed": 6,
+    "attributes": 19,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 37
+   },
+   "react": {
+    "added": 2,
+    "removed": 0,
+    "attributes": 3032,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "vue": {
+    "added": 3,
+    "removed": 2,
+    "attributes": 8,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "angular": {
+    "added": 2,
+    "removed": 0,
+    "attributes": 42,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 1000
+   },
+   "xoongBefore": {
+    "added": 12,
+    "removed": 6,
+    "attributes": 19,
+    "text": 4001,
+    "rows": 1000,
+    "rowsSame": 1000,
+    "effectRuns": 5037
+   }
+  },
+  "Delete one person (the next one moves up into the page)": {
+   "xoong": {
+    "added": 15,
+    "removed": 29,
+    "attributes": 8,
+    "text": 2,
+    "rows": 999,
+    "rowsSame": 999,
+    "effectRuns": 19
+   },
+   "react": {
+    "added": 5,
+    "removed": 19,
+    "attributes": 12026,
+    "text": 1,
+    "rows": 999,
+    "rowsSame": 999
+   },
+   "vue": {
+    "added": 8,
+    "removed": 32,
+    "attributes": 24,
+    "text": 0,
+    "rows": 999,
+    "rowsSame": 999
+   },
+   "angular": {
+    "added": 4,
+    "removed": 18,
+    "attributes": 2,
+    "text": 2,
+    "rows": 999,
+    "rowsSame": 999
+   },
+   "xoongBefore": {
+    "added": 13959,
+    "removed": 13973,
+    "attributes": 8,
+    "text": 3998,
+    "rows": 999,
+    "rowsSame": 999,
+    "effectRuns": 7014
+   }
+  },
+  "Search \"person99\" (11 of the 1,000 match)": {
+   "xoong": {
+    "added": 0,
+    "removed": 13846,
+    "attributes": 4,
+    "text": 1,
+    "rows": 11,
+    "rowsSame": 11,
+    "effectRuns": 29
+   },
+   "react": {
+    "added": 0,
+    "removed": 13846,
+    "attributes": 9061,
+    "text": 1,
+    "rows": 11,
+    "rowsSame": 11
+   },
+   "vue": {
+    "added": 1,
+    "removed": 23737,
+    "attributes": 20,
+    "text": 0,
+    "rows": 11,
+    "rowsSame": 11
+   },
+   "angular": {
+    "added": 0,
+    "removed": 13846,
+    "attributes": 0,
+    "text": 1,
+    "rows": 11,
+    "rowsSame": 11
+   },
+   "xoongBefore": {
+    "added": 154,
+    "removed": 14000,
+    "attributes": 4,
+    "text": 46,
+    "rows": 11,
+    "rowsSame": 11,
+    "effectRuns": 84
+   }
+  },
+  "Clear the search (back to 1,000)": {
+   "xoong": {
+    "added": 13846,
+    "removed": 0,
+    "attributes": 0,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 11,
+    "effectRuns": 4964
+   },
+   "react": {
+    "added": 13846,
+    "removed": 0,
+    "attributes": 3088,
+    "text": 1,
+    "rows": 1000,
+    "rowsSame": 11
+   },
+   "vue": {
+    "added": 23737,
+    "removed": 1,
+    "attributes": 15,
+    "text": 0,
+    "rows": 1000,
+    "rowsSame": 11
+   },
+   "angular": {
+    "added": 13846,
+    "removed": 0,
+    "attributes": 0,
+    "text": 3957,
+    "rows": 1000,
+    "rowsSame": 11
+   },
+   "xoongBefore": {
+    "added": 13846,
+    "removed": 0,
+    "attributes": 0,
+    "text": 45,
+    "rows": 1000,
+    "rowsSame": 11,
+    "effectRuns": 5019
+   }
+  },
+  "Rows per page 1,000 to 100": {
+   "xoong": {
+    "added": 3,
+    "removed": 12600,
+    "attributes": 4,
+    "text": 1,
+    "rows": 100,
+    "rowsSame": 100,
+    "effectRuns": 31
+   },
+   "react": {
+    "added": 2,
+    "removed": 12600,
+    "attributes": 3312,
+    "text": 1,
+    "rows": 100,
+    "rowsSame": 100
+   },
+   "vue": {
+    "added": 3,
+    "removed": 21602,
+    "attributes": 15,
+    "text": 0,
+    "rows": 100,
+    "rowsSame": 100
+   },
+   "angular": {
+    "added": 2,
+    "removed": 12600,
+    "attributes": 0,
+    "text": 1,
+    "rows": 100,
+    "rowsSame": 100
+   },
+   "xoongBefore": {
+    "added": 3,
+    "removed": 12600,
+    "attributes": 4,
+    "text": 402,
+    "rows": 100,
+    "rowsSame": 100,
+    "effectRuns": 531
+   }
+  },
+  "Next page (100 rows, all different)": {
+   "xoong": {
+    "added": 1403,
+    "removed": 1400,
+    "attributes": 4,
+    "text": 1,
+    "rows": 100,
+    "rowsSame": 0,
+    "effectRuns": 534
+   },
+   "react": {
+    "added": 1402,
+    "removed": 1400,
+    "attributes": 312,
+    "text": 1,
+    "rows": 100,
+    "rowsSame": 0
+   },
+   "vue": {
+    "added": 2403,
+    "removed": 2402,
+    "attributes": 15,
+    "text": 0,
+    "rows": 100,
+    "rowsSame": 0
+   },
+   "angular": {
+    "added": 1402,
+    "removed": 1400,
+    "attributes": 0,
+    "text": 401,
+    "rows": 100,
+    "rowsSame": 0
+   },
+   "xoongBefore": {
+    "added": 1403,
+    "removed": 1400,
+    "attributes": 4,
+    "text": 2,
+    "rows": 100,
+    "rowsSame": 0,
+    "effectRuns": 534
+   }
+  }
+ },
+ "note": "xoongBefore: the same probe before the re-render fixes of packages/data/src/view.js (unchanged answers rewrote every row, deleting a row moved the rows after it, a tick re-ran every checkbox)"
+}

@@ -1,6 +1,7 @@
 node_modules
 dist
 dist-nopreload
+dist-min
 .xoong
 .cache
 .competitors

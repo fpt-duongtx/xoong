@@ -156,6 +156,13 @@ breaking: none.
 
 * Added: `@xoong/ui/mist.css` (`src/mist.css`): the Mist look (the Rainlet design system) as one self-sufficient stylesheet for an app: the tokens and a dark scheme, the `--xo-*` mapping straight from them, the component skin and the controls of the Mist spec, in the layer `xoong-mist`, without the documentation site's chrome. Generated from the design kit by `tools/build-mist.mjs`; `test/mist.test.mjs` checks it is up to date, self-contained and draws 40px controls and the Mist primary in a page with only the four framework files.
 
+## 0.0.50 (rows keep their identity, a memory leak in lists, pager step)
+
+breaking: none.
+
+* Fixed (data): a list no longer rewrites every row when one record changes or a refetch brings the same data: reused rows keep their element, item and `$index`, so disabling one of 1,000 people runs 18 effects instead of 5,018, deleting one moves 15 nodes instead of 13,959, ticking one row runs 3 effects instead of 1,003, and a refetch with identical data touches nothing. Rows of an earlier list were also kept in memory after a sort or a search (a closure made inside the list effect held them); they are released now. Reading attributes with `getAttributeNames()` stops the browser from creating an `Attr` node per attribute per row (about 23 of 37 nodes per row). New rows are inserted in one fragment, and the interpolation parse is cached per template string. `@xoong/data` budget 19.8 KB.
+* Fixed (ui): after choosing a rows-per-page value the pager's Next and Previous step by the current page size, not the size written in the markup.
+
 ## 0.0.49 (benchmarks with Angular, a React written by a specialist; kit fixes for the new controls)
 
 breaking: none.

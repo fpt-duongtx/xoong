@@ -64,10 +64,14 @@ const camel = (s) => s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 /** @typedef {{ value: () => any, parent?: Scope, vars?: Record<string, () => any> }} Scope */
 
 /** "a.b", "a[0].b" and "$form.errors['title.vi']" as steps. */
+const steps = new Map(); // a path is split once, not on every read of every row
 function splitPath(path) {
-  const steps = [];
-  for (const m of path.matchAll(/\[(?:'([^']*)'|"([^"]*)"|(\d+))\]|([^.[\]]+)/g)) steps.push(m[1] ?? m[2] ?? m[3] ?? m[4]);
-  return steps;
+  let out = steps.get(path);
+  if (!out) {
+    steps.set(path, out = []);
+    for (const m of path.matchAll(/\[(?:'([^']*)'|"([^"]*)"|(\d+))\]|([^.[\]]+)/g)) out.push(m[1] ?? m[2] ?? m[3] ?? m[4]);
+  }
+  return out;
 }
 
 function makeResolver(store) {
@@ -115,14 +119,15 @@ class XoView extends XoElement {
     const store = getClient().store;
     return [...this.#selected.value].map((k) => ({ $ref: k })).filter((r) => store.has(r));
   }
-  isSelected(key) { return this.#selected.value.has(key); }
+  /** One signal per key asked about, so ticking a row re-runs the checkbox of that row, not of every row. */
+  #tick = new Map();
+  isSelected(key) { let t = this.#tick.get(key); if (!t) this.#tick.set(key, t = signal(this.#selected.peek().has(key))); return t.value; }
   /** Select or deselect row keys. */
   select(keys, on) {
     const next = new Set(this.#selected.peek());
-    for (const k of keys) { if (on) next.add(k); else next.delete(k); }
-    this.#selected.value = next;
+    batch(() => { for (const k of keys) { on ? next.add(k) : next.delete(k); const t = this.#tick.get(k); if (t) t.value = on; } this.#selected.value = next; });
   }
-  clearSelection() { if (this.#selected.peek().size) this.#selected.value = new Set(); }
+  clearSelection() { const was = this.#selected.peek(); if (was.size) this.select([...was], false); }
 
   /** Start a streamed call: cancels the previous one, and everything is cancelled when the view goes away. */
   beginStream() {
@@ -339,8 +344,14 @@ export { setUrlSync } from './url-state.js';
  */
 const PATH = /^\.?(?:[\p{L}_$@][\p{L}\p{N}_$@-]*)?(?:\.[\p{L}\p{N}_$@-]+|\[(?:\d+|'[^']*'|"[^"]*")\])*$/u;
 /** Interpolate `{path}` in a string. Returns null if there is nothing to interpolate. */
+const planned = new Map();
 function parseInterpolation(text) {
   if (!text.includes('{')) return null;
+  let plan = planned.get(text); // a row's text is the template's text: parsed once, not once per row
+  if (plan === undefined) planned.set(text, plan = parsePlan(text));
+  return plan;
+}
+function parsePlan(text) {
   const raw = text.split(/(\\?\{[^{}]+\})/); // the odd entries are the `{...}` candidates
   let bound = false;
   const parts = raw.map((p, i) => {
@@ -364,7 +375,7 @@ function bindNode(node, scope, ctx, disposers) {
   const { lookup } = ctx;
   if (node.nodeType === 3) {
     const parts = parseInterpolation(node.data);
-    if (parts) disposers.push(effect(() => { node.data = evalParts(parts, scope, lookup); }));
+    if (parts) disposers.push(effect(() => { const text = evalParts(parts, scope, lookup); if (node.data !== text) node.data = text; })); // an identical write still wakes observers and costs layout
     return;
   }
   if (node.nodeType !== 1) return;
@@ -397,38 +408,39 @@ function bindNode(node, scope, ctx, disposers) {
     disposers.push(effect(() => t.apply(el, (name) => ctx.lookup(scope, name))));
   }
   let childScope = scope;
-  for (const attr of [...el.attributes]) {
-    if (attr.name === 'xo-click' || attr.name === 'xo-submit') {
-      const engine = bindAction(el, attr.name === 'xo-click' ? 'click' : 'submit', attr.value, scope, ctx, disposers);
+  // getAttributeNames(), not `attributes`: iterating `attributes` makes the browser create an Attr node for every attribute of every row and keep it as long as the row lives
+  for (const name of el.getAttributeNames()) {
+    const value = el.getAttribute(name) ?? '';
+    if (name === 'xo-click' || name === 'xo-submit') {
+      const engine = bindAction(el, name === 'xo-click' ? 'click' : 'submit', value, scope, ctx, disposers);
       if (engine) childScope = { value: () => engine.model.value, parent: scope, vars: { $form: () => engine.model } }; // `$form.dirty`, `$form.errors['title.vi']` ... inside the form
       continue;
     }
-    if (attr.name === 'xo-add' || attr.name === 'xo-remove' || attr.name === 'xo-move') {
-      bindArrayAction(el, attr.name, attr.value, scope, ctx, disposers);
+    if (name === 'xo-add' || name === 'xo-remove' || name === 'xo-move') {
+      bindArrayAction(el, name, value, scope, ctx, disposers);
       continue;
     }
-    if (attr.name === 'xo-drag') {
-      bindDrag(el, attr.value, scope, ctx);
+    if (name === 'xo-drag') {
+      bindDrag(el, value, scope, ctx);
       continue;
     }
-    if (attr.name === 'xo-select') {
-      bindSelect(el, attr.value, scope, ctx, disposers);
+    if (name === 'xo-select') {
+      bindSelect(el, value, scope, ctx, disposers);
       continue;
     }
-    if (attr.name === 'xo-param') {
-      bindParam(el, attr.value, scope, ctx, disposers);
+    if (name === 'xo-param') {
+      bindParam(el, value, scope, ctx, disposers);
       continue;
     }
-    if (attr.name === 'xo-refresh') {
+    if (name === 'xo-refresh') {
       const refresh = () => ctx.host.refresh();
       el.addEventListener('click', refresh);
       disposers.push(() => el.removeEventListener('click', refresh));
       continue;
     }
-    if (attr.name === 'xo-body' || attr.name === 'xo-keep' || attr.name === 'xo-optimistic' || attr.name === 'xo-selected' || attr.name === 'xo-with' || attr.name === 'xo-confirm' || attr.name === 'xo-notice' || attr.name === 'xo-then' || attr.name === 'xo-t') continue;
-    const parts = parseInterpolation(attr.value);
+    if (name === 'xo-body' || name === 'xo-keep' || name === 'xo-optimistic' || name === 'xo-selected' || name === 'xo-with' || name === 'xo-confirm' || name === 'xo-notice' || name === 'xo-then' || name === 'xo-t') continue;
+    const parts = parseInterpolation(value);
     if (parts) {
-      const name = attr.name;
       if (isScriptAttr(name)) {
         console.error(`xoong: refusing to interpolate data into the "${name}" attribute (it executes code)`);
         el.removeAttribute(name);
@@ -523,43 +535,54 @@ function bindEach(el, scope, ctx, disposers) {
   let rows = new Map();
   const nodesOf = (/** @type {Row} */ row) => { const out = [row.first]; for (let n = row.first; n !== row.last && n.nextSibling; ) { n = /** @type {Node} */ (n.nextSibling); out.push(n); } return out; };
   const dropRow = (/** @type {Row} */ row) => { row.stops.forEach((s) => s()); for (const n of nodesOf(row)) n.remove(); };
+  // Built outside the effect on purpose: a closure made inside it keeps that run's `next` map (and so every row of that run, deleted ones too) alive for as long as the row lives.
+  const makeRow = (item, i) => {
+    const index = signal(i);
+    const current = signal(item);
+    // `$index` is the nearest row; `$i0`, `$i1` ... are the rows of the enclosing `xo-each`s, outermost first (names of nested array fields)
+    let depth = 0;
+    for (let s = scope; s; s = s.parent) if (s.vars?.$index) depth++;
+    const itemScope = { value: () => current.value, parent: scope, vars: { $index: () => index.value, $n: () => index.value + 1, [`$i${depth}`]: () => index.value } };
+    const stops = [];
+    if (fragmentRows) {
+      const frag = document.createDocumentFragment(), first = document.createComment('xo-row'), last = document.createComment('/xo-row');
+      frag.append(first, .../** @type {HTMLTemplateElement} */ (tpl).content.cloneNode(true).childNodes, last);
+      batch(() => { for (const n of [...frag.childNodes]) if (n !== first && n !== last) bindNode(n, itemScope, ctx, stops); });
+      return { first, last, stops, index, current, frag };
+    }
+    const node = /** @type {Element} */ (tpl.cloneNode(true));
+    batch(() => bindNode(node, itemScope, ctx, stops));
+    return { first: node, last: node, stops, index, current };
+  };
   disposers.push(effect(() => {
     const list = ctx.lookup(scope, path);
     const items = (Array.isArray(list) ? list : []).filter((it) => !isRef(it) || ctx.client.store.has(it)); // drop deleted entities
     // Do not subscribe this effect to row internals: bind rows untracked by their own effects.
     const next = new Map();
+    // Rows that are gone leave first: otherwise each row after a deleted one finds a stranger in its place and is moved, so deleting one row of a thousand moved a thousand.
+    const keys = items.map((item, i) => (isRef(item) ? item.$ref : `#${i}`)), keep = new Set(keys);
+    for (const [key, row] of rows) if (!keep.has(key)) dropRow(row);
     /** @type {Node} */ let cursor = start;
+    // New rows are inserted together (one DOM change, one record for every observer on the page) just before the next row that was already there
+    /** @type {DocumentFragment | null} */ let pending = null;
+    /** @type {Node} */ let anchor = start;
+    const flush = () => { if (pending) anchor.after(pending); pending = null; };
     items.forEach((item, i) => {
-      const key = isRef(item) ? item.$ref : `#${i}`;
+      const key = keys[i];
       let row = rows.get(key) ?? next.get(key);
-      if (!row) {
-        const index = signal(i);
-        const current = signal(item);
-        // `$index` is the nearest row; `$i0`, `$i1` ... are the rows of the enclosing `xo-each`s, outermost first (names of nested array fields)
-        let depth = 0;
-        for (let s = scope; s; s = s.parent) if (s.vars?.$index) depth++;
-        const itemScope = { value: () => current.value, parent: scope, vars: { $index: () => index.value, $n: () => index.value + 1, [`$i${depth}`]: () => index.value } };
-        const stops = [];
-        let first, last;
-        if (fragmentRows) {
-          const frag = document.createDocumentFragment();
-          first = document.createComment('xo-row');
-          last = document.createComment('/xo-row');
-          frag.append(first, .../** @type {HTMLTemplateElement} */ (tpl).content.cloneNode(true).childNodes, last);
-          batch(() => { for (const n of [...frag.childNodes]) if (n !== first && n !== last) bindNode(n, itemScope, ctx, stops); });
-          row = { first, last, stops, index, current, frag };
-        } else {
-          const node = /** @type {Element} */ (tpl.cloneNode(true));
-          batch(() => bindNode(node, itemScope, ctx, stops));
-          row = { first: node, last: node, stops, index, current };
-        }
-      } else batch(() => { row.index.value = i; row.current.value = item; }); // reused row follows its new item
+      const fresh = !row;
+      if (!row) row = makeRow(item, i);
+      else { // a reused row follows its new position and item; an entity is the same item while its key is the same (its fields are read from the store)
+        const cur = row.current.peek();
+        batch(() => { row.index.value = i; if (isRef(item) ? cur?.$ref !== key : cur !== item) row.current.value = item; });
+      }
       next.set(key, row);
-      if (cursor.nextSibling !== row.first) cursor.after(...(row.frag ? [row.frag] : nodesOf(row)));
+      if (fresh) { if (!pending) { pending = document.createDocumentFragment(); anchor = cursor; } pending.append(row.frag ?? row.first); } // a fresh row is one element, or the fragment of a template row
+      else { flush(); if (cursor.nextSibling !== row.first) cursor.after(...nodesOf(row)); }
       row.frag = undefined;
       cursor = row.last;
     });
-    for (const [key, row] of rows) if (!next.has(key)) dropRow(row);
+    flush();
     rows = next;
   }));
   disposers.push(() => { for (const row of rows.values()) dropRow(row); rows.clear(); });

@@ -1,6 +1,6 @@
 {
   "name": "@xoong/core",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "description": "xoong core: signals, Light DOM custom elements, html templates. Zero dependencies.",
   "type": "module",
   "main": "src/index.js",

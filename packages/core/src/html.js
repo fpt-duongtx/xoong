@@ -95,11 +95,12 @@ function instantiate(result, disposers) {
     bindChild(c, result.values[i], disposers);
   }
   for (const el of elements) {
-    for (const attr of [...el.attributes]) {
-      if (!attr.value.startsWith(MARK)) continue;
-      const i = Number(attr.value.slice(MARK.length));
+    for (const name of el.getAttributeNames()) { // not `attributes`: that makes the browser create (and keep) an Attr node for every attribute
+      const value = el.getAttribute(name) ?? '';
+      if (!value.startsWith(MARK)) continue;
+      const i = Number(value.slice(MARK.length));
       const part = /** @type {any} */ (parts[i]);
-      el.removeAttribute(attr.name);
+      el.removeAttribute(name);
       bindAttr(el, part, result.values[i], disposers);
     }
   }

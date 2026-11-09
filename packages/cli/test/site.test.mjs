@@ -9,10 +9,11 @@ import { sync } from '../src/commands.js';
 import { launchChromium } from '../../../tools/browser.mjs';
 import { axe } from '../../../tools/axe.mjs';
 import { focusStates, weak } from '../../../tools/focus.mjs';
+import { published } from '../../../tools/site/benchmarks-page.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'benchmarks', 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'dialogs', 'combobox', 'carousel', 'more-controls', 'own-control', 'recipes', 'cli', 'mcp', 'editor', 'codes', 'reference', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand', 'live-admin', 'live-landing'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', ...(published ? ['benchmarks'] : []), 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'dialogs', 'combobox', 'carousel', 'more-controls', 'own-control', 'recipes', 'cli', 'mcp', 'editor', 'codes', 'reference', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand', 'live-admin', 'live-landing'];
 const DOCS = PAGES.filter((n) => !['index', 'brand', 'live-admin', 'live-landing'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];

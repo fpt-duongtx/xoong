@@ -7,6 +7,28 @@ test fails when it differs from them, so a number cannot be edited by hand.
 Nothing here is a verdict on a framework. It is one screen, written once per stack by one author, measured on one machine. Use it to see what a stack costs
 for *this* screen, and rerun it on yours.
 
+## Publication switch and gate
+
+What these scripts measure is always in this folder. Whether it is *published* (the benchmarks page, the home page block, the tables in the READMEs) is one switch:
+`results/publish.json`, `{ "publish": false }`, **off by default**. While it is off, `tools/site/benchmarks-page.mjs` and `tools/package-files.mjs` generate none of those and
+`benchmarks/` stays a working harness. Turn it on (`true`), then run `npm run site` and `node tools/package-files.mjs`; the drift tests cover both states.
+
+Gate for turning it on: in the same session and on the same profile, xoong is the best or within 10% of the best in at least 4 of the 6 headline rows of the table, and is not behind
+the best by more than 25% in any headline row. Otherwise report the table and what is still behind to the owner first. Numbers are never inflated and never left out of a published table.
+
+## Re-render probe
+
+`rerender.mjs` counts what the DOM does when one thing changes (nodes added and removed, text and attribute writes, rows that stay the same element, and for xoong the effect runs) on the
+screen with 1,000 rows, for all four stacks: `results/rerender.json` (`xoongBefore` is xoong before its re-render fixes). It found, and `packages/data/src/view.js` now fixes: a refetch with
+unchanged data re-ran every row's bindings and rewrote its text; deleting one row moved all the rows after it; ticking one row re-ran every checkbox; every `[...el.attributes]` made the browser keep an
+Attr node per attribute (23 of 37 nodes per row); and rows of an earlier list stayed in memory after a sort or a search (a closure made inside the list effect kept that run's rows alive).
+Regression tests: `packages/data/test/rerender.spec.mjs`, `packages/data/test/row-release.test.mjs`.
+
+## What is not done yet
+
+The richer nested "orders" screen, the written specification (`SPEC.md`) with a parity report across stacks, and the normalisation list (no icons, fonts, source maps; load average checks) were
+requested after the numbers above were taken and are not done: the committed numbers are of the flat screen only.
+
 ## What is measured
 
 | Script | Measures | Output |

@@ -7,7 +7,10 @@ import { esc, tabs } from './lib.mjs';
 const results = new URL('../../benchmarks/results/', import.meta.url);
 const load = (name) => (existsSync(new URL(name, results)) ? JSON.parse(readFileSync(new URL(name, results), 'utf8')) : null);
 const R = load('runtime.json'), E = load('effort.json'), C = load('cli.json'), M = load('mcp.json'), B = load('install.json');
-export const hasBenchmarks = !!(R && E && C && M);
+const dataOk = !!(R && E && C && M);
+/** The one switch: benchmarks/results/publish.json `{ "publish": true }`. OFF by default, so a release does not carry the numbers until the owner decides (gate in benchmarks/README.md). */
+export const published = load('publish.json')?.publish === true;
+export const hasBenchmarks = dataOk && published;
 
 const REPO = 'https://github.com/fpt-duongtx/xoong';
 export const BENCH_URL = `${REPO}/tree/main/benchmarks`;
@@ -129,7 +132,8 @@ ${table(['Tool', 'p50 / p95', 'Answer size'], toolRows)}`;
 
 // ---- the page -------------------------------------------------------------------------------------------------------------------
 const env = R?.environment;
-export const benchmarksPage = !hasBenchmarks ? null : {
+/** The page as the generator writes it when published; `benchmarksPage` (what the site registers) is null while the switch is off. */
+export const benchmarksPageData = !dataOk ? null : {
   file: 'benchmarks.html', section: 'docs', group: 'Start', nav: 'Benchmarks', title: 'Benchmarks',
   description: 'Measured, not promised: the same admin screen in xoong, React, Vue and Angular in real Chromium, and the speed of the xoong command line and MCP server. Every number comes from a script in the repository.',
   body: `
@@ -227,8 +231,8 @@ function headlines() {
 /** "xoong is lowest in 4 of 6 rows": said by the data, so it cannot flatter. */
 const standing = () => { const h = headlines(); const lowest = h.filter((r) => r.values[0] <= Math.min(...r.values)).length; return `xoong has the lowest number in ${lowest} of ${h.length} rows; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row.`; };
 
-export function homeBenchmarks() {
-  if (!hasBenchmarks) return '';
+export function homeBenchmarks(on = hasBenchmarks) {
+  if (!on || !dataOk) return '';
   const rows = headlines().map((r) => `<tr><th scope="row"><a href="benchmarks.html${r.href}">${esc(r.what)}</a></th>${r.cells.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('\n');
   return `
   <section>
@@ -246,8 +250,8 @@ ${rows}
 }
 
 /** A short Markdown table for README files (npm shows it): the same headline numbers, a link for the rest. */
-export function readmeTable({ links = true, cli = false } = {}) {
-  if (!hasBenchmarks) return '';
+export function readmeTable({ links = true, cli = false, on = hasBenchmarks } = {}) {
+  if (!on || !dataOk) return '';
   const h = headlines();
   const lines = [
     '| The same people screen | xoong | React stack | Vue stack | Angular stack |',
@@ -262,8 +266,8 @@ export function readmeTable({ links = true, cli = false } = {}) {
 }
 
 /** READMEs of @xoong/cli and @xoong/mcp: the numbers of their own tool, with the comparison that was measured (and where none was). */
-export function readmeCli() {
-  if (!hasBenchmarks) return '';
+export function readmeCli(on = hasBenchmarks) {
+  if (!on || !dataOk) return '';
   const s = C.sync['generated, 500 operations'], a = C.sync['examples/admin (4 operations)'];
   const b = C.build;
   const rows = [
@@ -276,8 +280,8 @@ export function readmeCli() {
   ];
   return `Median of ${C.runs} runs of the whole process on ${C.environment.machine.split(',')[0]} (${C.environment.date}); one machine, so use it to compare rows, not to predict yours. Method and raw runs: [benchmarks/](${BENCH_URL}).\n\n| Command | xoong | Comparison |\n|---|---|---|\n${rows.map((r) => `| ${r.join(' | ')} |`).join('\n')}\n`;
 }
-export function readmeMcp() {
-  if (!hasBenchmarks) return '';
+export function readmeMcp(on = hasBenchmarks) {
+  if (!on || !dataOk) return '';
   const [x, ref] = Object.values(M.servers);
   const p = (l) => `${n(l.p50, 2)} / ${n(l.p95, 2)} ms`;
   const rows = [
@@ -289,3 +293,5 @@ export function readmeMcp() {
   ];
   return `Real stdio JSON-RPC, ${n(M.calls)} sequential calls per tool, ${M.runs} start-ups, on ${M.environment.machine.split(',')[0]} (${M.environment.date}). The reference is a one-tool server on the official TypeScript SDK ${M.versions['@modelcontextprotocol/sdk']} answering the same call: it shows what the protocol layer costs, it is not a product comparison. Every tool and the method: [benchmarks/](${BENCH_URL}).\n\n| | xoong-mcp (no SDK) | SDK reference |\n|---|---|---|\n${rows.map((r) => `| ${r.join(' | ')} |`).join('\n')}\n`;
 }
+
+export const benchmarksPage = published ? benchmarksPageData : null;

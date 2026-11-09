@@ -324,7 +324,7 @@ await setLocale('vi');`]])}
 <thead><tr><th>Package</th><th>What it is</th><th>Budget</th></tr></thead>
 <tbody>
 <tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.9 KB</td></tr>
-<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.4 KB</td></tr>
+<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.8 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
 <tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>12.5 KB</td></tr>
 <tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>37 KB</td></tr>

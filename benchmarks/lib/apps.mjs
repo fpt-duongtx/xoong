@@ -6,6 +6,7 @@ export const root = join(here, '..');
 export const repo = join(root, '..');
 export const apps = {
   xoong: { label: 'xoong', dir: join(root, 'apps/xoong'), dist: 'dist', kind: 'xoong' },
+  'xoong-min': { label: 'xoong (minified)', dir: join(root, 'apps/xoong'), dist: 'dist-min', kind: 'xoong', variantOf: 'xoong' },
   react: { label: 'React', dir: join(root, 'apps/react'), dist: 'dist', kind: 'vite' },
   angular: { label: 'Angular', dir: join(root, 'apps/angular'), dist: 'dist/browser', kind: 'angular' },
   vue: { label: 'Vue', dir: join(root, 'apps/vue'), dist: 'dist', kind: 'vite' },
