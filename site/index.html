@@ -142,6 +142,25 @@
     </div>
   </section>
 
+
+  <section>
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Measured, not promised</span><h2>The same screen, three ways.</h2><p>A people list with server-side sort, search and paging, bulk delete and an add dialog, built in xoong, in React and in Vue, run in real Chromium. Median of 5 runs on one machine (Apple M1); the spread, the method and what was not measured are on the <a href="benchmarks.html">benchmarks page</a>, and every number comes from a script you can run.</p></div>
+      <div class="table-wrap" tabindex="0"><table aria-label="The same admin screen in xoong, a React stack and a Vue stack">
+        <thead><tr><th scope="col">Metric</th><th scope="col">xoong</th><th scope="col">React stack</th><th scope="col">Vue stack</th></tr></thead>
+        <tbody>
+<tr><th scope="row"><a href="benchmarks.html#what-gets-delivered">Browser JS, CSS and HTML, brotli</a></th><td>80.2 kB</td><td>102.3 kB</td><td>64.4 kB</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#what-gets-delivered">Third-party packages in the browser build</a></th><td>0</td><td>7</td><td>6</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#load-and-interaction-throttled">Screen usable, slow 4G and 4x slower CPU</a></th><td>1,055 ms</td><td>1,113 ms</td><td>873 ms</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#load-and-interaction-unthrottled">Show 1,000 rows, unthrottled</a></th><td>96.3 ms</td><td>98.5 ms</td><td>104 ms</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#effort-the-same-screen-written-three-times">Lines written for the same screen</a></th><td>39</td><td>260</td><td>194</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#build-dev-server-and-install">Packages npm installs for the screen</a></th><td>12</td><td>52</td><td>83</td></tr>
+        </tbody>
+      </table></div>
+      <p class="hint">xoong has the lowest number in 4 of 6 rows; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row. Lines of code and packages are proxies for effort, not time, and xoong's screen assumes an OpenAPI document. <a href="benchmarks.html">All the numbers, the command line and the MCP server, and what was not measured</a>.</p>
+    </div>
+  </section>
+
   <section>
     <div class="wrap">
       <div class="head"><span class="eyebrow">The recipe</span><h2>Three steps from spec to screen.</h2></div>

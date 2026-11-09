@@ -22,6 +22,21 @@ npx xoong --help                   # every command and option; an option that do
 ```
 Exit code: 0 done, 1 findings or a failure, 2 an unknown command or a missing argument.
 
+## Measured, not promised
+
+Median of 10 runs of the whole process on Apple M1 (2026-11-09); one machine, so use it to compare rows, not to predict yours. Method and raw runs: [benchmarks/](https://github.com/fpt-duongtx/xoong/tree/main/benchmarks).
+
+| Command | xoong | Comparison |
+|---|---|---|
+| `xoong --version` (Node start-up included) | 52.0 ms | `node -e 0`: 24.7 ms |
+| `xoong sync`, 4 operations | 57.2 ms | `openapi-typescript` 7.13.0: 320 ms (types only) |
+| `xoong sync`, generated 500 operations | 75.4 ms | `openapi-typescript`: 478 ms (types only) |
+| `xoong check`, 1 screen | 59.2 ms | no comparable tool |
+| `xoong check`, 100 screens | 86.8 ms | no comparable tool |
+| `xoong check`, 1,000 screens | 232 ms | no comparable tool |
+| `xoong build`, people screen | 146 ms | `vite build` 8.3.6, React stack: 190 ms (bundles and minifies; xoong does not) |
+| `xoong dev`, start to first response | 104 ms | `vite` (React stack): 148 ms |
+
 ## More
 
 * Documentation, guides and live demos: https://fpt-duongtx.github.io/xoong/

@@ -1,0 +1,16 @@
+{
+  "name": "xoong-benchmarks",
+  "private": true,
+  "type": "module",
+  "description": "Reproducible benchmarks for xoong. Not a workspace of the repository: the competitors' dependencies are installed by `npm run setup`, from lockfiles kept in apps/react and apps/vue.",
+  "scripts": {
+    "setup": "node lib/build-all.mjs && npm ci --prefix tooling --no-audit --no-fund",
+    "accept": "node lib/acceptance.mjs",
+    "runtime": "node runtime.mjs",
+    "effort": "node effort.mjs",
+    "cli": "node cli.mjs",
+    "mcp": "node mcp.mjs",
+    "install-times": "node install.mjs",
+    "bench": "node lib/build-all.mjs && node runtime.mjs && node effort.mjs"
+  }
+}

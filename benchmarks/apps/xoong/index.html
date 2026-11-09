@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>People</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body class="xo-admin">
+  <header><strong>Team admin</strong></header>
+  <nav aria-label="Main"><a href="/" aria-current="page">People</a></nav>
+  <main>
+    <h1>People</h1>
+    <button xo-open="#add">Add a person</button>
+
+    <xo-view get="listPeople">
+      <p xo-if="$loading" role="status">Loading…</p>
+      <p xo-if="$error" class="xo-error" role="alert">{$error.code}: {$error.detail}</p>
+      <xo-table columns="name,email:E-mail,role,status" sortable selectable filters="q:Search" page-size="10" page-sizes="10,100,1000,10000" empty="No people found">
+        <button slot="bulk" xo-click="deletePeople" xo-selected="ids" xo-confirm="Delete the selected people?" xo-confirm-ok="Delete" class="danger">Delete selected</button>
+        <button xo-click="disablePerson">Disable</button>
+      </xo-table>
+    </xo-view>
+
+    <xo-dialog id="add">
+      <h2>Add a person</h2>
+      <xo-view>
+        <xo-form op="createPerson" submit="Add" xo-notice="Person added"></xo-form>
+      </xo-view>
+      <button xo-close>Cancel</button>
+    </xo-dialog>
+  </main>
+</body>
+</html>

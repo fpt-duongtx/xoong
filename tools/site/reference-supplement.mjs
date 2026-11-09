@@ -290,6 +290,50 @@ export const ELEMENTS = {
     guide: 'more-controls.html#feedback', events: ['save', 'cancel'], keywords: 'rename edit in place title text',
     example: `<xo-inline-edit name="title" value="Greece Golden Visa" label="Title"></xo-inline-edit>`,
   },
+  'xo-drawer': {
+    guide: 'more-controls.html#overlays', keywords: 'side sheet panel slide filter offcanvas modal',
+    types: { heading: 'text', label: 'text', side: 'choice', size: 'choice', dismiss: 'flag' }, defaults: { side: 'end', size: 'md' },
+    example: `
+<button xo-open="#filters">Filters</button>
+<xo-drawer id="filters" heading="Filters" side="end" dismiss>
+  <p>Choose what to show.</p>
+  <button slot="footer" type="button" xo-close>Close</button>
+</xo-drawer>`,
+  },
+  'xo-breadcrumb': {
+    guide: 'more-controls.html#overlays', keywords: 'trail path navigation hierarchy location',
+    types: { label: 'text', items: 'JSON', max: 'number' },
+    example: `
+<xo-breadcrumb max="3" items='[{"label":"Home","href":"/"},{"label":"Docs","href":"/docs"},{"label":"Controls","href":"/docs/controls"},{"label":"Tree"}]'></xo-breadcrumb>`,
+  },
+  'xo-alert': {
+    guide: 'more-controls.html#messages', events: ['xo-dismiss'], keywords: 'banner notice message warning error success info callout',
+    types: { kind: 'choice', heading: 'text', live: 'choice' }, defaults: { kind: 'info' },
+    example: `<xo-alert kind="warning" heading="Your trial ends in 3 days" dismissible>Add a payment method to keep your pages.</xo-alert>`,
+  },
+  'xo-skeleton': {
+    guide: 'more-controls.html#messages', keywords: 'loading placeholder shimmer shape',
+    types: { lines: 'number', shape: 'choice', width: 'text', height: 'text', label: 'text' },
+    example: `<xo-skeleton lines="3"></xo-skeleton>`,
+  },
+  'xo-tree': {
+    guide: 'more-controls.html#overlays', events: ['xo-tree-select', 'xo-tree-toggle', 'xo-tree-load'], keywords: 'hierarchy folders outline nested expand collapse checkbox',
+    types: { data: 'JSON', label: 'text', selectable: 'flag', multiple: 'flag', expanded: 'list', selected: 'list' },
+    example: `
+<xo-tree label="Files" selectable>
+  <ul><li>src<ul><li>index.js</li><li>util.js</li></ul></li><li>README.md</li></ul>
+</xo-tree>`,
+  },
+  'xo-color': {
+    guide: 'more-controls.html#pick', keywords: 'colour picker hex swatch palette brand',
+    types: { label: 'text', alpha: 'flag', swatches: 'list' },
+    example: `<xo-color name="brand" label="Brand color" value="#0b7285" swatches="#0b7285,#c92a2a,#2b8a3e"></xo-color>`,
+  },
+  'xo-rating': {
+    guide: 'more-controls.html#pick', keywords: 'stars review score rate',
+    types: { label: 'text', max: 'number', half: 'flag', clearable: 'flag' }, defaults: { max: '5' },
+    example: `<xo-rating name="score" label="Your rating" value="4" half clearable></xo-rating>`,
+  },
 };
 
 // ---- directives -------------------------------------------------------------------------------------------------------------------
@@ -633,6 +677,10 @@ export const EVENTS = {
   'copy-failed': { from: '`<xo-copy>`', detail: '`{ text }`: what could not be copied.', summary: 'The browser refused the clipboard.', description: '', keywords: 'clipboard copy' },
   complete: { from: '`<xo-otp>`', detail: '`{ value }`: the digits.', summary: 'Every box of a one-time code is filled.', description: '', keywords: 'code pin otp digits' },
   save: { from: '`<xo-inline-edit>`', detail: '`{ value }`: the new text.', summary: 'The new text of an inline edit was saved.', description: 'Enter saves.', keywords: 'rename inline edit' },
+  'xo-dismiss': { from: '`<xo-alert>`', detail: 'None. `preventDefault()` keeps the alert.', summary: 'The Close button of an alert was pressed.', description: '', keywords: 'close banner' },
+  'xo-tree-select': { from: '`<xo-tree>`', detail: '`{ id, selected }`: the item acted on and the chosen ids.', summary: 'The choice in a tree changed.', description: '', keywords: 'checkbox selection' },
+  'xo-tree-toggle': { from: '`<xo-tree>`', detail: '`{ id, expanded }`: the item and whether it is open now.', summary: 'A tree item opened or closed.', description: '', keywords: 'expand collapse' },
+  'xo-tree-load': { from: '`<xo-tree>`', detail: '`{ id }`: the lazy item; answer with `tree.setChildren(id, children)`.', summary: 'A lazy tree item was opened for the first time.', description: '', keywords: 'lazy children load' },
   cancel: { from: '`<xo-inline-edit>`', detail: 'None.', summary: 'An inline edit was cancelled.', description: 'Escape cancels.', keywords: 'rename inline edit' },
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "@xoong/ui",
-  "version": "0.0.47",
+  "version": "0.0.48",
   "description": "xoong admin set: xoong.css tokens, <xo-table>, <xo-form>, <xo-dialog>, toast, confirm and a declarative History-API router. Depends on @xoong/core, @xoong/data and @xoong/forms.",
   "type": "module",
   "main": "src/index.js",
@@ -21,9 +21,9 @@
   "sideEffects": true,
   "license": "MIT",
   "dependencies": {
-    "@xoong/core": "0.0.47",
-    "@xoong/data": "0.0.47",
-    "@xoong/forms": "0.0.47"
+    "@xoong/core": "0.0.48",
+    "@xoong/data": "0.0.48",
+    "@xoong/forms": "0.0.48"
   },
   "files": [
     "src"

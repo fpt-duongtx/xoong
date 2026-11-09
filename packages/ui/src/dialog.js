@@ -104,7 +104,7 @@ define('xo-dialog', XoDialog);
       try {
         const dialog = document.querySelector(selector);
         if (dialog instanceof XoDialog) dialog.show();
-        else console.error(`xoong: xo-open="${selector}" matches no <xo-dialog>`);
+        else if (dialog?.localName !== 'xo-drawer') console.error(`xoong: xo-open="${selector}" matches no <xo-dialog>`); // an <xo-drawer> (@xoong/controls) opens itself
       } catch {
         console.error(`xoong: xo-open="${selector}" is not a valid selector (use an id such as #add)`);
       }

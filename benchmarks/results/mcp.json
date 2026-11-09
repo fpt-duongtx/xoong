@@ -1,0 +1,155 @@
+{
+ "environment": {
+  "date": "2026-11-09",
+  "machine": "Apple M1, 8 cores, 8 GB RAM",
+  "os": "Darwin 25.2.0 (arm64)",
+  "node": "v24.7.0",
+  "xoong": "0.0.47",
+  "commit": "6984eca",
+  "mcpVersion": "0.0.47"
+ },
+ "runs": 10,
+ "calls": 200,
+ "inputBytes": {
+  "check_small": 72,
+  "check_large": 91794
+ },
+ "versions": {
+  "@modelcontextprotocol/sdk": "1.32.2"
+ },
+ "servers": {
+  "xoong-mcp": {
+   "startup": {
+    "n": 10,
+    "median": 38.3,
+    "min": 37.6,
+    "max": 39.4,
+    "q1": 38,
+    "q3": 38.4,
+    "runs": [
+     38.2,
+     37.7,
+     37.6,
+     38,
+     38.2,
+     38.3,
+     39.4,
+     38.4,
+     38.3,
+     38.4
+    ]
+   },
+   "toolsList": {
+    "p50": 0.112,
+    "p95": 0.161,
+    "max": 0.622,
+    "n": 200
+   },
+   "calls": {
+    "get_spec": {
+     "p50": 0.257,
+     "p95": 0.371,
+     "max": 0.463,
+     "n": 200,
+     "responseChars": 12171
+    },
+    "list_operations": {
+     "p50": 0.104,
+     "p95": 0.143,
+     "max": 0.305,
+     "n": 200,
+     "responseChars": 549
+    },
+    "check_small": {
+     "p50": 0.124,
+     "p95": 0.172,
+     "max": 0.249,
+     "n": 200,
+     "responseChars": 12
+    },
+    "check_large": {
+     "p50": 4.644,
+     "p95": 5.356,
+     "max": 8.97,
+     "n": 200,
+     "responseChars": 12
+    },
+    "explain_error": {
+     "p50": 0.021,
+     "p95": 0.031,
+     "max": 0.038,
+     "n": 200,
+     "responseChars": 192
+    },
+    "explain_syntax": {
+     "p50": 0.038,
+     "p95": 0.045,
+     "max": 0.129,
+     "n": 200,
+     "responseChars": 1453
+    },
+    "search_docs": {
+     "p50": 1.452,
+     "p95": 1.534,
+     "max": 1.735,
+     "n": 200,
+     "responseChars": 127
+    }
+   },
+   "throughput": {
+    "requests": 20000,
+    "perSecond": 254577
+   },
+   "rssMB": {
+    "idle": 54.5,
+    "after1000ExplainError": 60.9,
+    "after1000Mixed": 148.1
+   }
+  },
+  "TypeScript SDK reference": {
+   "startup": {
+    "n": 10,
+    "median": 87.4,
+    "min": 86.7,
+    "max": 91.4,
+    "q1": 87.3,
+    "q3": 87.5,
+    "runs": [
+     87.3,
+     86.9,
+     87.6,
+     87.3,
+     91.4,
+     87.5,
+     87.5,
+     86.7,
+     87.5,
+     87.3
+    ]
+   },
+   "toolsList": {
+    "p50": 0.173,
+    "p95": 0.277,
+    "max": 0.792,
+    "n": 200
+   },
+   "calls": {
+    "explain_error": {
+     "p50": 0.091,
+     "p95": 0.135,
+     "max": 0.991,
+     "n": 200,
+     "responseChars": 185
+    }
+   },
+   "throughput": {
+    "requests": 20000,
+    "perSecond": 33146
+   },
+   "rssMB": {
+    "idle": 78.2,
+    "after1000ExplainError": 112
+   }
+  }
+ }
+}

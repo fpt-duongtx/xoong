@@ -66,6 +66,7 @@
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    <a href="benchmarks.html">Benchmarks</a>
     </div>
     <div class="grp">
     <h2>Guides</h2>
@@ -137,6 +138,7 @@
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      <a href="benchmarks.html">Benchmarks</a>
       </div>
       <div class="grp">
       <h2>Guides</h2>
@@ -376,6 +378,68 @@
 &lt;<span class="tok-t">button</span> <span class="tok-a">xo-consent-open</span>&gt;Cookie settings&lt;/<span class="tok-t">button</span>&gt;</code></pre></section>
 </xo-tabs>
 <p><code>&lt;xo-command&gt;</code> opens with Ctrl or Cmd plus K; its children are the commands, filtered as you type. <code>&lt;xo-consent&gt;</code> shows a bar until the visitor chooses, saves the choice and fires <code>xo-consent</code>. They are not run on this page because they cover it.</p>
+
+<h2 id="overlays">Navigation and overlays: breadcrumb, tree, drawer</h2>
+<xo-tabs label="xo-breadcrumb, xo-tree, xo-drawer" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-breadcrumb max="3" items='[{"label":"Home","href":"#overlays"},{"label":"Docs","href":"#overlays"},{"label":"Controls","href":"#overlays"},{"label":"Tree"}]'></xo-breadcrumb>
+      <xo-tree label="Regions" multiple expanded="asia" data='[{"id":"asia","label":"Asia","children":[{"id":"vn","label":"Vietnam"},{"id":"jp","label":"Japan"}]},{"id":"eu","label":"Europe","children":[{"id":"fr","label":"France"}]}]'></xo-tree>
+      <button xo-open="#filters-drawer">Open the drawer</button>
+      <xo-drawer id="filters-drawer" heading="Filters" side="end" dismiss>
+        <p>Choose what to show.</p>
+        <button slot="footer" type="button" xo-close>Close</button>
+      </xo-drawer>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-breadcrumb</span> <span class="tok-a">max</span>=<span class="tok-s">"3"</span> <span class="tok-a">items</span>=<span class="tok-s">'[<span class="tok-i">{"label":"Home","href":"#overlays"}</span>,<span class="tok-i">{"label":"Docs","href":"#overlays"}</span>,<span class="tok-i">{"label":"Controls","href":"#overlays"}</span>,<span class="tok-i">{"label":"Tree"}</span>]'</span>&gt;&lt;/<span class="tok-t">xo-breadcrumb</span>&gt;
+  &lt;<span class="tok-t">xo-tree</span> <span class="tok-a">label</span>=<span class="tok-s">"Regions"</span> <span class="tok-a">multiple</span> <span class="tok-a">expanded</span>=<span class="tok-s">"asia"</span> <span class="tok-a">data</span>=<span class="tok-s">'[<span class="tok-i">{"id":"asia","label":"Asia","children":[{"id":"vn","label":"Vietnam"}</span>,<span class="tok-i">{"id":"jp","label":"Japan"}</span>]},<span class="tok-i">{"id":"eu","label":"Europe","children":[{"id":"fr","label":"France"}</span>]}]'</span>&gt;&lt;/<span class="tok-t">xo-tree</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#filters-drawer"</span>&gt;Open the drawer&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">xo-drawer</span> <span class="tok-a">id</span>=<span class="tok-s">"filters-drawer"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Filters"</span> <span class="tok-a">side</span>=<span class="tok-s">"end"</span> <span class="tok-a">dismiss</span>&gt;
+    &lt;<span class="tok-t">p</span>&gt;Choose what to show.&lt;/<span class="tok-t">p</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"footer"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Close&lt;/<span class="tok-t">button</span>&gt;
+  &lt;/<span class="tok-t">xo-drawer</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p><code>&lt;xo-breadcrumb&gt;</code> marks the last item <code>aria-current="page"</code> and folds the middle into an "..." menu when <code>max</code> is set or the space is short. <code>&lt;xo-tree&gt;</code> follows the WAI-ARIA tree pattern: arrows, Home, End, <code>*</code> and type-ahead; with <code>multiple</code> a parent is checked, unchecked or mixed from its children. <code>&lt;xo-drawer&gt;</code> is a modal side sheet opened with <code>xo-open</code> like <code>&lt;xo-dialog&gt;</code>; Escape closes it and the focus returns to the button.</p>
+
+<h2 id="messages">Messages: alert, skeleton</h2>
+<xo-tabs label="xo-alert, xo-skeleton" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-alert kind="info" heading="Heads up">Changes are saved as you type.</xo-alert>
+      <xo-alert kind="danger" heading="Payment failed" dismissible>Check your card and try again.</xo-alert>
+      <xo-skeleton lines="3"></xo-skeleton>
+      <xo-skeleton shape="circle" width="48" label=""></xo-skeleton>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-alert</span> <span class="tok-a">kind</span>=<span class="tok-s">"info"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Heads up"</span>&gt;Changes are saved as you type.&lt;/<span class="tok-t">xo-alert</span>&gt;
+  &lt;<span class="tok-t">xo-alert</span> <span class="tok-a">kind</span>=<span class="tok-s">"danger"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Payment failed"</span> <span class="tok-a">dismissible</span>&gt;Check your card and try again.&lt;/<span class="tok-t">xo-alert</span>&gt;
+  &lt;<span class="tok-t">xo-skeleton</span> <span class="tok-a">lines</span>=<span class="tok-s">"3"</span>&gt;&lt;/<span class="tok-t">xo-skeleton</span>&gt;
+  &lt;<span class="tok-t">xo-skeleton</span> <span class="tok-a">shape</span>=<span class="tok-s">"circle"</span> <span class="tok-a">width</span>=<span class="tok-s">"48"</span> <span class="tok-a">label</span>=<span class="tok-s">""</span>&gt;&lt;/<span class="tok-t">xo-skeleton</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p><code>&lt;xo-alert&gt;</code> is <code>role="status"</code>, or <code>role="alert"</code> for warning and danger (<code>live</code> overrides). <code>&lt;xo-skeleton&gt;</code> hides its shapes from screen readers and adds one visually hidden "Loading"; the shimmer stops under reduced motion.</p>
+
+<h2 id="pick">Pick: color, rating</h2>
+<xo-tabs label="xo-color, xo-rating" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <div class="stack">
+      <xo-color name="brand" label="Brand color" value="#0b7285" swatches="#0b7285,#c92a2a,#2b8a3e,#f08c00"></xo-color>
+      <xo-rating name="score" label="Your rating" value="3.5" half clearable></xo-rating>
+    </div>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"stack"</span>&gt;
+  &lt;<span class="tok-t">xo-color</span> <span class="tok-a">name</span>=<span class="tok-s">"brand"</span> <span class="tok-a">label</span>=<span class="tok-s">"Brand color"</span> <span class="tok-a">value</span>=<span class="tok-s">"#0b7285"</span> <span class="tok-a">swatches</span>=<span class="tok-s">"#0b7285,#c92a2a,#2b8a3e,#f08c00"</span>&gt;&lt;/<span class="tok-t">xo-color</span>&gt;
+  &lt;<span class="tok-t">xo-rating</span> <span class="tok-a">name</span>=<span class="tok-s">"score"</span> <span class="tok-a">label</span>=<span class="tok-s">"Your rating"</span> <span class="tok-a">value</span>=<span class="tok-s">"3.5"</span> <span class="tok-a">half</span> <span class="tok-a">clearable</span>&gt;&lt;/<span class="tok-t">xo-rating</span>&gt;
+&lt;/<span class="tok-t">div</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p><code>&lt;xo-color&gt;</code> submits <code>#rrggbb</code> (<code>#rrggbbaa</code> with <code>alpha</code>); the hex field says what is wrong. <code>&lt;xo-rating&gt;</code> is a radio group with one native radio per star, so the arrow keys work.</p>
 
 <h2 id="reference">Reference</h2>
 <p>Every attribute, property and event is in <a href="https://github.com/fpt-duongtx/xoong/blob/main/docs/controls.md">docs/controls.md</a> and in the editor hints of <code>xoong.html-data.json</code>.</p>

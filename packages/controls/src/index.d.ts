@@ -361,6 +361,89 @@ export interface XoInlineEditElement extends XoControl {
   edit(): void;
 }
 
+/** One node of `xo-tree` `data`. */
+export interface XoTreeNode { id?: string; label: string; children?: XoTreeNode[]; /** Open at the start. */ open?: boolean; /** Its children are loaded on first open (`xo-tree-load`). */ lazy?: boolean }
+
+/** `<xo-drawer>`: a side sheet on a native modal `<dialog>`; open it with `xo-open="#id"`. */
+export interface XoDrawerElement extends XoElement {
+  heading: string;
+  /** Accessible name when there is no heading. */
+  label: string;
+  /** `end` (default) or `start`. */
+  side: 'end' | 'start' | '';
+  size: 'sm' | 'md' | 'lg' | '';
+  /** Close it on a click outside. */
+  dismiss: boolean;
+  /** The native dialog it draws (null until the element has started). */
+  readonly dialog: HTMLDialogElement | null;
+  show(): void;
+  /** Open it; resolves with the `returnValue` when it closes. */
+  open(): Promise<string>;
+  close(value?: string): void;
+}
+
+/** `<xo-breadcrumb>`: the trail of pages; the last item is the current page. */
+export interface XoBreadcrumbElement extends XoElement {
+  label: string;
+  /** The trail as JSON text: `[{"label":"Home","href":"/"}]`. */
+  items: string;
+  /** Most items to show; the middle ones collapse into an "…" menu. */
+  max: number;
+}
+
+/** `<xo-alert>`: a message that stays in the page. */
+export interface XoAlertElement extends XoElement {
+  kind: 'info' | 'success' | 'warning' | 'danger' | '';
+  heading: string;
+  dismissible: boolean;
+  live: 'polite' | 'assertive' | 'off' | '';
+}
+
+/** `<xo-skeleton>`: a loading placeholder. */
+export interface XoSkeletonElement extends XoElement {
+  lines: number;
+  shape: 'text' | 'circle' | 'rect' | '';
+  width: string;
+  height: string;
+  label: string;
+}
+
+/** `<xo-tree>`: a tree view with keyboard navigation, optional selection and checkboxes. */
+export interface XoTreeElement extends XoElement {
+  label: string;
+  /** The nodes. Assign an array (or JSON text); reading gives the array. */
+  data: XoTreeNode[] | string;
+  /** One item can be chosen. */
+  selectable: boolean;
+  /** Every item has a checkbox; a parent follows its children. */
+  multiple: boolean;
+  /** Ids open at the start (comma separated). */
+  expanded: string;
+  /** The chosen ids: an array to read and to set (an attribute takes them separated by commas). */
+  selected: string[];
+  /** Answer `xo-tree-load`: the children of a lazy item (an empty list makes it a leaf). */
+  setChildren(id: string, children: readonly XoTreeNode[]): void;
+}
+
+/** `<xo-color>`: a color field; the value is `#rrggbb` (`#rrggbbaa` with `alpha`), '' for none. */
+export interface XoColorElement extends XoControl {
+  value: string;
+  label: string;
+  alpha: boolean;
+  /** Preset colors, comma separated. */
+  swatches: string;
+}
+
+/** `<xo-rating>`: a star rating; the value is a number from 0 to `max`. */
+export interface XoRatingElement extends XoControl {
+  value: number;
+  label: string;
+  /** Number of stars (default 5). */
+  max: number;
+  half: boolean;
+  clearable: boolean;
+}
+
 // `xo-tooltip="text"` is an attribute on any element, not an element: it has no interface.
 
 // ---- registries ---------------------------------------------------------------------------------------------------------------
@@ -399,6 +482,13 @@ export interface XoControlsTagMap {
   'xo-spinner': XoSpinnerElement;
   'xo-steps': XoStepsElement;
   'xo-inline-edit': XoInlineEditElement;
+  'xo-drawer': XoDrawerElement;
+  'xo-breadcrumb': XoBreadcrumbElement;
+  'xo-alert': XoAlertElement;
+  'xo-skeleton': XoSkeletonElement;
+  'xo-tree': XoTreeElement;
+  'xo-color': XoColorElement;
+  'xo-rating': XoRatingElement;
 }
 
 /** The events that carry data (all bubble), by name. Add one line per event. */
@@ -426,6 +516,12 @@ export interface XoControlsEventMap {
   /** `xo-inline-edit`. */
   'save': CustomEvent<{ value: string }>;
   'cancel': Event;
+  /** `xo-alert`: the Close button was pressed (`preventDefault()` keeps the alert). */
+  'xo-dismiss': Event;
+  /** `xo-tree`: the choice changed (`id` is the item that was acted on) / an item opened or closed / a lazy item opened for the first time: answer with `setChildren`. */
+  'xo-tree-select': CustomEvent<{ id: string; selected: string[] }>;
+  'xo-tree-toggle': CustomEvent<{ id: string; expanded: boolean }>;
+  'xo-tree-load': CustomEvent<{ id: string }>;
 }
 
 declare global {

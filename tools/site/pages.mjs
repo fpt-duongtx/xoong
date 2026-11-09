@@ -5,6 +5,7 @@ import { architecturePages } from './architecture.mjs';
 import * as figures from './figures.mjs';
 import { dialogsPage } from './dialogs-page.mjs';
 import { recipesPage } from './recipes-page.mjs';
+import { benchmarksPage, homeBenchmarks } from './benchmarks-page.mjs';
 import { cliPage, mcpPage, editorPage, codesPage } from './tooling-pages.mjs';
 import { referencePage } from './reference-page.mjs';
 
@@ -119,6 +120,8 @@ export const pages = [
       ${example({ label: 'A data table', preview: TABLE })}
     </div>
   </section>
+
+${homeBenchmarks()}
 
   <section>
     <div class="wrap">
@@ -324,9 +327,9 @@ await setLocale('vi');`]])}
 <tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.4 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
 <tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>12.5 KB</td></tr>
-<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>30 KB</td></tr>
+<tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>37 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
-<tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5.6 KB</td></tr>
+<tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5.7 KB</td></tr>
 <tr><td><code>@xoong/cli</code></td><td><code>sync</code>, <code>check</code>, <code>dev</code>, <code>build</code>, <code>render</code>, <code>i18n</code></td><td>tools</td></tr>
 <tr><td><code>@xoong/test</code>, <code>mcp</code>, <code>lsp</code>, <code>ssr</code>, <code>server</code></td><td>Mock API and screens for Vitest, an MCP server, editor support, prerendering, the dev and build server</td><td>tools</td></tr>
 </tbody></table></div>`,
@@ -654,6 +657,7 @@ ${tabs('Shell', [['HTML', 'html', `
 </body>`]])}`,
   },
   // ------------------------------------------------------------------------------------------------------------------------------
+  ...(benchmarksPage ? [benchmarksPage] : []),
   ...architecturePages,
   dialogsPage,
   recipesPage,
@@ -892,6 +896,46 @@ ${tabs('Command palette and cookie consent', [['HTML', 'html', `
 </xo-consent>
 <button xo-consent-open>Cookie settings</button>`]])}
 <p><code>&lt;xo-command&gt;</code> opens with Ctrl or Cmd plus K; its children are the commands, filtered as you type. <code>&lt;xo-consent&gt;</code> shows a bar until the visitor chooses, saves the choice and fires <code>xo-consent</code>. They are not run on this page because they cover it.</p>
+
+<h2 id="overlays">Navigation and overlays: breadcrumb, tree, drawer</h2>
+${example({
+  label: 'xo-breadcrumb, xo-tree, xo-drawer',
+  preview: `
+<div class="stack">
+  <xo-breadcrumb max="3" items='[{"label":"Home","href":"#overlays"},{"label":"Docs","href":"#overlays"},{"label":"Controls","href":"#overlays"},{"label":"Tree"}]'></xo-breadcrumb>
+  <xo-tree label="Regions" multiple expanded="asia" data='[{"id":"asia","label":"Asia","children":[{"id":"vn","label":"Vietnam"},{"id":"jp","label":"Japan"}]},{"id":"eu","label":"Europe","children":[{"id":"fr","label":"France"}]}]'></xo-tree>
+  <button xo-open="#filters-drawer">Open the drawer</button>
+  <xo-drawer id="filters-drawer" heading="Filters" side="end" dismiss>
+    <p>Choose what to show.</p>
+    <button slot="footer" type="button" xo-close>Close</button>
+  </xo-drawer>
+</div>`,
+})}
+<p><code>&lt;xo-breadcrumb&gt;</code> marks the last item <code>aria-current="page"</code> and folds the middle into an "..." menu when <code>max</code> is set or the space is short. <code>&lt;xo-tree&gt;</code> follows the WAI-ARIA tree pattern: arrows, Home, End, <code>*</code> and type-ahead; with <code>multiple</code> a parent is checked, unchecked or mixed from its children. <code>&lt;xo-drawer&gt;</code> is a modal side sheet opened with <code>xo-open</code> like <code>&lt;xo-dialog&gt;</code>; Escape closes it and the focus returns to the button.</p>
+
+<h2 id="messages">Messages: alert, skeleton</h2>
+${example({
+  label: 'xo-alert, xo-skeleton',
+  preview: `
+<div class="stack">
+  <xo-alert kind="info" heading="Heads up">Changes are saved as you type.</xo-alert>
+  <xo-alert kind="danger" heading="Payment failed" dismissible>Check your card and try again.</xo-alert>
+  <xo-skeleton lines="3"></xo-skeleton>
+  <xo-skeleton shape="circle" width="48" label=""></xo-skeleton>
+</div>`,
+})}
+<p><code>&lt;xo-alert&gt;</code> is <code>role="status"</code>, or <code>role="alert"</code> for warning and danger (<code>live</code> overrides). <code>&lt;xo-skeleton&gt;</code> hides its shapes from screen readers and adds one visually hidden "Loading"; the shimmer stops under reduced motion.</p>
+
+<h2 id="pick">Pick: color, rating</h2>
+${example({
+  label: 'xo-color, xo-rating',
+  preview: `
+<div class="stack">
+  <xo-color name="brand" label="Brand color" value="#0b7285" swatches="#0b7285,#c92a2a,#2b8a3e,#f08c00"></xo-color>
+  <xo-rating name="score" label="Your rating" value="3.5" half clearable></xo-rating>
+</div>`,
+})}
+<p><code>&lt;xo-color&gt;</code> submits <code>#rrggbb</code> (<code>#rrggbbaa</code> with <code>alpha</code>); the hex field says what is wrong. <code>&lt;xo-rating&gt;</code> is a radio group with one native radio per star, so the arrow keys work.</p>
 
 <h2>Reference</h2>
 <p>Every attribute, property and event is in <a href="https://github.com/fpt-duongtx/xoong/blob/main/docs/controls.md">docs/controls.md</a> and in the editor hints of <code>xoong.html-data.json</code>.</p>`,

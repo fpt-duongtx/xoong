@@ -120,6 +120,13 @@ Each is its own entry point (`@xoong/controls/accordion`, ...) and is registered
 | `<xo-avatar name src size status>`, `<xo-avatars max>` | Initials or a picture; a stack with a "+N" badge | none |
 | `<xo-progress value max label thin>`, `<xo-spinner label size>` | Progress bar (indeterminate without `value`), loading spinner | none |
 | `<xo-steps current label>` | Progress through a flow; the children are the titles; `aria-current=step`, a check on done steps | none |
+| `<xo-drawer heading label side="end\|start" size="sm\|md\|lg" dismiss>` | Side sheet on a modal `<dialog>`; `xo-open="#id"`, `xo-close`, Escape; header and `slot="footer"` pinned, body scrolls | `show()`, `close(value)`, `open()` |
+| `<xo-breadcrumb label items max>` | Trail of `<a>` children or JSON `items`; last is `aria-current=page`; middle folds into an "..." menu | none |
+| `<xo-alert kind="info\|success\|warning\|danger" heading dismissible live>` | Inline banner (the kit's `.notice`); `slot="action"`; `role=alert` for warning and danger | `xo-dismiss` |
+| `<xo-skeleton lines shape="text\|circle\|rect" width height label>` | Loading placeholder, hidden from screen readers with one "Loading" status | none |
+| `<xo-tree label data selectable multiple expanded selected>` | WAI-ARIA tree: nested `<ul>` or JSON; arrows, Home/End, `*`, type-ahead; checkboxes with a mixed parent | `selected`, `setChildren(id, nodes)`; `xo-tree-select`, `xo-tree-toggle`, `xo-tree-load` |
+| `<xo-color name label alpha swatches>` | Swatch button, native picker, validated hex field, presets | `#rrggbb` (`#rrggbbaa` with `alpha`); `input`, `change` |
+| `<xo-rating name label max half clearable>` | Stars as native radios; hover preview; Delete clears | number 0 to `max`; `input`, `change` |
 | `<xo-theme-toggle storage>` | Light/dark switch: sets `data-theme` on `<html>`, saved, follows the system until chosen | `xo-theme-change` `{ theme }` |
 
 Put this in the `<head>` before the first paint so the saved theme does not flash: `try { const t = localStorage.getItem('xoong-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch {}`

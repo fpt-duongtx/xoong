@@ -156,6 +156,13 @@ breaking: none.
 
 * Added: `@xoong/ui/mist.css` (`src/mist.css`): the Mist look (the Rainlet design system) as one self-sufficient stylesheet for an app: the tokens and a dark scheme, the `--xo-*` mapping straight from them, the component skin and the controls of the Mist spec, in the layer `xoong-mist`, without the documentation site's chrome. Generated from the design kit by `tools/build-mist.mjs`; `test/mist.test.mjs` checks it is up to date, self-contained and draws 40px controls and the Mist primary in a page with only the four framework files.
 
+## 0.0.48 (admin essentials: drawer, breadcrumb, alert, skeleton, tree, colour picker, rating; benchmarks)
+
+breaking: none.
+
+* Added in `@xoong/controls`: `<xo-drawer>` (a side sheet on a native dialog, `side`, `size`, `heading`, `dismiss`, pinned header and footer), `<xo-breadcrumb>` (collapses the middle into a menu), `<xo-alert>` (info, success, warning, danger; `dismissible`; `xo-dismiss`), `<xo-skeleton>` (text, circle, rect; still under reduced motion), `<xo-tree>` (the WAI-ARIA tree: arrows, type-ahead, single or multiple selection with tri-state checks, lazy children through `xo-tree-load`), `<xo-color>` (a form control: swatch, hex field, presets, optional alpha) and `<xo-rating>` (stars, half steps, clearable, a radio group underneath). Reference, docs and a section of the More controls page for each. Budgets: `@xoong/controls` 37 KB (was 30), `@xoong/i18n` 5.7 KB.
+* Benchmarks: `benchmarks/` (scripts, pinned competitor screens, raw results), a Benchmarks page generated from the results, a table on the home page and in the READMEs: the same people screen in xoong, React and Vue (bytes, time to usable on a slow profile, rows, lines, packages), and the speed of the CLI and the MCP server. Not measured, and said so: learning time, real devices, other browsers.
+
 ## 0.0.47 (reference and search, tools pages, table column picker, dialogs that scroll, errors a screen can handle)
 
 breaking: the table's Previous and Next are icon buttons (named by `aria-label`, no text); a table header without a label is the field name in words ("Name", not "name"); `xo-error` is cancelable and the toast skips a prevented or handled one.

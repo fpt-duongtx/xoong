@@ -1,6 +1,6 @@
 {
   "name": "@xoong/controls",
-  "version": "0.0.47",
+  "version": "0.0.48",
   "description": "xoong form and page controls: tabs, popover, tooltip, menu, combobox, chips, tag input, carousel. Light DOM, accessible, zero dependencies besides @xoong/core.",
   "type": "module",
   "main": "src/index.js",
@@ -13,9 +13,17 @@
       "types": "./src/index.d.ts",
       "default": "./src/accordion.js"
     },
+    "./alert": {
+      "types": "./src/index.d.ts",
+      "default": "./src/alert.js"
+    },
     "./avatar": {
       "types": "./src/index.d.ts",
       "default": "./src/avatar.js"
+    },
+    "./breadcrumb": {
+      "types": "./src/index.d.ts",
+      "default": "./src/breadcrumb.js"
     },
     "./carousel": {
       "types": "./src/index.d.ts",
@@ -24,6 +32,10 @@
     "./chart": {
       "types": "./src/index.d.ts",
       "default": "./src/chart.js"
+    },
+    "./color": {
+      "types": "./src/index.d.ts",
+      "default": "./src/color.js"
     },
     "./combobox": {
       "types": "./src/index.d.ts",
@@ -45,6 +57,10 @@
     "./date": {
       "types": "./src/index.d.ts",
       "default": "./src/date.js"
+    },
+    "./drawer": {
+      "types": "./src/index.d.ts",
+      "default": "./src/drawer.js"
     },
     "./file": {
       "types": "./src/index.d.ts",
@@ -82,9 +98,17 @@
       "types": "./src/index.d.ts",
       "default": "./src/range-slider.js"
     },
+    "./rating": {
+      "types": "./src/index.d.ts",
+      "default": "./src/rating.js"
+    },
     "./segmented": {
       "types": "./src/index.d.ts",
       "default": "./src/segmented.js"
+    },
+    "./skeleton": {
+      "types": "./src/index.d.ts",
+      "default": "./src/skeleton.js"
     },
     "./slider": {
       "types": "./src/index.d.ts",
@@ -129,6 +153,10 @@
     "./tooltip": {
       "types": "./src/index.d.ts",
       "default": "./src/tooltip.js"
+    },
+    "./tree": {
+      "types": "./src/index.d.ts",
+      "default": "./src/tree.js"
     }
   },
   "sideEffects": true,
@@ -156,7 +184,7 @@
   },
   "homepage": "https://fpt-duongtx.github.io/xoong/",
   "dependencies": {
-    "@xoong/core": "0.0.47"
+    "@xoong/core": "0.0.48"
   },
   "publishConfig": {
     "access": "public"

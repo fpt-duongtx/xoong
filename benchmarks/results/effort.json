@@ -1,0 +1,191 @@
+{
+ "environment": {
+  "date": "2026-11-09",
+  "machine": "Apple M1, 8 cores, 8 GB RAM",
+  "os": "Darwin 25.2.0 (arm64)",
+  "node": "v24.7.0",
+  "xoong": "0.0.47",
+  "commit": "6984eca"
+ },
+ "method": "non-blank, non-comment lines of the files a developer writes (sources, markup, stylesheet); package.json, lockfiles, vite config and the OpenAPI document are not counted (config is listed apart); JSX is counted as script",
+ "stacks": {
+  "xoong": {
+   "files": 2,
+   "loc": {
+    "markup": 34,
+    "script": 5,
+    "style": 0,
+    "all": 39
+   },
+   "perFile": {
+    "index.html": {
+     "markup": 34,
+     "script": 0,
+     "style": 0
+    },
+    "src/main.ts": {
+     "markup": 0,
+     "script": 5,
+     "style": 0
+    }
+   },
+   "configLines": {
+    "xoong.hints.json": 1
+   },
+   "dependencies": {
+    "runtimeInBrowser": 0,
+    "direct": 1,
+    "installedTotal": 12,
+    "installedOwn": 8,
+    "installedThirdParty": [
+     "parse5",
+     "entities",
+     "yaml",
+     "amaro"
+    ],
+    "note": "@xoong/xoong plus everything it needs: the xoong command line (parse5, yaml) is the only third-party code, and it runs in Node, never in the browser"
+   }
+  },
+  "react": {
+   "files": 8,
+   "loc": {
+    "markup": 13,
+    "script": 229,
+    "style": 18,
+    "all": 260
+   },
+   "perFile": {
+    "index.html": {
+     "markup": 13,
+     "script": 0,
+     "style": 0
+    },
+    "src/AddPersonDialog.jsx": {
+     "markup": 0,
+     "script": 47,
+     "style": 0
+    },
+    "src/App.jsx": {
+     "markup": 0,
+     "script": 18,
+     "style": 0
+    },
+    "src/Dialog.jsx": {
+     "markup": 0,
+     "script": 14,
+     "style": 0
+    },
+    "src/PeopleTable.jsx": {
+     "markup": 0,
+     "script": 112,
+     "style": 0
+    },
+    "src/api.js": {
+     "markup": 0,
+     "script": 25,
+     "style": 0
+    },
+    "src/app.css": {
+     "markup": 0,
+     "script": 0,
+     "style": 18
+    },
+    "src/main.jsx": {
+     "markup": 0,
+     "script": 13,
+     "style": 0
+    }
+   },
+   "configLines": {
+    "package.json": 19,
+    "vite.config.js": 3
+   },
+   "dependencies": {
+    "runtimeInBrowser": 7,
+    "direct": 9,
+    "installedTotal": 52,
+    "versions": {
+     "@hookform/resolvers": "5.2.2",
+     "@tanstack/react-query": "5.107.1",
+     "@tanstack/react-table": "8.21.3",
+     "react": "19.3.1",
+     "react-dom": "19.3.1",
+     "react-hook-form": "7.91.0",
+     "zod": "3.25.76",
+     "@vitejs/plugin-react": "6.3.0",
+     "vite": "8.3.6"
+    }
+   }
+  },
+  "vue": {
+   "files": 8,
+   "loc": {
+    "markup": 51,
+    "script": 125,
+    "style": 18,
+    "all": 194
+   },
+   "perFile": {
+    "index.html": {
+     "markup": 13,
+     "script": 0,
+     "style": 0
+    },
+    "src/AddPersonDialog.vue": {
+     "markup": 21,
+     "script": 26,
+     "style": 0
+    },
+    "src/App.vue": {
+     "markup": 8,
+     "script": 4,
+     "style": 0
+    },
+    "src/Dialog.vue": {
+     "markup": 3,
+     "script": 10,
+     "style": 0
+    },
+    "src/PeopleTable.vue": {
+     "markup": 6,
+     "script": 54,
+     "style": 0
+    },
+    "src/api.js": {
+     "markup": 0,
+     "script": 25,
+     "style": 0
+    },
+    "src/app.css": {
+     "markup": 0,
+     "script": 0,
+     "style": 18
+    },
+    "src/main.js": {
+     "markup": 0,
+     "script": 6,
+     "style": 0
+    }
+   },
+   "configLines": {
+    "package.json": 18,
+    "vite.config.js": 3
+   },
+   "dependencies": {
+    "runtimeInBrowser": 6,
+    "direct": 8,
+    "installedTotal": 83,
+    "versions": {
+     "@tanstack/vue-query": "5.107.1",
+     "@tanstack/vue-table": "8.21.3",
+     "@vee-validate/zod": "4.15.1",
+     "vee-validate": "4.15.1",
+     "vue": "3.5.45",
+     "zod": "3.25.76",
+     "@vitejs/plugin-vue": "6.0.10",
+     "vite": "8.3.6"
+    }
+   }
+  }
+ }
+}

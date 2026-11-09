@@ -66,6 +66,7 @@
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    <a href="benchmarks.html">Benchmarks</a>
     </div>
     <div class="grp">
     <h2>Guides</h2>
@@ -137,6 +138,7 @@
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      <a href="benchmarks.html">Benchmarks</a>
       </div>
       <div class="grp">
       <h2>Guides</h2>
@@ -205,19 +207,19 @@
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Reference</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>All elements and attributes</span></div>
 
 <h1>Reference</h1>
-<p class="lead">Every element, directive, event, function and piece of template syntax of xoong, in one place: what it does, what it takes, an example, and the guide that explains it. 163 entries, written from the code itself.</p>
+<p class="lead">Every element, directive, event, function and piece of template syntax of xoong, in one place: what it does, what it takes, an example, and the guide that explains it. 174 entries, written from the code itself.</p>
 <p>Press <kbd>Ctrl</kbd> <kbd>K</kbd> (or <kbd>/</kbd>) to search everything on this site, or open the <strong>Reference</strong> menu in the header. The same data is published as <a href="reference.json">reference.json</a> for tools.</p>
 <div class="ref-filter" id="ref-filter" hidden>
   <label for="ref-filter-input">Filter this page</label>
   <input id="ref-filter-input" type="search" autocomplete="off" placeholder="dialog, xo-click, router, confirm…" aria-controls="ref-entries">
   <p class="ref-filter-status" role="status" id="ref-filter-status"></p>
 </div>
-<nav class="ref-jump" aria-label="Reference groups"><ul><li><a href="#elements">Elements <span>40</span></a></li><li><a href="#directives">Directives <span>34</span></a></li><li><a href="#events">Events <span>32</span></a></li><li><a href="#javascript-api">JavaScript API <span>46</span></a></li><li><a href="#template-syntax">Template syntax <span>11</span></a></li></ul></nav>
+<nav class="ref-jump" aria-label="Reference groups"><ul><li><a href="#elements">Elements <span>47</span></a></li><li><a href="#directives">Directives <span>34</span></a></li><li><a href="#events">Events <span>36</span></a></li><li><a href="#javascript-api">JavaScript API <span>46</span></a></li><li><a href="#template-syntax">Template syntax <span>11</span></a></li></ul></nav>
 <details class="ref-types"><summary>What the types mean</summary><dl class="ref-facts"><dt><code>text</code></dt><dd>Any text.</dd><dt><code>number</code></dt><dd>A number.</dd><dt><code>flag</code></dt><dd>Present means on, absent means off.</dd><dt><code>list</code></dt><dd>Comma-separated values.</dd><dt><code>choice</code></dt><dd>One of a fixed set; any other value falls back to the default.</dd><dt><code>path</code></dt><dd>A path into the data: <code>items</code>, <code>name.en</code>.</dd><dt><code>operation</code></dt><dd>An operationId or <code>METHOD /path</code>.</dd><dt><code>selector</code></dt><dd>A CSS selector.</dd><dt><code>JSON</code></dt><dd>A JSON text.</dd></dl></details>
 <div id="ref-entries">
 <h2 id="elements">Elements</h2>
-<p class="ref-group-intro">Every xo-* element: what it does, its attributes, its events and an example. <span class="ref-count">40 entries.</span></p>
-<ul class="ref-names" aria-label="Elements, all entries"><li data-find-for="xo-view"><a href="#xo-view"><code>&lt;xo-view&gt;</code></a></li><li data-find-for="xo-table"><a href="#xo-table"><code>&lt;xo-table&gt;</code></a></li><li data-find-for="xo-form"><a href="#xo-form"><code>&lt;xo-form&gt;</code></a></li><li data-find-for="xo-dialog"><a href="#xo-dialog"><code>&lt;xo-dialog&gt;</code></a></li><li data-find-for="xo-toast"><a href="#xo-toast"><code>&lt;xo-toast&gt;</code></a></li><li data-find-for="xo-router"><a href="#xo-router"><code>&lt;xo-router&gt;</code></a></li><li data-find-for="xo-pager"><a href="#xo-pager"><code>&lt;xo-pager&gt;</code></a></li><li data-find-for="xo-tabs"><a href="#xo-tabs"><code>&lt;xo-tabs&gt;</code></a></li><li data-find-for="xo-menu"><a href="#xo-menu"><code>&lt;xo-menu&gt;</code></a></li><li data-find-for="xo-combobox"><a href="#xo-combobox"><code>&lt;xo-combobox&gt;</code></a></li><li data-find-for="xo-tags"><a href="#xo-tags"><code>&lt;xo-tags&gt;</code></a></li><li data-find-for="xo-richtext"><a href="#xo-richtext"><code>&lt;xo-richtext&gt;</code></a></li><li data-find-for="xo-carousel"><a href="#xo-carousel"><code>&lt;xo-carousel&gt;</code></a></li><li data-find-for="xo-switch"><a href="#xo-switch"><code>&lt;xo-switch&gt;</code></a></li><li data-find-for="xo-date"><a href="#xo-date"><code>&lt;xo-date&gt;</code></a></li><li data-find-for="xo-time"><a href="#xo-time"><code>&lt;xo-time&gt;</code></a></li><li data-find-for="xo-slider"><a href="#xo-slider"><code>&lt;xo-slider&gt;</code></a></li><li data-find-for="xo-stepper"><a href="#xo-stepper"><code>&lt;xo-stepper&gt;</code></a></li><li data-find-for="xo-password"><a href="#xo-password"><code>&lt;xo-password&gt;</code></a></li><li data-find-for="xo-copy"><a href="#xo-copy"><code>&lt;xo-copy&gt;</code></a></li><li data-find-for="xo-image"><a href="#xo-image"><code>&lt;xo-image&gt;</code></a></li><li data-find-for="xo-theme-toggle"><a href="#xo-theme-toggle"><code>&lt;xo-theme-toggle&gt;</code></a></li><li data-find-for="xo-accordion"><a href="#xo-accordion"><code>&lt;xo-accordion&gt;</code></a></li><li data-find-for="xo-popover"><a href="#xo-popover"><code>&lt;xo-popover&gt;</code></a></li><li data-find-for="xo-consent"><a href="#xo-consent"><code>&lt;xo-consent&gt;</code></a></li><li data-find-for="xo-file"><a href="#xo-file"><code>&lt;xo-file&gt;</code></a></li><li data-find-for="xo-command"><a href="#xo-command"><code>&lt;xo-command&gt;</code></a></li><li data-find-for="xo-chart"><a href="#xo-chart"><code>&lt;xo-chart&gt;</code></a></li><li data-find-for="xo-range-slider"><a href="#xo-range-slider"><code>&lt;xo-range-slider&gt;</code></a></li><li data-find-for="xo-segmented"><a href="#xo-segmented"><code>&lt;xo-segmented&gt;</code></a></li><li data-find-for="xo-split-button"><a href="#xo-split-button"><code>&lt;xo-split-button&gt;</code></a></li><li data-find-for="xo-textarea"><a href="#xo-textarea"><code>&lt;xo-textarea&gt;</code></a></li><li data-find-for="xo-stat"><a href="#xo-stat"><code>&lt;xo-stat&gt;</code></a></li><li data-find-for="xo-otp"><a href="#xo-otp"><code>&lt;xo-otp&gt;</code></a></li><li data-find-for="xo-avatar"><a href="#xo-avatar"><code>&lt;xo-avatar&gt;</code></a></li><li data-find-for="xo-avatars"><a href="#xo-avatars"><code>&lt;xo-avatars&gt;</code></a></li><li data-find-for="xo-progress"><a href="#xo-progress"><code>&lt;xo-progress&gt;</code></a></li><li data-find-for="xo-spinner"><a href="#xo-spinner"><code>&lt;xo-spinner&gt;</code></a></li><li data-find-for="xo-steps"><a href="#xo-steps"><code>&lt;xo-steps&gt;</code></a></li><li data-find-for="xo-inline-edit"><a href="#xo-inline-edit"><code>&lt;xo-inline-edit&gt;</code></a></li></ul>
+<p class="ref-group-intro">Every xo-* element: what it does, its attributes, its events and an example. <span class="ref-count">47 entries.</span></p>
+<ul class="ref-names" aria-label="Elements, all entries"><li data-find-for="xo-view"><a href="#xo-view"><code>&lt;xo-view&gt;</code></a></li><li data-find-for="xo-table"><a href="#xo-table"><code>&lt;xo-table&gt;</code></a></li><li data-find-for="xo-form"><a href="#xo-form"><code>&lt;xo-form&gt;</code></a></li><li data-find-for="xo-dialog"><a href="#xo-dialog"><code>&lt;xo-dialog&gt;</code></a></li><li data-find-for="xo-toast"><a href="#xo-toast"><code>&lt;xo-toast&gt;</code></a></li><li data-find-for="xo-router"><a href="#xo-router"><code>&lt;xo-router&gt;</code></a></li><li data-find-for="xo-pager"><a href="#xo-pager"><code>&lt;xo-pager&gt;</code></a></li><li data-find-for="xo-tabs"><a href="#xo-tabs"><code>&lt;xo-tabs&gt;</code></a></li><li data-find-for="xo-menu"><a href="#xo-menu"><code>&lt;xo-menu&gt;</code></a></li><li data-find-for="xo-combobox"><a href="#xo-combobox"><code>&lt;xo-combobox&gt;</code></a></li><li data-find-for="xo-tags"><a href="#xo-tags"><code>&lt;xo-tags&gt;</code></a></li><li data-find-for="xo-richtext"><a href="#xo-richtext"><code>&lt;xo-richtext&gt;</code></a></li><li data-find-for="xo-carousel"><a href="#xo-carousel"><code>&lt;xo-carousel&gt;</code></a></li><li data-find-for="xo-switch"><a href="#xo-switch"><code>&lt;xo-switch&gt;</code></a></li><li data-find-for="xo-date"><a href="#xo-date"><code>&lt;xo-date&gt;</code></a></li><li data-find-for="xo-time"><a href="#xo-time"><code>&lt;xo-time&gt;</code></a></li><li data-find-for="xo-slider"><a href="#xo-slider"><code>&lt;xo-slider&gt;</code></a></li><li data-find-for="xo-stepper"><a href="#xo-stepper"><code>&lt;xo-stepper&gt;</code></a></li><li data-find-for="xo-password"><a href="#xo-password"><code>&lt;xo-password&gt;</code></a></li><li data-find-for="xo-copy"><a href="#xo-copy"><code>&lt;xo-copy&gt;</code></a></li><li data-find-for="xo-image"><a href="#xo-image"><code>&lt;xo-image&gt;</code></a></li><li data-find-for="xo-theme-toggle"><a href="#xo-theme-toggle"><code>&lt;xo-theme-toggle&gt;</code></a></li><li data-find-for="xo-accordion"><a href="#xo-accordion"><code>&lt;xo-accordion&gt;</code></a></li><li data-find-for="xo-popover"><a href="#xo-popover"><code>&lt;xo-popover&gt;</code></a></li><li data-find-for="xo-consent"><a href="#xo-consent"><code>&lt;xo-consent&gt;</code></a></li><li data-find-for="xo-file"><a href="#xo-file"><code>&lt;xo-file&gt;</code></a></li><li data-find-for="xo-command"><a href="#xo-command"><code>&lt;xo-command&gt;</code></a></li><li data-find-for="xo-chart"><a href="#xo-chart"><code>&lt;xo-chart&gt;</code></a></li><li data-find-for="xo-range-slider"><a href="#xo-range-slider"><code>&lt;xo-range-slider&gt;</code></a></li><li data-find-for="xo-segmented"><a href="#xo-segmented"><code>&lt;xo-segmented&gt;</code></a></li><li data-find-for="xo-split-button"><a href="#xo-split-button"><code>&lt;xo-split-button&gt;</code></a></li><li data-find-for="xo-textarea"><a href="#xo-textarea"><code>&lt;xo-textarea&gt;</code></a></li><li data-find-for="xo-stat"><a href="#xo-stat"><code>&lt;xo-stat&gt;</code></a></li><li data-find-for="xo-otp"><a href="#xo-otp"><code>&lt;xo-otp&gt;</code></a></li><li data-find-for="xo-avatar"><a href="#xo-avatar"><code>&lt;xo-avatar&gt;</code></a></li><li data-find-for="xo-avatars"><a href="#xo-avatars"><code>&lt;xo-avatars&gt;</code></a></li><li data-find-for="xo-progress"><a href="#xo-progress"><code>&lt;xo-progress&gt;</code></a></li><li data-find-for="xo-spinner"><a href="#xo-spinner"><code>&lt;xo-spinner&gt;</code></a></li><li data-find-for="xo-steps"><a href="#xo-steps"><code>&lt;xo-steps&gt;</code></a></li><li data-find-for="xo-inline-edit"><a href="#xo-inline-edit"><code>&lt;xo-inline-edit&gt;</code></a></li><li data-find-for="xo-drawer"><a href="#xo-drawer"><code>&lt;xo-drawer&gt;</code></a></li><li data-find-for="xo-breadcrumb"><a href="#xo-breadcrumb"><code>&lt;xo-breadcrumb&gt;</code></a></li><li data-find-for="xo-alert"><a href="#xo-alert"><code>&lt;xo-alert&gt;</code></a></li><li data-find-for="xo-skeleton"><a href="#xo-skeleton"><code>&lt;xo-skeleton&gt;</code></a></li><li data-find-for="xo-tree"><a href="#xo-tree"><code>&lt;xo-tree&gt;</code></a></li><li data-find-for="xo-color"><a href="#xo-color"><code>&lt;xo-color&gt;</code></a></li><li data-find-for="xo-rating"><a href="#xo-rating"><code>&lt;xo-rating&gt;</code></a></li></ul>
 <section class="ref-entry" id="xo-view" data-find="xo-view declare a screen:  get  names the get operation to read. screen page read fetch load data list query live stream get live url-params p- name ">
 <h3><code>&lt;xo-view&gt;</code></h3>
 <p class="ref-meta"><span class="ref-chip pkg">@xoong/data</span> <code class="ref-import">import '@xoong/data/view';</code></p>
@@ -1123,6 +1125,157 @@
 <pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-inline-edit</span> <span class="tok-a">name</span>=<span class="tok-s">"title"</span> <span class="tok-a">value</span>=<span class="tok-s">"Greece Golden Visa"</span> <span class="tok-a">label</span>=<span class="tok-s">"Title"</span>&gt;&lt;/<span class="tok-t">xo-inline-edit</span>&gt;</code></pre>
 <p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#feedback">More controls</a></p>
 </section>
+<section class="ref-entry" id="xo-drawer" data-find="xo-drawer a side sheet on a native modal  dialog : open it with  xo-open= #id   like xo-dialog, close it with  xo-close , escape or (with  dismiss ) a click outside. side sheet panel slide filter offcanvas modal heading label side size dismiss">
+<h3><code>&lt;xo-drawer&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/controls</span> <code class="ref-import">import '@xoong/controls';</code></p>
+<p>A side sheet on a native modal &lt;dialog&gt;: open it with <code>xo-open="#id"</code> like xo-dialog, close it with <a href="#xo-close"><code>xo-close</code></a>, Escape or (with <code>dismiss</code>) a click outside. The header and the footer (<code>slot="footer"</code>) stay put, the body scrolls; full screen on a phone.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-drawer">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>heading</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>The title in the header (or give <code>label</code>).</td></tr>
+<tr><th scope="row"><code>label</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Accessible name when there is no heading.</td></tr>
+<tr><th scope="row"><code>side</code><span class="ref-inline-meta">choice, default end</span></th><td class="ref-type">choice</td><td class="ref-default"><code>end</code></td><td><code>end</code> (default) or <code>start</code>: logical, follows the writing direction.<span class="ref-values">One of <code>end</code>, <code>start</code>.</span></td></tr>
+<tr><th scope="row"><code>size</code><span class="ref-inline-meta">choice, default md</span></th><td class="ref-type">choice</td><td class="ref-default"><code>md</code></td><td><code>sm</code>, <code>md</code> (default) or <code>lg</code>.<span class="ref-values">One of <code>sm</code>, <code>md</code>, <code>lg</code>.</span></td></tr>
+<tr><th scope="row"><code>dismiss</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Close it on a click outside.</td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#filters"</span>&gt;Filters&lt;/<span class="tok-t">button</span>&gt;
+&lt;<span class="tok-t">xo-drawer</span> <span class="tok-a">id</span>=<span class="tok-s">"filters"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Filters"</span> <span class="tok-a">side</span>=<span class="tok-s">"end"</span> <span class="tok-a">dismiss</span>&gt;
+  &lt;<span class="tok-t">p</span>&gt;Choose what to show.&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"footer"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Close&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-drawer</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#overlays">More controls</a></p>
+</section>
+<section class="ref-entry" id="xo-breadcrumb" data-find="xo-breadcrumb the trail of pages that led here:   a   children or json  items , the last is  aria-current=page ; the middle collapses into an  …  menu when  max  is set or the space is short. trail path navigation hierarchy location label items max">
+<h3><code>&lt;xo-breadcrumb&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/controls</span> <code class="ref-import">import '@xoong/controls';</code></p>
+<p>The trail of pages that led here: <code>&lt;a&gt;</code> children or JSON <code>items</code>, the last is <code>aria-current=page</code>; the middle collapses into an "…" menu when <code>max</code> is set or the space is short.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-breadcrumb">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>label</code><span class="ref-inline-meta">text, default Breadcrumb</span></th><td class="ref-type">text</td><td class="ref-default"><code>Breadcrumb</code></td><td>Accessible name of the navigation (default "Breadcrumb").</td></tr>
+<tr><th scope="row"><code>items</code><span class="ref-inline-meta">JSON</span></th><td class="ref-type">JSON</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>JSON: <code>[{"label":"Home","href":"/"},{"label":"Now"}]</code>; or write <code>&lt;a&gt;</code> children.</td></tr>
+<tr><th scope="row"><code>max</code><span class="ref-inline-meta">number</span></th><td class="ref-type">number</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Most items to show (the first and the last ones); the rest go into the "…" menu.</td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-breadcrumb</span> <span class="tok-a">max</span>=<span class="tok-s">"3"</span> <span class="tok-a">items</span>=<span class="tok-s">'[<span class="tok-i">{"label":"Home","href":"/"}</span>,<span class="tok-i">{"label":"Docs","href":"/docs"}</span>,<span class="tok-i">{"label":"Controls","href":"/docs/controls"}</span>,<span class="tok-i">{"label":"Tree"}</span>]'</span>&gt;&lt;/<span class="tok-t">xo-breadcrumb</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#overlays">More controls</a></p>
+</section>
+<section class="ref-entry" id="xo-alert" data-find="xo-alert a message that stays in the page: an icon by  kind , an optional heading and action ( slot= action  ), a close button with  dismissible . banner notice message warning error success info callout kind heading dismissible live">
+<h3><code>&lt;xo-alert&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/controls</span> <code class="ref-import">import '@xoong/controls';</code></p>
+<p>A message that stays in the page: an icon by <code>kind</code>, an optional heading and action (<code>slot="action"</code>), a Close button with <code>dismissible</code>. <code>role=alert</code> for warning and danger, <code>status</code> otherwise. Fires <a href="#event-xo-dismiss"><code>xo-dismiss</code></a>.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-alert">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>kind</code><span class="ref-inline-meta">choice, default info</span></th><td class="ref-type">choice</td><td class="ref-default"><code>info</code></td><td><code>info</code> (default), <code>success</code>, <code>warning</code> or <code>danger</code>.<span class="ref-values">One of <code>info</code>, <code>success</code>, <code>warning</code>, <code>danger</code>.</span></td></tr>
+<tr><th scope="row"><code>heading</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>A bold first line.</td></tr>
+<tr><th scope="row"><code>dismissible</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Show a Close button that hides the alert.</td></tr>
+<tr><th scope="row"><code>live</code><span class="ref-inline-meta">choice</span></th><td class="ref-type">choice</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td><code>polite</code>, <code>assertive</code> or <code>off</code>: overrides the role chosen by <code>kind</code>.<span class="ref-values">One of <code>polite</code>, <code>assertive</code>, <code>off</code>.</span></td></tr>
+</tbody>
+</table></div>
+<h4>Events</h4>
+<ul class="ref-events"><li><a href="#event-xo-dismiss"><code>xo-dismiss</code></a> The Close button of an alert was pressed.</li></ul>
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-alert</span> <span class="tok-a">kind</span>=<span class="tok-s">"warning"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Your trial ends in 3 days"</span> <span class="tok-a">dismissible</span>&gt;Add a payment method to keep your pages.&lt;/<span class="tok-t">xo-alert</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#messages">More controls</a></p>
+</section>
+<section class="ref-entry" id="xo-skeleton" data-find="xo-skeleton a grey placeholder in the shape of what is loading: lines of text, a circle or a rectangle. loading placeholder shimmer shape lines shape width height label">
+<h3><code>&lt;xo-skeleton&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/controls</span> <code class="ref-import">import '@xoong/controls';</code></p>
+<p>A grey placeholder in the shape of what is loading: lines of text, a circle or a rectangle. Hidden from screen readers, with one visually hidden "Loading" status; the shimmer stops under reduced motion.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-skeleton">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>lines</code><span class="ref-inline-meta">number</span></th><td class="ref-type">number</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Number of text lines (the last is shorter).</td></tr>
+<tr><th scope="row"><code>shape</code><span class="ref-inline-meta">choice, default text</span></th><td class="ref-type">choice</td><td class="ref-default"><code>text</code></td><td><code>text</code> (default), <code>circle</code> or <code>rect</code>.<span class="ref-values">One of <code>text</code>, <code>circle</code>, <code>rect</code>.</span></td></tr>
+<tr><th scope="row"><code>width</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>A CSS length; a bare number is pixels.</td></tr>
+<tr><th scope="row"><code>height</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>A CSS length; a bare number is pixels.</td></tr>
+<tr><th scope="row"><code>label</code><span class="ref-inline-meta">text, default Loading</span></th><td class="ref-type">text</td><td class="ref-default"><code>Loading</code></td><td>The status text (default "Loading"); <code>label=""</code> leaves it out.</td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-skeleton</span> <span class="tok-a">lines</span>=<span class="tok-s">"3"</span>&gt;&lt;/<span class="tok-t">xo-skeleton</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#messages">More controls</a></p>
+</section>
+<section class="ref-entry" id="xo-tree" data-find="xo-tree a tree view (the wai-aria tree pattern): nested   ul   or json  data ; arrows, home, end,  *  and type-ahead;  selectable  or  multiple  (checkboxes, a parent is true, false or mixed). hierarchy folders outline nested expand collapse checkbox data label selectable multiple expanded selected">
+<h3><code>&lt;xo-tree&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/controls</span> <code class="ref-import">import '@xoong/controls';</code></p>
+<p>A tree view (the WAI-ARIA tree pattern): nested <code>&lt;ul&gt;</code> or JSON <code>data</code>; arrows, Home, End, <code>*</code> and type-ahead; <code>selectable</code> or <code>multiple</code> (checkboxes, a parent is true, false or mixed). Fires <a href="#event-xo-tree-select"><code>xo-tree-select</code></a>, <a href="#event-xo-tree-toggle"><code>xo-tree-toggle</code></a> and, for lazy items, <a href="#event-xo-tree-load"><code>xo-tree-load</code></a>.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-tree">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>data</code><span class="ref-inline-meta">JSON</span></th><td class="ref-type">JSON</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>JSON: <code>[{"id":"a","label":"A","children":[...]}]</code>; or write nested <code>&lt;ul&gt;&lt;li&gt;</code>.</td></tr>
+<tr><th scope="row"><code>label</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Accessible name of the tree.</td></tr>
+<tr><th scope="row"><code>selectable</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>One item can be chosen (<code>aria-selected</code>).</td></tr>
+<tr><th scope="row"><code>multiple</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Every item has a checkbox; a parent follows its children.</td></tr>
+<tr><th scope="row"><code>expanded</code><span class="ref-inline-meta">list</span></th><td class="ref-type">list</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Ids of the items open at the start, separated by commas.</td></tr>
+<tr><th scope="row"><code>selected</code><span class="ref-inline-meta">list</span></th><td class="ref-type">list</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Ids chosen at the start, separated by commas.</td></tr>
+</tbody>
+</table></div>
+<h4>Events</h4>
+<ul class="ref-events"><li><a href="#event-xo-tree-select"><code>xo-tree-select</code></a> The choice in a tree changed.</li><li><a href="#event-xo-tree-toggle"><code>xo-tree-toggle</code></a> A tree item opened or closed.</li><li><a href="#event-xo-tree-load"><code>xo-tree-load</code></a> A lazy tree item was opened for the first time.</li></ul>
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-tree</span> <span class="tok-a">label</span>=<span class="tok-s">"Files"</span> <span class="tok-a">selectable</span>&gt;
+  &lt;<span class="tok-t">ul</span>&gt;&lt;<span class="tok-t">li</span>&gt;src&lt;<span class="tok-t">ul</span>&gt;&lt;<span class="tok-t">li</span>&gt;index.js&lt;/<span class="tok-t">li</span>&gt;&lt;<span class="tok-t">li</span>&gt;util.js&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;&lt;/<span class="tok-t">li</span>&gt;&lt;<span class="tok-t">li</span>&gt;README.md&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;
+&lt;/<span class="tok-t">xo-tree</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#overlays">More controls</a></p>
+</section>
+<section class="ref-entry" id="xo-color" data-find="xo-color a color field: a swatch button opens a panel with the native color picker, a validated hex field and preset swatches. colour picker hex swatch palette brand name label alpha swatches required disabled readonly">
+<h3><code>&lt;xo-color&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/controls</span> <code class="ref-import">import '@xoong/controls';</code></p>
+<p>A color field: a swatch button opens a panel with the native color picker, a validated hex field and preset swatches. The value is <code>#rrggbb</code> (<code>#rrggbbaa</code> with <code>alpha</code>).</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-color">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>name</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Form field path.</td></tr>
+<tr><th scope="row"><code>label</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Accessible name.</td></tr>
+<tr><th scope="row"><code>alpha</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Add an opacity slider; the value then has two more digits.</td></tr>
+<tr><th scope="row"><code>swatches</code><span class="ref-inline-meta">list</span></th><td class="ref-type">list</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Preset colors: <code>#0b7285,#c92a2a</code>.</td></tr>
+<tr><th scope="row"><code>required</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>The field must be filled before the form can be sent.</td></tr>
+<tr><th scope="row"><code>disabled</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Not available: not editable, not sent with the form.</td></tr>
+<tr><th scope="row"><code>readonly</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Shown and sent, but not changeable.</td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-color</span> <span class="tok-a">name</span>=<span class="tok-s">"brand"</span> <span class="tok-a">label</span>=<span class="tok-s">"Brand color"</span> <span class="tok-a">value</span>=<span class="tok-s">"#0b7285"</span> <span class="tok-a">swatches</span>=<span class="tok-s">"#0b7285,#c92a2a,#2b8a3e"</span>&gt;&lt;/<span class="tok-t">xo-color</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#pick">More controls</a></p>
+</section>
+<section class="ref-entry" id="xo-rating" data-find="xo-rating a star rating: one native radio per star (two with  half ), so arrows, tab and screen readers work; the pointer previews; the value is a number (0 is nothing). stars review score rate name label max half clearable required disabled readonly">
+<h3><code>&lt;xo-rating&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/controls</span> <code class="ref-import">import '@xoong/controls';</code></p>
+<p>A star rating: one native radio per star (two with <code>half</code>), so arrows, Tab and screen readers work; the pointer previews; the value is a number (0 is nothing).</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-rating">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>name</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Form field path.</td></tr>
+<tr><th scope="row"><code>label</code><span class="ref-inline-meta">text, default Rating</span></th><td class="ref-type">text</td><td class="ref-default"><code>Rating</code></td><td>Accessible name of the group (default "Rating").</td></tr>
+<tr><th scope="row"><code>max</code><span class="ref-inline-meta">number, default 5</span></th><td class="ref-type">number</td><td class="ref-default"><code>5</code></td><td>Number of stars (default 5).</td></tr>
+<tr><th scope="row"><code>half</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Allow half stars.</td></tr>
+<tr><th scope="row"><code>clearable</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>A click on the chosen star, or Delete, sets it back to nothing.</td></tr>
+<tr><th scope="row"><code>required</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>The field must be filled before the form can be sent.</td></tr>
+<tr><th scope="row"><code>disabled</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Not available: not editable, not sent with the form.</td></tr>
+<tr><th scope="row"><code>readonly</code><span class="ref-inline-meta">flag</span></th><td class="ref-type">flag</td><td class="ref-default">off</td><td>Shown and sent, but not changeable.</td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-rating</span> <span class="tok-a">name</span>=<span class="tok-s">"score"</span> <span class="tok-a">label</span>=<span class="tok-s">"Your rating"</span> <span class="tok-a">value</span>=<span class="tok-s">"4"</span> <span class="tok-a">half</span> <span class="tok-a">clearable</span>&gt;&lt;/<span class="tok-t">xo-rating</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="more-controls.html#pick">More controls</a></p>
+</section>
 
 <h2 id="directives">Directives</h2>
 <p class="ref-group-intro">The xo-* attributes you put on your own markup: data, actions, form rows, routing, dialogs. <span class="ref-count">34 entries.</span></p>
@@ -1565,8 +1718,8 @@
 </section>
 
 <h2 id="events">Events</h2>
-<p class="ref-group-intro">The events xoong elements fire, what is in <code>detail</code>, and who listens. <span class="ref-count">32 entries.</span></p>
-<ul class="ref-names" aria-label="Events, all entries"><li data-find-for="event-xo-done"><a href="#event-xo-done"><code>xo-done</code></a></li><li data-find-for="event-xo-error"><a href="#event-xo-error"><code>xo-error</code></a></li><li data-find-for="event-xo-invalid"><a href="#event-xo-invalid"><code>xo-invalid</code></a></li><li data-find-for="event-xo-notice"><a href="#event-xo-notice"><code>xo-notice</code></a></li><li data-find-for="event-xo-go"><a href="#event-xo-go"><code>xo-go</code></a></li><li data-find-for="event-xo-navigate"><a href="#event-xo-navigate"><code>xo-navigate</code></a></li><li data-find-for="event-xo-columns-change"><a href="#event-xo-columns-change"><code>xo-columns-change</code></a></li><li data-find-for="event-xo-dirty"><a href="#event-xo-dirty"><code>xo-dirty</code></a></li><li data-find-for="event-xo-reveal"><a href="#event-xo-reveal"><code>xo-reveal</code></a></li><li data-find-for="event-xo-array-change"><a href="#event-xo-array-change"><code>xo-array-change</code></a></li><li data-find-for="event-xo-form-ready"><a href="#event-xo-form-ready"><code>xo-form-ready</code></a></li><li data-find-for="event-xo-pick-media"><a href="#event-xo-pick-media"><code>xo-pick-media</code></a></li><li data-find-for="event-xo-richtext-expand"><a href="#event-xo-richtext-expand"><code>xo-richtext-expand</code></a></li><li data-find-for="event-xo-richtext-done"><a href="#event-xo-richtext-done"><code>xo-richtext-done</code></a></li><li data-find-for="event-xo-search"><a href="#event-xo-search"><code>xo-search</code></a></li><li data-find-for="event-xo-tab-change"><a href="#event-xo-tab-change"><code>xo-tab-change</code></a></li><li data-find-for="event-xo-menu-select"><a href="#event-xo-menu-select"><code>xo-menu-select</code></a></li><li data-find-for="event-xo-menu-open"><a href="#event-xo-menu-open"><code>xo-menu-open</code></a></li><li data-find-for="event-xo-menu-close"><a href="#event-xo-menu-close"><code>xo-menu-close</code></a></li><li data-find-for="event-xo-carousel-change"><a href="#event-xo-carousel-change"><code>xo-carousel-change</code></a></li><li data-find-for="event-xo-file-reject"><a href="#event-xo-file-reject"><code>xo-file-reject</code></a></li><li data-find-for="event-xo-command-run"><a href="#event-xo-command-run"><code>xo-command-run</code></a></li><li data-find-for="event-xo-consent"><a href="#event-xo-consent"><code>xo-consent</code></a></li><li data-find-for="event-xo-theme-change"><a href="#event-xo-theme-change"><code>xo-theme-change</code></a></li><li data-find-for="event-xo-popover-open"><a href="#event-xo-popover-open"><code>xo-popover-open</code></a></li><li data-find-for="event-xo-popover-close"><a href="#event-xo-popover-close"><code>xo-popover-close</code></a></li><li data-find-for="event-xo-accordion-change"><a href="#event-xo-accordion-change"><code>xo-accordion-change</code></a></li><li data-find-for="event-copied"><a href="#event-copied"><code>copied</code></a></li><li data-find-for="event-copy-failed"><a href="#event-copy-failed"><code>copy-failed</code></a></li><li data-find-for="event-complete"><a href="#event-complete"><code>complete</code></a></li><li data-find-for="event-save"><a href="#event-save"><code>save</code></a></li><li data-find-for="event-cancel"><a href="#event-cancel"><code>cancel</code></a></li></ul>
+<p class="ref-group-intro">The events xoong elements fire, what is in <code>detail</code>, and who listens. <span class="ref-count">36 entries.</span></p>
+<ul class="ref-names" aria-label="Events, all entries"><li data-find-for="event-xo-done"><a href="#event-xo-done"><code>xo-done</code></a></li><li data-find-for="event-xo-error"><a href="#event-xo-error"><code>xo-error</code></a></li><li data-find-for="event-xo-invalid"><a href="#event-xo-invalid"><code>xo-invalid</code></a></li><li data-find-for="event-xo-notice"><a href="#event-xo-notice"><code>xo-notice</code></a></li><li data-find-for="event-xo-go"><a href="#event-xo-go"><code>xo-go</code></a></li><li data-find-for="event-xo-navigate"><a href="#event-xo-navigate"><code>xo-navigate</code></a></li><li data-find-for="event-xo-columns-change"><a href="#event-xo-columns-change"><code>xo-columns-change</code></a></li><li data-find-for="event-xo-dirty"><a href="#event-xo-dirty"><code>xo-dirty</code></a></li><li data-find-for="event-xo-reveal"><a href="#event-xo-reveal"><code>xo-reveal</code></a></li><li data-find-for="event-xo-array-change"><a href="#event-xo-array-change"><code>xo-array-change</code></a></li><li data-find-for="event-xo-form-ready"><a href="#event-xo-form-ready"><code>xo-form-ready</code></a></li><li data-find-for="event-xo-pick-media"><a href="#event-xo-pick-media"><code>xo-pick-media</code></a></li><li data-find-for="event-xo-richtext-expand"><a href="#event-xo-richtext-expand"><code>xo-richtext-expand</code></a></li><li data-find-for="event-xo-richtext-done"><a href="#event-xo-richtext-done"><code>xo-richtext-done</code></a></li><li data-find-for="event-xo-search"><a href="#event-xo-search"><code>xo-search</code></a></li><li data-find-for="event-xo-tab-change"><a href="#event-xo-tab-change"><code>xo-tab-change</code></a></li><li data-find-for="event-xo-menu-select"><a href="#event-xo-menu-select"><code>xo-menu-select</code></a></li><li data-find-for="event-xo-menu-open"><a href="#event-xo-menu-open"><code>xo-menu-open</code></a></li><li data-find-for="event-xo-menu-close"><a href="#event-xo-menu-close"><code>xo-menu-close</code></a></li><li data-find-for="event-xo-carousel-change"><a href="#event-xo-carousel-change"><code>xo-carousel-change</code></a></li><li data-find-for="event-xo-file-reject"><a href="#event-xo-file-reject"><code>xo-file-reject</code></a></li><li data-find-for="event-xo-command-run"><a href="#event-xo-command-run"><code>xo-command-run</code></a></li><li data-find-for="event-xo-consent"><a href="#event-xo-consent"><code>xo-consent</code></a></li><li data-find-for="event-xo-theme-change"><a href="#event-xo-theme-change"><code>xo-theme-change</code></a></li><li data-find-for="event-xo-popover-open"><a href="#event-xo-popover-open"><code>xo-popover-open</code></a></li><li data-find-for="event-xo-popover-close"><a href="#event-xo-popover-close"><code>xo-popover-close</code></a></li><li data-find-for="event-xo-accordion-change"><a href="#event-xo-accordion-change"><code>xo-accordion-change</code></a></li><li data-find-for="event-copied"><a href="#event-copied"><code>copied</code></a></li><li data-find-for="event-copy-failed"><a href="#event-copy-failed"><code>copy-failed</code></a></li><li data-find-for="event-complete"><a href="#event-complete"><code>complete</code></a></li><li data-find-for="event-save"><a href="#event-save"><code>save</code></a></li><li data-find-for="event-xo-dismiss"><a href="#event-xo-dismiss"><code>xo-dismiss</code></a></li><li data-find-for="event-xo-tree-select"><a href="#event-xo-tree-select"><code>xo-tree-select</code></a></li><li data-find-for="event-xo-tree-toggle"><a href="#event-xo-tree-toggle"><code>xo-tree-toggle</code></a></li><li data-find-for="event-xo-tree-load"><a href="#event-xo-tree-load"><code>xo-tree-load</code></a></li><li data-find-for="event-cancel"><a href="#event-cancel"><code>cancel</code></a></li></ul>
 <section class="ref-entry" id="event-xo-done" data-find="xo-done an action succeeded. success saved finished complete ">
 <h3><code>xo-done</code></h3>
 <p class="ref-meta"><span class="ref-chip">Bubbles</span> </p>
@@ -1814,6 +1967,38 @@
 <dl class="ref-facts"><dt>Fired by</dt><dd><a href="#xo-inline-edit"><code>&lt;xo-inline-edit&gt;</code></a></dd><dt><code>detail</code></dt><dd><code>{ value }</code>: the new text.</dd></dl>
 <h4>Example</h4>
 <pre data-lang="js" tabindex="0"><code>document.addEventListener(<span class="tok-s">'save'</span>, (event) =&gt; console.log(event.detail));</code></pre>
+</section>
+<section class="ref-entry" id="event-xo-dismiss" data-find="xo-dismiss the close button of an alert was pressed. close banner ">
+<h3><code>xo-dismiss</code></h3>
+<p class="ref-meta"><span class="ref-chip">Bubbles</span> </p>
+<p>The Close button of an alert was pressed.</p>
+<dl class="ref-facts"><dt>Fired by</dt><dd><a href="#xo-alert"><code>&lt;xo-alert&gt;</code></a></dd><dt><code>detail</code></dt><dd>None. <code>preventDefault()</code> keeps the alert.</dd></dl>
+<h4>Example</h4>
+<pre data-lang="js" tabindex="0"><code>document.addEventListener(<span class="tok-s">'xo-dismiss'</span>, (event) =&gt; console.log(event.detail));</code></pre>
+</section>
+<section class="ref-entry" id="event-xo-tree-select" data-find="xo-tree-select the choice in a tree changed. checkbox selection ">
+<h3><code>xo-tree-select</code></h3>
+<p class="ref-meta"><span class="ref-chip">Bubbles</span> </p>
+<p>The choice in a tree changed.</p>
+<dl class="ref-facts"><dt>Fired by</dt><dd><a href="#xo-tree"><code>&lt;xo-tree&gt;</code></a></dd><dt><code>detail</code></dt><dd><code>{ id, selected }</code>: the item acted on and the chosen ids.</dd></dl>
+<h4>Example</h4>
+<pre data-lang="js" tabindex="0"><code>document.addEventListener(<span class="tok-s">'xo-tree-select'</span>, (event) =&gt; console.log(event.detail));</code></pre>
+</section>
+<section class="ref-entry" id="event-xo-tree-toggle" data-find="xo-tree-toggle a tree item opened or closed. expand collapse ">
+<h3><code>xo-tree-toggle</code></h3>
+<p class="ref-meta"><span class="ref-chip">Bubbles</span> </p>
+<p>A tree item opened or closed.</p>
+<dl class="ref-facts"><dt>Fired by</dt><dd><a href="#xo-tree"><code>&lt;xo-tree&gt;</code></a></dd><dt><code>detail</code></dt><dd><code>{ id, expanded }</code>: the item and whether it is open now.</dd></dl>
+<h4>Example</h4>
+<pre data-lang="js" tabindex="0"><code>document.addEventListener(<span class="tok-s">'xo-tree-toggle'</span>, (event) =&gt; console.log(event.detail));</code></pre>
+</section>
+<section class="ref-entry" id="event-xo-tree-load" data-find="xo-tree-load a lazy tree item was opened for the first time. lazy children load ">
+<h3><code>xo-tree-load</code></h3>
+<p class="ref-meta"><span class="ref-chip">Bubbles</span> </p>
+<p>A lazy tree item was opened for the first time.</p>
+<dl class="ref-facts"><dt>Fired by</dt><dd><a href="#xo-tree"><code>&lt;xo-tree&gt;</code></a></dd><dt><code>detail</code></dt><dd><code>{ id }</code>: the lazy item; answer with <code>tree.setChildren(id, children)</code>.</dd></dl>
+<h4>Example</h4>
+<pre data-lang="js" tabindex="0"><code>document.addEventListener(<span class="tok-s">'xo-tree-load'</span>, (event) =&gt; console.log(event.detail));</code></pre>
 </section>
 <section class="ref-entry" id="event-cancel" data-find="cancel an inline edit was cancelled. rename inline edit ">
 <h3><code>cancel</code></h3>

@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Benchmarks · xoong</title>
+  <meta name="description" content="Measured, not promised: the same admin screen in xoong, React and Vue in real Chromium, and the speed of the xoong command line and MCP server. Every number comes from a script in the repository.">
+  <meta property="og:title" content="Benchmarks · xoong">
+  <meta property="og:description" content="Measured, not promised: the same admin screen in xoong, React and Vue in real Chromium, and the speed of the xoong command line and MCP server. Every number comes from a script in the repository.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Benchmarks</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="benchmarks.html" aria-current="page">Benchmarks</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="benchmarks.html" aria-current="page">Benchmarks</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Start</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Benchmarks</span></div>
+
+<h1>Benchmarks</h1>
+<p class="lead">Measured, not promised. The same people screen built in xoong, in a React stack and in a Vue stack, run in real Chromium; plus the speed of the <code>xoong</code> command and of <code>xoong-mcp</code>. Every number below is generated from <a href="https://github.com/fpt-duongtx/xoong/tree/main/benchmarks/results">JSON files in the repository</a> by scripts you can run, and the page is rebuilt from that data, so the two cannot drift apart.</p>
+
+<aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p><strong>Read this first.</strong> These are the results of one machine (Apple M1, 8 cores, 8 GB RAM, Darwin 25.2.0 (arm64), Chromium 158.0.8127.18, Node 24.7.0, 2026-11-09) with 5 runs per number after one warm-up run: the median is shown with the smallest and largest run in brackets. Numbers depend on the machine, so use them to compare the columns of one table, not to predict your users' devices. One screen, one team of one author: this is an honest comparison of this screen, not a verdict on the frameworks.</p></aside>
+
+<h2 id="what-was-compared">What was compared</h2>
+<p>One admin screen: a people list with server-side sort, search and paging, a rows-per-page choice up to 10,000, row selection with a bulk delete behind a confirm dialog, a disable action per row, an add dialog with a validated form (client rules and server field errors), and loading, error and empty states. All three implementations talk to the same mock API process and pass the same Playwright acceptance test, which uses only roles and accessible names and includes an axe-core check (WCAG 2 A and AA): 15 checks, run by <code>npm run accept</code>.</p>
+<ul>
+<li><strong>xoong</strong> 0.0.47: <code>&lt;xo-view&gt;</code>, <code>&lt;xo-table&gt;</code>, <code>&lt;xo-form&gt;</code> and <code>&lt;xo-dialog&gt;</code> from the OpenAPI document, built with <code>xoong build</code> (not minified, not bundled, modulepreload links).</li>
+<li><strong>React stack</strong>: React 19.3.1, TanStack Query 5.107.1, TanStack Table 8.21.3, React Hook Form 7.91.0, zod 3.25.76, built with Vite 8.3.6 (minified, one JS file).</li>
+<li><strong>Vue stack</strong>: Vue 3.5.45, TanStack Query and Table for Vue 5.107.1, vee-validate 4.15.1, zod 3.25.76, built with Vite 8.3.6.</li>
+</ul>
+<p>The competitors are written the way their documentation shows, with the libraries most teams reach for, and with the native <code>&lt;dialog&gt;</code> that xoong also uses; none uses a component library, so the stylesheet is a few lines of plain CSS (xoong's comes with the package). All three are served by the same HTTP/2 server (self-signed certificate) with the same brotli compression and the same strict Content-Security-Policy; nothing was tuned per stack. Pages are loaded in a fresh browser context each run, so the cache is cold.</p>
+
+<h2 id="what-gets-delivered">What gets delivered</h2>
+<p>Sizes are of the files the first view loads, computed from the built files (gzip level 9, brotli level 11), so you can recompute them. xoong's output is not minified: its files are the ones you wrote. A bundler with minification and tree-shaking, applied to the same sources, would make the xoong column smaller; the page compares what <code>xoong build</code> produces today.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Delivered</th><th scope="col">xoong</th><th scope="col">xoong, no modulepreload</th><th scope="col">xoong, HTTP/1.1</th><th scope="col">React stack</th><th scope="col">Vue stack</th></tr></thead>
+<tbody>
+<tr><th scope="row">Requests for the first view</th><td>35</td><td>35</td><td>35</td><td>3</td><td>3</td></tr>
+<tr><th scope="row">JS, as written to disk</th><td>248.4 kB</td><td>248.4 kB</td><td>248.4 kB</td><td>403.5 kB</td><td>241.8 kB</td></tr>
+<tr><th scope="row">JS, gzip</th><td>87.7 kB</td><td>87.7 kB</td><td>87.7 kB</td><td>116.8 kB</td><td>72.0 kB</td></tr>
+<tr><th scope="row">JS, brotli</th><td>75.9 kB</td><td>75.9 kB</td><td>75.9 kB</td><td>101.8 kB</td><td>63.9 kB</td></tr>
+<tr><th scope="row">CSS, brotli</th><td>3.6 kB</td><td>3.6 kB</td><td>3.6 kB</td><td>0.3 kB</td><td>0.3 kB</td></tr>
+<tr><th scope="row">HTML, brotli</th><td>0.7 kB</td><td>0.5 kB</td><td>0.7 kB</td><td>0.1 kB</td><td>0.2 kB</td></tr>
+<tr><th scope="row">Total, brotli (JS, CSS and HTML)</th><td>80.2 kB</td><td>80.1 kB</td><td>80.2 kB</td><td>102.3 kB</td><td>64.4 kB</td></tr>
+<tr><th scope="row">Third-party packages bundled into the browser build</th><td>0</td><td>0</td><td>0</td><td>7</td><td>6</td></tr>
+</tbody></table></div>
+
+<h2 id="load-and-interaction-unthrottled">Load and interaction, unthrottled</h2>
+<p>Loopback network, no CPU throttling. "Screen usable" is the first data row drawn and followed by a frame. Interaction times run from the DOM event to the frame after the expected change, so they include the request to the mock API (the same for every stack: sorting is served from a cache there). The search box waits 250 ms after typing in all three, as the xoong search box does; that wait is inside the search time. "Disable one person" is the time until the cell reads "disabled": xoong's entity store updates the row from the server's answer (and, by its default rule, refetches the list in the background afterwards); the two other screens patch their cached pages from the answer and do not refetch.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Median (smallest to largest of 5 runs)</th><th scope="col">xoong</th><th scope="col">xoong, no modulepreload</th><th scope="col">xoong, HTTP/1.1</th><th scope="col">React stack</th><th scope="col">Vue stack</th></tr></thead>
+<tbody>
+<tr><th scope="row">First contentful paint</th><td>32.0 ms <small>(28.0 ms to 32.0 ms)</small></td><td>24.0 ms <small>(24.0 ms to 28.0 ms)</small></td><td>24.0 ms <small>(24.0 ms to 24.0 ms)</small></td><td>56.0 ms <small>(52.0 ms to 56.0 ms)</small></td><td>48.0 ms <small>(44.0 ms to 48.0 ms)</small></td></tr>
+<tr><th scope="row">Largest contentful paint</th><td>32.0 ms <small>(28.0 ms to 32.0 ms)</small></td><td>24.0 ms <small>(24.0 ms to 28.0 ms)</small></td><td>24.0 ms <small>(24.0 ms to 24.0 ms)</small></td><td>56.0 ms <small>(52.0 ms to 56.0 ms)</small></td><td>48.0 ms <small>(44.0 ms to 48.0 ms)</small></td></tr>
+<tr><th scope="row">Screen usable (first data row drawn)</th><td>59.0 ms <small>(58.1 ms to 60.5 ms)</small></td><td>58.9 ms <small>(58.4 ms to 75.2 ms)</small></td><td>55.9 ms <small>(54.6 ms to 56.0 ms)</small></td><td>75.3 ms <small>(75.1 ms to 75.4 ms)</small></td><td>58.5 ms <small>(56.7 ms to 59.1 ms)</small></td></tr>
+<tr><th scope="row">Total blocking time up to usable</th><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td></tr>
+<tr><th scope="row">JS heap after load</th><td>1.8 MB <small>(1.8 MB to 1.8 MB)</small></td><td>1.8 MB <small>(1.8 MB to 1.8 MB)</small></td><td>1.8 MB <small>(1.8 MB to 1.8 MB)</small></td><td>2.6 MB <small>(2.6 MB to 2.6 MB)</small></td><td>2.5 MB <small>(2.5 MB to 2.5 MB)</small></td></tr>
+<tr><th scope="row">Show 100 rows (page size 10 to 100)</th><td>26.0 ms <small>(22.4 ms to 30.4 ms)</small></td><td>22.1 ms <small>(21.2 ms to 32.2 ms)</small></td><td>22.8 ms <small>(21.7 ms to 38.2 ms)</small></td><td>37.6 ms <small>(35.9 ms to 40.9 ms)</small></td><td>37.7 ms <small>(26.2 ms to 39.8 ms)</small></td></tr>
+<tr><th scope="row">Show 1,000 rows</th><td>96.3 ms <small>(90.8 ms to 98.5 ms)</small></td><td>97.6 ms <small>(87.6 ms to 99.3 ms)</small></td><td>98.4 ms <small>(96.3 ms to 99.2 ms)</small></td><td>98.5 ms <small>(90.2 ms to 99.6 ms)</small></td><td>104 ms <small>(99.9 ms to 107 ms)</small></td></tr>
+<tr><th scope="row">Show 10,000 rows</th><td>736 ms <small>(704 ms to 850 ms)</small></td><td>726 ms <small>(696 ms to 759 ms)</small></td><td>712 ms <small>(705 ms to 724 ms)</small></td><td>903 ms <small>(867 ms to 969 ms)</small></td><td>862 ms <small>(854 ms to 898 ms)</small></td></tr>
+<tr><th scope="row">Sort by name, 1,000 rows shown</th><td>76.0 ms <small>(74.2 ms to 81.4 ms)</small></td><td>72.2 ms <small>(71.4 ms to 78.6 ms)</small></td><td>72.4 ms <small>(70.6 ms to 81.8 ms)</small></td><td>114 ms <small>(111 ms to 123 ms)</small></td><td>111 ms <small>(108 ms to 112 ms)</small></td></tr>
+<tr><th scope="row">Search, 1,000 rows shown</th><td>310 ms <small>(286 ms to 317 ms)</small></td><td>309 ms <small>(301 ms to 317 ms)</small></td><td>312 ms <small>(291 ms to 319 ms)</small></td><td>353 ms <small>(350 ms to 365 ms)</small></td><td>306 ms <small>(298 ms to 310 ms)</small></td></tr>
+<tr><th scope="row">Disable one person, 1,000 rows shown</th><td>46.1 ms <small>(41.2 ms to 50.7 ms)</small></td><td>41.1 ms <small>(36.2 ms to 42.1 ms)</small></td><td>41.0 ms <small>(40.4 ms to 47.7 ms)</small></td><td>112 ms <small>(106 ms to 118 ms)</small></td><td>65.9 ms <small>(65.1 ms to 67.1 ms)</small></td></tr>
+<tr><th scope="row">JS heap per 1,000 rows drawn</th><td>3.7 MB <small>(3.7 MB to 3.7 MB)</small></td><td>3.7 MB <small>(3.7 MB to 3.7 MB)</small></td><td>3.7 MB <small>(3.7 MB to 3.7 MB)</small></td><td>15.9 MB <small>(15.9 MB to 15.9 MB)</small></td><td>10.7 MB <small>(10.7 MB to 10.7 MB)</small></td></tr>
+<tr><th scope="row">DOM nodes per 1,000 rows drawn</th><td>37,322 <small>(37,322 to 37,322)</small></td><td>37,316 <small>(37,316 to 37,316)</small></td><td>37,322 <small>(37,322 to 37,322)</small></td><td>14,010 <small>(14,010 to 14,010)</small></td><td>24,012 <small>(24,012 to 24,012)</small></td></tr>
+</tbody></table></div>
+<p>"JS heap" is the JavaScript heap after a forced garbage collection (CDP <code>Performance.getMetrics</code>). It does not count the memory of the DOM itself, which is why the number of DOM nodes is listed beside it: the stacks differ in both, in opposite directions (xoong: 3.7 MB of JS heap and 37,322 DOM nodes per 1,000 rows; React stack: 15.9 MB of JS heap and 14,010 DOM nodes per 1,000 rows; Vue stack: 10.7 MB of JS heap and 24,012 DOM nodes per 1,000 rows). Neither row is "the memory" of the page. "Total blocking time" is the sum of the time beyond 50 ms of every long task between first paint and "usable"; 0 means no such task, not that no long task ran (script that runs before the first paint does not count).</p>
+
+<h2 id="load-and-interaction-throttled">Load and interaction, throttled</h2>
+<p>The same runs with the CPU slowed 4 times and, while the page loads, a slow 4G network (150 ms round trip, 1.6 Mbit/s down, 0.75 Mbit/s up). The network is set back to normal before the interactions, because a 10,000-row answer is about a megabyte and would turn those rows into a download test. The CPU stays slowed.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Median (smallest to largest of 5 runs)</th><th scope="col">xoong</th><th scope="col">xoong, no modulepreload</th><th scope="col">xoong, HTTP/1.1</th><th scope="col">React stack</th><th scope="col">Vue stack</th></tr></thead>
+<tbody>
+<tr><th scope="row">First contentful paint</th><td>720 ms <small>(636 ms to 728 ms)</small></td><td>392 ms <small>(384 ms to 400 ms)</small></td><td>444 ms <small>(440 ms to 452 ms)</small></td><td>948 ms <small>(944 ms to 964 ms)</small></td><td>752 ms <small>(740 ms to 764 ms)</small></td></tr>
+<tr><th scope="row">Largest contentful paint</th><td>720 ms <small>(636 ms to 728 ms)</small></td><td>392 ms <small>(384 ms to 400 ms)</small></td><td>444 ms <small>(440 ms to 452 ms)</small></td><td>948 ms <small>(944 ms to 964 ms)</small></td><td>752 ms <small>(740 ms to 764 ms)</small></td></tr>
+<tr><th scope="row">Screen usable (first data row drawn)</th><td>1,055 ms <small>(1,049 ms to 1,072 ms)</small></td><td>1,270 ms <small>(1,256 ms to 1,297 ms)</small></td><td>1,670 ms <small>(1,647 ms to 1,679 ms)</small></td><td>1,113 ms <small>(1,105 ms to 1,138 ms)</small></td><td>873 ms <small>(863 ms to 884 ms)</small></td></tr>
+<tr><th scope="row">Total blocking time up to usable</th><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td><td>0.0 ms <small>(0.0 ms to 0.0 ms)</small></td></tr>
+<tr><th scope="row">JS heap after load</th><td>1.8 MB <small>(1.8 MB to 1.8 MB)</small></td><td>1.8 MB <small>(1.8 MB to 1.8 MB)</small></td><td>1.8 MB <small>(1.8 MB to 1.8 MB)</small></td><td>2.6 MB <small>(2.6 MB to 2.6 MB)</small></td><td>2.5 MB <small>(2.5 MB to 2.5 MB)</small></td></tr>
+<tr><th scope="row">Show 100 rows (page size 10 to 100)</th><td>40.5 ms <small>(39.6 ms to 43.9 ms)</small></td><td>39.7 ms <small>(39.4 ms to 44.5 ms)</small></td><td>42.6 ms <small>(38.7 ms to 44.4 ms)</small></td><td>54.9 ms <small>(53.4 ms to 56.4 ms)</small></td><td>56.1 ms <small>(53.1 ms to 58.2 ms)</small></td></tr>
+<tr><th scope="row">Show 1,000 rows</th><td>303 ms <small>(301 ms to 309 ms)</small></td><td>301 ms <small>(292 ms to 311 ms)</small></td><td>300 ms <small>(295 ms to 304 ms)</small></td><td>312 ms <small>(303 ms to 315 ms)</small></td><td>353 ms <small>(347 ms to 358 ms)</small></td></tr>
+<tr><th scope="row">Show 10,000 rows</th><td>2,979 ms <small>(2,818 ms to 3,038 ms)</small></td><td>2,852 ms <small>(2,804 ms to 2,864 ms)</small></td><td>2,923 ms <small>(2,880 ms to 2,963 ms)</small></td><td>3,259 ms <small>(3,183 ms to 3,300 ms)</small></td><td>3,388 ms <small>(3,304 ms to 3,428 ms)</small></td></tr>
+<tr><th scope="row">Sort by name, 1,000 rows shown</th><td>330 ms <small>(293 ms to 366 ms)</small></td><td>331 ms <small>(297 ms to 343 ms)</small></td><td>328 ms <small>(326 ms to 338 ms)</small></td><td>432 ms <small>(429 ms to 436 ms)</small></td><td>387 ms <small>(384 ms to 390 ms)</small></td></tr>
+<tr><th scope="row">Search, 1,000 rows shown</th><td>357 ms <small>(355 ms to 363 ms)</small></td><td>356 ms <small>(349 ms to 361 ms)</small></td><td>357 ms <small>(350 ms to 359 ms)</small></td><td>491 ms <small>(485 ms to 513 ms)</small></td><td>369 ms <small>(360 ms to 372 ms)</small></td></tr>
+<tr><th scope="row">Disable one person, 1,000 rows shown</th><td>156 ms <small>(121 ms to 166 ms)</small></td><td>123 ms <small>(113 ms to 161 ms)</small></td><td>160 ms <small>(107 ms to 188 ms)</small></td><td>407 ms <small>(395 ms to 443 ms)</small></td><td>263 ms <small>(260 ms to 268 ms)</small></td></tr>
+<tr><th scope="row">JS heap per 1,000 rows drawn</th><td>3.7 MB <small>(3.7 MB to 3.7 MB)</small></td><td>3.7 MB <small>(3.7 MB to 3.7 MB)</small></td><td>3.7 MB <small>(3.7 MB to 3.7 MB)</small></td><td>15.9 MB <small>(15.9 MB to 15.9 MB)</small></td><td>10.7 MB <small>(10.7 MB to 10.7 MB)</small></td></tr>
+<tr><th scope="row">DOM nodes per 1,000 rows drawn</th><td>37,322 <small>(37,322 to 37,322)</small></td><td>37,316 <small>(37,316 to 37,316)</small></td><td>37,322 <small>(37,322 to 37,322)</small></td><td>14,010 <small>(14,010 to 14,010)</small></td><td>24,012 <small>(24,012 to 24,012)</small></td></tr>
+</tbody></table></div>
+
+<h3>Unbundled modules: with and without the preload links</h3>
+<p><code>xoong build</code> does not bundle: the first view is 35 files. The build writes a <code>&lt;link rel="modulepreload"&gt;</code> for every module of the graph so the browser does not find them one import at a time. The first three columns are the same files: with the links, without them, and over HTTP/1.1 (the worst case for many small files). On the throttled profile the screen is usable after 1,055 ms with the links, 1,270 ms without them and 1,670 ms over HTTP/1.1; unthrottled, on loopback, the three are within 3.1 ms of each other. First paint comes earlier without the links on the throttled profile (392 ms against 720 ms); that was measured, not explained.</p>
+
+<h2 id="effort-the-same-screen-written-three-times">Effort: the same screen, written three times</h2>
+<p>Lines of code are non-blank, non-comment lines of the files a developer writes (markup, script, stylesheet); JSX is counted as script, <code>.vue</code> files are split by block. <code>package.json</code>, lockfiles and the build config are not counted. These are proxies for how much there is to write and read. They are not time: <strong>time to a passing screen was not measured</strong>, and nobody should infer it from line counts. Two things favour xoong in the table and should be said: its screen assumes an OpenAPI document exists (the other two have a hand-written 25-line API client instead, and would shrink with a code generator), and its look comes from the bundled stylesheet while the other two carry 18 lines of their own. What xoong gives up is control: a table or a form outside what <code>xo-table</code> and <code>xo-form</code> draw is yours to write.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">The same screen</th><th scope="col">xoong</th><th scope="col">React stack</th><th scope="col">Vue stack</th></tr></thead>
+<tbody>
+<tr><th scope="row">Files you write</th><td>2</td><td>8</td><td>8</td></tr>
+<tr><th scope="row">Lines: markup</th><td>34</td><td>13</td><td>51</td></tr>
+<tr><th scope="row">Lines: script</th><td>5</td><td>229</td><td>125</td></tr>
+<tr><th scope="row">Lines: style</th><td>0</td><td>18</td><td>18</td></tr>
+<tr><th scope="row">Lines: total</th><td><strong>39</strong></td><td><strong>260</strong></td><td><strong>194</strong></td></tr>
+<tr><th scope="row">Direct dependencies</th><td>1</td><td>9</td><td>8</td></tr>
+<tr><th scope="row">Packages npm installs for them</th><td>12</td><td>52</td><td>83</td></tr>
+</tbody></table></div>
+
+<h2 id="build-dev-server-and-install">Build, dev server and install</h2>
+<p>Build times are wall time of the whole process, Node start-up included. <code>vite build</code> bundles and minifies; <code>xoong build</code> copies, rewrites imports and writes preload links, so the two do different work to reach the same goal: files a browser can run under a strict CSP.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Build</th><th scope="col">Time</th><th scope="col">Files</th><th scope="col">Output</th><th scope="col">Output, gzip</th></tr></thead>
+<tbody>
+<tr><th scope="row">xoong build (people screen)</th><td>146 ms <small>(145 ms to 146 ms)</small></td><td>43</td><td>299.1 kB</td><td>100.4 kB</td></tr>
+<tr><th scope="row">xoong build (examples/admin)</th><td>127 ms <small>(125 ms to 129 ms)</small></td><td>37</td><td>275.2 kB</td><td>94.2 kB</td></tr>
+<tr><th scope="row">vite build (react screen)</th><td>190 ms <small>(186 ms to 198 ms)</small></td><td>3</td><td>404.8 kB</td><td>117.5 kB</td></tr>
+<tr><th scope="row">vite build (vue screen)</th><td>227 ms <small>(219 ms to 228 ms)</small></td><td>3</td><td>243.1 kB</td><td>72.7 kB</td></tr>
+</tbody></table></div>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Dev server</th><th scope="col">Time from start to first response</th></tr></thead>
+<tbody>
+<tr><th scope="row">xoong dev</th><td>104 ms <small>(88.2 ms to 114 ms)</small></td></tr>
+<tr><th scope="row">vite dev (react)</th><td>148 ms <small>(139 ms to 154 ms)</small></td></tr>
+<tr><th scope="row">vite dev (vue)</th><td>192 ms <small>(186 ms to 198 ms)</small></td></tr>
+</tbody></table></div>
+<h3>Install</h3>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Install (cold npm cache)</th><th scope="col">Time</th><th scope="col">Packages</th><th scope="col">node_modules</th></tr></thead>
+<tbody>
+<tr><th scope="row">React stack (npm ci)</th><td>1.5 s <small>(1.4 s to 1.7 s)</small></td><td>52</td><td>55,757.5 kB</td></tr>
+<tr><th scope="row">Vue stack (npm ci)</th><td>2.0 s <small>(1.8 s to 4.8 s)</small></td><td>83</td><td>63,683.4 kB</td></tr>
+<tr><th scope="row">xoong (npm install @xoong/xoong, from tarballs)</th><td>1.1 s <small>(1.1 s to 1.3 s)</small></td><td>12</td><td>8,156.6 kB</td></tr>
+</tbody></table></div>
+<p>Install time depends on the network and on the registry; it is listed so you can run it yourself, not as a claim.</p>
+
+<h2 id="the-xoong-command">The <code>xoong</code> command</h2>
+<p>Wall time of <code>node packages/cli/src/cli.js &lt;command&gt;</code>, Node start-up included (about 24.7 ms of every number below is Node starting). 10 runs per number. The "generated" document has 500 operations and exists because no large real API description ships with this repository; a real one has more irregularities.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Start-up (Node included)</th><th scope="col">Time</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>node (empty script)</code></th><td>24.7 ms <small>(24.5 ms to 25.1 ms)</small></td></tr>
+<tr><th scope="row"><code>xoong --version</code></th><td>52.0 ms <small>(51.8 ms to 52.9 ms)</small></td></tr>
+<tr><th scope="row"><code>xoong --help</code></th><td>51.9 ms <small>(51.7 ms to 52.6 ms)</small></td></tr>
+</tbody></table></div>
+<h3>Sync</h3>
+<p><code>xoong sync</code> writes the typed operations and <code>api.d.ts</code>; <code>openapi-typescript</code> 7.13.0 writes TypeScript types only, so it does less. It is the closest installable tool, not an equal.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">OpenAPI document</th><th scope="col"><code>xoong sync</code></th><th scope="col"><code>openapi-typescript</code></th></tr></thead>
+<tbody>
+<tr><th scope="row">benchmarks people API (6 operations) <small>(5.3 kB)</small></th><td>56.9 ms <small>(56.6 ms to 58.0 ms)</small></td><td>319 ms <small>(314 ms to 323 ms)</small></td></tr>
+<tr><th scope="row">examples/admin (4 operations) <small>(6.2 kB)</small></th><td>57.2 ms <small>(56.9 ms to 58.3 ms)</small></td><td>320 ms <small>(316 ms to 332 ms)</small></td></tr>
+<tr><th scope="row">generated, 500 operations <small>(260.5 kB)</small></th><td>75.4 ms <small>(74.5 ms to 76.8 ms)</small></td><td>478 ms <small>(473 ms to 480 ms)</small></td></tr>
+</tbody></table></div>
+<h3>Check, build, dev and render</h3>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Command</th><th scope="col">Time</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>xoong check</code>, 1 screen</th><td>59.2 ms <small>(58.6 ms to 59.7 ms)</small></td></tr>
+<tr><th scope="row"><code>xoong check</code>, 100 screens</th><td>86.8 ms <small>(85.9 ms to 87.6 ms)</small></td></tr>
+<tr><th scope="row"><code>xoong check</code>, 1,000 screens</th><td>232 ms <small>(230 ms to 234 ms)</small></td></tr>
+</tbody></table></div>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Build</th><th scope="col">Time</th><th scope="col">Files</th><th scope="col">Output</th><th scope="col">Output, gzip</th></tr></thead>
+<tbody>
+<tr><th scope="row">xoong build (people screen)</th><td>146 ms <small>(145 ms to 146 ms)</small></td><td>43</td><td>299.1 kB</td><td>100.4 kB</td></tr>
+<tr><th scope="row">xoong build (examples/admin)</th><td>127 ms <small>(125 ms to 129 ms)</small></td><td>37</td><td>275.2 kB</td><td>94.2 kB</td></tr>
+<tr><th scope="row">vite build (react screen)</th><td>190 ms <small>(186 ms to 198 ms)</small></td><td>3</td><td>404.8 kB</td><td>117.5 kB</td></tr>
+<tr><th scope="row">vite build (vue screen)</th><td>227 ms <small>(219 ms to 228 ms)</small></td><td>3</td><td>243.1 kB</td><td>72.7 kB</td></tr>
+</tbody></table></div>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Dev server</th><th scope="col">Time from start to first response</th></tr></thead>
+<tbody>
+<tr><th scope="row">xoong dev</th><td>104 ms <small>(88.2 ms to 114 ms)</small></td></tr>
+<tr><th scope="row">vite dev (react)</th><td>148 ms <small>(139 ms to 154 ms)</small></td></tr>
+<tr><th scope="row">vite dev (vue)</th><td>192 ms <small>(186 ms to 198 ms)</small></td></tr>
+</tbody></table></div>
+<p><code>xoong render</code> of the people screen with its data (needs the API running; 8.2 kB of HTML written): 224 ms <small>(220 ms to 229 ms)</small>.</p>
+<p>No comparable tool was measured for <code>check</code> (nothing else checks xoong screens against an OpenAPI document), <code>render</code> and the dev server's start (<code>vite dev</code> is listed above, but it prepares an app with a bundler pipeline, not static files).</p>
+
+<h2 id="the-mcp-server">The MCP server</h2>
+<p>Real stdio JSON-RPC against <code>xoong-mcp</code>, which has no SDK, and against a one-tool server written on the official TypeScript SDK that answers the same <code>explain_error</code> call with the same text. The SDK server is the reference for what the protocol layer itself costs; it is not a product comparison (it does one thing).</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">xoong-mcp against a minimal server on the official SDK</th><th scope="col">xoong-mcp (no SDK)</th><th scope="col">TypeScript SDK 1.32.2, one tool</th></tr></thead>
+<tbody>
+<tr><th scope="row">Start-up: process start to the <code>initialize</code> answer</th><td>38.3 ms <small>(37.6 ms to 39.4 ms)</small></td><td>87.4 ms <small>(86.7 ms to 91.4 ms)</small></td></tr>
+<tr><th scope="row"><code>tools/list</code>, p50 / p95</th><td>0.11 / 0.16 ms</td><td>0.17 / 0.28 ms</td></tr>
+<tr><th scope="row"><code>explain_error</code>, p50 / p95</th><td>0.02 / 0.03 ms</td><td>0.09 / 0.14 ms</td></tr>
+<tr><th scope="row">Throughput, 20,000 <code>explain_error</code> requests sent back to back (at least: the test client is part of the limit)</th><td>254,577 per second</td><td>33,146 per second</td></tr>
+<tr><th scope="row">Memory (RSS), idle</th><td>54.5 MB</td><td>78.2 MB</td></tr>
+<tr><th scope="row">Memory (RSS), after 1,000 <code>explain_error</code> calls</th><td>60.9 MB</td><td>112.0 MB</td></tr>
+</tbody></table></div>
+<h3>Every tool of xoong-mcp</h3>
+<p>Per-call latency over real stdio JSON-RPC, 200 sequential calls after 20 warm-up calls. Sizes of the inputs of <code>check</code>: 72 and 91,794 characters. After 1,000 calls of the whole tool set the process uses 148.1 MB.</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th scope="col">Tool</th><th scope="col">p50 / p95</th><th scope="col">Answer size</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>get_spec</code></th><td>0.26 / 0.37 ms</td><td>12,171 characters</td></tr>
+<tr><th scope="row"><code>list_operations</code></th><td>0.10 / 0.14 ms</td><td>549 characters</td></tr>
+<tr><th scope="row"><code>check&lt;/code&gt; (small input)&lt;code&gt;</code></th><td>0.12 / 0.17 ms</td><td>12 characters</td></tr>
+<tr><th scope="row"><code>check&lt;/code&gt; (large input)&lt;code&gt;</code></th><td>4.64 / 5.36 ms</td><td>12 characters</td></tr>
+<tr><th scope="row"><code>explain_error</code></th><td>0.02 / 0.03 ms</td><td>192 characters</td></tr>
+<tr><th scope="row"><code>explain_syntax</code></th><td>0.04 / 0.05 ms</td><td>1,453 characters</td></tr>
+<tr><th scope="row"><code>search_docs</code></th><td>1.45 / 1.53 ms</td><td>127 characters</td></tr>
+</tbody></table></div>
+
+<h2 id="what-was-not-measured">What was not measured</h2>
+<ul>
+<li>How long it takes a person to learn xoong or to build the screen. Not measurable by a script; only lines and dependencies are listed.</li>
+<li>How well an AI assistant writes xoong on the first try. The scoring harness exists (<code>tools/benchmark/</code>) but no model was run, so there is no score.</li>
+<li>Real devices, Firefox and Safari, a real network, a long-running page, and screens other than this one (a form-heavy or a rich-text screen may tell a different story).</li>
+<li>Other frameworks (Angular, Svelte, Solid) and component libraries (MUI, Radix). Adding one means writing the screen and passing the acceptance test.</li>
+<li>Server-sent live updates: xoong has them built in, the other two screens were not given a live connection, so none was measured.</li>
+</ul>
+
+<h2 id="run-it-yourself">Run it yourself</h2>
+<xo-tabs label="Run it" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>cd benchmarks
+npm run setup          <span class="tok-c"># npm ci for the competitors and the comparison tools (their own lockfiles; the repository's npm ci is untouched)</span>
+npm run accept xoong   <span class="tok-c"># the acceptance test, also: react, vue</span>
+npm run bench          <span class="tok-c"># build everything, then runtime.mjs (all tables above except the tools)</span>
+npm run cli            <span class="tok-c"># the xoong command, build and dev server</span>
+npm run mcp            <span class="tok-c"># the MCP server</span></code></pre></section>
+</xo-tabs>
+<p>The methodology, the environment, the pinned versions and the limitations are in <a href="https://github.com/fpt-duongtx/xoong/tree/main/benchmarks/README.md">benchmarks/README.md</a>; the raw per-run numbers are in <a href="https://github.com/fpt-duongtx/xoong/tree/main/benchmarks/results">benchmarks/results</a>.</p>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="how-it-works.html"><small>Previous</small><span>How it works</span></a><a rel="next" href="data.html"><small>Next</small><span>Data and tables</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#what-was-compared" aria-current="true">What was compared</a></li><li><a href="#what-gets-delivered">What gets delivered</a></li><li><a href="#load-and-interaction-unthrottled">Load and interaction, unthrottled</a></li><li><a href="#load-and-interaction-throttled">Load and interaction, throttled</a></li><li><a href="#effort-the-same-screen-written-three-times">Effort: the same screen, written three times</a></li><li><a href="#build-dev-server-and-install">Build, dev server and install</a></li><li><a href="#the-xoong-command">The xoong command</a></li><li><a href="#the-mcp-server">The MCP server</a></li><li><a href="#what-was-not-measured">What was not measured</a></li><li><a href="#run-it-yourself">Run it yourself</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

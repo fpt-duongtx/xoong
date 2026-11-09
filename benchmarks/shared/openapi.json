@@ -1,0 +1,318 @@
+{
+ "openapi": "3.0.3",
+ "info": {
+  "title": "People (benchmark screen)",
+  "version": "1.0.0"
+ },
+ "paths": {
+  "/people": {
+   "get": {
+    "operationId": "listPeople",
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      },
+      "description": "Search in name and email"
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "schema": {
+       "type": "integer"
+      }
+     },
+     {
+      "name": "sort",
+      "in": "query",
+      "schema": {
+       "type": "string"
+      },
+      "description": "Field name; prefix with - for descending"
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "schema": {
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "ok",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PersonPage"
+        }
+       }
+      }
+     },
+     "default": {
+      "$ref": "#/components/responses/Error"
+     }
+    }
+   },
+   "post": {
+    "operationId": "createPerson",
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NewPerson"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "created",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Person"
+        }
+       }
+      }
+     },
+     "default": {
+      "$ref": "#/components/responses/Error"
+     }
+    }
+   }
+  },
+  "/people/delete": {
+   "post": {
+    "operationId": "deletePeople",
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "type": "object",
+        "required": [
+         "ids"
+        ],
+        "properties": {
+         "ids": {
+          "type": "array",
+          "items": {
+           "type": "integer"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "responses": {
+     "204": {
+      "description": "deleted"
+     },
+     "default": {
+      "$ref": "#/components/responses/Error"
+     }
+    }
+   }
+  },
+  "/people/{id}": {
+   "parameters": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "integer"
+     }
+    }
+   ],
+   "get": {
+    "operationId": "getPerson",
+    "responses": {
+     "200": {
+      "description": "ok",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Person"
+        }
+       }
+      }
+     },
+     "default": {
+      "$ref": "#/components/responses/Error"
+     }
+    }
+   },
+   "delete": {
+    "operationId": "deletePerson",
+    "responses": {
+     "204": {
+      "description": "deleted"
+     },
+     "default": {
+      "$ref": "#/components/responses/Error"
+     }
+    }
+   }
+  },
+  "/people/{id}/disable": {
+   "parameters": [
+    {
+     "name": "id",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "integer"
+     }
+    }
+   ],
+   "post": {
+    "operationId": "disablePerson",
+    "responses": {
+     "200": {
+      "description": "ok",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Person"
+        }
+       }
+      }
+     },
+     "default": {
+      "$ref": "#/components/responses/Error"
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "responses": {
+   "Error": {
+    "description": "error",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/ErrorResponse"
+      }
+     }
+    }
+   }
+  },
+  "schemas": {
+   "ErrorResponse": {
+    "type": "object",
+    "required": [
+     "error"
+    ],
+    "properties": {
+     "error": {
+      "type": "object",
+      "required": [
+       "code",
+       "message"
+      ],
+      "properties": {
+       "code": {
+        "type": "string"
+       },
+       "message": {
+        "type": "string"
+       },
+       "fields": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    }
+   },
+   "Person": {
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "email",
+     "status",
+     "role"
+    ],
+    "properties": {
+     "id": {
+      "type": "integer"
+     },
+     "name": {
+      "type": "string"
+     },
+     "email": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "active",
+       "disabled"
+      ]
+     },
+     "role": {
+      "type": "string",
+      "enum": [
+       "admin",
+       "member"
+      ]
+     }
+    }
+   },
+   "NewPerson": {
+    "type": "object",
+    "required": [
+     "name",
+     "email",
+     "role"
+    ],
+    "properties": {
+     "name": {
+      "type": "string",
+      "maxLength": 60,
+      "minLength": 1
+     },
+     "email": {
+      "type": "string",
+      "format": "email"
+     },
+     "role": {
+      "type": "string",
+      "enum": [
+       "admin",
+       "member"
+      ]
+     }
+    }
+   },
+   "PersonPage": {
+    "type": "object",
+    "required": [
+     "items",
+     "total"
+    ],
+    "properties": {
+     "items": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Person"
+      }
+     },
+     "total": {
+      "type": "integer"
+     }
+    }
+   }
+  }
+ }
+}

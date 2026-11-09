@@ -1,0 +1,11 @@
+{
+  "name": "bench-tooling",
+  "private": true,
+  "type": "module",
+  "description": "Comparison tools for the CLI and MCP benchmarks, pinned. Installed by `npm run setup` (npm ci in this folder).",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "openapi-typescript": "7.13.0",
+    "zod": "3.25.76"
+  }
+}

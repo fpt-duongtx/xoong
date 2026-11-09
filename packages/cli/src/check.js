@@ -29,7 +29,7 @@
  *   XO270 an attribute that does nothing without another on the same element: xo-then, xo-notice, xo-confirm, xo-body, xo-optimistic, xo-with, xo-keep without xo-click/xo-submit, xo-confirm-* without xo-confirm, <xo-dialog size> without heading
  *   XO271 an attribute that takes one of a fixed set of values (xo-confirm-kind, <xo-dialog size>, ...) has another value
  *   XO272 a malformed value: a `field=value` list (xo-with, xo-optimistic), xo-param, xo-move or xo-select
- *   XO273 xo-open names an element that is not an <xo-dialog> (or none in this file), or xo-close is outside an <xo-dialog>
+ *   XO273 xo-open names an element that is not an <xo-dialog> or <xo-drawer> (or none in this file), or xo-close is outside one
  *   XO274 xo-with / xo-selected names a field the request body of the operation does not have
  *   XO275 xo-param sets a parameter the view's operation does not take (it will not filter the data)
  *   XO276 an attribute outside the element that gives it meaning (xo-route/xo-layout off a router template, xo-tab, xo-menu-trigger, xo-guard, the array buttons)
@@ -181,7 +181,7 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
     if (n === 'xo-open') {
       const id = /^#([\w-]+)$/.exec(value)?.[1];
       const found = id ? ids.get(id) : undefined;
-      if (id && found && found !== 'xo-dialog') report('error', 'XO273', node, n, `xo-open="${value}" matches a <${found}>, not an <xo-dialog>`, 'Put the id on the <xo-dialog>');
+      if (id && found && found !== 'xo-dialog' && found !== 'xo-drawer') report('error', 'XO273', node, n, `xo-open="${value}" matches a <${found}>, not an <xo-dialog>`, 'Put the id on the <xo-dialog>');
       else if (id && !found && !fragment) report('warn', 'XO273', node, n, `xo-open="${value}" matches no element in this file`, `Add <xo-dialog id="${id}"> to this page (or ignore this when the dialog is in another file)`);
     }
     if (n === 'xo-close' && !fragment && !ctx.dialog) report('warn', 'XO273', node, n, 'xo-close is not inside an <xo-dialog>, so it closes nothing', 'Put the button inside the <xo-dialog> it should close');
@@ -298,7 +298,7 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           }
         }
       }
-      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined) };
+      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog' || tag === 'xo-drawer', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined) };
     }
     for (const child of children) walk(child, ctx);
   }

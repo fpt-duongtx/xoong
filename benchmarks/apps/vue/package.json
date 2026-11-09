@@ -1,0 +1,18 @@
+{
+  "name": "bench-vue",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "vite build", "dev": "vite" },
+  "dependencies": {
+    "@tanstack/vue-query": "5.107.1",
+    "@tanstack/vue-table": "8.21.3",
+    "@vee-validate/zod": "4.15.1",
+    "vee-validate": "4.15.1",
+    "vue": "3.5.45",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.10",
+    "vite": "8.3.6"
+  }
+}

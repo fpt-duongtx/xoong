@@ -1,0 +1,64 @@
+{
+ "environment": {
+  "date": "2026-11-09",
+  "machine": "Apple M1, 8 cores, 8 GB RAM",
+  "os": "Darwin 25.2.0 (arm64)",
+  "node": "v24.7.0",
+  "xoong": "0.0.47",
+  "commit": "6984eca"
+ },
+ "runs": 3,
+ "install": {
+  "React stack (npm ci)": {
+   "time": {
+    "n": 3,
+    "median": 1468,
+    "min": 1420,
+    "max": 1688,
+    "q1": 1444,
+    "q3": 1578,
+    "runs": [
+     1420,
+     1688,
+     1468
+    ]
+   },
+   "packages": 52,
+   "bytes": 55757514
+  },
+  "Vue stack (npm ci)": {
+   "time": {
+    "n": 3,
+    "median": 1986,
+    "min": 1840,
+    "max": 4829,
+    "q1": 1913,
+    "q3": 3407,
+    "runs": [
+     1986,
+     4829,
+     1840
+    ]
+   },
+   "packages": 83,
+   "bytes": 63683383
+  },
+  "xoong (npm install @xoong/xoong, from tarballs)": {
+   "time": {
+    "n": 3,
+    "median": 1140,
+    "min": 1089,
+    "max": 1302,
+    "q1": 1115,
+    "q3": 1221,
+    "runs": [
+     1089,
+     1302,
+     1140
+    ]
+   },
+   "packages": 12,
+   "bytes": 8156605
+  }
+ }
+}
