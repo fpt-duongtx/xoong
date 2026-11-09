@@ -58,6 +58,7 @@ class XoInlineEdit extends XoControl {
     input.addEventListener('input', (e) => e.stopPropagation());
     input.addEventListener('change', (e) => e.stopPropagation());
     input.addEventListener('keydown', (e) => {
+      if (e.isComposing || e.keyCode === 229) return; // an IME is composing: Enter and Escape are its keys
       if (e.key === 'Enter') { e.preventDefault(); this.#finish(true, true); }
       else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); this.#finish(false, true); }
     });

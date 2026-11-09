@@ -14,6 +14,7 @@
  * - `open()` and `close()`; the shortcut is Ctrl/Cmd plus the key of `shortcut` (default `k`).
  */
 import { XoElement, define, text } from '@xoong/core';
+import { fold } from './fold.js';
 
 let counter = 0;
 
@@ -58,8 +59,8 @@ class XoCommand extends XoElement {
   close() { this.#dialog?.close(); }
 
   #render() {
-    const q = (this.#input?.value ?? '').trim().toLowerCase();
-    const shown = this.#commands.filter((c) => !q || c.label.toLowerCase().includes(q));
+    const q = fold((this.#input?.value ?? '').trim());
+    const shown = this.#commands.filter((c) => !q || fold(c.label).includes(q));
     const list = /** @type {HTMLElement} */ (this.#list);
     list.replaceChildren();
     this.#items = [];
@@ -84,6 +85,7 @@ class XoCommand extends XoElement {
     if (on) this.#input?.setAttribute('aria-activedescendant', on.id); else this.#input?.removeAttribute('aria-activedescendant');
   }
   #key(/** @type {KeyboardEvent} */ e) {
+    if (e.isComposing || e.keyCode === 229) return; // an IME is composing: Enter and the arrows are its keys
     const n = this.#items.length;
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (n) { this.#active = (this.#active + (e.key === 'ArrowDown' ? 1 : -1) + n) % n; this.#mark(); } }
     else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); this.#active = e.key === 'Home' ? 0 : Math.max(0, n - 1); this.#mark(); }

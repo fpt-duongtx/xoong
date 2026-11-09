@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipes · xoong</title>
+  <meta name="description" content="What xoong leaves to you and the few lines that do it: load more, polling, token refresh, uploads, wizards, autosave, routes and deployment.">
+  <meta property="og:title" content="Recipes · xoong">
+  <meta property="og:description" content="What xoong leaves to you and the few lines that do it: load more, polling, token refresh, uploads, wizards, autosave, routes and deployment.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Recipes</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html" aria-current="page">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html" aria-current="page">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Extend</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Recipes</span></div>
+
+<h1>Recipes</h1>
+<p class="lead">xoong covers the common path with attributes and stays small, so some things are left to you: polling, a wizard, a token refresh. None needs a plugin; each is a few lines on the public API. They were all run against the current packages, and the places where a detail was not exercised are said so.</p>
+<p>Names used below: <code>getClient()</code> and <code>configure()</code> from <code>@xoong/data</code>, <code>setFormat()</code> from <code>@xoong/data/view</code>, <code>router</code> from <code>@xoong/ui</code>, <code>setLocale()</code> from <code>@xoong/i18n</code>. A form's <code>model</code> is the form element's own model (<code>form.model.get / set / body / reset / validate / touch</code>).</p>
+
+<h2 id="lists-and-refreshing">Lists and refreshing</h2>
+<h3>Load more with a cursor</h3>
+<p><code>&lt;xo-view&gt;</code> replaces its rows when a parameter changes, which is right for pages and wrong for "Load more". Keep the rows yourself and ask the client for the next cursor.</p>
+<xo-tabs label="Load more" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { XoElement, define } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
+<span class="tok-k">import</span> { getClient } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+
+<span class="tok-k">class</span> LoadMore <span class="tok-k">extends</span> XoElement {
+  #rows = []; #next;
+  connected() {
+    <span class="tok-k">this</span>.innerHTML = <span class="tok-s">'&lt;ul&gt;&lt;/ul&gt;&lt;button type="button"&gt;More&lt;/button&gt;'</span>;
+    <span class="tok-k">this</span>.querySelector(<span class="tok-s">'button'</span>).onclick = () =&gt; <span class="tok-k">this</span>.more();
+    <span class="tok-k">this</span>.more();
+  }
+  <span class="tok-k">async</span> more() {
+    <span class="tok-k">const</span> page = <span class="tok-k">await</span> getClient().load(<span class="tok-s">'listUsers'</span>, <span class="tok-k">this</span>.#next ? { cursor: <span class="tok-k">this</span>.#next } : {});
+    <span class="tok-k">this</span>.#next = page.next;
+    <span class="tok-k">this</span>.#rows.push(...page.items);
+    <span class="tok-k">this</span>.querySelector(<span class="tok-s">'ul'</span>).replaceChildren(...<span class="tok-k">this</span>.#rows.map((r) =&gt; Object.assign(document.createElement(<span class="tok-s">'li'</span>), { textContent: r.name })));
+    <span class="tok-k">this</span>.querySelector(<span class="tok-s">'button'</span>).hidden = !<span class="tok-k">this</span>.#next;
+  }
+}
+define(<span class="tok-s">'x-load-more'</span>, LoadMore);</code></pre></section>
+</xo-tabs>
+
+<h3>Polling</h3>
+<p>There is no refresh interval attribute. A view has <code>refresh()</code>; call it on a timer, and not while the tab is hidden.</p>
+<xo-tabs label="Polling" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> view = document.querySelector(<span class="tok-s">'#orders'</span>);           <span class="tok-c">// an &lt;xo-view&gt;</span>
+setInterval(() =&gt; { <span class="tok-k">if</span> (!document.hidden) view.refresh(); }, <span class="tok-n">30</span>_000);</code></pre></section>
+</xo-tabs>
+
+<h3>Refetch when the person comes back</h3>
+<xo-tabs label="Focus and online" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { getClient } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+
+<span class="tok-k">for</span> (<span class="tok-k">const</span> type <span class="tok-k">of</span> [<span class="tok-s">'focus'</span>, <span class="tok-s">'online'</span>]) window.addEventListener(type, () =&gt; getClient().invalidateAll());</code></pre></section>
+</xo-tabs>
+
+<h3>Pushed updates: WebSocket, and SSE with a header</h3>
+<p>For a server that pushes events (<code>upsert</code>, <code>delete</code>, <code>resync</code>), <code>live</code> on a view uses the browser's EventSource. For anything else, feed the same events to the store yourself.</p>
+<xo-tabs label="WebSocket" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> ws = <span class="tok-k">new</span> WebSocket(<span class="tok-s">'wss://example.org/events'</span>);
+ws.onmessage = (message) =&gt; {
+  <span class="tok-k">const</span> event = JSON.parse(message.data);
+  <span class="tok-k">if</span> (event.type === <span class="tok-s">'resync'</span>) getClient().invalidateAll();       <span class="tok-c">// lost track: refetch what is on screen</span>
+  <span class="tok-k">else</span> getClient().store.applyEvent(event);                       <span class="tok-c">// upsert or delete of one record</span>
+};</code></pre></section>
+</xo-tabs>
+<xo-tabs label="SSE with an Authorization header" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { connectStream, getClient } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> { EventSourcePolyfill } <span class="tok-k">from</span> <span class="tok-s">'event-source-polyfill'</span>;       <span class="tok-c">// the native EventSource cannot send headers</span>
+
+connectStream({ client: getClient(), url: <span class="tok-s">'/events'</span>, EventSource: EventSourcePolyfill });</code></pre></section>
+</xo-tabs>
+<p>A record pushed with an id the store already knows updates every view that shows it. A <em>new</em> record does not appear in a list that is already loaded; ask the list to refetch (<code>invalidateAll()</code> or a <code>resync</code> event).</p>
+
+<h2 id="sign-in">Sign-in</h2>
+<h3>Refresh the token and retry once</h3>
+<p>Wrap <code>fetch</code>: on a 401, refresh and send the request again; give up to <code>onUnauthorized</code>. If several requests fail together, share one refresh promise (not exercised here).</p>
+<xo-tabs label="Token refresh" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { configure } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> { router } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+configure({
+  api, baseUrl: <span class="tok-s">'/api'</span>,
+  headers: () =&gt; ({ authorization: <span class="tok-s">`Bearer ${token}`</span> }),
+  fetch: <span class="tok-k">async</span> (url, init) =&gt; {
+    <span class="tok-k">let</span> response = <span class="tok-k">await</span> fetch(url, init);
+    <span class="tok-k">if</span> (response.status === <span class="tok-n">401</span> &amp;&amp; (<span class="tok-k">await</span> refresh().then(() =&gt; <span class="tok-k">true</span>, () =&gt; <span class="tok-k">false</span>))) {
+      response = <span class="tok-k">await</span> fetch(url, { ...init, headers: { ...init.headers, authorization: <span class="tok-s">`Bearer ${token}`</span> } });
+    }
+    <span class="tok-k">return</span> response;
+  },
+  onUnauthorized: () =&gt; router.navigate(<span class="tok-s">'/login'</span>),
+});</code></pre></section>
+</xo-tabs>
+
+<h3>Keep pages behind a sign-in</h3>
+<p>Mark the routes in markup, and let one guard decide. A guard returns <code>true</code>, <code>false</code>, or a path to go to.</p>
+<xo-tabs label="Marked routes" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">template</span> <span class="tok-a">xo-route</span>=<span class="tok-s">"/billing"</span> <span class="tok-a">layout</span>=<span class="tok-s">"shell"</span> <span class="tok-a">title</span>=<span class="tok-s">"Billing"</span> <span class="tok-a">data-auth</span>&gt;...&lt;/<span class="tok-t">template</span>&gt;</code></pre></section>
+</xo-tabs>
+<xo-tabs label="Guard" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>router.guard((to) =&gt; (to.route?.template.hasAttribute(<span class="tok-s">'data-auth'</span>) &amp;&amp; !signedIn() ? <span class="tok-s">'/login'</span> : <span class="tok-k">true</span>));</code></pre></section>
+</xo-tabs>
+<h3>Sign out</h3>
+<p>The client keeps what it fetched, so after a sign-out in the same tab a view that is mounted again would show the previous person's data at once. <code>getClient().reset()</code> aborts the requests in flight and drops every cached query and record; views that are mounted fetch again. Call it when the person signs out, or leave the page, which also starts with an empty cache.</p>
+<xo-tabs label="Sign out" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { getClient } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data'</span>;
+<span class="tok-k">import</span> { router } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+<span class="tok-k">async</span> <span class="tok-k">function</span> signOut() {
+  <span class="tok-k">await</span> fetch(<span class="tok-s">'/api/logout'</span>, { method: <span class="tok-s">'POST'</span> });
+  getClient().reset();                       <span class="tok-c">// nothing of this person stays in memory</span>
+  router.navigate(<span class="tok-s">'/login'</span>);
+}</code></pre></section>
+</xo-tabs>
+
+<h2 id="files">Files</h2>
+<h3>Upload progress</h3>
+<p>The generated form sends files with <code>fetch</code>, which cannot report progress. For a big upload send the request yourself and drive the file control's <code>progress</code>.</p>
+<xo-tabs label="XHR into &lt;xo-file&gt;" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> xhr = <span class="tok-k">new</span> XMLHttpRequest();
+xhr.open(<span class="tok-s">'POST'</span>, <span class="tok-s">'/api/files'</span>);
+xhr.upload.onprogress = (event) =&gt; { fileControl.progress = event.loaded / event.total; };
+xhr.onloadend = () =&gt; { fileControl.progress = <span class="tok-k">null</span>; };
+xhr.send(formData);</code></pre></section>
+</xo-tabs>
+
+<h3>Download a CSV or PDF</h3>
+<p>Views and actions expect JSON, so a file is not one of their operations. With cookie authentication a plain link is enough; the router leaves <code>download</code> links alone.</p>
+<xo-tabs label="Link" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"/api/export.csv"</span> <span class="tok-a">download</span>&gt;Export CSV&lt;/<span class="tok-t">a</span>&gt;</code></pre></section>
+</xo-tabs>
+<p>With a header-based token, fetch it and hand the browser a blob.</p>
+<xo-tabs label="Fetch and save" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> response = <span class="tok-k">await</span> fetch(<span class="tok-s">'/api/export.csv'</span>, { headers: authHeaders() });
+<span class="tok-k">const</span> link = Object.assign(document.createElement(<span class="tok-s">'a'</span>), { href: URL.createObjectURL(<span class="tok-k">await</span> response.blob()), download: <span class="tok-s">'export.csv'</span> });
+document.body.append(link);
+link.click();
+link.remove();</code></pre></section>
+</xo-tabs>
+
+<h2 id="forms">Forms</h2>
+<h3>A wizard</h3>
+<p>One form, several steps: show one group of fields at a time and validate only that group before moving on.</p>
+<xo-tabs label="Steps" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> STEPS = [[<span class="tok-s">'name'</span>, <span class="tok-s">'email'</span>], [<span class="tok-s">'plan'</span>], [<span class="tok-s">'card.number'</span>]];     <span class="tok-c">// the field paths of each step</span>
+<span class="tok-k">async</span> <span class="tok-k">function</span> next(form, i) {
+  <span class="tok-k">const</span> errors = <span class="tok-k">await</span> form.model.validate();
+  STEPS[i].forEach((path) =&gt; form.model.touch(path));             <span class="tok-c">// show the messages of this step</span>
+  <span class="tok-k">if</span> (!STEPS[i].some((path) =&gt; errors[path])) show(i + <span class="tok-n">1</span>);
+}</code></pre></section>
+</xo-tabs>
+
+<h3>Autosave a draft</h3>
+<xo-tabs label="localStorage" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>form.addEventListener(<span class="tok-s">'input'</span>, () =&gt; { localStorage.draft = JSON.stringify(form.model.body()); });
+
+<span class="tok-c">// on load</span>
+<span class="tok-k">if</span> (localStorage.draft) <span class="tok-k">for</span> (<span class="tok-k">const</span> [path, value] <span class="tok-k">of</span> Object.entries(JSON.parse(localStorage.draft))) form.model.set(path, value);</code></pre></section>
+</xo-tabs>
+
+<h3>Reset a form in a dialog when it closes</h3>
+<xo-tabs label="Dialog close" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>form.closest(<span class="tok-s">'xo-dialog'</span>).dialog.addEventListener(<span class="tok-s">'close'</span>, () =&gt; form.model.reset());</code></pre></section>
+</xo-tabs>
+
+<h3>Leave out fields that do not apply, or send only what changed</h3>
+<p>A field hidden with <code>xo-if</code> is still part of the draft and is sent. <code>serialize</code> shapes the body just before the request.</p>
+<xo-tabs label="serialize" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// drop a field that is hidden for this kind</span>
+form.serialize = (draft, body) =&gt; (body.kind === <span class="tok-s">'company'</span> ? body : (({ vat, ...rest }) =&gt; rest)(body));
+
+<span class="tok-c">// PATCH: only the top-level fields the person changed</span>
+form.serialize = (draft, body) =&gt; Object.fromEntries(Object.entries(body).filter(([key]) =&gt; form.model.dirtyAt[key]));</code></pre></section>
+</xo-tabs>
+
+<h3>Field errors from other backends</h3>
+<p>The form reads field errors from RFC 9457 problem details, FastAPI and <code>{ error: { fields } }</code>. If your backend answers another shape, rewrite it in the <code>fetch</code> wrapper so the message lands on the input.</p>
+<xo-tabs label="Rewrite a 422" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>configure({ api, baseUrl: <span class="tok-s">'/api'</span>, fetch: <span class="tok-k">async</span> (url, init) =&gt; {
+  <span class="tok-k">const</span> response = <span class="tok-k">await</span> fetch(url, init);
+  <span class="tok-k">if</span> (response.status !== <span class="tok-n">422</span>) <span class="tok-k">return</span> response;
+  <span class="tok-k">const</span> body = <span class="tok-k">await</span> response.clone().json();                      <span class="tok-c">// { message, errors: { email: ['has already been taken'] } }</span>
+  <span class="tok-k">const</span> errors = Object.entries(body.errors ?? {}).flatMap(([field, messages]) =&gt; [].concat(messages).map((detail) =&gt; ({ pointer: <span class="tok-s">'/'</span> + field, detail })));
+  <span class="tok-k">return</span> <span class="tok-k">new</span> Response(JSON.stringify({ title: body.message ?? <span class="tok-s">'Invalid'</span>, errors }), { status: <span class="tok-n">422</span>, headers: { <span class="tok-s">'content-type'</span>: <span class="tok-s">'application/problem+json'</span> } });
+} });</code></pre></section>
+</xo-tabs>
+
+<h2 id="routing">Routing</h2>
+<h3>A 404 inside a section</h3>
+<p>A route is matched exactly, so <code>/admin/nope</code> falls to the page's <code>*</code> route outside the admin layout. Send unknown paths under a prefix to a real not-found route inside it.</p>
+<xo-tabs label="Per-section 404" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>router.guard((to) =&gt; (to.route?.pattern === <span class="tok-s">'*'</span> &amp;&amp; to.path.startsWith(<span class="tok-s">'/admin/'</span>) ? <span class="tok-s">'/admin/not-found'</span> : <span class="tok-k">true</span>));
+<span class="tok-c">// and &lt;template xo-route="/admin/not-found" layout="admin"&gt;...&lt;/template&gt;</span></code></pre></section>
+</xo-tabs>
+
+<h3>Any depth: a splat route</h3>
+<p>Use the <code>*</code> route for a wiki-like tree and read the path yourself: <code>router.current.path</code>.</p>
+<h3>Hash routing</h3>
+<p>Not offered: routes are real paths. Make the host answer every path with the app's HTML (<code>xoong dev --spa</code> does it while you work; on a static host copy <code>index.html</code> to <code>404.html</code>, or use the host's rewrite rule).</p>
+
+<h2 id="language-formats-and-time">Language, formats and time</h2>
+<xo-tabs label="Your own formats" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { setFormat } <span class="tok-k">from</span> <span class="tok-s">'@xoong/data/view'</span>;
+
+setFormat(<span class="tok-s">'currency'</span>, (value, locale) =&gt; <span class="tok-k">new</span> Intl.NumberFormat(locale, { style: <span class="tok-s">'currency'</span>, currency: <span class="tok-s">'USD'</span> }).format(value));
+setFormat(<span class="tok-s">'epoch'</span>, (value) =&gt; <span class="tok-k">new</span> Date(value * <span class="tok-n">1000</span>).toISOString());       <span class="tok-c">// {created | epoch}</span></code></pre></section>
+</xo-tabs>
+<h3>Data that depends on the language</h3>
+<xo-tabs label="Locale and data" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>configure({ api, baseUrl: <span class="tok-s">'/api'</span>, headers: () =&gt; ({ <span class="tok-s">'accept-language'</span>: document.documentElement.lang }) });
+
+<span class="tok-k">await</span> setLocale(<span class="tok-s">'vi'</span>);
+getClient().invalidateAll();                                      <span class="tok-c">// fetch again in the new language</span></code></pre></section>
+</xo-tabs>
+<h3>Another sort convention</h3>
+<p><code>sortable</code> speaks <code>sort=field</code> and <code>sort=-field</code>. For <code>orderBy</code> and <code>dir</code>, or <code>sort=name:desc</code>, use <code>xo-param</code> buttons.</p>
+<xo-tabs label="xo-param" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">button</span> <span class="tok-a">xo-param</span>=<span class="tok-s">"orderBy=name"</span>&gt;Name&lt;/<span class="tok-t">button</span>&gt;
+&lt;<span class="tok-t">button</span> <span class="tok-a">xo-param</span>=<span class="tok-s">"sort=name:desc"</span>&gt;Name, descending&lt;/<span class="tok-t">button</span>&gt;</code></pre></section>
+</xo-tabs>
+<h3>A time that ticks</h3>
+<p>A filter such as <code>{created | relative}</code> is computed once. For "3 minutes ago" that keeps counting, write a small element that repaints on a timer.</p>
+<xo-tabs label="Ticking time" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { XoElement, define } <span class="tok-k">from</span> <span class="tok-s">'@xoong/core'</span>;
+
+<span class="tok-k">class</span> TimeAgo <span class="tok-k">extends</span> XoElement {
+  static props = { at: String };
+  connected() {
+    <span class="tok-k">const</span> paint = () =&gt; { <span class="tok-k">this</span>.textContent = <span class="tok-k">new</span> Intl.RelativeTimeFormat(<span class="tok-k">undefined</span>, { numeric: <span class="tok-s">'auto'</span> }).format(Math.round((<span class="tok-k">new</span> Date(<span class="tok-k">this</span>.at) - Date.now()) / <span class="tok-n">60000</span>), <span class="tok-s">'minute'</span>); };
+    <span class="tok-k">this</span>.effect(paint);                                           <span class="tok-c">// read `this.at` inside the effect: the attribute is bound after the element connects</span>
+    <span class="tok-k">this</span>.timer = setInterval(paint, <span class="tok-n">30</span>_000);
+  }
+  disconnected() { clearInterval(<span class="tok-k">this</span>.timer); }
+}
+define(<span class="tok-s">'x-time-ago'</span>, TimeAgo);</code></pre></section>
+</xo-tabs>
+<h3>Two backends</h3>
+<xo-tabs label="Route by path" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>configure({ api, baseUrl: <span class="tok-s">''</span>, fetch: (url, init) =&gt; fetch((String(url).startsWith(<span class="tok-s">'/auth/'</span>) ? <span class="tok-s">'https://auth.example.com'</span> : <span class="tok-s">'https://api.example.com'</span>) + url, init) });</code></pre></section>
+</xo-tabs>
+
+<h2 id="deployment">Deployment</h2>
+<h3>Caching</h3>
+<p>Built files keep their names (nothing is hashed), so a browser can keep an old module next to a new page. Serve the built files with <code>Cache-Control: no-cache</code> and an ETag, which makes the browser ask each time and download only what changed. A tab that stays open during a deploy can still mix old and new modules until it is reloaded.</p>
+<h3>Assets the build cannot see, and a service worker</h3>
+<p><code>xoong build</code> follows what pages and scripts reference. A file named only in a string (<code>register('/sw.js')</code>, icons in a manifest) is added with <code>--include</code>, and under <code>--base</code> it needs its prefix: build such URLs from <code>document.baseURI</code>.</p>
+<xo-tabs label="Include" class="example">
+  <section xo-tab="Terminal"><pre data-lang="bash" tabindex="0"><code>npx xoong build <span class="tok-a">--out</span> dist <span class="tok-a">--base</span> /admin <span class="tok-a">--include</span> sw.js <span class="tok-a">--include</span> data <span class="tok-a">--include</span> img</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code>navigator.serviceWorker.register(<span class="tok-k">new</span> URL(<span class="tok-s">'sw.js'</span>, document.baseURI));</code></pre></section>
+</xo-tabs>
+
+<h2 id="known-limits">Known limits</h2>
+<p>These are found, understood and not fixed: each one is a trade-off or waits for a real need. The workaround is on the same line, so nobody has to find out the hard way.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Limit</th><th>What happens</th><th>What to do</th></tr></thead>
+<tbody>
+<tr><td>A pager needs <code>total</code></td><td><code>&lt;xo-table page-size&gt;</code> and <code>&lt;xo-pager&gt;</code> on an API that answers <code>items</code> and <code>has_more</code> draw no Previous or Next.</td><td>Add <code>total</code> to the response, or page with <code>xo-param</code> buttons and a cursor (see Load more).</td></tr>
+<tr><td>Retries are for outages</td><td>A GET is retried on 502, 503, 504 and network errors; 408 and 429 are not, and <code>Retry-After</code> is ignored.</td><td>Wrap <code>fetch</code> (as in Token refresh): wait for <code>Retry-After</code> and send again.</td></tr>
+<tr><td>A new record does not join a loaded list</td><td>A pushed record that already has an id on screen updates in place; a new one is stored but the list stays as it was.</td><td>Send a <code>resync</code> event, or call <code>getClient().invalidateAll()</code>.</td></tr>
+<tr><td>Object query parameters</td><td>An object value (<code>filter: { status: 'open' }</code>) is written as <code>[object Object]</code> and shares one cache entry with every other object value. A bracketed name is fine: <code>xo-param="filter[status]=open"</code> sends <code>filter[status]=open</code>.</td><td>Use bracketed names (or flat parameters) instead of an object value.</td></tr>
+<tr><td>Braces in a view</td><td>A <code>{...}</code> is a binding only when it holds a path (with an optional <code>| format</code>): JSON, CSS and regular expressions in a view stay as written. <code>{{name}}</code> is not xoong syntax.</td><td>Write <code>\{name}</code> for a literal brace pair that looks like a path; a key with a space or a colon needs a quoted key such as <code>{['a b']}</code>.</td></tr>
+<tr><td>Parameter names with a dash</td><td><code>p-page-size</code> becomes the query name <code>pageSize</code>; an API that wants <code>page-size</code> gets nothing.</td><td>Name the parameter <code>limit</code> or <code>pageSize</code>, or set <code>view.params = { 'page-size': 20 }</code> from script.</td></tr>
+<tr><td>Duplicate ids in one list</td><td>Rows are keyed by the record's id, so <code>[A, B, A]</code> draws two rows.</td><td>Give each row an id (a server id, or a composite one).</td></tr>
+<tr><td>Rows without an id</td><td>They are matched by position: text typed into an input of a row stays at its position when a row above is removed.</td><td>Give the rows an id.</td></tr>
+<tr><td>Hidden and disabled form fields</td><td>A field that <code>xo-if</code> hides, or that is <code>disabled</code>, is still in the draft and is sent: the draft cannot tell "hidden for now" from "not applicable".</td><td>Shape the body with <code>form.serialize</code> (see Forms).</td></tr>
+<tr><td>Copying a built combobox</td><td><code>cloneNode(true)</code> of a drawn <code>&lt;xo-combobox&gt;</code> has no options: they were read from the <code>&lt;option&gt;</code> children and removed.</td><td>Clone before it is drawn (from a <code>&lt;template&gt;</code>), or set <code>options</code> on the copy.</td></tr>
+<tr><td><code>--base</code> and links</td><td><code>&lt;a href="/about"&gt;</code> is left as written (the router handles links; relative links keep working).</td><td>Use relative links in static pages, or <code>base-links</code> on the router.</td></tr>
+<tr><td>No live reload</td><td><code>xoong dev</code> serves the files fresh but does not reload the page.</td><td>Reload by hand.</td></tr>
+</tbody></table></div>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="icons.html"><small>Previous</small><span>Icons</span></a><a rel="next" href="own-control.html"><small>Next</small><span>Your own control</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#lists-and-refreshing" aria-current="true">Lists and refreshing</a></li><li><a href="#sign-in">Sign-in</a></li><li><a href="#files">Files</a></li><li><a href="#forms">Forms</a></li><li><a href="#routing">Routing</a></li><li><a href="#language-formats-and-time">Language, formats and time</a></li><li><a href="#deployment">Deployment</a></li><li><a href="#known-limits">Known limits</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

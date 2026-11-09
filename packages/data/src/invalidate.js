@@ -19,11 +19,11 @@ export function pathsOverlap(a, b) {
   return true;
 }
 
-/** Fill `{param}` placeholders and encode values. Throws naming a missing param. */
+/** Fill `{param}` placeholders and encode values. Throws naming a missing param (`undefined`, `null` and `''`: a path with an empty segment is another resource). */
 export function fillPath(template, params = {}, opId = template) {
   return template.replace(/\{([^}]+)\}/g, (_, name) => {
     const v = params[name];
-    if (v === undefined || v === null) throw new Error(`xoong: operation "${opId}" needs path parameter "${name}"`);
+    if (v === undefined || v === null || v === '') throw new Error(`xoong: operation "${opId}" needs path parameter "${name}"`);
     return encodeURIComponent(String(v));
   });
 }

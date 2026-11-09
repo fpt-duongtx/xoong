@@ -133,24 +133,32 @@ function applyHints(node, h) {
   return out;
 }
 
-/** A union told apart by the discriminator, or by a property every member fixes to one value. */
+/** The one value a property is fixed to (`const`, or an enum of one value), or undefined. */
+const fixedValue = (p) => (p && 'const' in p ? p.const : p?.enum?.length === 1 ? p.enum[0] : undefined);
+
+/**
+ * A union told apart by the discriminator, or by a property every member fixes to one value.
+ * With a discriminator, a member is named by its `mapping` entry; without one, by the value the member itself fixes the tag to
+ * (`kind: { enum: ['card'] }` is the wire value "card", whatever the schema is called); only a member that does not fix it is named after its schema.
+ */
 function unionOf(s, members, schemas, hints, depth, owner) {
   const d = s.discriminator;
   const resolved = members.map((m) => flatten(m, schemas, owner, depth + 1));
   let key = d?.propertyName;
   /** @type {(string|number|boolean)[] | undefined} */ let values;
   if (key) {
-    const single = (p) => (p && 'const' in p ? p.const : p?.enum?.length === 1 ? p.enum[0] : undefined);
-    values = members.map((m, i) => {
-      if (!m.$ref) return single(deref(resolved[i].s?.properties?.[key], schemas).s); // an inline member names itself by the fixed value of the tag
+    const pinned = resolved.map((r) => fixedValue(deref(r.s?.properties?.[key], schemas).s)); // what each member fixes the tag to
+    const named = (/** @type {boolean} */ usePin) => members.map((m, i) => {
+      if (!m.$ref) return pinned[i]; // an inline member names itself by the fixed value of the tag
       const mapped = Object.entries(d.mapping ?? {}).find(([, target]) => target === m.$ref || String(target).endsWith('/' + refName(m.$ref)));
-      return mapped ? mapped[0] : refName(m.$ref);
+      return mapped ? mapped[0] : (usePin ? pinned[i] : undefined) ?? refName(m.$ref);
     });
+    values = named(true);
+    if (new Set(values.map(String)).size !== values.length) values = named(false); // two members fix the same value: keep every member, named after its schema
   } else {
-    const single = (p) => (p && 'const' in p ? p.const : p?.enum?.length === 1 ? p.enum[0] : undefined);
     const keys = Object.keys(resolved[0]?.s?.properties ?? {});
     for (const k of keys) {
-      const vs = resolved.map((r) => single(deref(r.s?.properties?.[k], schemas).s));
+      const vs = resolved.map((r) => fixedValue(deref(r.s?.properties?.[k], schemas).s));
       if (vs.every((v) => v !== undefined) && new Set(vs).size === vs.length) { key = k; values = vs; break; }
     }
   }

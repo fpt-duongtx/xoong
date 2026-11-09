@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { scaffold, pickListScreen, listScreenHtml } from '../src/scaffold.js';
 import { analyze } from '../src/openapi.js';
 import { checkHtml } from '../src/check.js';
+import { sync } from '../src/commands.js';
 
 const fixture = new URL('./fixture.json', import.meta.url).pathname;
 const chat = new URL('../../../examples/chat/openapi.json', import.meta.url).pathname;
@@ -22,6 +23,16 @@ describe('xoong new', () => {
     const table = JSON.parse(await readFile(join(dir, '.xoong/operations.json'), 'utf8'));
     expect(checkHtml(html, table, 'index.html')).toEqual([]);
     expect(JSON.parse(await readFile(join(dir, 'package.json'), 'utf8')).name).toBe('my-app');
+  });
+
+  it('writes everything `xoong sync` writes, the editor data included (the same files, byte for byte)', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'xoong-new-sync-'));
+    const dir = join(root, 'app');
+    const result = await scaffold(dir, { spec: fixture });
+    expect(result.files).toContain('.xoong/xoong.html-data.json');
+    const synced = join(root, 'synced');
+    await sync(fixture, { out: synced });
+    for (const f of ['operations.json', 'xoong.html-data.json', 'api.d.ts']) expect(await readFile(join(dir, '.xoong', f), 'utf8'), f).toBe(await readFile(join(synced, f), 'utf8'));
   });
 
   it('refuses to overwrite an existing project', async () => {

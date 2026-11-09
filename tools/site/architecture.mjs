@@ -1,101 +1,12 @@
-// The Architecture section of the documentation site: how xoong works inside. Seven pages, each with diagrams (inline SVG, classes dg-* in architecture.css) and
-// code. Every statement was checked against the source it names in "Where to look in the code"; what is planned and not built is left out or marked "not yet".
+// The Architecture section of the documentation site: how xoong works inside. Seven pages, each with diagrams (drawn by diagrams.mjs: inline SVG, classes dg-*,
+// some of them animated) and code. Every statement was checked against the source it names in "Where to look in the code"; what is planned and not built is left out or marked "not yet".
 import { tabs, code } from './lib.mjs';
+import { diagram, sequence, esc } from './diagrams.mjs';
 
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 /** Inline code. */
 const c = (s) => `<code>${esc(s)}</code>`;
 /** A list of files for "Where to look in the code": [path, what is there]. */
 const files = (items) => `<ul>\n${items.map(([path, what]) => `<li>${c(path)}: ${what}</li>`).join('\n')}\n</ul>`;
-
-// ---- diagrams -------------------------------------------------------------------------------------------------------------------------
-// A diagram is a hand-placed set of boxes and arrows. `diagram()` wraps it (figure, focusable scroll frame, role="img" with a title and a full text
-// description, visible caption); `d.box()` sizes a box from its text and returns its edges so arrows can start and end on them.
-
-const TITLE_LINE = 44, SUB_LINE = 16;
-/** Height a box needs for a title and `n` lines of small text. */
-const natural = (n) => (n ? 58 + SUB_LINE * (n - 1) : TITLE_LINE);
-
-/**
- * @param {{ id: string, label: string, title: string, desc: string, caption: string, w: number, h: number, size?: 'sm' | 'md' | 'lg', draw: (d: any) => void }} spec
- */
-function diagram({ id, label, title, desc, caption, w, h, size = 'sm', draw }) {
-  const out = [];
-  const d = {
-    id, w, h,
-    /** A box at (x, y), `bw` wide; its height follows the text unless `bh` is given (then the text is centred). Returns its edges. */
-    box(x, y, bw, name, sub = [], { kind = '', bh } = {}) {
-      const lines = Array.isArray(sub) ? sub : [sub];
-      const nat = natural(lines.filter(Boolean).length);
-      const bhh = bh ?? nat;
-      const top = y + (bhh - nat) / 2;
-      const cls = `dg-box${kind ? ` dg-k-${kind}` : ''}`;
-      out.push(`<g class="dg-node"><rect class="${cls}" x="${x}" y="${y}" width="${bw}" height="${bhh}" rx="8"/>`
-        + `<text class="dg-t" x="${x + bw / 2}" y="${top + 22}">${esc(name)}</text>`
-        + lines.filter(Boolean).map((l, i) => `<text class="dg-sub" x="${x + bw / 2}" y="${top + 42 + SUB_LINE * i}">${esc(l)}</text>`).join('')
-        + '</g>');
-      return { x, y, w: bw, h: bhh, r: x + bw, b: y + bhh, cx: x + bw / 2, cy: y + bhh / 2 };
-    },
-    /** An arrow along `points`; `label` is placed at `at` ([x, y], centred unless `anchor` is 'start' or 'end'). */
-    line(points, { dash = false, life = false, label: text, at, anchor = '', head = !life } = {}) {
-      out.push(`<path class="${life ? 'dg-life' : `dg-line${dash ? ' dg-dash' : ''}`}" d="M${points.map(([x, y]) => `${x} ${y}`).join(' L')}"${head ? ` marker-end="url(#${id}-a)"` : ''}/>`);
-      if (text) out.push(`<text class="dg-lab${anchor ? ` dg-${anchor}` : ''}" x="${at[0]}" y="${at[1]}">${esc(text)}</text>`);
-    },
-    /** A dashed frame with a label at its top left. */
-    zone(x, y, zw, zh, text) {
-      out.push(`<rect class="dg-zone" x="${x}" y="${y}" width="${zw}" height="${zh}" rx="12"/><text class="dg-zlab" x="${x + 14}" y="${y + 18}">${esc(text)}</text>`);
-    },
-    /** A line of small text. */
-    text(x, y, text, cls = '') { out.push(`<text class="dg-sub ${cls}" x="${x}" y="${y}">${esc(text)}</text>`); },
-  };
-  draw(d);
-  return `<figure class="dg-fig">
-<div class="dg-scroll" tabindex="0" role="group" aria-label="${esc(label)}">
-<svg class="dg dg-${size}" viewBox="0 0 ${w} ${h}" role="img" aria-labelledby="${id}-t ${id}-d">
-<title id="${id}-t">${esc(title)}</title>
-<desc id="${id}-d">${esc(desc)}</desc>
-<defs><marker id="${id}-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
-${out.join('\n')}
-</svg>
-</div>
-<p class="hint">${caption}</p>
-</figure>`;
-}
-
-/**
- * A sequence diagram: participants across the top, one arrow per message, top to bottom. A message is { from, to, label (string or lines), dashed? }
- * or a note { note, over: [first, last] }.
- */
-function sequence({ id, label, title, desc, caption, parts, msgs, col = 150, size = 'md' }) {
-  const w = parts.length * col;
-  const x = (i) => col * i + col / 2;
-  let y = 66;
-  const rows = msgs.map((m) => {
-    if (m.note) { const row = { ...m, y, h: 36 }; y += 52; return row; }
-    const lines = Array.isArray(m.label) ? m.label : [m.label];
-    const row = { ...m, lines, y: y + 15 * lines.length + 6 };
-    y += 15 * lines.length + 30;
-    return row;
-  });
-  const h = y + 10;
-  return diagram({
-    id, label, title, desc, caption, w, h, size,
-    draw(d) {
-      const heads = parts.map((p, i) => d.box(x(i) - (col - 16) / 2, 10, col - 16, p, [], { bh: 38 }));
-      parts.forEach((_, i) => d.line([[x(i), heads[i].b], [x(i), h - 6]], { life: true })); // lifelines first, so the arrows are drawn over them
-      for (const m of rows) {
-        if (m.note) {
-          const x1 = x(m.over[0]) - (col - 24) / 2, x2 = x(m.over[1]) + (col - 24) / 2;
-          d.box(x1, m.y, x2 - x1, m.note, [], { kind: 'soft', bh: m.h });
-          continue;
-        }
-        const a = x(m.from), b = x(m.to);
-        d.line([[a, m.y], [b, m.y]], { dash: m.dashed });
-        m.lines.forEach((l, i) => d.text((a + b) / 2, m.y - 12 - 15 * (m.lines.length - 1 - i), l, 'dg-lab'));
-      }
-    },
-  });
-}
 
 // ---- 1. overview ----------------------------------------------------------------------------------------------------------------------
 
@@ -145,6 +56,21 @@ const overviewTooling = diagram({
   },
 });
 
+const seamSeq = sequence({
+  id: 'ov-seam', label: 'Diagram: a higher package registering into a seam of a lower one', col: 230, size: 'sm', anim: { travel: 0.9, gap: 0.3, dur: 6.5 },
+  title: 'A higher package registers into a seam of a lower one',
+  desc: 'Two participants: @xoong/forms, the higher package, and @xoong/data, the lower one. 1. When @xoong/forms is imported, it calls setFormEngine with its attach function; data keeps it. A note says that later, an xo-view draws a form with xo-submit. 2. Data calls the registered attach with the form, its request schema and its record. 3. Attach returns an engine, the form model of that form, and data detaches it again when the view goes away.',
+  caption: 'The higher package registers itself when it is imported; the lower package calls it back later. Nothing imports upward. Dashed: the answer.',
+  motion: 'a dot travels along each arrow in the order of the steps: the registration when forms is imported, then, after a pause at the note, the call back into forms and its answer.',
+  parts: ['@xoong/forms', '@xoong/data'],
+  msgs: [
+    { from: 0, to: 1, label: ['when imported:', 'setFormEngine({ attach })'] },
+    { note: 'Later: xo-view draws a form with xo-submit', over: [0, 1] },
+    { from: 1, to: 0, label: 'attach(form, { schema, ... })' },
+    { from: 0, to: 1, label: 'returns an engine', dashed: true },
+  ],
+});
+
 const SEAM = `
 // packages/forms/src/index.js: forms import data, so data cannot import forms.
 // forms registers itself, and every <form xo-submit> then uses the form model.
@@ -187,6 +113,7 @@ ${overviewLayers}
 </tbody></table>
 <p>The same test also fails when ${c('data')} imports something from ${c('core')} that is not one of its public entries (${c('@xoong/core')}, ${c('/signals')}, ${c('/closest')}, ${c('/syntax')}), when a runtime package imports tooling (${c('cli')}, ${c('server')}, ${c('mcp')}, ${c('test')}), and when a pure-logic module touches ${c('document')} or ${c('window')} while it loads. That last rule keeps ${c('signals.js')} and everything in ${c('data')} except ${c('view.js')} importable from plain Node, which is how the tools and the prerenderer reuse them.</p>
 <p>How does a lower package use a higher one, then? It does not: the higher package <strong>registers</strong> itself into a seam the lower one provides. Importing ${c('@xoong/forms')} calls ${c('setFormEngine()')}; importing ${c('@xoong/i18n')} calls ${c('setTranslator()')}, ${c('setTextProvider()')} and ${c('setLocaleSource()')}; the router calls ${c('setParamSource()')} and ${c('setUrlSync()')}; ${c('@xoong/ui')} calls ${c('setConfirm()')}. Without the higher package the lower one still works, with a plain default (English text, the browser's ${c('confirm()')}, the History API directly).</p>
+${seamSeq}
 ${tabs('A seam', [['JavaScript', 'js', SEAM]])}
 
 <h2>The tooling</h2>
@@ -278,10 +205,11 @@ const dataEntry = diagram({
 });
 
 const readSeq = sequence({
-  id: 'df-read', label: 'Diagram: one read as a sequence', col: 150, size: 'md',
+  id: 'df-read', label: 'Diagram: one read as a sequence', col: 150, size: 'md', anim: true,
   title: 'One read',
   desc: 'Four participants: the xo-view, the query cache, the entity store and the backend API. 1. The view asks the cache for its query and retains it. 2. The cache sets loading, so the view sees $loading true. 3. The cache sends GET /users?limit=10 to the API. 4. The API answers 200 with JSON. 5. The cache normalises the response into the store, upserting User#1 and the other records. 6. The cache sets success, so $loading becomes false. 7. The view reads the records from the store, tracked, and draws them.',
   caption: 'A read, top to bottom. Dashed arrows are answers or signal updates.',
+  motion: 'a dot travels along the arrows one after another, top to bottom, so the order of the steps is the order of the motion; a hollow dot rides a dashed arrow, an answer or a signal update.',
   parts: ['xo-view', 'Query cache', 'Entity store', 'Backend API'],
   msgs: [
     { from: 0, to: 1, label: 'query(op, params).retain()' },
@@ -295,10 +223,11 @@ const readSeq = sequence({
 });
 
 const writeSeq = sequence({
-  id: 'df-write', label: 'Diagram: one write as a sequence', col: 144, size: 'lg',
+  id: 'df-write', label: 'Diagram: one write as a sequence', col: 144, size: 'lg', anim: true,
   title: 'One write',
   desc: 'Five participants: the xo-click button, client.mutate, the entity store, the query cache and the backend API. 1. The button calls mutate with the operation, params and body. 2. With xo-optimistic, mutate puts a provisional patch in the store. 3. Mutate sends POST /users/1/disable to the API. 4. The API answers 200 with the updated User. 5. Mutate normalises the response into the store, upserting User#1. 6. Mutate invalidates every cached query whose path overlaps /users/1/disable. 7. The query cache refetches GET /users, if something is watching it. 8. The API answers with the list. 9. Mutate resolves and the xo-done event fires. A note says that on failure the optimistic patch is undone, a XoongError is thrown and xo-error fires.',
   caption: 'A write, top to bottom. Invalidation is by path; only queries that something is watching refetch at once.',
+  motion: 'a dot travels along the arrows one after another, top to bottom, from the click to the refetch of the list; a hollow dot rides a dashed arrow, an answer. The note about a failure is not played: it is the other road.',
   parts: ['xo-click', 'client.mutate', 'Entity store', 'Query cache', 'Backend API'],
   msgs: [
     { from: 0, to: 1, label: 'mutate(op, params, body)' },
@@ -508,10 +437,11 @@ ${files([
 // ---- 3. forms -------------------------------------------------------------------------------------------------------------------------
 
 const formsModel = diagram({
-  id: 'fm-model', label: 'Diagram: from the request schema to the form controls', w: 560, h: 520, size: 'sm',
+  id: 'fm-model', label: 'Diagram: from the request schema to the form controls', w: 560, h: 520, size: 'sm', anim: true,
   title: 'From the request schema to the form controls',
   desc: 'At the top left, the request schema in the OpenAPI document becomes the bodySchema node tree in operations.json when xoong sync runs. At the top right is the record, the item of the enclosing xo-view. Both feed the form model, created by createForm: the bodySchema is its schema and a copy of the record is its baseline. The model holds the baseline, the draft and the state of every path. Below it is the DOM binder, attach(form). Effects carry values and errors from the model to the binder, and set(path, raw) carries changes back. The binder writes to the form controls (input, select, textarea, XoControl) and hears their input, change and focusout events.',
   caption: 'The model is the single source of truth. The DOM is a view of it: values go out through effects, changes come back through delegated events.',
+  motion: 'a dot follows the road in order. The schema becomes the bodySchema and, with the record, makes the model; the model\'s values go out through the binder to the controls. Then a change a person makes comes back as set(path, raw), and the new value and error go out again.',
   draw(d) {
     const a = d.box(10, 14, 250, 'Request schema', 'requestBody in OpenAPI');
     const b = d.box(10, 104, 250, 'bodySchema', 'node tree in operations.json');
@@ -519,13 +449,17 @@ const formsModel = diagram({
     const model = d.box(80, 214, 400, 'Form model', ['createForm({ schema, value, rules })', 'baseline, draft, state per path'], { kind: 'core' });
     const binder = d.box(80, 336, 400, 'DOM binder', 'attach(form): delegated listeners, effect per control');
     const ctl = d.box(80, 442, 400, 'Form controls', 'input, select, textarea, XoControl');
-    d.line([[a.cx, a.b], [a.cx, b.y]], { label: 'xoong sync', at: [146, 88], anchor: 'start' });
-    d.line([[b.cx, b.b], [b.cx, 188], [200, 188], [200, model.y]]);
-    d.line([[rec.cx, rec.b], [rec.cx, 188], [360, 188], [360, model.y]], { label: 'baseline = copy', at: [440, 130], anchor: 'start' });
-    d.line([[170, model.b], [170, binder.y]], { label: 'effects', at: [158, 312], anchor: 'end' });
-    d.line([[390, binder.y], [390, model.b]], { label: 'set(path, raw)', at: [402, 312], anchor: 'start' });
-    d.line([[170, binder.b], [170, ctl.y]], { label: 'value, error note', at: [158, 418], anchor: 'end' });
-    d.line([[390, ctl.y], [390, binder.b]], { label: 'input, change, focusout', at: [402, 418], anchor: 'start' });
+    const t = d.clock();
+    const [sync, make, out1, out2] = [t(), t(), t(), t()]; // the model is made, then its values go out to the controls
+    t.skip(0.6);
+    const [typed, back, out3, out4] = [t(), t(), t(), t()]; // then a person changes a field: the change comes back, and the new value goes out
+    d.line([[a.cx, a.b], [a.cx, b.y]], { label: 'xoong sync', at: [146, 88], anchor: 'start', go: sync, from: a, to: b });
+    d.line([[b.cx, b.b], [b.cx, 188], [200, 188], [200, model.y]], { go: make, from: b, to: model });
+    d.line([[rec.cx, rec.b], [rec.cx, 188], [360, 188], [360, model.y]], { label: 'baseline = copy', at: [440, 130], anchor: 'start', go: make, from: rec, to: model });
+    d.line([[170, model.b], [170, binder.y]], { label: 'effects', at: [158, 312], anchor: 'end', go: [out1, out3], from: model, to: binder });
+    d.line([[390, binder.y], [390, model.b]], { label: 'set(path, raw)', at: [402, 312], anchor: 'start', go: back, from: binder, to: model });
+    d.line([[170, binder.b], [170, ctl.y]], { label: 'value, error note', at: [158, 418], anchor: 'end', go: [out2, out4], from: binder, to: ctl });
+    d.line([[390, ctl.y], [390, binder.b]], { label: 'input, change, focusout', at: [402, 418], anchor: 'start', go: typed, from: ctl, to: binder });
   },
 });
 
@@ -696,10 +630,11 @@ ${files([
 // ---- 4. rendering ---------------------------------------------------------------------------------------------------------------------
 
 const renderGraph = diagram({
-  id: 'rn-graph', label: 'Diagram: how a signal change reaches the DOM', w: 590, h: 360, size: 'sm',
+  id: 'rn-graph', label: 'Diagram: how a signal change reaches the DOM', w: 590, h: 360, size: 'sm', anim: true,
   title: 'How a signal change reaches the DOM',
   desc: 'Two signals, first and last, feed a computed value, full, which is calculated lazily and cached. Two effects read the computed value: one writes a text node and one writes the class attribute. Each effect updates only its own DOM node. A separate box notes that batch groups several writes so that the effects run once, at the end.',
   caption: 'A write to a signal marks what read it. Only the effects that depend on it re-run, and each writes one node.',
+  motion: 'a dot shows one write: to first, then on to the computed value, to the two effects that read it, and from each effect to its own DOM node. After a pause the same happens for a write to last.',
   draw(d) {
     const s1 = d.box(10, 14, 170, 'first', 'signal("Ada")');
     const s2 = d.box(200, 14, 170, 'last', 'signal("Lovelace")');
@@ -708,12 +643,16 @@ const renderGraph = diagram({
     const e2 = d.box(200, 194, 170, 'effect', 'sets class attribute');
     const dom = d.box(10, 284, 360, 'DOM', 'a text node and an attribute change; nothing else');
     d.box(398, 104, 180, 'batch(fn)', ['groups writes: effects', 'run once at the end'], { kind: 'soft' });
-    d.line([[s1.cx, s1.b], [s1.cx, 88], [150, 88], [150, comp.y]]);
-    d.line([[s2.cx, s2.b], [s2.cx, 88], [230, 88], [230, comp.y]]);
-    d.line([[150, comp.b], [150, 178], [e1.cx, 178], [e1.cx, e1.y]]);
-    d.line([[230, comp.b], [230, 178], [e2.cx, 178], [e2.cx, e2.y]]);
-    d.line([[e1.cx, e1.b], [e1.cx, dom.y]]);
-    d.line([[e2.cx, e2.b], [e2.cx, dom.y]]);
+    const t = d.clock();
+    const [w1, run1, dom1] = [t(), t(), t()]; // a write to first
+    t.skip(0.8);
+    const [w2, run2, dom2] = [t(), t(), t()]; // a write to last
+    d.line([[s1.cx, s1.b], [s1.cx, 88], [150, 88], [150, comp.y]], { go: w1, from: s1, to: comp });
+    d.line([[s2.cx, s2.b], [s2.cx, 88], [230, 88], [230, comp.y]], { go: w2, from: s2, to: comp });
+    d.line([[150, comp.b], [150, 178], [e1.cx, 178], [e1.cx, e1.y]], { go: [run1, run2], from: comp, to: e1 });
+    d.line([[230, comp.b], [230, 178], [e2.cx, 178], [e2.cx, e2.y]], { go: [run1, run2], from: comp, to: e2 });
+    d.line([[e1.cx, e1.b], [e1.cx, dom.y]], { go: [dom1, dom2], from: e1, to: dom });
+    d.line([[e2.cx, e2.b], [e2.cx, dom.y]], { go: [dom1, dom2], from: e2, to: dom });
   },
 });
 
@@ -894,10 +833,11 @@ ${files([
 // ---- 5. routing -----------------------------------------------------------------------------------------------------------------------
 
 const navSteps = diagram({
-  id: 'rt-steps', label: 'Diagram: the steps of one navigation', w: 570, h: 650, size: 'sm',
+  id: 'rt-steps', label: 'Diagram: the steps of one navigation', w: 570, h: 650, size: 'sm', anim: true,
   title: 'The steps of one navigation',
   desc: 'A navigation starts from a link click, Back or Forward, or router.navigate(). Step 1: if the new location has the same path and query as the current one, nothing is done. Step 2: the vetoes run, which are the beforeNavigate hooks and the built-in check that asks first when a form has unsaved changes. Step 3: the guards run; each returns true, false, or a path to redirect to. A veto or a guard that returns false stops here: the URL is put back, and a Back or Forward is undone with history.go. Step 4: the history is written with pushState or replaceState and a position. Step 5: the layouts are kept or replaced and the route template is cloned. Step 6: after the render, the title, the description, aria-current, the focus and the scroll are set, and the xo-navigate event fires.',
   caption: 'One navigation. A newer navigation that starts while a veto or guard is still waiting takes over, and the older one stops.',
+  motion: 'a dot goes down the steps in order, the way a navigation that nothing stops goes. The two ways out, to Stay, are not played.',
   draw(d) {
     const t = d.box(10, 14, 320, 'Trigger', 'link, Back/Forward, router.navigate()');
     const same = d.box(10, 100, 320, 'Same place?', 'same path and query: nothing to do');
@@ -907,7 +847,8 @@ const navSteps = diagram({
     const render = d.box(10, 476, 320, 'Render', 'keep shared layouts, clone the route template', { kind: 'core' });
     const after = d.box(10, 562, 320, 'After', ['title, description, aria-current, focus,', 'scroll, then the xo-navigate event']);
     const stay = d.box(390, veto.y, 170, 'Stay', ['URL put back;', 'Back/Forward undone', 'with history.go()'], { kind: 'err', bh: guard.b - veto.y });
-    [[t, same], [same, veto], [veto, guard], [guard, hist], [hist, render], [render, after]].forEach(([a, b]) => d.line([[a.cx, a.b], [a.cx, b.y]]));
+    const turn = d.clock({ travel: 0.8 });
+    [[t, same], [same, veto], [veto, guard], [guard, hist], [hist, render], [render, after]].forEach(([a, b]) => d.line([[a.cx, a.b], [a.cx, b.y]], { go: turn(), from: a, to: b }));
     d.line([[veto.r, veto.cy], [stay.x, veto.cy]], { label: 'false', at: [360, veto.cy - 13] });
     d.line([[guard.r, guard.cy], [stay.x, guard.cy]], { label: 'false', at: [360, guard.cy - 13] });
   },
@@ -1024,10 +965,11 @@ ${files([
 // ---- 6. build and delivery ------------------------------------------------------------------------------------------------------------
 
 const buildSteps = diagram({
-  id: 'bd-build', label: 'Diagram: what xoong build does', w: 570, h: 480, size: 'sm',
+  id: 'bd-build', label: 'Diagram: what xoong build does', w: 570, h: 480, size: 'sm', anim: { dur: 6.5 },
   title: 'What xoong build does',
   desc: 'Every HTML page under the root is the start. The build follows what each page references: scripts, stylesheets and images, the modules the scripts import, CSS urls, and any files named with --include. Installed @xoong packages are found in node_modules and copied to the same URLs the dev server uses. It then rewrites bare imports to URLs, strips TypeScript, drops the import map and applies the --base prefix. It warns about anything the strict policy would block: an inline script, a style attribute, an inline style element. The result is the dist folder: the files you wrote, plus build-report.json.',
   caption: 'No bundling and no minifying: each file in the output is the file you wrote, with its imports rewritten.',
+  motion: 'a dot goes down the steps in order: the pages and the installed packages are followed together, then the files are rewritten, checked, and written to dist.',
   draw(d) {
     const pages = d.box(10, 14, 320, 'HTML pages', 'every .html file under --root');
     const follow = d.box(10, 100, 320, 'Follow references', ['script, link, img; module imports;', 'CSS url(); --include files']);
@@ -1035,8 +977,10 @@ const buildSteps = diagram({
     const rewrite = d.box(10, 202, 320, 'Rewrite', ['bare imports to URLs, TypeScript stripped,', 'import map dropped, --base prefix']);
     const warn = d.box(10, 304, 320, 'Warn', ['what a strict policy blocks: inline script,', 'style attribute, style element']);
     const out = d.box(10, 406, 320, 'dist/', 'your files, rewritten, plus build-report.json', { kind: 'core' });
-    [[pages, follow], [follow, rewrite], [rewrite, warn], [warn, out]].forEach(([a, b]) => d.line([[a.cx, a.b], [a.cx, b.y]]));
-    d.line([[pkgs.x, pkgs.cy], [follow.r, follow.cy]]);
+    const turn = d.clock({ travel: 0.9 });
+    const first = turn(); // the pages and the packages come in together
+    [[pages, follow, first], [follow, rewrite, turn()], [rewrite, warn, turn()], [warn, out, turn()]].forEach(([a, b, go]) => d.line([[a.cx, a.b], [a.cx, b.y]], { go, from: a, to: b }));
+    d.line([[pkgs.x, pkgs.cy], [follow.r, follow.cy]], { go: first, from: pkgs, to: follow });
   },
 });
 
@@ -1155,10 +1099,11 @@ ${files([
 // ---- 7. tooling -----------------------------------------------------------------------------------------------------------------------
 
 const toolEngine = diagram({
-  id: 'tl-engine', label: 'Diagram: one check engine, three front ends', w: 590, h: 290, size: 'sm',
+  id: 'tl-engine', label: 'Diagram: one check engine, three front ends', w: 590, h: 290, size: 'sm', anim: { dur: 6.5 },
   title: 'One check engine, three front ends',
   desc: 'Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants.',
   caption: 'A new rule is written once and appears in every front end with the same message and the same fix.',
+  motion: 'dots go from the three inputs into the engine together, and then out to the three front ends together: one set of findings, shown three ways.',
   draw(d) {
     const i1 = d.box(10, 14, 200, 'operations.json', 'from xoong sync', { bh: 74 });
     const i2 = d.box(10, 104, 200, 'syntax.js', 'every xo-* name', { bh: 74 });
@@ -1167,8 +1112,10 @@ const toolEngine = diagram({
     const o1 = d.box(432, 14, 150, 'xoong check', 'CLI and CI', { bh: 74 });
     const o2 = d.box(432, 104, 150, 'xoong-lsp', ['diagnostics,', 'completion, hover'], { bh: 74 });
     const o3 = d.box(432, 194, 150, 'xoong-mcp', ['tools: check,', 'explain_error'], { bh: 74 });
-    [[i1, 100], [i2, 150], [i3, 200]].forEach(([b, y]) => d.line([[b.r, b.cy], [eng.x, y]]));
-    [[o1, 100], [o2, 150], [o3, 200]].forEach(([b, y]) => d.line([[eng.r, y], [b.x, b.cy]]));
+    const turn = d.clock({ travel: 1.4, gap: 0.8 });
+    const into = turn(), out = turn();
+    [[i1, 100], [i2, 150], [i3, 200]].forEach(([b, y]) => d.line([[b.r, b.cy], [eng.x, y]], { go: into, from: b, to: eng }));
+    [[o1, 100], [o2, 150], [o3, 200]].forEach(([b, y]) => d.line([[eng.r, y], [b.x, b.cy]], { go: out, from: eng, to: b }));
   },
 });
 
@@ -1244,7 +1191,7 @@ ${tabs('Editor setup', [['VS Code settings', 'json', EDITOR_CONFIG]])}
 
 <h2>For AI assistants: llms.txt and the MCP server</h2>
 <p>${c('llms.txt')}, at the root of the repository and on this site, is the whole public API in about 1,800 tokens, with the rules an assistant must follow. A test keeps it honest: it must stay under the budget, name only commands that exist, and mention exactly the ${c('xo-*')} names the code defines.</p>
-<p>${c('xoong-mcp')} is a Model Context Protocol server: JSON-RPC 2.0 over stdio with one message per line, written without an SDK. It has five tools, which make a loop: ${c('get_spec')} (the ${c('llms.txt')}), ${c('list_operations')} (the real names from ${c('operations.json')}), write the screen, ${c('check')} (HTML or script source in, findings out), fix from the message; ${c('explain_error')} says what a code means; ${c('search_docs')} searches a docs folder. A test makes sure ${c('explain_error')} covers every code that ${c('check')} can print. A ${c('scaffold')} tool is not built yet.</p>
+<p>${c('xoong-mcp')} is a Model Context Protocol server: JSON-RPC 2.0 over stdio with one message per line, written without an SDK. It has six tools, which make a loop: ${c('get_spec')} (the ${c('llms.txt')}), ${c('list_operations')} (the real names from ${c('operations.json')}), write the screen, ${c('check')} (HTML or script source in, findings out), fix from the message; ${c('explain_error')} says what a code means; ${c('explain_syntax')} says what an element or attribute does and which values it takes; ${c('search_docs')} searches the bundled docs and a project's own. A test makes sure ${c('explain_error')} covers every code that ${c('check')} can print. A ${c('scaffold')} tool is not built yet.</p>
 ${tabs('MCP', [['Settings', 'json', MCP_CONFIG]])}
 
 <h2>@xoong/test</h2>
@@ -1278,7 +1225,7 @@ ${files([
   ['packages/cli/src/openapi.js', 'the analysis and the ' + c('doctor') + ' problems'],
   ['packages/cli/src/html-data.js', 'the editor data, written by ' + c('sync')],
   ['packages/lsp/src/server.js, cli.js', 'the language server and its stdio framing'],
-  ['packages/mcp/src/server.js', 'the five tools and ' + c('EXPLANATIONS')],
+  ['packages/mcp/src/server.js', 'the six tools and ' + c('EXPLANATIONS')],
   ['packages/test/src/index.js', c('mockApi') + ' and ' + c('mount')],
   ['vitest.config.mjs', 'the two projects and the coverage thresholds'],
   ['tools/axe.mjs, tools/focus.mjs, tools/browser.mjs', 'the accessibility and browser helpers'],

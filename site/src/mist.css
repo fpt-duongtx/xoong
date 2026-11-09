@@ -32,7 +32,7 @@ header.top nav a[aria-current="page"] { background: var(--xo-color-accent-soft);
 .shell nav.side h2 { font: 600 12px/1 var(--font); letter-spacing: 0; text-transform: none; color: var(--xo-color-muted); margin: 20px 0 6px; padding-left: 12px; }
 .shell nav.side a { min-height: 36px; padding: 0 12px; font: 500 14px/1.2 var(--font); color: var(--xo-color-text-2); border-radius: 8px; }
 .shell nav.side a:hover { background: var(--xo-color-subtle); color: var(--xo-color-text); }
-.shell nav.side a[aria-current="page"] { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); font-weight: 600; box-shadow: inset 3px 0 0 var(--xo-color-accent); }
+.shell nav.side a[aria-current="page"] { background: light-dark(var(--xo-color-accent-soft), color-mix(in srgb, var(--xo-color-accent) 24%, var(--xo-color-surface))); color: var(--xo-color-accent-strong); font-weight: 600; box-shadow: inset 3px 0 0 var(--xo-color-accent); }
 .shell nav.side .icon { color: var(--xo-color-muted); }
 .rail ol a[aria-current="true"] { color: var(--xo-color-accent-strong); border-left-color: var(--xo-color-accent); }
 footer.foot { background: var(--xo-color-surface); }
@@ -62,7 +62,7 @@ button.sm { padding: 0 12px; font-size: 13px; }
 .btn.primary { background: var(--primary); border-color: var(--primary); color: var(--primary-text); font-weight: 600; box-shadow: none; }
 .btn.primary:hover, .btn.primary:active { transform: none; box-shadow: none; background: color-mix(in srgb, var(--primary) 84%, #000); color: var(--primary-text); }
 .xo-form > .xo-submit, button.xo-submit, .xo-confirm-ok { background: var(--xo-color-primary); color: var(--xo-color-primary-text); border-color: var(--xo-color-primary); }
-.xo-confirm-ok { background: var(--xo-color-danger); border-color: var(--xo-color-danger); color: var(--xo-color-surface); }
+.xo-confirm-ok { background: var(--xo-kind, var(--xo-color-danger)); border-color: var(--xo-kind, var(--xo-color-danger)); color: var(--xo-color-surface); }
 
 /* ---- fields ---- */
 input:not([type="checkbox"], [type="radio"], [type="color"], [type="range"], [type="file"]), select, textarea { font: 400 14px/1.4 var(--xo-font); }
@@ -252,5 +252,35 @@ header.top nav xo-theme-toggle > button.icon-only[aria-pressed]:hover { backgrou
 
 /* the header theme toggle is empty until its script runs: keep its 40px so the palette button does not shift sideways */
 header.top nav xo-theme-toggle:not(:defined) { display: inline-block; width: 40px; height: 40px; }
+
+/* docs sidebar groups: nav.side > .grp > h2 + a... (a rule between groups, room under the label) */
+.shell nav.side .grp { display: grid; gap: 2px; }
+.shell nav.side .grp + .grp { margin-top: 14px; padding-top: 6px; border-top: 1px solid var(--xo-color-border); }
+.shell nav.side .grp > h2 { margin: 10px 0 8px; }
+.shell nav.side .grp:first-child > h2 { margin-top: 0; }
+
+/* built-in dialogs of @xoong/ui: dialog.xo-confirm[data-kind] > .xo-confirm-body (icon + content) + .xo-confirm-actions; the dialog sets --xo-kind */
+dialog.xo-confirm { padding: 24px; width: min(26rem, calc(100vw - 2rem)); max-width: none; }
+dialog.xo-confirm[data-kind="info"] { --xo-kind: var(--xo-color-accent); }
+dialog.xo-confirm[data-kind="success"] { --xo-kind: var(--xo-color-success); }
+dialog.xo-confirm[data-kind="warning"] { --xo-kind: var(--xo-color-warning); }
+dialog.xo-confirm[data-kind="danger"] { --xo-kind: var(--xo-color-danger); }
+.xo-confirm-body { display: flex; gap: 16px; align-items: flex-start; }
+.xo-confirm-icon { flex: none; box-sizing: border-box; width: 40px; height: 40px; padding: 10px; color: var(--xo-kind, var(--xo-color-accent)); background: color-mix(in srgb, var(--xo-kind, var(--xo-color-accent)) 14%, var(--xo-color-surface)); border-radius: 50%; }
+.xo-confirm-content { flex: 1; min-width: 0; display: grid; gap: 8px; }
+.xo-confirm-content > * { margin: 0; }
+.xo-confirm .xo-confirm-title { font: 600 18px/1.3 var(--f-brand, var(--font)); letter-spacing: -.005em; color: var(--xo-color-text); }
+.xo-confirm-content p { font-size: 14px; line-height: 1.5; color: var(--xo-color-text-2); }
+.xo-confirm-content p.xo-hint { font-size: 13px; color: var(--xo-color-muted); }
+.xo-confirm-field { display: grid; gap: 6px; margin-top: 4px; font-size: 13px; font-weight: 500; color: var(--xo-color-text); }
+.xo-confirm-field input { width: 100%; }
+.xo-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.xo-confirm-actions button { min-width: 88px; }
+button.xo-confirm-danger { color: var(--xo-color-surface); background: var(--xo-color-danger); border-color: var(--xo-color-danger); }
+button.xo-confirm-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--xo-color-danger) 88%, #000); }
+button.xo-confirm-ok:hover:not(:disabled) { background: color-mix(in srgb, var(--xo-kind, var(--xo-color-danger)) 88%, #000); }
+@media (max-width: 30rem) { .xo-confirm-actions { flex-direction: column-reverse; } .xo-confirm-actions button { width: 100%; } }
+/* titled xo-dialog: dialog.xo-modal in a small size */
+dialog.xo-modal--sm { width: min(26rem, calc(100vw - 2rem)); }
 
 }

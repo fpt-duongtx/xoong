@@ -46,6 +46,31 @@ describe('language state', () => {
     stop();
   });
 
+  it('two quick setLocale calls end on the last one, even when the first catalog is the slow one', async () => {
+    await configureI18n({ locale: 'en', messages: { en: { k: 'en' } }, load: async (code) => { await tick(code === 'vi' ? 60 : 1); return { k: code }; } });
+    const seen = [];
+    const stop = onLocaleChange((code) => seen.push(code));
+    const first = setLocale('vi');
+    const last = setLocale('de');
+    await Promise.all([first, last]);
+    await tick(80);
+    expect(locale.value).toBe('de');
+    expect(document.documentElement.lang).toBe('de');
+    expect(t('k')).toBe('de');
+    expect(seen).toEqual(['de']); // the stale call neither switched nor announced anything
+    await setLocale('vi'); // its catalog did load: a later explicit choice still works
+    expect(t('k')).toBe('vi');
+    stop();
+  });
+
+  it('a configureI18n({ locale }) after a pending setLocale wins over it', async () => {
+    await configureI18n({ locale: 'en', load: async (code) => { await tick(code === 'vi' ? 40 : 1); return { k: code }; } });
+    const slow = setLocale('vi');
+    await configureI18n({ locale: 'fr' });
+    await slow;
+    expect(locale.value).toBe('fr');
+  });
+
   it('a catalog that fails to load is reported, and the fallback keeps working', async () => {
     const errors = [];
     const original = console.error;

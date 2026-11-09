@@ -34,18 +34,24 @@ message must say how to fix the problem (see [ai-integration.md](ai-integration.
 
 It gives completion and hover docs for every `xo-*` element and attribute, offers the real operation names for
 `xo-click`, `xo-submit`, `<xo-view get>` and `<xo-form op>` (mutations only for `xo-click` and `xo-submit`, reads for
-`get`), and `p-<name>` attributes for the path parameters in your API. It is regenerated on every sync, and a test
-keeps it in step with the syntax lists. Similar formats exist for other editors; add them as needed.
+`get`), `p-<name>` attributes for the path parameters in your API, and the values of the attributes that take a fixed set
+(`xo-confirm-kind`, `<xo-dialog size>`, the sizes and statuses of the controls). Every attribute an element reads is listed with its
+description (a test compares the lists with what the elements read), and the form controls list `required`, `disabled` and `readonly`.
+It is regenerated on every sync, and tests keep it in step with the syntax lists. Similar formats exist for other editors; add them as needed.
 
 ## 2. Language server (the real integration) — first version done
 
 `@xoong/lsp` (`xoong-lsp`, LSP over stdio) is implemented with: **diagnostics** (the exact findings of `xoong check`, same code,
-message and fix, for HTML and for JS/TS files), **completion** of operation names inside `xo-click`, `xo-submit`, `get` and `op`
-(mutations for the first three, reads written as paths for `get`) and of `xo-*` attribute and element names, **hover** docs, and a
-**quick fix** that replaces an unknown operation with the closest one. One malformed message never ends the session (requests get an error reply), and messages are handled in order. It finds `.xoong/operations.json` from the workspace folder
+message and fix, for HTML and for JS/TS files, so every new rule shows up in the editor without extra work), **completion** of operation names inside `xo-click`, `xo-submit`, `get` and `op`
+(mutations for the first three, reads written as paths for `get`), of `xo-*` attribute and element names, of **the attributes of the
+element you are in** (`page-size` and `page-sizes` inside `<xo-pager `, `p-<param>` inside `<xo-view `), of **the values** of attributes that take a fixed
+set (`xo-confirm-kind="`, `<xo-dialog size="`) and of the ids of the `<xo-dialog>`s of the file inside `xo-open="`; **hover** docs for elements, `xo-*` attributes, the
+attributes of an element and their values; and **quick fixes** that replace an unknown operation, a misspelled `xo-*` attribute or element,
+or a value outside its set with the closest one. The server reports the version of its package. One malformed message never ends the session (requests get an error reply), and messages are handled in order. It finds `.xoong/operations.json` from the workspace folder
 upward and re-reads it when it changes (saving a file re-checks it). Not done: scope-aware completion of `{field}` paths, hover for
 operation types, go to definition. Any editor that can launch a language server for HTML/JS/TS files can use it, for example
-Neovim (`vim.lsp.start({ cmd = { 'node', 'packages/lsp/src/cli.js' }, ... })`).
+Neovim (`vim.lsp.start({ cmd = { 'node', 'packages/lsp/src/cli.js' }, ... })`). A test in `test/architecture.test.mjs` fails when an element or
+an attribute is added to `syntax.js` and the language server cannot complete or explain it.
 
 The original design follows.
 

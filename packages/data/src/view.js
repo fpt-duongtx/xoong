@@ -27,12 +27,12 @@
  * Variables: `$loading` (a request runs and there is nothing to show yet), `$refreshing` (a request runs and the previous result is still on screen,
  *   for example while a sort or a page loads: the view does not collapse), `$error`.
  *   xo-refresh        on click, fetch this view's data again ("Try again" after an error, a refresh button).
- * Events (bubbling): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
+ * Events (bubbling, dispatched on the element that ran the action): `xo-done` {detail: result}, `xo-error` {detail: XoongError}.
  */
 import { effect, signal, batch } from '@xoong/core/signals';
 import { XoElement, define } from '@xoong/core';
 import { isRef } from './store.js';
-import { getClient, acquireStream } from './default.js';
+import { getClient, acquireStream, configured, whenConfigured } from './default.js';
 import { XoongError } from './client.js';
 import { idOf } from './store.js';
 import { format } from './format.js';
@@ -178,6 +178,10 @@ class XoView extends XoElement {
       waitingForRouter.push(() => { if (this.isConnected) this.#start(); }); // a route view whose router is not running yet: wait for it
       return;
     }
+    if (!configured()) { // the page's module awaits something before configure(): start when it is called
+      whenConfigured(() => { if (this.isConnected) this.#start(); });
+      return;
+    }
     this.#stop();
     const client = getClient();
     const store = client.store;
@@ -242,7 +246,10 @@ class XoView extends XoElement {
     this.replaceChildren(...this.#tpl.map((n) => n.cloneNode(true)));
     const ctx = { client, lookup, host: this };
     for (const child of [...this.childNodes]) bindNode(child, scope, ctx, this.#bound);
-    this.#bound.push(effect(() => { this.toggleAttribute('data-refreshing', !!scope.vars?.$refreshing()); })); // for CSS: the old data is on screen while the new loads
+    this.#bound.push(effect(() => {
+      this.toggleAttribute('data-refreshing', !!scope.vars?.$refreshing()); // for CSS: the old data is on screen while the new loads
+      if (q.value?.status.value === 'loading') this.setAttribute('aria-busy', 'true'); else this.removeAttribute('aria-busy'); // for assistive technology: a request runs ($loading or $refreshing)
+    }));
 
     // Select the query and keep it observed while connected.
     let current = null;
@@ -273,6 +280,12 @@ class XoView extends XoElement {
     }));
     this.refresh = () => current?.invalidate();
     this.#bound.push(() => { current?.release(); this.refresh = () => {}; });
+    // A page past the end (the last row of the last page was deleted, or an old link): go to the last page that exists
+    this.#bound.push(effect(() => {
+      const { limit, offset } = this.#params.value;
+      const total = q.value?.status.value === 'success' ? store.deref(q.value.root.value)?.total : undefined;
+      if (typeof total === 'number' && Number(limit) > 0 && Number(offset) > 0 && Number(offset) >= total) this.params = { ...this.#params.peek(), offset: Math.max(0, Math.ceil(total / limit) - 1) * limit };
+    }));
     const urlNames = this.#urlNames();
     if (urlNames.length) {
       const sync = urlSync();
@@ -306,16 +319,25 @@ export { XoView };
 export { setFormat } from './format.js';
 export { setUrlSync } from './url-state.js';
 
+/**
+ * A `{...}` is a binding when its content is a path (`name`, `a.b[0]`, `$loading`, `.`), optionally with `| format`. Braces around anything else
+ * (JSON, CSS, a regex `\d{3}`, ICU text) stay as written, and so do `{{name}}` and `\{name}` (a backslash escapes one binding).
+ */
+const PATH = /^\.?(?:[\p{L}_$@][\p{L}\p{N}_$@-]*)?(?:\.[\p{L}\p{N}_$@-]+|\[(?:\d+|'[^']*'|"[^"]*")\])*$/u;
 /** Interpolate `{path}` in a string. Returns null if there is nothing to interpolate. */
 function parseInterpolation(text) {
   if (!text.includes('{')) return null;
-  const parts = text.split(/(\{[^{}]+\})/).filter((p) => p !== '');
-  if (!parts.some((p) => /^\{[^{}]+\}$/.test(p))) return null;
-  return parts.map((p) => {
-    if (!/^\{[^{}]+\}$/.test(p)) return p;
+  const raw = text.split(/(\\?\{[^{}]+\})/); // the odd entries are the `{...}` candidates
+  let bound = false;
+  const parts = raw.map((p, i) => {
+    if (i % 2 === 0) return p;
+    if (p[0] === '\\') { bound = true; return p.slice(1); } // (the text changes, so it is not "nothing to interpolate")
     const [path, fmt] = p.slice(1, -1).split('|').map((s) => s.trim()); // {path} or {path | format}
+    if (!path || !PATH.test(path) || (raw[i - 1].endsWith('{') && raw[i + 1].startsWith('}'))) return p;
+    bound = true;
     return fmt ? { path, fmt } : { path };
   });
+  return bound ? parts.filter((p) => p !== '') : null;
 }
 const evalParts = (parts, scope, lookup) =>
   parts.map((p) => {
@@ -410,7 +432,7 @@ function bindNode(node, scope, ctx, disposers) {
       }
       disposers.push(effect(() => {
         let v = evalParts(parts, scope, lookup);
-        if (URL_ATTRS.has(name) && !isSafeUrl(v)) v = 'about:blank';
+        if (URL_ATTRS.has(name) && !isSafeUrl(v, name === 'src' && (el.localName === 'img' || el.localName === 'xo-image'))) v = 'about:blank';
         if (el.getAttribute(name) !== v) el.setAttribute(name, v);
       }));
     }
@@ -425,11 +447,19 @@ const BOOLEAN_ATTRS = new Set(['hidden', 'disabled', 'checked', 'selected', 'rea
 /** Attributes whose value is a URL: data must not smuggle in script schemes. */
 const URL_ATTRS = new Set(['href', 'src', 'action', 'formaction', 'poster', 'xlink:href', 'data', 'cite', 'srcset']);
 const isScriptAttr = (name) => name.startsWith('on') || name === 'srcdoc';
-/** Allow relative URLs and http(s)/mailto/tel; reject javascript:, data:, vbscript: (even if obfuscated with whitespace). */
-function isSafeUrl(value) {
+/**
+ * Allow relative URLs and http(s)/mailto/tel; reject javascript:, data:, vbscript: (even if obfuscated with whitespace).
+ * A picture (`image`: `<img src>`, `<xo-image src>`) may also be a blob: URL (an upload preview) or a data:image/ raster (never svg).
+ */
+function isSafeUrl(value, image = false) {
   const compact = value.replace(/[\u0000-\u0020\u007f-\u009f]/g, '').toLowerCase();
   const scheme = /^([a-z][a-z0-9+.-]*):/.exec(compact)?.[1];
-  return !scheme || ['http', 'https', 'mailto', 'tel'].includes(scheme);
+  return !scheme || ['http', 'https', 'mailto', 'tel'].includes(scheme) || (image && /^(blob:|data:image\/(png|jpeg|gif|webp|avif)[;,])/.test(compact));
+}
+/** `xo-then` goes to a page of this site: a relative path or a same-origin URL, and nothing `isSafeUrl` refuses. */
+function ownPage(path) {
+  if (!isSafeUrl(path)) return false;
+  try { return new URL(path, location.href).origin === location.origin; } catch { return !/^\s*[/\\]{2}|^[a-z][a-z0-9+.-]*:/i.test(path); }
 }
 
 function bindIf(el, scope, ctx, disposers) {
@@ -543,6 +573,9 @@ const INVALID = { invalid: true, errors: {} };
 function bindAction(el, eventName, opRef, scope, ctx, disposers) {
   const { client, lookup, host } = ctx;
   let busy = false;
+  // The events come from the element that ran the action, so they bubble through a dialog or panel around it up to the view (and the page).
+  // An element the result just removed (a deleted row) cannot bubble: the view reports for it.
+  const emit = (name, detail) => (el.isConnected ? el : host).dispatchEvent(new CustomEvent(name, { detail, bubbles: true, composed: true }));
   // A <form xo-submit> whose operation has a request schema gets the form model (ADR-0009): prefill, typed values, validation, dirty tracking.
   // It is attached now, not at the first click, so fields are filled and completed before anyone touches the form.
   let engine = null;
@@ -605,23 +638,24 @@ function bindAction(el, eventName, opRef, scope, ctx, disposers) {
       const notice = el.getAttribute('xo-notice'); // evaluated before the selection is cleared, so {$selectedCount} still counts
       const noticeText = notice === null ? null : evalParts(parseInterpolation(notice) ?? [notice], scope, lookup);
       if (bulk) host.clearSelection();
-      if (results[0] === INVALID) { host.emit('xo-invalid', { errors: INVALID.errors }); return; } // nothing was sent; the form showed why
+      if (results[0] === INVALID) { emit('xo-invalid', { errors: INVALID.errors }); return; } // nothing was sent; the form showed why
       const result = bulk ? results : results[0];
       if (!engine && eventName === 'submit' && !el.hasAttribute('xo-keep')) /** @type {HTMLFormElement} */ (el).reset?.(); // a sent form starts empty again
-      host.emit('xo-done', result);
+      emit('xo-done', result);
       const then = el.getAttribute('xo-then'); // go on to another page: `{field}` comes from the result (a created record), then from the item acted on
       if (then !== null) {
         const resultScope = { value: () => (Array.isArray(result) ? undefined : result), parent: scope };
         const path = evalParts(parseInterpolation(then) ?? [then], resultScope, lookup);
-        if (el.dispatchEvent(new CustomEvent('xo-go', { bubbles: true, cancelable: true, detail: { path } }))) location.assign(path); // <xo-router> handles it and cancels the default
+        if (!ownPage(path)) console.error(`xoong: xo-then goes to this site only, not to "${path}"`);
+        else if (el.dispatchEvent(new CustomEvent('xo-go', { bubbles: true, cancelable: true, detail: { path } }))) location.assign(path); // <xo-router> handles it and cancels the default
       }
-      if (noticeText) host.emit('xo-notice', { message: noticeText, kind: 'success' }); // shown by <xo-toast>
+      if (noticeText) emit('xo-notice', { message: noticeText, kind: 'success' }); // shown by <xo-toast>
     } catch (e) {
       // API failures are expected flows (events + global onError). Anything else is a bug in the screen.
       if (!(e instanceof XoongError)) console.error(e);
       else if (engine) { if (!Object.keys(e.fields ?? {}).length) showFieldErrors(el, {}, e.detail ?? e.message); } // field messages are on the paths; others as a summary
       else showFieldErrors(el, e.fields, e.detail ?? e.message);
-      host.emit('xo-error', e);
+      emit('xo-error', e);
     } finally {
       busy = false;
       el.removeAttribute('aria-busy');
@@ -688,7 +722,7 @@ function showFieldErrors(form, fields = {}, summary = '') {
 }
 
 function bindParam(el, spec, scope, ctx, disposers) {
-  if (/^[\w-]+$/.test(spec.trim()) && ['input', 'select', 'textarea'].includes(el.localName)) { // a filter control
+  if (/^[\w-]+(\[[\w-]*\])*$/.test(spec.trim()) && ['input', 'select', 'textarea'].includes(el.localName)) { // a filter control
     const name = camel(spec.trim());
     let timer;
     const apply = () => {
@@ -710,7 +744,7 @@ function bindParam(el, spec, scope, ctx, disposers) {
     disposers.push(() => { clearTimeout(timer); el.removeEventListener(type, onInput); });
     return;
   }
-  const m = /^\s*([\w-]*\w)\s*(\+=|-=|~=|=)\s*(.*?)\s*$/.exec(spec);
+  const m = /^\s*([\w-]*\w(?:\[[\w-]*\])*)\s*(\+=|-=|~=|=)\s*(.*?)\s*$/.exec(spec); // names may be bracketed: filter[status]=open
   if (!m) { console.error(`xoong: xo-param="${spec}" is not "name=value", "name+=n", "name-=n" or "name~=value"`); return; }
   const [, rawName, op, rawValue] = m;
   const name = camel(rawName);
@@ -731,8 +765,13 @@ function bindParam(el, spec, scope, ctx, disposers) {
     const cur = ctx.host.params[name];
     const want = evalParts(parseInterpolation(rawValue) ?? [rawValue], scope, ctx.lookup);
     const active = op === '=' ? String(cur ?? '') === want : op === '~=' ? String(cur ?? '').replace(/^-/, '') === want : false;
-    if (active) { el.setAttribute('aria-current', 'true'); if (op === '~=') el.setAttribute('data-direction', String(cur).startsWith('-') ? 'desc' : 'asc'); }
+    const desc = String(cur).startsWith('-');
+    if (active) { el.setAttribute('aria-current', 'true'); if (op === '~=') el.setAttribute('data-direction', desc ? 'desc' : 'asc'); }
     else { el.toggleAttribute('aria-current', false); el.toggleAttribute('data-direction', false); }
+    if (op === '~=') { // a sort button in a table header: the header says how the column is sorted (no attribute = not sorted, which the kit CSS relies on)
+      const th = el.closest('th');
+      if (active) th?.setAttribute('aria-sort', desc ? 'descending' : 'ascending'); else th?.removeAttribute('aria-sort');
+    }
   }));
   disposers.push(() => el.removeEventListener('click', handler));
 }

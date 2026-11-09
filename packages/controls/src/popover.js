@@ -34,7 +34,7 @@ class XoPopover extends XoElement {
     this.#trigger = this.anchor ? document.querySelector(this.anchor) : /** @type {HTMLElement | null} */ (this.previousElementSibling);
     const t = this.#trigger;
     if (t) { t.setAttribute('aria-controls', this.id); t.setAttribute('aria-haspopup', 'true'); t.addEventListener('click', this.#onClick); }
-    this.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.stopPropagation(); this.close(true); } });
+    this.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.isComposing && e.keyCode !== 229) { e.stopPropagation(); this.close(true); } }); // Escape in a field cancels an IME composition first
     this.addEventListener('focusout', (e) => { if (this.open && e.relatedTarget && !this.contains(/** @type {Node} */ (e.relatedTarget)) && e.relatedTarget !== this.#trigger) this.close(); });
     this.#paint();
   }

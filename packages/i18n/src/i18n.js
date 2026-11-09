@@ -17,6 +17,8 @@ const catalogs = {};
 /** @type {Record<string, Promise<void>>} */
 const loading = {};
 const state = { fallback: 'en', load: /** @type {((code: string) => Promise<any> | any) | null} */ (null) };
+/** Counts language changes, so a `setLocale` that resolves after a later one knows it is stale and does nothing. */
+let changes = 0;
 
 /** The active language (BCP 47 tag, for example "vi" or "pt-BR"). A signal. */
 export const locale = signal('en');
@@ -46,6 +48,7 @@ export function resetI18n() {
   for (const k of Object.keys(loading)) delete loading[k];
   state.fallback = 'en';
   state.load = null;
+  changes++;
   batch(() => { locale.value = 'en'; version.value += 1; });
 }
 
@@ -72,7 +75,7 @@ export function configureI18n(options = {}) {
     if (options.fallback) state.fallback = options.fallback;
     if (options.load !== undefined) state.load = options.load;
     for (const [code, messages] of Object.entries(options.messages ?? {})) addMessages(code, messages);
-    if (options.locale) { locale.value = options.locale; applyDocument(options.locale); }
+    if (options.locale) { changes++; locale.value = options.locale; applyDocument(options.locale); }
   });
   return Promise.all(chain(locale.peek()).map(ensure)).then(() => undefined);
 }
@@ -84,9 +87,11 @@ function applyDocument(code) {
   root.setAttribute('dir', directionOf(code));
 }
 
-/** Change the language: loads its catalog (and its base language's) first, so the page switches once, then updates `<html lang dir>`. */
+/** Change the language: loads its catalog (and its base language's) first, so the page switches once, then updates `<html lang dir>`. The last call wins. */
 export async function setLocale(code) {
+  const mine = ++changes;
   await Promise.all(chain(code).map(ensure));
+  if (mine !== changes) return; // a later call (or configureI18n) chose another language meanwhile
   batch(() => { locale.value = code; });
   applyDocument(code);
 }

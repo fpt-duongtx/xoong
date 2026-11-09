@@ -26,6 +26,14 @@
  *   XO253 <xo-table filters="f"> but the view's operation has no query parameter "f"
  *   XO251 <xo-table> outside an <xo-view get>
  *   XO252 <xo-form op> operation has no simple request fields to generate a form from
+ *   XO270 an attribute that does nothing without another on the same element: xo-then, xo-notice, xo-confirm, xo-body, xo-optimistic, xo-with, xo-keep without xo-click/xo-submit, xo-confirm-* without xo-confirm, <xo-dialog size> without heading
+ *   XO271 an attribute that takes one of a fixed set of values (xo-confirm-kind, <xo-dialog size>, ...) has another value
+ *   XO272 a malformed value: a `field=value` list (xo-with, xo-optimistic), xo-param, xo-move or xo-select
+ *   XO273 xo-open names an element that is not an <xo-dialog> (or none in this file), or xo-close is outside an <xo-dialog>
+ *   XO274 xo-with / xo-selected names a field the request body of the operation does not have
+ *   XO275 xo-param sets a parameter the view's operation does not take (it will not filter the data)
+ *   XO276 an attribute outside the element that gives it meaning (xo-route/xo-layout off a router template, xo-tab, xo-menu-trigger, xo-guard, the array buttons)
+ *   (XO250 and XO251 apply to <xo-pager> as they do to <xo-table>)
  */
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { excluder } from './exclude.js';
@@ -33,10 +41,18 @@ import { join, extname, relative } from 'node:path';
 import { parse } from 'parse5';
 import { nearest } from '@xoong/core/closest';
 import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
+import { VALUE_SETS } from './html-data.js';
 
 const ATTRS = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES]);
 const TAGS = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS]);
 const INTERACTIVE = new Set(['button', 'a', 'input', 'select', 'textarea', 'summary']);
+/** Attributes that tune an action: they do nothing unless xo-click or xo-submit is on the same element. */
+const NEEDS_ACTION = ['xo-then', 'xo-notice', 'xo-confirm', 'xo-body', 'xo-optimistic'];
+const CONFIRM_DETAILS = ['xo-confirm-title', 'xo-confirm-ok', 'xo-confirm-cancel', 'xo-confirm-kind'];
+/** A value is required (an empty one is a mistake). `xo-keep`, `xo-close`, `xo-selected` and the like are fine without one. */
+const NEEDS_VALUE = ['xo-each', 'xo-if', 'xo-body', 'xo-then', 'xo-confirm', 'xo-with', 'xo-optimistic', 'xo-open', 'xo-add', 'xo-remove', 'xo-move', 'xo-drag'];
+/** Values the runtime also accepts, but the documentation does not offer. */
+const VALUE_ALIASES = { 'xo-confirm-kind': ['error'] };
 
 /** @typedef {{ level: 'error'|'warn', code: string, file: string, line: number, column: number, message: string, fix: string }} Finding */
 
@@ -64,14 +80,26 @@ const camel = (s) => s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
  * @param {string} source
  * @param {{ operations: Record<string, any> }} table
  * @param {string} [file]
+ * @param {{ fragment?: boolean }} [options] `fragment`: the source is a piece of a page (an html`...` template), so what may live elsewhere (the dialog an xo-open points at) is not reported
  * @returns {Finding[]}
  */
-export function checkHtml(source, table, file = '<input>') {
+export function checkHtml(source, table, file = '<input>', { fragment = false } = {}) {
   /** @type {Finding[]} */
   const findings = [];
   const ops = operationIndex(table);
   const known = [...ops.keys()];
   const document = parse(source, { sourceCodeLocationInfo: true });
+  /** The operation a reference names ("/users", "GET /users", an operationId), or undefined. */
+  const opOf = (ref) => { const key = ref.trim(); return ops.get(key.startsWith('/') ? `GET ${key}` : key.replace(/\s+/g, ' ')); };
+  /** id -> tag name of every element that has one (inside templates too): what xo-open="#id" can find. */
+  const ids = new Map();
+  (function collect(node) {
+    for (const child of node.nodeName === 'template' ? node.content?.childNodes ?? [] : node.childNodes ?? []) {
+      const id = attr(child, 'id')?.value;
+      if (id && !ids.has(id)) ids.set(id, child.tagName);
+      collect(child);
+    }
+  })(document);
 
   const report = (level, code, node, name, message, fix) => {
     const loc = (name && node.sourceCodeLocation?.attrs?.[name]) || node.sourceCodeLocation;
@@ -79,13 +107,85 @@ export function checkHtml(source, table, file = '<input>') {
   };
   const lookup = (node, name, ref, what) => {
     const key = ref.trim();
-    const op = ops.get(key.startsWith('/') ? `GET ${key}` : key.replace(/\s+/g, ' '));
+    const op = opOf(ref);
     if (!op) {
       const hint = nearest(key.startsWith('/') ? `GET ${key}` : key, known);
       report('error', 'XO201', node, name, `unknown operation "${key}"${hint ? ` (closest: "${hint}")` : ''}`, hint ? `Use "${hint}"` : 'Run `xoong sync` if the API changed, or fix the operation');
     }
     return op;
   };
+
+  /** The rules of one attribute that depend on its element: what it needs beside it, which values it takes, what it names. */
+  function attributeRules(node, tag, a, view, ctx) {
+    const n = a.name;
+    const has = (name) => attr(node, name) !== undefined;
+    const acts = has('xo-click') || has('xo-submit') || (tag === 'xo-form' && has('op')); // <xo-form op> is a submitting form: it passes these on to the form it draws
+    const value = a.value.trim();
+    // XO270: modifiers of an action do nothing without it
+    if ((NEEDS_ACTION.includes(n) || (n === 'xo-with' && !has('xo-add'))) && !acts) report('error', 'XO270', node, n, `${n} does nothing here: there is no xo-click or xo-submit on the same element`, `Put ${n} on the button or form that has xo-click / xo-submit, or remove it`);
+    if (n === 'xo-keep' && !has('xo-submit')) report('error', 'XO270', node, n, 'xo-keep only applies to xo-submit (a form keeps its fields after sending)', 'Put xo-keep on the <form xo-submit>, or remove it');
+    if (CONFIRM_DETAILS.includes(n) && !has('xo-confirm')) report('error', 'XO270', node, n, `${n} does nothing without xo-confirm on the same element`, 'Add xo-confirm="Question?" beside it, or remove it');
+    if (tag === 'xo-dialog' && n === 'size' && !has('heading')) report('warn', 'XO270', node, n, '<xo-dialog size> only applies to a titled modal: there is no heading', 'Add heading="Title" (the width then follows size), or remove size');
+    // XO276: attributes that need their container
+    // in a fragment the router may be outside it: only the wrong element is certain
+    if ((n === 'xo-route' || n === 'xo-layout') && (tag !== 'template' || (!fragment && node.parentNode?.tagName !== 'xo-router'))) {
+      report('error', 'XO276', node, n, `${n} must be on a <template> that is a direct child of <xo-router>; here it is ${tag === 'template' ? 'a template elsewhere' : `on <${tag}>`}, so the router never sees it`, `Write <xo-router><template ${n}="..."> ... </template></xo-router>`);
+    }
+    if (n === 'xo-guard' && !((tag === 'form' && has('xo-submit')) || (tag === 'xo-form' && has('op')))) report('warn', 'XO276', node, n, 'xo-guard only applies to a <form xo-submit> (it guards unsaved changes of that form)', 'Put xo-guard on the <form xo-submit>, or remove it');
+    if (!fragment) {
+      if (n === 'xo-tab' && !ctx.tabs) report('warn', 'XO276', node, n, 'xo-tab is not inside an <xo-tabs>, so it is not a tab', 'Wrap the sections in <xo-tabs>');
+      if (n === 'xo-menu-trigger' && !ctx.menu) report('warn', 'XO276', node, n, 'xo-menu-trigger is not inside an <xo-menu>', 'Put the trigger button inside <xo-menu>');
+      if (['xo-add', 'xo-remove', 'xo-move', 'xo-drag'].includes(n) && !ctx.form) report('warn', 'XO276', node, n, `${n} edits the array of a form, but this is not inside a <form xo-submit>`, 'Put it inside the <form xo-submit> whose array it edits');
+    }
+    // XO271: a fixed set of values
+    const set = VALUE_SETS[n] ?? VALUE_SETS[`${tag} ${n}`];
+    if (set && value && !/\{[^}]*\}/.test(value) && !set.includes(value) && !(VALUE_ALIASES[n] ?? []).includes(value)) {
+      const hint = nearest(value, set);
+      report('warn', 'XO271', node, n, `${VALUE_SETS[n] ? n : `${tag} ${n}`}="${a.value}" is not one of ${set.map((v) => `"${v}"`).join(', ')}${hint ? ` (closest: "${hint}")` : ''}`, hint ? `Use ${n}="${hint}"` : `Use one of ${set.join(', ')}, or remove it`);
+    }
+    // XO272: values with a syntax of their own
+    const pairs = (n === 'xo-with' || n === 'xo-optimistic') ? value.split(',').map((x) => x.trim()).filter(Boolean) : [];
+    for (const pair of pairs) if (!/^[\w.-]+\s*=/.test(pair)) report('error', 'XO272', node, n, `${n}="${a.value}": "${pair}" is not "field=value"; the runtime ignores it`, `Write ${n}="field=value,other={path}"`);
+    if (n === 'xo-move' && value && !/^.*:(up|down|-?\d+)$/.test(value)) report('error', 'XO272', node, n, `xo-move="${a.value}" is not "path:up" or "path:down"`, 'Write xo-move="blocks[{$index}]:up"');
+    if (n === 'xo-select' && tag === 'input' && value && !/^all:\S/.test(value)) report('error', 'XO272', node, n, `xo-select="${a.value}" takes no value on a row checkbox, or "all:<list>" on the header one`, 'Write xo-select (a row) or xo-select="all:items" (every row of the list)');
+    if (n === 'xo-param' && value) {
+      const control = ['input', 'select', 'textarea'].includes(tag);
+      const name = control && /^[\w-]+$/.test(value) ? value : /^([\w-]*\w)\s*(\+=|-=|~=|=)/.exec(value)?.[1];
+      if (!name) report('error', 'XO272', node, n, `xo-param="${a.value}" is not "name=value", "name+=n", "name-=n" or "name~=value"${control ? ' (or just the name, on a field)' : ''}`, control ? 'Write xo-param="q" on the field' : 'Write xo-param="status=draft" (or "offset+=10", "sort~=name")');
+      else {
+        // XO275: the view's operation has to take the parameter, or nothing filters
+        const op = view && attr(view, 'get') ? opOf(attr(view, 'get').value) : undefined;
+        if (op) {
+          const taken = [...(op.query ?? []), ...[...op.path.matchAll(/\{([^}]+)\}/g)].map((m) => m[1])];
+          if (!taken.some((q) => camel(q) === camel(name))) report('warn', 'XO275', node, n, `${op.method} ${op.path} takes no parameter "${name}", so xo-param="${a.value}" changes nothing in the request`, `Add "${name}" to the operation's query parameters, or remove xo-param (it is still available as {${camel(name)}} in the view)`);
+        }
+      }
+    }
+    // XO274: fields that join the request body must exist in it
+    const field = n === 'xo-with' && !has('xo-add') ? pairs.map((x) => /^([\w.-]+)\s*=/.exec(x)?.[1]).filter(Boolean) : n === 'xo-selected' && value ? [value] : [];
+    const opRef = attr(node, 'xo-click') ?? attr(node, 'xo-submit');
+    const bodyOp = field.length && opRef ? opOf(opRef.value) : undefined;
+    if (bodyOp) {
+      const names = new Set([...(bodyOp.bodyFields ?? []), ...(bodyOp.bodySkipped ?? [])].map((f) => f.name));
+      if (bodyOp.bodySchema?.t === 'object') for (const k of Object.keys(bodyOp.bodySchema.props ?? {})) names.add(k);
+      const fields = bodyOp.bodySchema && bodyOp.bodySchema.t !== 'object' ? undefined : names; // a union body: the names are not known up front
+      for (const f of field) {
+        if (!bodyOp.body) report('warn', 'XO274', node, n, `${n} adds "${f}" to the request body, but ${bodyOp.method} ${bodyOp.path} has no request body`, `Remove ${n}, or use an operation that takes a body`);
+        else if (fields?.size && !fields.has(f.split('.')[0])) {
+          const hint = nearest(f.split('.')[0], [...fields]);
+          report('warn', 'XO274', node, n, `${n} sets "${f}", which is not a field of the request body of ${bodyOp.method} ${bodyOp.path}${hint ? ` (closest: "${hint}")` : ''}`, hint ? `Use "${hint}"` : 'Name a field of the request body, or remove it');
+        }
+      }
+    }
+    // XO273: dialogs
+    if (n === 'xo-open') {
+      const id = /^#([\w-]+)$/.exec(value)?.[1];
+      const found = id ? ids.get(id) : undefined;
+      if (id && found && found !== 'xo-dialog') report('error', 'XO273', node, n, `xo-open="${value}" matches a <${found}>, not an <xo-dialog>`, 'Put the id on the <xo-dialog>');
+      else if (id && !found && !fragment) report('warn', 'XO273', node, n, `xo-open="${value}" matches no element in this file`, `Add <xo-dialog id="${id}"> to this page (or ignore this when the dialog is in another file)`);
+    }
+    if (n === 'xo-close' && !fragment && !ctx.dialog) report('warn', 'XO273', node, n, 'xo-close is not inside an <xo-dialog>, so it closes nothing', 'Put the button inside the <xo-dialog> it should close');
+  }
 
   /** @param {any} node @param {{ view?: any }} ctx */
   function walk(node, ctx) {
@@ -113,16 +213,18 @@ export function checkHtml(source, table, file = '<input>') {
       }
       if (tag === 'img' && view) for (const n of ['src', 'srcset']) { const a = attr(node, n); if (a && /\{[^}]+\}/.test(a.value)) report('warn', 'XO243', node, n, `<img ${n}="${a.value}"> inside an <xo-view>: the browser requests the literal text before the data is bound`, 'Use <xo-image src="..." alt="..."> (it waits for the data), or add the image from a data field with xo-if'); }
       if (tag === 'xo-image' && attr(node, 'alt') === undefined) report('warn', 'XO242', node, undefined, '<xo-image> has no alt attribute', 'Describe the image in alt, or write alt="" when it is decorative');
-      if (tag === 'xo-table') {
-        const op = view && attr(view, 'get') ? ops.get((v => (v.startsWith('/') ? `GET ${v}` : v.replace(/\s+/g, ' ')))(attr(view, 'get').value.trim())) : undefined;
-        if (!view || !attr(view, 'get')) report('error', 'XO251', node, undefined, '<xo-table> is not inside an <xo-view get="...">', 'Wrap it: <xo-view get="/things"><xo-table ...></xo-table></xo-view>');
+      if (tag === 'xo-table' || tag === 'xo-pager') { // both read the enclosing view's data; both page through `limit` and `offset`
+        const viewGet = view ? attr(view, 'get') : undefined;
+        const op = viewGet ? opOf(viewGet.value) : undefined;
+        if (!viewGet) report('error', 'XO251', node, undefined, `<${tag}> is not inside an <xo-view get="...">`, `Wrap it: <xo-view get="/things"><${tag} ...></${tag}></xo-view>`);
         else if (op) {
-          const need = [...(attr(node, 'sortable') ? ['sort'] : []), ...(attr(node, 'page-size') ? ['limit', 'offset'] : [])];
+          const paging = tag === 'xo-pager' || attr(node, 'page-size'); // a pager always pages (page-size defaults to 25)
+          const need = [...(attr(node, 'sortable') ? ['sort'] : []), ...(paging ? ['limit', 'offset'] : [])];
           const lacking = need.filter((q) => !(op.query ?? []).includes(q));
           for (const f of (attr(node, 'filters')?.value ?? '').split(',').map((x) => x.trim().split(':')[0]).filter(Boolean)) { // "q:Search": the part before the colon is the query parameter
             if (!(op.query ?? []).includes(f)) report('error', 'XO253', node, 'filters', `${op.method} ${op.path} has no query parameter "${f}", which the filter box for "${f}" sets`, `Add "${f}" to the operation's parameters, or remove it from filters`);
           }
-          if (lacking.length) report('error', 'XO250', node, attr(node, 'sortable') && lacking.includes('sort') ? 'sortable' : 'page-size', `${op.method} ${op.path} has no query parameter ${lacking.map((q) => `"${q}"`).join(', ')}, which <xo-table> needs for ${attr(node, 'sortable') ? 'sorting' : 'paging'}`, `Add ${lacking.join(', ')} to the operation's parameters, or remove ${lacking.includes('sort') ? 'sortable' : 'page-size'}`);
+          if (lacking.length) report('error', 'XO250', node, attr(node, 'sortable') && lacking.includes('sort') ? 'sortable' : 'page-size', `${op.method} ${op.path} has no query parameter ${lacking.map((q) => `"${q}"`).join(', ')}, which <${tag}> needs for ${attr(node, 'sortable') && lacking.includes('sort') ? 'sorting' : 'paging'}`, `Add ${lacking.join(', ')} to the operation's parameters, or remove ${tag === 'xo-pager' ? 'the pager' : lacking.includes('sort') ? 'sortable' : 'page-size'}`);
         }
       }
       if (tag === 'xo-form') {
@@ -139,9 +241,10 @@ export function checkHtml(source, table, file = '<input>') {
         }
         if (a.name === 'xo-selected' && !attr(node, 'xo-click')) report('error', 'XO254', node, a.name, 'xo-selected needs xo-click on the same element', 'Add xo-click="METHOD /path/{id}" to run once per ticked row');
         if (a.name === 'xo-select' && (tag !== 'input' || attr(node, 'type')?.value !== 'checkbox')) report('error', 'XO254', node, a.name, `xo-select must be on <input type="checkbox">, found <${tag}>`, 'Use a checkbox, or <xo-table selectable>');
-        if ((a.name === 'xo-each' || a.name === 'xo-if' || a.name === 'xo-body') && !a.value.trim()) {
-          report('error', 'XO221', node, a.name, `${a.name} is empty`, `Give ${a.name} a path, for example ${a.name}="items"`);
+        if (NEEDS_VALUE.includes(a.name) && !a.value.trim()) {
+          report('error', 'XO221', node, a.name, `${a.name} is empty`, a.name === 'xo-confirm' ? 'Write the question: xo-confirm="Delete {title}?"' : a.name === 'xo-then' ? 'Write the path to go to: xo-then="/articles/{id}"' : a.name === 'xo-open' ? 'Name the dialog: xo-open="#add"' : `Give ${a.name} a value, for example ${a.name}="${a.name === 'xo-with' || a.name === 'xo-optimistic' ? 'status=done' : 'items'}"`);
         }
+        attributeRules(node, tag, a, view, ctx);
         if (a.name === 'xo-click' || a.name === 'xo-submit') {
           const op = lookup(node, a.name, a.value);
           if (op && op.method === 'GET' && a.name === 'xo-click') report('warn', 'XO202', node, a.name, `${a.name} calls the GET operation ${op.path}`, 'Reads are declared with <xo-view get="...">; xo-click is for mutations');
@@ -195,7 +298,7 @@ export function checkHtml(source, table, file = '<input>') {
           }
         }
       }
-      ctx = { view, router, route };
+      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined) };
     }
     for (const child of children) walk(child, ctx);
   }
@@ -293,7 +396,7 @@ export function checkScript(source, table, file = '<input>') {
   /** @type {Finding[]} */
   const findings = [];
   for (const t of htmlTemplates(source)) {
-    for (const f of checkHtml(t.text, table, file)) {
+    for (const f of checkHtml(t.text, table, file, { fragment: true })) {
       findings.push({ ...f, line: t.line + f.line - 1, column: f.line === 1 ? t.column + f.column - 1 : f.column }); // text has the source's shape
     }
   }

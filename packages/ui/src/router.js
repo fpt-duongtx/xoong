@@ -325,8 +325,11 @@ class XoRouter extends XoElement {
     parent.replaceChildren(route.template.content.cloneNode(true)); // views inside start (and fetch) now
   }
 
+  /** @type {string | null} */ #pageTitle = null;
+
   #afterNavigate(to, from, type) {
-    if (to.route?.title) document.title = to.route.title;
+    this.#pageTitle ??= document.title; // the title the page came with: a route without its own title goes back to it
+    document.title = to.route?.title || this.#pageTitle;
     if (to.route?.description !== undefined) { // per-route description for search engines (kept by prerendering)
       let meta = document.head.querySelector('meta[name="description"]');
       if (!meta) { meta = document.createElement('meta'); meta.setAttribute('name', 'description'); document.head.append(meta); }

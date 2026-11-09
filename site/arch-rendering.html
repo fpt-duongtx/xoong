@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
@@ -53,17 +54,48 @@
     </div>
   </header>
   <details class="docs-menu"><summary><span>Menu · <span class="here">Rendering</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
     <h2>Start</h2>
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
     <h2>Guides</h2>
     <a href="data.html">Data and tables</a>
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
     <h2>Architecture</h2>
     <a href="arch-overview.html">Layers</a>
     <a href="arch-data-flow.html">Data flow</a>
@@ -72,35 +104,58 @@
     <a href="arch-routing.html">Router</a>
     <a href="arch-build.html">Build and delivery</a>
     <a href="arch-tooling.html">Tooling and tests</a>
-    <h2>Controls</h2>
-    <a href="controls.html">Overview</a>
-    <a href="tabs.html">Tabs</a>
-    <a href="menu.html">Menu and tooltip</a>
-    <a href="combobox.html">Combobox and tags</a>
-    <a href="more-controls.html">More controls</a>
-    <a href="carousel.html">Carousel</a>
-    <a href="own-control.html">Your own control</a>
-    <a href="components.html">Standard</a>
-    <a href="controls-demo.html">All controls</a>
-    <a href="overlays.html">Overlays</a>
-    <a href="focus-audit.html">Focus audit</a>
-    <a href="icons.html">Icons</a>
-    <h2>Demo</h2>
-    <a href="demo.html">Live demo</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
   </nav></details>
   <div class="shell">
     <nav class="side" aria-label="Documentation">
+      <div class="grp">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
       <h2>Architecture</h2>
       <a href="arch-overview.html">Layers</a>
       <a href="arch-data-flow.html">Data flow</a>
@@ -109,21 +164,13 @@
       <a href="arch-routing.html">Router</a>
       <a href="arch-build.html">Build and delivery</a>
       <a href="arch-tooling.html">Tooling and tests</a>
-      <h2>Controls</h2>
-      <a href="controls.html">Overview</a>
-      <a href="tabs.html">Tabs</a>
-      <a href="menu.html">Menu and tooltip</a>
-      <a href="combobox.html">Combobox and tags</a>
-      <a href="more-controls.html">More controls</a>
-      <a href="carousel.html">Carousel</a>
-      <a href="own-control.html">Your own control</a>
-      <a href="components.html">Standard</a>
-      <a href="controls-demo.html">All controls</a>
-      <a href="overlays.html">Overlays</a>
-      <a href="focus-audit.html">Focus audit</a>
-      <a href="icons.html">Icons</a>
-      <h2>Demo</h2>
-      <a href="demo.html">Live demo</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
     </nav>
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Rendering</span></div>
@@ -133,12 +180,12 @@
 
 <h2 id="signals">Signals</h2>
 <p>All of reactivity is five functions in <code>@xoong/core</code>.</p>
-<figure class="dg-fig">
+<figure class="dg-fig dg-anim">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: how a signal change reaches the DOM">
 <svg class="dg dg-sm" viewBox="0 0 590 360" role="img" aria-labelledby="rn-graph-t rn-graph-d">
 <title id="rn-graph-t">How a signal change reaches the DOM</title>
-<desc id="rn-graph-d">Two signals, first and last, feed a computed value, full, which is calculated lazily and cached. Two effects read the computed value: one writes a text node and one writes the class attribute. Each effect updates only its own DOM node. A separate box notes that batch groups several writes so that the effects run once, at the end.</desc>
-<defs><marker id="rn-graph-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<desc id="rn-graph-d">Two signals, first and last, feed a computed value, full, which is calculated lazily and cached. Two effects read the computed value: one writes a text node and one writes the class attribute. Each effect updates only its own DOM node. A separate box notes that batch groups several writes so that the effects run once, at the end. When the animation plays, a dot shows one write: to first, then on to the computed value, to the two effects that read it, and from each effect to its own DOM node. After a pause the same happens for a write to last.</desc>
+<defs><marker id="rn-graph-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="rn-graph-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="10" y="14" width="170" height="58" rx="8"/><text class="dg-t" x="95" y="36">first</text><text class="dg-sub" x="95" y="56">signal("Ada")</text></g>
 <g class="dg-node"><rect class="dg-box" x="200" y="14" width="170" height="58" rx="8"/><text class="dg-t" x="285" y="36">last</text><text class="dg-sub" x="285" y="56">signal("Lovelace")</text></g>
 <g class="dg-node"><rect class="dg-box" x="95" y="104" width="190" height="58" rx="8"/><text class="dg-t" x="190" y="126">full</text><text class="dg-sub" x="190" y="146">computed(): lazy, cached</text></g>
@@ -152,9 +199,10 @@
 <path class="dg-line" d="M230 162 L230 178 L285 178 L285 194" marker-end="url(#rn-graph-a)"/>
 <path class="dg-line" d="M95 252 L95 284" marker-end="url(#rn-graph-a)"/>
 <path class="dg-line" d="M285 252 L285 284" marker-end="url(#rn-graph-a)"/>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M95 72 L95 88 L150 88 L150 104" marker-end="url(#rn-graph-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.056;0.133;0.173;1"/></path><path class="dg-hot" d="M285 72 L285 88 L230 88 L230 104" marker-end="url(#rn-graph-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.467;0.483;0.56;0.6;1"/></path><path class="dg-hot" d="M150 162 L150 178 L95 178 L95 194" marker-end="url(#rn-graph-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.147;0.163;0.24;0.28;0.573;0.589;0.667;0.707;1"/></path><path class="dg-hot" d="M230 162 L230 178 L285 178 L285 194" marker-end="url(#rn-graph-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.147;0.163;0.24;0.28;0.573;0.589;0.667;0.707;1"/></path><path class="dg-hot" d="M95 252 L95 284" marker-end="url(#rn-graph-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.253;0.269;0.347;0.387;0.68;0.696;0.773;0.813;1"/></path><path class="dg-hot" d="M285 252 L285 284" marker-end="url(#rn-graph-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.253;0.269;0.347;0.387;0.68;0.696;0.773;0.813;1"/></path><rect class="dg-glow" x="10" y="14" width="170" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.056;0.063;0.087;1"/></rect><rect class="dg-glow" x="200" y="14" width="170" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.467;0.483;0.49;0.513;1"/></rect><rect class="dg-glow" x="95" y="104" width="190" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.12;0.136;0.167;0.2;0.547;0.563;0.593;0.627;1"/></rect><rect class="dg-glow" x="10" y="194" width="170" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.227;0.243;0.273;0.307;0.653;0.669;0.7;0.733;1"/></rect><rect class="dg-glow" x="200" y="194" width="170" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.227;0.243;0.273;0.307;0.653;0.669;0.7;0.733;1"/></rect><rect class="dg-glow" x="10" y="284" width="360" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.333;0.349;0.38;0.413;0.76;0.776;0.807;0.84;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M95 72 L95 88 L150 88 L150 104" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.04;0.133;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.06;0.113;0.133;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M285 72 L285 88 L230 88 L230 104" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.467;0.56;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.467;0.487;0.54;0.56;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M150 162 L150 178 L95 178 L95 194" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.147;0.24;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.147;0.167;0.22;0.24;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M150 162 L150 178 L95 178 L95 194" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.573;0.667;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.573;0.593;0.647;0.667;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M230 162 L230 178 L285 178 L285 194" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.147;0.24;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.147;0.167;0.22;0.24;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M230 162 L230 178 L285 178 L285 194" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.573;0.667;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.573;0.593;0.647;0.667;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M95 252 L95 284" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.253;0.347;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.253;0.273;0.327;0.347;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M95 252 L95 284" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.68;0.773;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.68;0.7;0.753;0.773;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M285 252 L285 284" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.253;0.347;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.253;0.273;0.327;0.347;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M285 252 L285 284" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.68;0.773;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.68;0.7;0.753;0.773;1"/></circle></g>
 </svg>
 </div>
-<p class="hint">A write to a signal marks what read it. Only the effects that depend on it re-run, and each writes one node.</p>
+<div class="dg-cap"><p class="hint">A write to a signal marks what read it. Only the effects that depend on it re-run, and each writes one node. <span class="dg-motion">In motion, a dot shows one write: to first, then on to the computed value, to the two effects that read it, and from each effect to its own DOM node. After a pause the same happens for a write to last.</span></p></div>
 </figure>
 <ul>
 <li><code>signal(v)</code> holds a value. Read it with <code>.value</code> (tracked) or <code>.peek()</code> (not tracked); write with <code>.value =</code> or <code>.update(fn)</code>. Writing a value that is the same by <code>Object.is</code> does nothing.</li>
@@ -271,6 +319,7 @@ define(<span class="tok-s">'star-rating'</span>, StarRating);</code></pre></sect
 <path class="dg-line" d="M280 330 L280 358" marker-end="url(#rn-view-a)"/>
 <g class="dg-node"><rect class="dg-box" x="60" y="444" width="440" height="58" rx="8"/><text class="dg-t" x="280" y="466">disconnected</text><text class="dg-sub" x="280" y="486">effects disposed, query released, stream closed</text></g>
 <path class="dg-line" d="M280 416 L280 444" marker-end="url(#rn-view-a)"/>
+
 </svg>
 </div>
 <p class="hint">The markup is kept as a template and drawn from it, so a view that is disconnected and connected again starts from the same source.</p>

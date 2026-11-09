@@ -40,6 +40,7 @@ class XoStepper extends XoControl {
     input.addEventListener('input', (e) => e.stopPropagation()); // typing is free: the value is read when the field is left
     input.addEventListener('change', (e) => { e.stopPropagation(); this.#commit(); });
     input.addEventListener('keydown', (e) => {
+      if (e.isComposing || e.keyCode === 229) return; // an IME is composing: Enter and the arrows are its keys
       const k = e.key;
       if (k === 'Enter') { this.#commit(); return; }
       const by = { ArrowUp: 1, ArrowDown: -1, PageUp: 10, PageDown: -10 }[k];

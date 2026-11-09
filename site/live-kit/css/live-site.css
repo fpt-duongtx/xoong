@@ -7,3 +7,11 @@
 .live-s6 { justify-content:center;margin-top:16px;width:100%; }
 .live-s7 { padding:16px; }
 .live-s8 { width:100%; }
+/* the bar between the demos and the docs */
+.demo-switch { position: fixed; z-index: 90; left: 12px; bottom: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 2px; max-width: calc(100vw - 24px); padding: 4px; font: 500 13px/1 var(--xo-font, system-ui, sans-serif); color: var(--xo-color-text, #1b2530); background: var(--xo-color-surface, #fff); border: 1px solid var(--xo-color-border, #d9dee6); border-radius: 999px; box-shadow: 0 6px 20px rgb(0 0 0 / .18); }
+.demo-switch a { display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; color: inherit; text-decoration: none; border-radius: 999px; }
+.demo-switch a:hover { background: var(--xo-color-subtle, #eef1f5); }
+.demo-switch a[aria-current="page"] { color: var(--xo-color-accent-strong, #0b5bd3); background: var(--xo-color-accent-soft, #e6efff); font-weight: 600; }
+.demo-switch a:focus-visible { outline: 3px solid var(--xo-color-accent, #0b5bd3); outline-offset: 1px; }
+@media (max-width: 30rem) { .demo-switch a { padding: 0 10px; } .demo-switch a[href="demo.html"] { display: none; } }
+@media print { .demo-switch { display: none; } }

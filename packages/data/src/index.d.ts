@@ -70,6 +70,8 @@ export interface Client<Ops extends Record<keyof Ops, OperationType> = any> {
   mutate<K extends Id<Ops>>(op: K, params: Ops[K]['params'], ...body: [Ops[K]['body']] extends [never] ? [] : [body: Ops[K]['body']]): Promise<Ops[K]['response']>;
   stream<K extends Id<Ops>>(op: K, params: Ops[K]['params'], body?: Ops[K]['body'], options?: { signal?: AbortSignal }): AsyncGenerator<SseEvent>;
   invalidateAll(): void;
+  /** Forget everything loaded (a logout, another user): cancel requests in flight, drop cached queries and entities; mounted views load again. */
+  reset(): void;
   readonly pending: number;
   readonly size: number;
 }

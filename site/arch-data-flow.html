@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
@@ -53,17 +54,48 @@
     </div>
   </header>
   <details class="docs-menu"><summary><span>Menu · <span class="here">Data flow</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
     <h2>Start</h2>
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
     <h2>Guides</h2>
     <a href="data.html">Data and tables</a>
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
     <h2>Architecture</h2>
     <a href="arch-overview.html">Layers</a>
     <a href="arch-data-flow.html" aria-current="page">Data flow</a>
@@ -72,35 +104,58 @@
     <a href="arch-routing.html">Router</a>
     <a href="arch-build.html">Build and delivery</a>
     <a href="arch-tooling.html">Tooling and tests</a>
-    <h2>Controls</h2>
-    <a href="controls.html">Overview</a>
-    <a href="tabs.html">Tabs</a>
-    <a href="menu.html">Menu and tooltip</a>
-    <a href="combobox.html">Combobox and tags</a>
-    <a href="more-controls.html">More controls</a>
-    <a href="carousel.html">Carousel</a>
-    <a href="own-control.html">Your own control</a>
-    <a href="components.html">Standard</a>
-    <a href="controls-demo.html">All controls</a>
-    <a href="overlays.html">Overlays</a>
-    <a href="focus-audit.html">Focus audit</a>
-    <a href="icons.html">Icons</a>
-    <h2>Demo</h2>
-    <a href="demo.html">Live demo</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
   </nav></details>
   <div class="shell">
     <nav class="side" aria-label="Documentation">
+      <div class="grp">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
       <h2>Architecture</h2>
       <a href="arch-overview.html">Layers</a>
       <a href="arch-data-flow.html" aria-current="page">Data flow</a>
@@ -109,21 +164,13 @@
       <a href="arch-routing.html">Router</a>
       <a href="arch-build.html">Build and delivery</a>
       <a href="arch-tooling.html">Tooling and tests</a>
-      <h2>Controls</h2>
-      <a href="controls.html">Overview</a>
-      <a href="tabs.html">Tabs</a>
-      <a href="menu.html">Menu and tooltip</a>
-      <a href="combobox.html">Combobox and tags</a>
-      <a href="more-controls.html">More controls</a>
-      <a href="carousel.html">Carousel</a>
-      <a href="own-control.html">Your own control</a>
-      <a href="components.html">Standard</a>
-      <a href="controls-demo.html">All controls</a>
-      <a href="overlays.html">Overlays</a>
-      <a href="focus-audit.html">Focus audit</a>
-      <a href="icons.html">Icons</a>
-      <h2>Demo</h2>
-      <a href="demo.html">Live demo</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
     </nav>
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Data flow</span></div>
@@ -159,6 +206,7 @@
 <text class="dg-lab dg-start" x="292" y="495">denormalize (tracked)</text>
 <path class="dg-line" d="M280 566 L280 594" marker-end="url(#df-road-a)"/>
 <text class="dg-lab dg-start" x="292" y="581">effects</text>
+
 </svg>
 </div>
 <p class="hint">One road for every read. The arrows are the direction the data travels; a change in the store travels the last two arrows again, without a request.</p>
@@ -224,12 +272,12 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span>, streamU
 
 <h2 id="the-query-cache">The query cache</h2>
 <p>A read is a <em>query</em>. Its key is the operation id plus the canonical params: keys sorted, empty values dropped, every value as its text in the URL. So the same data is the same query, however you ask for it, and a developer never writes a key.</p>
-<figure class="dg-fig">
+<figure class="dg-fig dg-anim">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: one read as a sequence">
 <svg class="dg dg-md" viewBox="0 0 600 391" role="img" aria-labelledby="df-read-t df-read-d">
 <title id="df-read-t">One read</title>
-<desc id="df-read-d">Four participants: the xo-view, the query cache, the entity store and the backend API. 1. The view asks the cache for its query and retains it. 2. The cache sets loading, so the view sees $loading true. 3. The cache sends GET /users?limit=10 to the API. 4. The API answers 200 with JSON. 5. The cache normalises the response into the store, upserting User#1 and the other records. 6. The cache sets success, so $loading becomes false. 7. The view reads the records from the store, tracked, and draws them.</desc>
-<defs><marker id="df-read-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<desc id="df-read-d">Four participants: the xo-view, the query cache, the entity store and the backend API. 1. The view asks the cache for its query and retains it. 2. The cache sets loading, so the view sees $loading true. 3. The cache sends GET /users?limit=10 to the API. 4. The API answers 200 with JSON. 5. The cache normalises the response into the store, upserting User#1 and the other records. 6. The cache sets success, so $loading becomes false. 7. The view reads the records from the store, tracked, and draws them. When the animation plays, a dot travels along the arrows one after another, top to bottom, so the order of the steps is the order of the motion; a hollow dot rides a dashed arrow, an answer or a signal update.</desc>
+<defs><marker id="df-read-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="df-read-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="8" y="10" width="134" height="38" rx="8"/><text class="dg-t" x="75" y="29">xo-view</text></g>
 <g class="dg-node"><rect class="dg-box" x="158" y="10" width="134" height="38" rx="8"/><text class="dg-t" x="225" y="29">Query cache</text></g>
 <g class="dg-node"><rect class="dg-box" x="308" y="10" width="134" height="38" rx="8"/><text class="dg-t" x="375" y="29">Entity store</text></g>
@@ -252,9 +300,10 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span>, streamU
 <text class="dg-sub dg-lab" x="150" y="300">$loading = false</text>
 <path class="dg-line" d="M75 357 L375 357" marker-end="url(#df-read-a)"/>
 <text class="dg-sub dg-lab" x="225" y="345">read records (tracked)</text>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M75 87 L225 87" marker-end="url(#df-read-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.044;0.058;0.133;0.167;1"/></path><path class="dg-hot dg-dash" d="M225 132 L75 132" marker-end="url(#df-read-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.156;0.169;0.244;0.278;1"/></path><path class="dg-hot" d="M225 177 L525 177" marker-end="url(#df-read-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.267;0.28;0.356;0.389;1"/></path><path class="dg-hot dg-dash" d="M525 222 L225 222" marker-end="url(#df-read-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.378;0.391;0.467;0.5;1"/></path><path class="dg-hot" d="M225 267 L375 267" marker-end="url(#df-read-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.489;0.502;0.578;0.611;1"/></path><path class="dg-hot dg-dash" d="M225 312 L75 312" marker-end="url(#df-read-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.6;0.613;0.689;0.722;1"/></path><path class="dg-hot" d="M75 357 L375 357" marker-end="url(#df-read-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.711;0.724;0.8;0.833;1"/></path><rect class="dg-glow" x="8" y="10" width="134" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.044;0.058;0.064;0.083;0.233;0.247;0.272;0.3;0.678;0.691;0.722;0.75;1"/></rect><rect class="dg-glow" x="158" y="10" width="134" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.122;0.136;0.167;0.194;0.267;0.28;0.286;0.306;0.456;0.469;0.5;0.528;0.6;0.613;0.619;0.639;1"/></rect><rect class="dg-glow" x="308" y="10" width="134" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.567;0.58;0.606;0.633;0.789;0.802;0.828;0.856;1"/></rect><rect class="dg-glow" x="458" y="10" width="134" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.344;0.358;0.389;0.417;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M75 87 L225 87" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.044;0.133;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.044;0.061;0.117;0.133;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M225 132 L75 132" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.156;0.244;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.156;0.172;0.228;0.244;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M225 177 L525 177" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.267;0.356;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.267;0.283;0.339;0.356;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M525 222 L225 222" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.378;0.467;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.378;0.394;0.45;0.467;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M225 267 L375 267" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.489;0.578;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.489;0.506;0.561;0.578;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M225 312 L75 312" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.6;0.689;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.6;0.617;0.672;0.689;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M75 357 L375 357" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.711;0.8;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.711;0.728;0.783;0.8;1"/></circle></g>
 </svg>
 </div>
-<p class="hint">A read, top to bottom. Dashed arrows are answers or signal updates.</p>
+<div class="dg-cap"><p class="hint">A read, top to bottom. Dashed arrows are answers or signal updates. <span class="dg-motion">In motion, a dot travels along the arrows one after another, top to bottom, so the order of the steps is the order of the motion; a hollow dot rides a dashed arrow, an answer or a signal update.</span></p></div>
 </figure>
 <xo-tabs label="One query" class="example">
   <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">const</span> a = client.query(<span class="tok-s">'listUsers'</span>, { limit: <span class="tok-n">10</span> });
@@ -292,6 +341,7 @@ a === b;   <span class="tok-c">// true: both are the query  listUsers:{"limit":"
 <path class="dg-line" d="M380 110 L425 63" marker-end="url(#df-entry-a)"/>
 <path class="dg-line" d="M380 142 L425 153" marker-end="url(#df-entry-a)"/>
 <path class="dg-line" d="M380 174 L425 243" marker-end="url(#df-entry-a)"/>
+
 </svg>
 </div>
 <p class="hint">Whatever the source, a record is stored once, so every reader of that record updates.</p>
@@ -324,12 +374,12 @@ q.data.peek();                 <span class="tok-c">// the same list with the rec
 
 <h2 id="the-write-path">The write path</h2>
 <p>A write is <code>xo-click</code> on a button or <code>xo-submit</code> on a form. Both end in <code>client.mutate(op, params, body)</code>.</p>
-<figure class="dg-fig">
+<figure class="dg-fig dg-anim">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: one write as a sequence">
 <svg class="dg dg-lg" viewBox="0 0 720 563" role="img" aria-labelledby="df-write-t df-write-d">
 <title id="df-write-t">One write</title>
-<desc id="df-write-d">Five participants: the xo-click button, client.mutate, the entity store, the query cache and the backend API. 1. The button calls mutate with the operation, params and body. 2. With xo-optimistic, mutate puts a provisional patch in the store. 3. Mutate sends POST /users/1/disable to the API. 4. The API answers 200 with the updated User. 5. Mutate normalises the response into the store, upserting User#1. 6. Mutate invalidates every cached query whose path overlaps /users/1/disable. 7. The query cache refetches GET /users, if something is watching it. 8. The API answers with the list. 9. Mutate resolves and the xo-done event fires. A note says that on failure the optimistic patch is undone, a XoongError is thrown and xo-error fires.</desc>
-<defs><marker id="df-write-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<desc id="df-write-d">Five participants: the xo-click button, client.mutate, the entity store, the query cache and the backend API. 1. The button calls mutate with the operation, params and body. 2. With xo-optimistic, mutate puts a provisional patch in the store. 3. Mutate sends POST /users/1/disable to the API. 4. The API answers 200 with the updated User. 5. Mutate normalises the response into the store, upserting User#1. 6. Mutate invalidates every cached query whose path overlaps /users/1/disable. 7. The query cache refetches GET /users, if something is watching it. 8. The API answers with the list. 9. Mutate resolves and the xo-done event fires. A note says that on failure the optimistic patch is undone, a XoongError is thrown and xo-error fires. When the animation plays, a dot travels along the arrows one after another, top to bottom, from the click to the refetch of the list; a hollow dot rides a dashed arrow, an answer. The note about a failure is not played: it is the other road.</desc>
+<defs><marker id="df-write-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="df-write-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="8" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="72" y="29">xo-click</text></g>
 <g class="dg-node"><rect class="dg-box" x="152" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="216" y="29">client.mutate</text></g>
 <g class="dg-node"><rect class="dg-box" x="296" y="10" width="128" height="38" rx="8"/><text class="dg-t" x="360" y="29">Entity store</text></g>
@@ -361,9 +411,10 @@ q.data.peek();                 <span class="tok-c">// the same list with the rec
 <path class="dg-line dg-dash" d="M216 477 L72 477" marker-end="url(#df-write-a)"/>
 <text class="dg-sub dg-lab" x="144" y="465">resolves, xo-done</text>
 <g class="dg-node"><rect class="dg-box dg-k-soft" x="12" y="501" width="696" height="36" rx="8"/><text class="dg-t" x="360" y="519">On failure: patch undone, XoongError thrown, xo-error fires</text></g>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M72 87 L216 87" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.036;0.047;0.109;0.136;1"/></path><path class="dg-hot" d="M216 147 L360 147" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.127;0.138;0.2;0.227;1"/></path><path class="dg-hot" d="M216 192 L648 192" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.218;0.229;0.291;0.318;1"/></path><path class="dg-hot dg-dash" d="M648 237 L216 237" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.309;0.32;0.382;0.409;1"/></path><path class="dg-hot" d="M216 282 L360 282" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.411;0.473;0.5;1"/></path><path class="dg-hot" d="M216 342 L504 342" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.491;0.502;0.564;0.591;1"/></path><path class="dg-hot" d="M504 387 L648 387" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.582;0.593;0.655;0.682;1"/></path><path class="dg-hot dg-dash" d="M648 432 L504 432" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.673;0.684;0.745;0.773;1"/></path><path class="dg-hot dg-dash" d="M216 477 L72 477" marker-end="url(#df-write-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.764;0.775;0.836;0.864;1"/></path><rect class="dg-glow" x="8" y="10" width="128" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.036;0.047;0.052;0.068;0.827;0.838;0.859;0.882;1"/></rect><rect class="dg-glow" x="152" y="10" width="128" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.1;0.111;0.136;0.159;0.218;0.229;0.234;0.25;0.373;0.384;0.409;0.432;0.491;0.502;0.507;0.523;0.764;0.775;0.78;0.795;1"/></rect><rect class="dg-glow" x="296" y="10" width="128" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.191;0.202;0.223;0.245;0.464;0.475;0.495;0.518;1"/></rect><rect class="dg-glow" x="440" y="10" width="128" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.555;0.565;0.591;0.614;0.736;0.747;0.768;0.791;1"/></rect><rect class="dg-glow" x="584" y="10" width="128" height="38" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.282;0.293;0.318;0.341;0.645;0.656;0.682;0.705;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M72 87 L216 87" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.036;0.109;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.036;0.05;0.095;0.109;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M216 147 L360 147" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.127;0.2;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.127;0.141;0.186;0.2;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M216 192 L648 192" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.218;0.291;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.218;0.232;0.277;0.291;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M648 237 L216 237" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.309;0.382;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.309;0.323;0.368;0.382;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M216 282 L360 282" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.4;0.473;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.414;0.459;0.473;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M216 342 L504 342" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.491;0.564;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.491;0.505;0.55;0.564;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M504 387 L648 387" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.582;0.655;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.582;0.595;0.641;0.655;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M648 432 L504 432" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.673;0.745;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.673;0.686;0.732;0.745;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M216 477 L72 477" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.764;0.836;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.764;0.777;0.823;0.836;1"/></circle></g>
 </svg>
 </div>
-<p class="hint">A write, top to bottom. Invalidation is by path; only queries that something is watching refetch at once.</p>
+<div class="dg-cap"><p class="hint">A write, top to bottom. Invalidation is by path; only queries that something is watching refetch at once. <span class="dg-motion">In motion, a dot travels along the arrows one after another, top to bottom, from the click to the refetch of the list; a hollow dot rides a dashed arrow, an answer. The note about a failure is not played: it is the other road.</span></p></div>
 </figure>
 <ol>
 <li><strong>The handler.</strong> It ignores a second click while one call is running (and sets <code>aria-busy</code>). <code>xo-confirm</code> asks first. Path and query params come from the scope: the current item first, then the view's <code>p-*</code> params. The body is the form model's result, the form's fields, <code>xo-body</code> (a record from the scope), plus <code>xo-with</code> fields; <code>xo-selected</code> runs once per ticked row or sends the ticked ids in one request.</li>

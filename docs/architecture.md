@@ -47,7 +47,7 @@ flowchart LR
 | Server | `@xoong/server` | Any Fetch-API runtime | Static files, API proxy, TypeScript type stripping, Node adapter. The stream gateway is planned |
 | Prerendering | `@xoong/ssr` | Node | Runs the real `<xo-view>` runtime in happy-dom and writes HTML (used by `xoong render`) |
 | Testing | `@xoong/test` | Vitest | Mount screens, mock the API from `operations.json`, push live events |
-| AI | `@xoong/mcp` | Node (dev only) | MCP server over stdio: spec, operations, `xoong check`, error explanations |
+| AI | `@xoong/mcp` | Node (dev only) | MCP server over stdio: spec and docs, operations, `xoong check`, explanations of error codes, elements and attributes |
 | Editors | `@xoong/lsp` | Node (dev only) | Language server: the `xoong check` diagnostics, completion, hover |
 | Umbrella | `@xoong/xoong` | Browser + Node | One install: re-exports core and data, adds `/ui` and `/view` subpaths (ui, forms through it) and the `xoong` command from cli |
 

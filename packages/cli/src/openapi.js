@@ -1,6 +1,7 @@
 // @ts-check
 import { swagger2ToOpenApi3 } from './swagger2.js';
 import { bodySchemaOf } from './body-schema.js';
+import { nearest } from '@xoong/core/closest';
 /**
  * OpenAPI 3.x (JSON) -> xoong tables.
  * Produces:
@@ -10,6 +11,10 @@ import { bodySchemaOf } from './body-schema.js';
  */
 
 const METHODS = ['get', 'post', 'put', 'patch', 'delete'];
+/** Operations a document may declare that xoong does not generate (XO113). */
+const UNGENERATED_METHODS = ['head', 'options', 'trace'];
+/** The keys of xoong.hints.json. A key that is not one of these is a typo that would silently do nothing (XO171). */
+export const HINT_KEYS = ['idNames', 'schemas', 'unwrap', 'idempotencyKeys', 'fields'];
 const MAX_DEPTH = 60; // schemas nest far less than this; deeper means a cycle
 const refName = (ref) => {
   const seg = ref.slice(ref.lastIndexOf('/') + 1);
@@ -68,6 +73,11 @@ export function analyze(doc, { hints } = {}) {
   }
   /** @type {{level:'error'|'warn', code:string, where:string, message:string, fix:string}[]} */
   const problems = [];
+  for (const key of Object.keys(hints ?? {})) {
+    if (HINT_KEYS.includes(key)) continue;
+    const hint = nearest(key, HINT_KEYS);
+    problems.push({ level: 'warn', code: 'XO171', where: `hints.${key}`, message: `the hints file has no key "${key}", so it does nothing${hint ? ` (closest: "${hint}")` : ''}`, fix: hint ? `Use "${hint}"` : `Use one of ${HINT_KEYS.join(', ')}` });
+  }
   if (!doc.paths && !doc.webhooks) {
     problems.push({ level: 'error', code: 'XO100', where: '#/paths', message: 'the document has no "paths"', fix: 'Add a paths object (OpenAPI requires it unless the document only declares webhooks/components)' });
   }
@@ -106,15 +116,21 @@ export function analyze(doc, { hints } = {}) {
    * How to tell the members of a oneOf/anyOf apart: the OpenAPI `discriminator`, or a property that
    * every member declares with one fixed value (`type: "file"`, Stripe's `object: "customer"`).
    * Returns { key, values[] } aligned with `members`, or null.
+   * With a discriminator, a member is named by its `mapping` entry; without one, by the value it fixes the tag to
+   * (`kind: { enum: ['card'] }` is the wire value "card", whatever the schema is called), else by its schema name.
    */
   const unionTag = (schema, members) => {
     const d = schema.discriminator;
     if (d?.propertyName) {
-      const values = members.map((m) => {
+      const named = (usePin) => members.map((m) => {
         if (!m.$ref) return undefined;
         const mapped = Object.entries(d.mapping ?? {}).find(([, target]) => target === m.$ref || String(target).endsWith('/' + refName(m.$ref)));
-        return mapped ? mapped[0] : refName(m.$ref);
+        if (mapped) return mapped[0];
+        const prop = usePin ? collectProps(m, schemas)[d.propertyName] : undefined;
+        return single(prop && (prop.$ref ? schemas[refName(prop.$ref)] : prop)) ?? refName(m.$ref);
       });
+      let values = named(true);
+      if (new Set(values).size !== values.length) values = named(false); // two members fix the same value: keep every member, named after its schema
       return values.every((v) => v !== undefined) ? { key: d.propertyName, values } : null;
     }
     const propsOf = members.map((m) => collectProps(m, schemas));
@@ -234,10 +250,24 @@ export function analyze(doc, { hints } = {}) {
     entities[entity] = { id: idKeys[name], ...(Object.keys(props).length ? { props } : {}) };
   }
 
+  /** How a query parameter is written when it is not the plain `name=value` / repeated `name=a&name=b` that xoong sends; undefined when it is. */
+  const serialisation = (p) => {
+    const schema = resolve(p.schema);
+    const type = Array.isArray(schema?.type) ? schema.type.find((t) => t !== 'null') : schema?.type;
+    const composite = type === 'array' || type === 'object' || (!type && !!(schema?.items || schema?.properties));
+    if (p.style === 'deepObject') return 'deepObject';
+    if (composite && (p.style === 'pipeDelimited' || p.style === 'spaceDelimited')) return p.style;
+    if (composite && p.explode === false) return 'explode: false';
+    return undefined;
+  };
+
   // --- operations
   const operations = {};
   const used = new Set();
+  /** What the document asks for that xoong does not do, by kind: one XO113 per kind (see `unsupportedProblems`). */
+  const unsupported = { header: [], cookie: [], method: [], style: [], server: [] };
   for (const [path, item] of Object.entries(doc.paths ?? {})) {
+    for (const method of UNGENERATED_METHODS) if (item?.[method]) unsupported.method.push({ id: item[method].operationId ?? `${method.toUpperCase()} ${path}`, what: method.toUpperCase() });
     for (const method of METHODS) {
       const o = item[method];
       if (!o) continue;
@@ -257,6 +287,12 @@ export function analyze(doc, { hints } = {}) {
         if (p?.name && p.in) merged.set(`${p.in}:${p.name}`, p); // operation-level overrides path-level
       }
       const params = [...merged.values()];
+      for (const p of params) {
+        if (p.in === 'header' && p.required && !/^(accept|content-type|authorization)$/i.test(p.name)) unsupported.header.push({ id, what: p.name }); // those three are ruled out by the OpenAPI standard itself
+        else if (p.in === 'cookie') unsupported.cookie.push({ id, what: p.name });
+        else if (p.in === 'query') { const how = serialisation(p); if (how) unsupported.style.push({ id, what: `${p.name} (${how})` }); }
+      }
+      if (item.servers?.length || o.servers?.length) unsupported.server.push({ id, what: 'servers' });
       const pathParams = params.filter((p) => p.in === 'path');
       const declared = [...path.matchAll(/\{([^}]+)\}/g)].map((m) => m[1]);
       for (const name of declared) if (!pathParams.some((p) => p.name === name)) {
@@ -311,6 +347,19 @@ export function analyze(doc, { hints } = {}) {
     }
   }
 
+  problems.push(...unsupportedProblems(unsupported, doc.servers?.[0]?.url));
+
+  for (const key of Object.keys(hints?.fields ?? {})) {
+    const dot = key.indexOf('.');
+    const [schemaName, prop] = dot < 0 ? [key, ''] : [key.slice(0, dot), key.slice(dot + 1)];
+    const props = schemas[schemaName] ? collectProps(schemas[schemaName], schemas) : undefined;
+    if (!prop || !props) problems.push({ level: 'warn', code: 'XO172', where: `hints.fields.${key}`, message: prop ? `the schema "${schemaName}" does not exist` : `"${key}" is not "Schema.property"`, fix: prop ? `Use a schema of components.schemas${nearest(schemaName, Object.keys(schemas)) ? ` (closest: "${nearest(schemaName, Object.keys(schemas))}")` : ''}` : 'Write the schema name, a dot and the property: "Person.email"' });
+    else if (!props[prop.split('.')[0]]) problems.push({ level: 'warn', code: 'XO172', where: `hints.fields.${key}`, message: `"${schemaName}" has no property "${prop}"`, fix: nearest(prop, Object.keys(props)) ? `Use "${schemaName}.${nearest(prop, Object.keys(props))}"` : 'Name an existing property or remove the hint' });
+  }
+  for (const id of Object.keys(hints?.idempotencyKeys ?? {})) {
+    if (!used.has(id)) problems.push({ level: 'warn', code: 'XO172', where: `hints.idempotencyKeys.${id}`, message: `there is no operation "${id}"`, fix: nearest(id, [...used]) ? `Use "${nearest(id, [...used])}"` : 'Name an operationId of the document or remove the hint' });
+  }
+
   for (const [name, schema] of Object.entries(schemas)) {
     const candidate = !idKeys[name] && schema.type === 'object' && !/Request$/.test(name) ? identityCandidate(name, schema, schemas, hints?.idNames ?? []) : undefined;
     if (candidate) {
@@ -318,6 +367,47 @@ export function analyze(doc, { hints } = {}) {
     }
   }
   return { operations, entities, schemas, problems };
+}
+
+/**
+ * XO113: what the document says a call needs or does, and xoong does not apply. One finding per kind, naming the operations (a few, then a count)
+ * and what to do, so a missing header or a different server is not found out from a failing request.
+ * @param {Record<'header' | 'cookie' | 'method' | 'style' | 'server', { id: string, what: string }[]>} found
+ * @param {string | undefined} serverUrl `servers[0].url`
+ */
+function unsupportedProblems(found, serverUrl) {
+  const list = (/** @type {string[]} */ xs, max = 3) => (xs.length <= max ? xs.join(', ') : `${xs.slice(0, max).join(', ')}, +${xs.length - max} more`);
+  const uniq = (/** @type {{ id: string, what: string }[]} */ xs, key) => [...new Set(xs.map((x) => x[key]))];
+  const ops = (/** @type {{ id: string }[]} */ xs) => list(uniq(xs, 'id'));
+  const out = [];
+  /** @type {(where: string, message: string, fix: string) => void} */
+  const add = (where, message, fix) => out.push({ level: /** @type {const} */ ('warn'), code: 'XO113', where, message, fix });
+  if (found.header.length) {
+    const names = uniq(found.header, 'what');
+    add('#/paths (parameters in: header)', `the required header${names.length > 1 ? 's' : ''} ${list(names)} (${ops(found.header)}) ${names.length > 1 ? 'are' : 'is'} not sent by xoong`,
+      `Send ${names.length > 1 ? 'them' : 'it'} on every call: configure({ headers: () => ({ '${names[0]}': value }) })`);
+  }
+  if (found.cookie.length) {
+    const names = uniq(found.cookie, 'what');
+    add('#/paths (parameters in: cookie)', `the cookie${names.length > 1 ? 's' : ''} ${list(names)} (${ops(found.cookie)}) ${names.length > 1 ? 'are' : 'is'} not set by xoong`,
+      "The browser sends the cookies it has: serve the app from the API's origin, or use configure({ credentials: 'include' }) (the API must allow credentials in CORS)");
+  }
+  if (found.method.length) {
+    add('#/paths (head, options, trace)', `${found.method.length} HEAD, OPTIONS or TRACE operation${found.method.length === 1 ? ' is' : 's are'} not generated (${list(found.method.map((m) => m.id))})`,
+      'xoong generates GET, POST, PUT, PATCH and DELETE operations: call these with fetch()');
+  }
+  if (found.style.length) {
+    add('#/paths (query parameters)', `query parameters written in a style xoong does not apply: ${list(uniq(found.style, 'what'))} in ${ops(found.style)}`,
+      "xoong sends an array as repeated name=a&name=b and never writes an object: pass the text the server expects yourself (for example ids: '1,2')");
+  }
+  if (serverUrl && serverUrl !== '/') {
+    const own = found.server.length ? `; ${ops(found.server)} declare servers of their own` : '';
+    add('#/servers', `the document declares the server ${serverUrl}, and xoong does not use it: requests go to the page's own origin${own}`,
+      `Set configure({ baseUrl: '${serverUrl}' }) (another origin needs CORS on the API), or serve the API under the page's origin`);
+  } else if (found.server.length) {
+    add('#/paths (servers)', `${ops(found.server)} declare servers of their own, and xoong does not use them: requests go to the page's own origin`, 'Set configure({ baseUrl }) to the server you want (another origin needs CORS on the API)');
+  }
+  return out;
 }
 
 /**

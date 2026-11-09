@@ -7,5 +7,5 @@ import './dialog.js';
 import './toast.js';
 export { router } from './router.js';
 export { toast } from './toast.js';
-export { confirm, labels as confirmLabels } from './confirm.js';
+export { confirm, alert, prompt, ask, labels as confirmLabels } from './dialogs.js';
 export { setConfirm } from '@xoong/data/view';

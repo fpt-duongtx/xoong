@@ -12,7 +12,7 @@ import { focusStates, weak } from '../../../tools/focus.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
-const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'combobox', 'carousel', 'more-controls', 'own-control', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand', 'live-admin', 'live-landing'];
+const PAGES = ['index', 'overview', 'install', 'how-it-works', 'data', 'forms', 'data-states', 'richtext', 'styling', 'arch-overview', 'arch-data-flow', 'arch-forms', 'arch-rendering', 'arch-routing', 'arch-build', 'arch-tooling', 'controls', 'tabs', 'menu', 'dialogs', 'combobox', 'carousel', 'more-controls', 'own-control', 'recipes', 'components', 'controls-demo', 'overlays', 'focus-audit', 'icons', 'theme-builder', 'demo', 'brand', 'live-admin', 'live-landing'];
 const DOCS = PAGES.filter((n) => !['index', 'brand', 'live-admin', 'live-landing'].includes(n)); // the pages with the side navigation
 let out, server, base, browser, page;
 let violations = [];
@@ -62,7 +62,7 @@ describe('documentation site', () => {
       }
       expect(await page.$eval('header.top .wrap', (el) => getComputedStyle(el).display), name).toBe('flex'); // site.css applied
       expect(await page.$$('header nav > a[aria-current="page"]'), name).toHaveLength(1); // Home, Docs, Demo or Brand
-      expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length : 0);
+      expect(await page.$$('nav.side a'), name).toHaveLength(DOCS.includes(name) ? DOCS.length + 2 : 0); // + the two full-page demos (admin, landing) listed under "Live demos"
       expect(await page.$$('nav.side a[aria-current="page"]'), name).toHaveLength(DOCS.includes(name) ? 1 : 0);
       if (!['components', 'icons', 'data-states', 'overlays', 'focus-audit', 'theme-builder', 'brand', 'live-admin', 'live-landing'].includes(name)) expect(await page.$$('xo-tabs [role=tablist]'), name).not.toHaveLength(0); // the code tabs are xo-tabs (the kit's own pages show controls, not code)
       clean();
@@ -272,7 +272,7 @@ describe('documentation site', () => {
     expect(await small.isVisible('.docs-menu summary')).toBe(true);
     expect(await small.textContent('.docs-menu summary')).toContain('Forms');
     await small.click('.docs-menu summary');
-    expect(await small.$$eval('.docs-menu nav a', (a) => a.length)).toBe(DOCS.length);
+    expect(await small.$$eval('.docs-menu nav a', (a) => a.length)).toBe(DOCS.length + 2); // + the two full-page demos under "Live demos"
     expect(await small.$eval('.docs-menu a', (a) => a.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
     expect(await small.$eval('.docs-menu a[aria-current=page]', (a) => a.textContent)).toBe('Forms');
     expect(await axe(small)).toEqual([]);

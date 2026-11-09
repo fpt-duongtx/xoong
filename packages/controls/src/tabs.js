@@ -102,10 +102,9 @@ class XoTabs extends XoElement {
   #onKey(/** @type {KeyboardEvent} */ event) {
     const at = this.#items.findIndex((i) => i.tab === event.target);
     if (at < 0) return;
-    const last = this.#items.length - 1;
-    const next = event.key === 'ArrowRight' ? (at === last ? 0 : at + 1)
-      : event.key === 'ArrowLeft' ? (at === 0 ? last : at - 1)
-      : event.key === 'Home' ? 0 : event.key === 'End' ? last : -1;
+    const n = this.#items.length, rtl = getComputedStyle(this).direction === 'rtl'; // the arrows follow the screen: in right-to-left the first tab is on the right
+    const by = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1 }[event.key];
+    const next = by ? (at + by + n) % n : event.key === 'Home' ? 0 : event.key === 'End' ? n - 1 : -1;
     if (next < 0) return;
     event.preventDefault();
     this.select(this.#items[next].key, { focus: true });

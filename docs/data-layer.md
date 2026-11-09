@@ -157,12 +157,20 @@ Everything that talks to the API goes through the one client that `configure()` 
 
 * **Paths live in the OpenAPI document** (and so in `operations.json`). Code names an operation: `getClient().query('listMedia', { limit: 50 })`, `getClient().mutate('uploadMedia', {}, formData)`. A multipart operation takes a `FormData` body as it is.
 * **Errors are one type.** Whatever the server returns (`application/problem+json`, `{ errors: [{ pointer, detail }] }`, `{ error: { code, message, fields } }`, `{ detail }`) becomes a `XoongError` with `status`, `code`, `detail` and `fields`.
+  Field messages (`fields`, keyed by the dotted path of the input) are read from RFC 9457 `errors: [{ pointer, detail }]`, FastAPI `detail: [{ loc, msg }]`, `{ error: { fields } }`,
+  Laravel and Rails `{ message, errors: { field: [messages] } }`, Django REST `{ field: [messages] }` (nested serializers and lists too; `non_field_errors` is the `detail`),
+  Spring `errors` or `fieldErrors` as `[{ field, defaultMessage }]`, Zod `{ fieldErrors }` and JSON:API `errors: [{ source: { pointer: '/data/attributes/email' }, detail }]`. Several messages for one field are joined with a space.
+* **Logging out.** `client.reset()` forgets everything the client loaded: requests in flight are cancelled, cached queries and the entity store are dropped, and a view that is on screen fetches again, so the next person on this tab never sees the previous one's data (mutations already sent are not cancelled; `configure()` again also closes a `live` stream). Navigating away with `location.assign('/login')` does the same by reloading.
 * **Reads share the cache.** A list read with `<xo-view get>` or `client.query()` refreshes by itself after a mutation whose path overlaps it, and records are shared by entity id.
 * **Data the server already has** goes in with `client.seed(operation, params, data)`: the server writes the JSON into the page (a `<script type="application/json">` is not code, so a strict CSP allows it), one module script calls `seed` (params are matched by their text in the URL, so `1` and `"1"` are the same query), and a view that asks for the same operation and params shows it at once and makes no request until it is stale (`staleTime`). The API stays the contract for everything else.
 
 ### While the next result loads
 
+`xo-refresh` on a button inside a view fetches that view's data again on click: a "Try again" button next to `$error`, or a refresh button. `view.refresh()` does the same from JavaScript (use it on a timer for polling).
+
 A view keeps showing the previous result while the next query of the same view loads (a sort, a page, a filter), so the page does not collapse and jump. `$refreshing` is true then (and the element has `data-refreshing`, which the default CSS uses to dim the table rows); `$loading` is true only when there is nothing to show yet, so a skeleton appears on the first load, not on every sort. An error clears the old rows. A view that changes to another operation starts empty.
+
+While any request of the view runs the element also has `aria-busy="true"`. A sort button inside a table header (`xo-param="sort~=name"`, what `<xo-table sortable>` draws) sets `aria-sort="ascending"` or `"descending"` on its `th`; the other headers have no `aria-sort` (the same as `none`, which the default CSS relies on to show the neutral sort icon). Parameter names may be bracketed (`xo-param="filter[status]=open"`, `page[number]+=1`).
 
 ## 8. Declarative call syntax (Draft)
 
@@ -262,3 +270,7 @@ Not covered: accumulating token deltas into one string (do it with `client.strea
 * Attribute interpolation refuses `on*` and `srcdoc`, and rewrites `javascript:`,
   `data:` and `vbscript:` URLs in URL attributes (`href`, `src`, `action`, ...)
   to `about:blank`.
+  The one exception is a picture: `<img src>` and `<xo-image src>` also take `blob:` URLs (an upload preview) and `data:image/png|jpeg|gif|webp|avif`
+  (never `svg`).
+* `xo-then` goes to this site only: a path, or a URL of the same origin that passes the same check. `javascript:`, `data:`, another origin and `//host` are
+  refused with a console error and no navigation (without a router `location.assign` would otherwise run them).

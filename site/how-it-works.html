@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
@@ -53,17 +54,48 @@
     </div>
   </header>
   <details class="docs-menu"><summary><span>Menu · <span class="here">How it works</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
     <h2>Start</h2>
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html" aria-current="page">How it works</a>
+    </div>
+    <div class="grp">
     <h2>Guides</h2>
     <a href="data.html">Data and tables</a>
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
     <h2>Architecture</h2>
     <a href="arch-overview.html">Layers</a>
     <a href="arch-data-flow.html">Data flow</a>
@@ -72,35 +104,58 @@
     <a href="arch-routing.html">Router</a>
     <a href="arch-build.html">Build and delivery</a>
     <a href="arch-tooling.html">Tooling and tests</a>
-    <h2>Controls</h2>
-    <a href="controls.html">Overview</a>
-    <a href="tabs.html">Tabs</a>
-    <a href="menu.html">Menu and tooltip</a>
-    <a href="combobox.html">Combobox and tags</a>
-    <a href="more-controls.html">More controls</a>
-    <a href="carousel.html">Carousel</a>
-    <a href="own-control.html">Your own control</a>
-    <a href="components.html">Standard</a>
-    <a href="controls-demo.html">All controls</a>
-    <a href="overlays.html">Overlays</a>
-    <a href="focus-audit.html">Focus audit</a>
-    <a href="icons.html">Icons</a>
-    <h2>Demo</h2>
-    <a href="demo.html">Live demo</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
   </nav></details>
   <div class="shell">
     <nav class="side" aria-label="Documentation">
+      <div class="grp">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html" aria-current="page">How it works</a>
+      </div>
+      <div class="grp">
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
       <h2>Architecture</h2>
       <a href="arch-overview.html">Layers</a>
       <a href="arch-data-flow.html">Data flow</a>
@@ -109,27 +164,58 @@
       <a href="arch-routing.html">Router</a>
       <a href="arch-build.html">Build and delivery</a>
       <a href="arch-tooling.html">Tooling and tests</a>
-      <h2>Controls</h2>
-      <a href="controls.html">Overview</a>
-      <a href="tabs.html">Tabs</a>
-      <a href="menu.html">Menu and tooltip</a>
-      <a href="combobox.html">Combobox and tags</a>
-      <a href="more-controls.html">More controls</a>
-      <a href="carousel.html">Carousel</a>
-      <a href="own-control.html">Your own control</a>
-      <a href="components.html">Standard</a>
-      <a href="controls-demo.html">All controls</a>
-      <a href="overlays.html">Overlays</a>
-      <a href="focus-audit.html">Focus audit</a>
-      <a href="icons.html">Icons</a>
-      <h2>Demo</h2>
-      <a href="demo.html">Live demo</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
     </nav>
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Start</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>How it works</span></div>
 
 <h1>How it works</h1>
 <p>xoong has three layers, and you can stop at any of them: a reactive core and base element, a data layer generated from OpenAPI, and ready-made admin parts on top.</p>
+<figure class="dg-fig dg-anim">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the life of a read and of a write">
+<svg class="dg dg-md" viewBox="0 0 704 338" role="img" aria-labelledby="hiw-life-t hiw-life-d">
+<title id="hiw-life-t">The life of a read and of a write</title>
+<desc id="hiw-life-d">Three groups, left to right. Your page, on the left, holds an xo-view with get="listPeople" at the top and a button with xo-click at the bottom. The xoong client, in the middle, holds the entity store at the top, the query cache in the middle and mutate at the bottom. The backend API is on the right. A read, in five steps. 1. The xo-view asks the query cache for listPeople. 2. The cache sends GET /people to the API. 3. The API answers 200 with JSON. 4. The cache normalises the answer into the entity store, one record per id. 5. Effects write only the DOM nodes of the view that read a changed record. A write, in four steps and a repeat. 6. A click on the button calls mutate. 7. Mutate sends POST to the API. 8. The API answers 200. 9. Mutate invalidates every cached query whose path overlaps the mutation's path; the list is refetched because the view is watching it, so steps 2 to 5 run again. When the animation plays, a dot travels the arrows in numbered order, first the read, then, after a pause, the write, and then steps 2 to 5 again as the list refreshes. A hollow dot rides a dashed arrow.</desc>
+<defs><marker id="hiw-life-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="hiw-life-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
+<rect class="dg-zone" x="6" y="6" width="206" height="326" rx="12"/><text class="dg-zlab" x="20" y="24">Your page</text>
+<rect class="dg-zone" x="252" y="6" width="214" height="326" rx="12"/><text class="dg-zlab" x="266" y="24">The client (@xoong/data)</text>
+<g class="dg-node"><rect class="dg-box" x="22" y="40" width="174" height="58" rx="8"/><text class="dg-t" x="109" y="62">&lt;xo-view get&gt;</text><text class="dg-sub" x="109" y="82">get="listPeople"</text></g>
+<g class="dg-node"><rect class="dg-box" x="22" y="260" width="174" height="58" rx="8"/><text class="dg-t" x="109" y="282">&lt;button xo-click&gt;</text><text class="dg-sub" x="109" y="302">POST /people/{id}/disable</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="272" y="40" width="174" height="58" rx="8"/><text class="dg-t" x="359" y="62">Entity store</text><text class="dg-sub" x="359" y="82">one signal per record</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="272" y="150" width="174" height="58" rx="8"/><text class="dg-t" x="359" y="172">Query cache</text><text class="dg-sub" x="359" y="192">one query per operation</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="272" y="260" width="174" height="58" rx="8"/><text class="dg-t" x="359" y="282">client.mutate()</text><text class="dg-sub" x="359" y="302">POST, then invalidate</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-soft" x="556" y="150" width="140" height="168" rx="8"/><text class="dg-t" x="626" y="219">Backend API</text><text class="dg-sub" x="626" y="239">your server,</text><text class="dg-sub" x="626" y="255">described by OpenAPI</text></g>
+<path class="dg-line" d="M109 98 L109 179 L272 179" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab" x="160" y="166">1 get</text>
+<path class="dg-line" d="M446 167 L556 167" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab" x="501" y="154">2 GET</text>
+<path class="dg-line dg-dash" d="M556 191 L446 191" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab" x="501" y="205">3 200 JSON</text>
+<path class="dg-line" d="M359 150 L359 98" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab dg-start" x="369" y="124">4 normalize</text>
+<path class="dg-line dg-dash" d="M272 69 L196 69" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab" x="234" y="56">5 effects</text>
+<path class="dg-line" d="M196 289 L272 289" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab" x="234" y="276">6 xo-click</text>
+<path class="dg-line" d="M446 277 L556 277" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab" x="501" y="264">7 POST</text>
+<path class="dg-line dg-dash" d="M556 301 L446 301" marker-end="url(#hiw-life-a)"/>
+<text class="dg-lab" x="501" y="315">8 200 OK</text>
+<path class="dg-line" d="M359 260 L359 208" marker-end="url(#hiw-life-a)"/>
+<text class="dg-sub dg-lab dg-start" x="369" y="226">9 invalidate:</text>
+<text class="dg-sub dg-lab dg-start" x="369" y="242">the list refetches</text>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M109 98 L109 179 L272 179" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.027;0.038;0.109;0.136;1"/></path><path class="dg-hot" d="M446 167 L556 167" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.118;0.129;0.173;0.2;0.636;0.647;0.691;0.718;1"/></path><path class="dg-hot dg-dash" d="M556 191 L446 191" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.182;0.193;0.236;0.264;0.7;0.711;0.755;0.782;1"/></path><path class="dg-hot" d="M359 150 L359 98" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.245;0.256;0.291;0.318;0.764;0.775;0.809;0.836;1"/></path><path class="dg-hot dg-dash" d="M272 69 L196 69" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.3;0.311;0.345;0.373;0.818;0.829;0.864;0.891;1"/></path><path class="dg-hot" d="M196 289 L272 289" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.411;0.445;0.473;1"/></path><path class="dg-hot" d="M446 277 L556 277" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.455;0.465;0.509;0.536;1"/></path><path class="dg-hot dg-dash" d="M556 301 L446 301" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.518;0.529;0.573;0.6;1"/></path><path class="dg-hot" d="M359 260 L359 208" marker-end="url(#hiw-life-ah)" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.582;0.593;0.627;0.655;1"/></path><rect class="dg-glow" x="22" y="40" width="174" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.027;0.038;0.043;0.059;0.336;0.347;0.368;0.391;0.855;0.865;0.886;0.909;1"/></rect><rect class="dg-glow" x="22" y="260" width="174" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.411;0.416;0.432;1"/></rect><rect class="dg-glow" x="272" y="40" width="174" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.282;0.293;0.314;0.336;0.8;0.811;0.832;0.855;1"/></rect><rect class="dg-glow" x="272" y="150" width="174" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.1;0.111;0.132;0.155;0.227;0.238;0.259;0.282;0.618;0.629;0.65;0.673;0.745;0.756;0.777;0.8;1"/></rect><rect class="dg-glow" x="272" y="260" width="174" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.436;0.447;0.468;0.491;0.564;0.575;0.595;0.618;1"/></rect><rect class="dg-glow" x="556" y="150" width="140" height="168" rx="8" opacity="0"><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.164;0.175;0.195;0.218;0.5;0.511;0.532;0.555;0.682;0.693;0.714;0.736;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M109 98 L109 179 L272 179" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.027;0.109;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.027;0.041;0.095;0.109;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M446 167 L556 167" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.118;0.173;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.118;0.132;0.159;0.173;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M446 167 L556 167" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.636;0.691;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.636;0.65;0.677;0.691;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M556 191 L446 191" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.182;0.236;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.182;0.195;0.223;0.236;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M556 191 L446 191" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.7;0.755;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.7;0.714;0.741;0.755;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M359 150 L359 98" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.245;0.291;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.245;0.259;0.277;0.291;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M359 150 L359 98" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.764;0.809;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.764;0.777;0.795;0.809;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M272 69 L196 69" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.3;0.345;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.3;0.314;0.332;0.345;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M272 69 L196 69" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.818;0.864;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.818;0.832;0.85;0.864;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M196 289 L272 289" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.4;0.445;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.414;0.432;0.445;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M446 277 L556 277" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.455;0.509;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.455;0.468;0.495;0.509;1"/></circle><circle class="dg-dot dg-ret" r="6" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M556 301 L446 301" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.518;0.573;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.518;0.532;0.559;0.573;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="11s" begin="0s" repeatCount="indefinite" path="M359 260 L359 208" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.582;0.627;1"/><animate attributeName="opacity" dur="11s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.582;0.595;0.614;0.627;1"/></circle></g>
+</svg>
+</div>
+<div class="dg-cap"><p class="hint">The life of a read (arrows 1 to 5) and of a write (6 to 9). Dashed: an answer, or the store telling the page. After a write the list is read again: 2 to 5 once more. <span class="dg-motion">In motion, a dot travels the arrows in numbered order, first the read, then, after a pause, the write, and then steps 2 to 5 again as the list refreshes. A hollow dot rides a dashed arrow.</span></p></div>
+</figure>
+<p>The picture is the whole idea. Your markup asks for data and the client answers from its cache or from the API. Every record is stored once, and only the DOM nodes that show a changed record are written. A write goes the same road and ends by refreshing what it touched. The sections below show the markup for each part; the <a href="arch-data-flow.html">Data flow</a> page has every step.</p>
 
 <h2 id="data">Data</h2>
 <p><code>xoong sync</code> turns your OpenAPI document into <code>operations.json</code>. A <code>&lt;xo-view get="listPeople"&gt;</code> calls the operation, caches the answer in a shared store (records with the same id are shared between screens) and exposes <code>$loading</code>, <code>$error</code> and the data to the markup inside it. You never write a cache key, an HTTP client or an error handler.</p>
@@ -146,6 +232,28 @@
 
 <h2 id="actions-and-forms">Actions and forms</h2>
 <p>Writes are attributes too. A button runs an operation; after it succeeds, every cached query whose path overlaps it is refetched, so lists stay current without extra code. A form with <code>&lt;xo-form op="createPerson"&gt;</code> is drawn from the request schema: nested objects, arrays and unions included. Validation comes from the same schema, with your own rules by path.</p>
+<figure class="dg-fig dg-anim">
+<div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: a form drawn from the request schema">
+<svg class="dg dg-sm" viewBox="0 0 560 356" role="img" aria-labelledby="hiw-form-t hiw-form-d">
+<title id="hiw-form-t">A form drawn from the request schema</title>
+<desc id="hiw-form-d">Four steps, top to bottom. 1. operations.json holds createPerson and its request schema. 2. The xo-form with op="createPerson" draws a control for every field of the schema. 3. A person fills it in and submits; it is checked against the same schema and against your own rules by path. If it is invalid, nothing is sent and the errors show beside the fields. 4. If it is valid, client.mutate sends createPerson, and the lists that the call touches are fetched again. When the animation plays, a dot goes down the steps for a form that is valid; after a pause a second dot goes to "Nothing is sent", where a form with an error stops.</desc>
+<defs><marker id="hiw-form-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="hiw-form-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
+<g class="dg-node"><rect class="dg-box" x="10" y="14" width="300" height="58" rx="8"/><text class="dg-t" x="160" y="36">operations.json</text><text class="dg-sub" x="160" y="56">createPerson and its request schema</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="100" width="300" height="58" rx="8"/><text class="dg-t" x="160" y="122">&lt;xo-form op="createPerson"&gt;</text><text class="dg-sub" x="160" y="142">draws a control for every field</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="186" width="300" height="74" rx="8"/><text class="dg-t" x="160" y="208">You fill it in and submit</text><text class="dg-sub" x="160" y="228">checked against the same schema,</text><text class="dg-sub" x="160" y="244">plus your own rules by path</text></g>
+<g class="dg-node"><rect class="dg-box" x="10" y="284" width="300" height="58" rx="8"/><text class="dg-t" x="160" y="306">client.mutate()</text><text class="dg-sub" x="160" y="326">sends createPerson; the lists refetch</text></g>
+<g class="dg-node"><rect class="dg-box dg-k-err" x="370" y="186" width="180" height="74" rx="8"/><text class="dg-t" x="460" y="208">Nothing is sent</text><text class="dg-sub" x="460" y="228">the errors show</text><text class="dg-sub" x="460" y="244">beside the fields</text></g>
+<path class="dg-line" d="M160 72 L160 100" marker-end="url(#hiw-form-a)"/>
+<path class="dg-line" d="M160 158 L160 186" marker-end="url(#hiw-form-a)"/>
+<path class="dg-line" d="M160 260 L160 284" marker-end="url(#hiw-form-a)"/>
+<text class="dg-lab dg-start" x="168" y="270">valid</text>
+<path class="dg-line" d="M310 223 L370 223" marker-end="url(#hiw-form-a)"/>
+<text class="dg-lab" x="340" y="210">invalid</text>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M160 72 L160 100" marker-end="url(#hiw-form-ah)" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.05;0.07;0.183;0.233;1"/></path><path class="dg-hot" d="M160 158 L160 186" marker-end="url(#hiw-form-ah)" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.2;0.22;0.333;0.383;1"/></path><path class="dg-hot" d="M160 260 L160 284" marker-end="url(#hiw-form-ah)" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.433;0.453;0.567;0.617;1"/></path><path class="dg-hot" d="M310 223 L370 223" marker-end="url(#hiw-form-ah)" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.583;0.603;0.717;0.767;1"/></path><rect class="dg-glow" x="10" y="14" width="300" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.05;0.07;0.079;0.108;1"/></rect><rect class="dg-glow" x="10" y="100" width="300" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.167;0.187;0.225;0.267;1"/></rect><rect class="dg-glow" x="10" y="186" width="300" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.317;0.337;0.375;0.417;0.433;0.453;0.463;0.492;0.583;0.603;0.612;0.642;1"/></rect><rect class="dg-glow" x="10" y="284" width="300" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.55;0.57;0.608;0.65;1"/></rect><rect class="dg-glow" x="370" y="186" width="180" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.7;0.72;0.758;0.8;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6s" begin="0s" repeatCount="indefinite" path="M160 72 L160 100" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.05;0.183;1"/><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.05;0.075;0.158;0.183;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6s" begin="0s" repeatCount="indefinite" path="M160 158 L160 186" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.2;0.333;1"/><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.2;0.225;0.308;0.333;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6s" begin="0s" repeatCount="indefinite" path="M160 260 L160 284" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.433;0.567;1"/><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.433;0.458;0.542;0.567;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6s" begin="0s" repeatCount="indefinite" path="M310 223 L370 223" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.583;0.717;1"/><animate attributeName="opacity" dur="6s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.583;0.608;0.692;0.717;1"/></circle></g>
+</svg>
+</div>
+<div class="dg-cap"><p class="hint">The form is not written, it is read from the schema. Nothing is sent until it is valid. <span class="dg-motion">In motion, a dot goes down the steps for a form that is valid; after a pause a second dot goes to "Nothing is sent", where a form with an error stops.</span></p></div>
+</figure>
 <xo-tabs label="Actions" class="example">
   <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"POST /api/people/<span class="tok-i">{id}</span>/disable"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Disable <span class="tok-i">{name}</span>?"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Disabled"</span>&gt;Disable&lt;/<span class="tok-t">button</span>&gt;
 
@@ -190,10 +298,10 @@ configureI18n({ locale: <span class="tok-s">'en'</span>, load: (locale) =&gt; fe
 <div class="table-wrap"><table>
 <thead><tr><th>Package</th><th>What it is</th><th>Budget</th></tr></thead>
 <tbody>
-<tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.8 KB</td></tr>
-<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>18.3 KB</td></tr>
+<tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.9 KB</td></tr>
+<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.2 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
-<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialog, toast, router</td><td>10 KB</td></tr>
+<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>11.5 KB</td></tr>
 <tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>30 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
 <tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5.6 KB</td></tr>

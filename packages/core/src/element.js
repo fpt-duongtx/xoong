@@ -104,10 +104,11 @@ export class XoElement extends Base {
 export function define(tag, cls) {
   if (customElements.get(tag)) return;
   for (const name of Object.keys(cls.props)) {
+    let at = cls.prototype, found;
+    while (at && at !== XoElement.prototype && !(found = Object.getOwnPropertyDescriptor(at, name))) at = Object.getPrototypeOf(at);
+    if (found && !found.get?.xo) continue; // the class has its own accessor for this prop (xo-switch keeps `checked` in step with `value`): it stays
     Object.defineProperty(cls.prototype, name, {
-      get() {
-        return this._sig(name).value;
-      },
+      get: Object.assign(function () { return this._sig(name).value; }, { xo: 1 }), // marked: an accessor the class wrote itself has no mark
       set(v) {
         this._sig(name).value = fromProp(cls.props[name], v);
       },

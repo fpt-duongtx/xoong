@@ -79,6 +79,7 @@ class XoDate extends XoControl {
     this.replaceChildren(wrap, panel);
     this.#input = input; this.#opener = opener; this.#panel = panel;
     input.addEventListener('keydown', (e) => {
+      if (e.isComposing || e.keyCode === 229) return; // an IME is composing: Enter, Escape and ArrowDown are its keys
       if (e.key === 'ArrowDown' || (e.key === 'Enter' && !this.#open && !input.value.trim())) { e.preventDefault(); this.#openCalendar(); }
       else if (e.key === 'Enter') this.#commitText();
       else if (e.key === 'Escape' && this.#open) { e.stopPropagation(); this.#close(true); }
@@ -237,7 +238,8 @@ class XoDate extends XoControl {
   }
   #panelKey(/** @type {KeyboardEvent} */ e) {
     if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); this.#close(true); return; }
-    const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
+    const side = getComputedStyle(this).direction === 'rtl' ? -1 : 1; // the arrows follow the screen: in right-to-left the week runs from the right
+    const step = { ArrowLeft: -side, ArrowRight: side, ArrowUp: -7, ArrowDown: 7 }[e.key];
     let next = null;
     if (step) next = add(this.#cursor, step);
     else if (e.key === 'PageUp') next = months(this.#cursor, e.shiftKey ? -12 : -1);

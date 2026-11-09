@@ -1,7 +1,7 @@
 {
   "name": "@xoong/mcp",
-  "version": "0.0.45",
-  "description": "MCP server for xoong: gives AI assistants the spec (llms.txt), the API's operations, `xoong check` and error explanations over stdio.",
+  "version": "0.0.46",
+  "description": "MCP server for xoong: gives AI assistants the spec (llms.txt) and the docs, the API's operations, `xoong check` and explanations of every error code, element and attribute over stdio.",
   "type": "module",
   "bin": {
     "xoong-mcp": "src/cli.js"
@@ -11,11 +11,15 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@xoong/cli": "0.0.45"
+    "@xoong/cli": "0.0.46"
   },
   "files": [
     "src"
   ],
+  "scripts": {
+    "prepack": "node prepack.mjs",
+    "postpack": "node prepack.mjs --clean"
+  },
   "keywords": [
     "xoong",
     "web-framework",

@@ -23,6 +23,7 @@
  */
 import { XoControl, define, text } from '@xoong/core';
 import { prepareLayer, showLayer, hideLayer } from './layer.js';
+import { fold } from './fold.js';
 
 let counter = 0;
 
@@ -213,9 +214,9 @@ class XoCombobox extends XoControl {
 
   /** The options that match what was typed (all of them in `remote` mode), without those already chosen, plus the "add" row. */
   #matches() {
-    const q = this.#query.trim().toLowerCase();
+    const q = fold(this.#query.trim());
     const taken = this.#many ? new Set(this.#values) : new Set();
-    const found = this.#options.filter((o) => !taken.has(o.value) && (this.remote || !q || o.label.toLowerCase().includes(q)));
+    const found = this.#options.filter((o) => !taken.has(o.value) && (this.remote || !q || fold(o.label).includes(q)));
     const typed = this.#query.trim();
     if (this.creatable) {
       if (typed && !this.#options.some((o) => o.label.toLowerCase() === typed.toLowerCase()) && !taken.has(typed)) found.push({ value: typed, label: text('xoong.controls.create', 'Add "{value}"', { value: typed }), create: true });
@@ -319,6 +320,7 @@ class XoCombobox extends XoControl {
   }
 
   #onKey(/** @type {KeyboardEvent} */ event) {
+    if (event.isComposing || event.keyCode === 229) return; // an IME is composing (Telex, VNI, CJK): Enter, Escape, the arrows and the comma are its keys
     const move = (/** @type {number} */ step) => {
       if (!this.#open) { this.#openList(); return; }
       const n = this.#shown.length;

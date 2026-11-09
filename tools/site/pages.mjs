@@ -2,6 +2,9 @@
 import { readFileSync } from 'node:fs';
 import { tabs, example, callout, code, codeCard, mark, art } from './lib.mjs';
 import { architecturePages } from './architecture.mjs';
+import * as figures from './figures.mjs';
+import { dialogsPage } from './dialogs-page.mjs';
+import { recipesPage } from './recipes-page.mjs';
 
 /** The inside of a page of the design kit (design/brand-kit/<file>): its content column with the icon sprite it uses; the crumbs are made by the layout. */
 const kit = (file) => {
@@ -248,6 +251,8 @@ ${tabs('First screen', [
     body: `
 <h1>How it works</h1>
 <p>xoong has three layers, and you can stop at any of them: a reactive core and base element, a data layer generated from OpenAPI, and ready-made admin parts on top.</p>
+${figures.life}
+<p>The picture is the whole idea. Your markup asks for data and the client answers from its cache or from the API. Every record is stored once, and only the DOM nodes that show a changed record are written. A write goes the same road and ends by refreshing what it touched. The sections below show the markup for each part; the <a href="arch-data-flow.html">Data flow</a> page has every step.</p>
 
 <h2>Data</h2>
 <p><code>xoong sync</code> turns your OpenAPI document into <code>operations.json</code>. A <code>&lt;xo-view get="listPeople"&gt;</code> calls the operation, caches the answer in a shared store (records with the same id are shared between screens) and exposes <code>$loading</code>, <code>$error</code> and the data to the markup inside it. You never write a cache key, an HTTP client or an error handler.</p>
@@ -266,6 +271,7 @@ npx xoong sync openapi.json`],
 
 <h2>Actions and forms</h2>
 <p>Writes are attributes too. A button runs an operation; after it succeeds, every cached query whose path overlaps it is refetched, so lists stay current without extra code. A form with <code>&lt;xo-form op="createPerson"&gt;</code> is drawn from the request schema: nested objects, arrays and unions included. Validation comes from the same schema, with your own rules by path.</p>
+${figures.form}
 ${tabs('Actions', [
   ['HTML', 'html', `
 <button xo-click="POST /api/people/{id}/disable" xo-confirm="Disable {name}?" xo-notice="Disabled">Disable</button>
@@ -310,10 +316,10 @@ await setLocale('vi');`]])}
 <div class="table-wrap"><table>
 <thead><tr><th>Package</th><th>What it is</th><th>Budget</th></tr></thead>
 <tbody>
-<tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.8 KB</td></tr>
-<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>18.3 KB</td></tr>
+<tr><td><code>@xoong/core</code></td><td>Signals, <code>html</code> templates, <code>XoElement</code>, <code>XoControl</code></td><td>5.9 KB</td></tr>
+<tr><td><code>@xoong/data</code></td><td>Typed client, entity store, <code>&lt;xo-view&gt;</code>, live updates</td><td>19.2 KB</td></tr>
 <tr><td><code>@xoong/forms</code></td><td>Form model and binder: validation, arrays, dirty state</td><td>9.5 KB</td></tr>
-<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialog, toast, router</td><td>10 KB</td></tr>
+<tr><td><code>@xoong/ui</code></td><td><code>xoong.css</code> tokens, table, generated form, dialogs (confirm, alert, prompt), toast, router</td><td>11.5 KB</td></tr>
 <tr><td><code>@xoong/controls</code></td><td>Tabs, menu, tooltip, combobox, tags, carousel, switch, date, time, slider, stepper, password, copy, image, theme toggle, file, accordion, popover, consent, command, chart</td><td>30 KB</td></tr>
 <tr><td><code>@xoong/richtext</code></td><td>Sanitised rich text editor</td><td>8.5 KB</td></tr>
 <tr><td><code>@xoong/i18n</code></td><td>Catalogs, ICU-subset messages, <code>xo-t</code></td><td>5.6 KB</td></tr>
@@ -580,13 +586,13 @@ ${callout('note', 'The client is never a trust boundary. The same function is ex
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'theme-builder.html', section: 'docs', group: 'Guides', nav: 'Theme builder', title: 'Theme builder', classic: 'theme-builder.js',
+    file: 'theme-builder.html', section: 'docs', group: 'Design', nav: 'Theme builder', title: 'Theme builder', classic: 'theme-builder.js',
     description: 'Pick a preset, change colours, shape and type, check the contrast and download a theme.css for your app.',
     body: kit('theme-builder.html'),
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'styling.html', section: 'docs', group: 'Guides', nav: 'Styling', title: 'Styling', demo: false, script: 'page-styling.js',
+    file: 'styling.html', section: 'docs', group: 'Design', nav: 'Styling', title: 'Styling', demo: false, script: 'page-styling.js',
     description: 'Change the look of xoong with CSS custom properties and cascade layers.',
     body: `
 <h1>Styling</h1>
@@ -645,9 +651,11 @@ ${tabs('Shell', [['HTML', 'html', `
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   ...architecturePages,
+  dialogsPage,
+  recipesPage,
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'controls.html', section: 'docs', group: 'Controls', nav: 'Overview', title: 'Controls',
+    file: 'controls.html', section: 'docs', group: 'Controls', nav: 'Introduction', title: 'Controls',
     description: 'Accessible tabs, menu, tooltip, combobox, tags and carousel as custom elements.',
     body: `
 
@@ -691,7 +699,7 @@ ${example({
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'menu.html', section: 'docs', group: 'Controls', nav: 'Menu and tooltip', title: 'Menu and tooltip', script: 'page-menu.js',
+    file: 'menu.html', section: 'docs', group: 'Overlays', nav: 'Menu and tooltip', title: 'Menu and tooltip', script: 'page-menu.js',
     description: 'A menu button in the top layer, choice menus and tooltips.',
     body: `
 <h1>Menu and tooltip</h1>
@@ -964,7 +972,7 @@ xo-carousel .xo-carousel-count { grid-column: 2; grid-row: 2; justify-self: end;
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'own-control.html', section: 'docs', group: 'Controls', nav: 'Your own control', title: 'Your own control',
+    file: 'own-control.html', section: 'docs', group: 'Extend', nav: 'Your own control', title: 'Your own control',
     description: 'Build a form control on XoControl.',
     body: `
 <h1>Your own control</h1>
@@ -987,7 +995,7 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'components.html', section: 'docs', group: 'Controls', nav: 'Standard', title: 'Controls standard',
+    file: 'components.html', section: 'docs', group: 'Design', nav: 'Controls standard', title: 'Controls standard',
     description: 'One size scale, one focus ring and the same states for every control.',
     body: kit('components.html'),
   },
@@ -997,29 +1005,37 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
     body: kit('controls-demo.html'),
   },
   {
-    file: 'overlays.html', section: 'docs', group: 'Controls', nav: 'Overlays', title: 'Overlays and copy feedback',
+    file: 'overlays.html', section: 'docs', group: 'Overlays', nav: 'All overlays', title: 'Overlays and copy feedback',
     description: 'Menus, listboxes, tooltips, toasts and confirm dialogs, in both colour schemes.',
     body: kit('overlays.html'),
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'focus-audit.html', section: 'docs', group: 'Controls', nav: 'Focus audit', title: 'Focus audit',
+    file: 'focus-audit.html', section: 'docs', group: 'Design', nav: 'Focus audit', title: 'Focus audit',
     description: 'How the keyboard focus indicator was measured against every surface, in both palettes and schemes.',
     body: kit('focus-audit.html'),
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'icons.html', section: 'docs', group: 'Controls', nav: 'Icons', title: 'Icons',
+    file: 'icons.html', section: 'docs', group: 'Design', nav: 'Icons', title: 'Icons',
     description: 'The icon set: 24px grid, 1.75 stroke, currentColor.',
     body: kit('icons.html'),
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
-    file: 'demo.html', section: 'demo', group: 'Demo', nav: 'Live demo', title: 'Live demo', demo: true, richtext: true,
+    file: 'demo.html', section: 'demo', group: 'Live demos', nav: 'All demos', title: 'Live demos', demo: true, richtext: true,
     description: 'A small admin screen built with xoong: a data table, an add dialog and bulk actions on a fake in-page API.',
     body: `
-<h1>Live demo</h1>
-<p>Two whole pages built only from the Mist kit and the xoong controls, to try them in context: an <a href="live-admin.html">admin</a> (dashboard, articles table with sort, select and bulk actions, settings, command palette on Ctrl or Cmd plus K, notifications) and a <a href="live-landing.html">landing page</a> (hero, pricing with a monthly and yearly switch, testimonials, FAQ, sign-up with validation, cookie consent). The numbers in them are made up.</p>
+<h1>Live demos</h1>
+<p class="lead">Three working examples to try in context. Each one is built only from the Mist kit and the xoong controls; the numbers in them are made up.</p>
+<ul class="demo-pick">
+  <li><a class="demo-card" href="live-admin.html"><span class="ic" data-ic="chart" aria-hidden="true"></span><strong>Admin app</strong><span>A full-page back office: dashboard, an articles table with sort, select and bulk actions, settings, notifications and a command palette on Ctrl or Cmd plus K.</span><em>Open the full-page demo <span class="ic" data-ic="external-link" aria-hidden="true"></span></em></a></li>
+  <li><a class="demo-card" href="live-landing.html"><span class="ic" data-ic="globe" aria-hidden="true"></span><strong>Landing site</strong><span>A marketing page: hero, pricing with a monthly and yearly switch, testimonials, FAQ, a sign-up form with validation and a cookie consent bar.</span><em>Open the full-page demo <span class="ic" data-ic="external-link" aria-hidden="true"></span></em></a></li>
+  <li><a class="demo-card" href="#people-admin"><span class="ic" data-ic="users" aria-hidden="true"></span><strong>People admin</strong><span>A data table, an add dialog and bulk actions on a fake API that lives in this page, with no application code. It is right below, with its code.</span><em>Jump to it <span class="ic" data-ic="arrow-down" aria-hidden="true"></span></em></a></li>
+</ul>
+<p>The two full pages have their own layout. A small bar at the bottom left of each one leads back to the docs and to the other demo.</p>
+
+<h2>People admin</h2>
 <p>A small people admin on the in-page API: sort, search, page, add someone, delete one or several. It is a table, a dialog with a generated form, and two buttons; there is no application code. Changes last until you reload.</p>
 ${example({
   label: 'People admin',

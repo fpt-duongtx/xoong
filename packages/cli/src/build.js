@@ -9,6 +9,8 @@
  *   - bare imports ("@xoong/data") are rewritten to URLs, so the page needs no import map;
  *   - TypeScript is stripped (erasable syntax only) and .ts files are written as .js;
  *   - `--base` prefixes root-absolute URLs for an app served under a path;
+ *   - `src`, `poster`, `href` of <link>, `srcset` (and `imagesrcset` of <link rel=preload>) are followed: every URL of a srcset is copied and prefixed, its `1x`/`480w` descriptors kept.
+ *     `<a href>` is NOT touched, on purpose: a link to another page is left as written for the router and for plain relative links to resolve;
  *   - every page gets <link rel="modulepreload"> for the modules its scripts import (the whole graph is known here; `--no-preload` or `"build": { "preload": false }` turns it off);
  *   - nothing is minified or bundled; every file is the one you wrote (readable in the browser's tools).
  * HTML files that are not pages (partials, fixtures, drafts) are kept out of the start list with `--exclude <glob>` (repeatable) or `"build": { "exclude": [...] }` in
@@ -27,6 +29,34 @@ import { buildImportMap } from '@xoong/server';
 const SCRIPT_EXT = new Set(['.js', '.mjs', '.ts', '.mts']);
 const toJs = (p) => p.replace(/\.m?ts$/, (m) => (m === '.mts' ? '.mjs' : '.js'));
 const isLocal = (u) => !!u && !/^([a-z][a-z0-9+.-]*:|\/\/|#)/i.test(u);
+
+/**
+ * The URLs of a `srcset` value with their position, read the way the HTML standard does: a URL is the run of non-space characters
+ * (it may contain commas, as a data: URL does; trailing commas end the candidate), then comes an optional descriptor (`2x`, `480w`) up to the next comma.
+ * @param {string} value
+ * @returns {{ url: string, start: number, end: number }[]}
+ */
+export function srcsetUrls(value) {
+  const space = /[ \t\n\f\r]/;
+  const out = [];
+  let i = 0;
+  while (i < value.length) {
+    while (i < value.length && (space.test(value[i]) || value[i] === ',')) i++;
+    if (i >= value.length) break;
+    const start = i;
+    while (i < value.length && !space.test(value[i])) i++;
+    let end = i;
+    if (value[end - 1] === ',') { while (value[end - 1] === ',') end--; } // "a.png," has no descriptor
+    else for (let depth = 0; i < value.length; i++) { // the descriptor: up to a comma that is not inside parentheses
+      const c = value[i];
+      if (c === '(') depth++;
+      else if (c === ')') depth = Math.max(0, depth - 1);
+      else if (c === ',' && depth === 0) { i++; break; }
+    }
+    out.push({ url: value.slice(start, end), start, end });
+  }
+  return out;
+}
 
 /** The policy this output is meant to run under (and is tested with). */
 export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'";
@@ -186,13 +216,26 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
       }
       if (attr('style')) warnings.push(`${urlPath}:${node.sourceCodeLocation.startLine}: a style="" attribute is blocked by style-src 'self'; use a class`);
       if (node.tagName === 'style') warnings.push(`${urlPath}:${node.sourceCodeLocation.startLine}: an inline <style> is blocked by style-src 'self'; move it to a stylesheet`);
-      for (const name of ['src', 'href', 'poster', 'srcset']) {
+      for (const name of ['src', 'href', 'poster', 'srcset', 'imagesrcset']) {
         const a = attr(name);
-        if (!a || !isLocal(a.value) || node.tagName === 'a' || (node.tagName === 'link' && attr('rel')?.value && !/stylesheet|icon|preload|modulepreload|manifest/.test(attr('rel')?.value ?? ''))) continue;
-        if (name === 'srcset' || a.value.startsWith('data:')) continue;
+        if (!a || node.tagName === 'a' || (node.tagName === 'link' && attr('rel')?.value && !/stylesheet|icon|preload|modulepreload|manifest/.test(attr('rel')?.value ?? ''))) continue;
+        if (name === 'imagesrcset' && node.tagName !== 'link') continue;
         const loc = node.sourceCodeLocation.attrs?.[name];
         if (!loc) continue;
         const raw = source.slice(loc.startOffset, loc.endOffset);
+        if (name === 'srcset' || name === 'imagesrcset') { // several URLs, each with a descriptor: every local one is copied and given the base
+          const found = [];
+          for (const { url, start, end } of srcsetUrls(a.value)) if (isLocal(url)) found.push({ start, end, next: await rewriteHtmlUrl(url, urlPath), url });
+          const changes = found.filter((f) => f.next !== f.url);
+          if (!changes.length) continue;
+          let value = a.value;
+          for (const { start, end, next } of changes.reverse()) value = value.slice(0, start) + next + value.slice(end);
+          // keep the attribute as written (quotes included); a decoded character reference (&amp;) cannot be spliced into the source, so that attribute is written again
+          const at = raw.indexOf(a.value, raw.indexOf('=') + 1);
+          edits.push([loc.startOffset, loc.endOffset, at >= 0 ? raw.slice(0, at) + value + raw.slice(at + a.value.length) : `${name}="${value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`]);
+          continue;
+        }
+        if (!isLocal(a.value) || a.value.startsWith('data:')) continue;
         edits.push([loc.startOffset, loc.endOffset, raw.replace(a.value, await rewriteHtmlUrl(a.value, urlPath))]);
       }
     };

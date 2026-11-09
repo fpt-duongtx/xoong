@@ -1,6 +1,6 @@
 # @xoong/lsp
 
-A language server for xoong screens: the diagnostics of `xoong check`, completion of operation names and `xo-*` attributes, and hover documentation in any editor that speaks LSP.
+A language server for xoong screens: the diagnostics of `xoong check`, completion of operation names, `xo-*` attributes and the attributes and values of each element, hover documentation and quick fixes, in any editor that speaks LSP.
 
 ## Install
 

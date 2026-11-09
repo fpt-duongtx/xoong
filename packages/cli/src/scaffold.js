@@ -3,6 +3,7 @@ import { mkdir, writeFile, copyFile, access } from 'node:fs/promises';
 import { join, basename, resolve } from 'node:path';
 import { analyze, runtimeTable, generateDts } from './openapi.js';
 import { load } from './commands.js';
+import { htmlData } from './html-data.js';
 
 const SCALAR = new Set(['string', 'integer', 'number', 'boolean']);
 const refName = (r) => r.slice(r.lastIndexOf('/') + 1);
@@ -152,8 +153,10 @@ npm test
   };
   for (const [file, content] of Object.entries(files)) if (content) await writeFile(join(target, file), content);
   await writeFile(join(target, 'openapi.json'), JSON.stringify(doc, null, 2) + '\n');
-  // Same output as `xoong sync` (kept in step by sharing the functions).
-  await writeFile(join(target, '.xoong', 'operations.json'), JSON.stringify(runtimeTable(a), null, 2) + '\n');
+  // Same output as `xoong sync` (kept in step by sharing the functions): the table, the types and the editor data.
+  const table = runtimeTable(a);
+  await writeFile(join(target, '.xoong', 'operations.json'), JSON.stringify(table, null, 2) + '\n');
+  await writeFile(join(target, '.xoong', 'xoong.html-data.json'), JSON.stringify(htmlData(table), null, 2) + '\n');
   await writeFile(join(target, '.xoong', 'api.d.ts'), generateDts(a));
-  return { dir: target, screen: pick ? `${pick.operation.method} ${pick.operation.path}` : null, files: Object.keys(files).filter((f) => files[f]).concat('openapi.json', '.xoong/operations.json', '.xoong/api.d.ts') };
+  return { dir: target, screen: pick ? `${pick.operation.method} ${pick.operation.path}` : null, files: Object.keys(files).filter((f) => files[f]).concat('openapi.json', '.xoong/operations.json', '.xoong/xoong.html-data.json', '.xoong/api.d.ts') };
 }

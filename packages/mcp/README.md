@@ -1,6 +1,6 @@
 # @xoong/mcp
 
-An MCP server for xoong: gives AI assistants the spec (`llms.txt`), the operations of your API, `xoong check` and explanations of errors, over stdio.
+An MCP server for xoong: gives AI assistants the spec (`llms.txt`) and the docs, the operations of your API, `xoong check`, and explanations of every error code, element and attribute, over stdio.
 
 ## Install
 
@@ -13,7 +13,7 @@ npm install @xoong/mcp
 ```bash
 npx xoong-mcp
 ```
-Add it to your assistant's MCP configuration as a stdio server running `xoong-mcp`.
+Add it to your assistant's MCP configuration as a stdio server running `xoong-mcp`. Tools: `get_spec`, `list_operations`, `check`, `explain_error`, `explain_syntax`, `search_docs`. The spec and the docs come with the package.
 
 ## More
 

@@ -139,3 +139,138 @@ test('completion ignores look-alike attributes (data-op, ?get=) and .tsx counts 
   const ts = diagnostics(await open(s, 'client.load("nope");', 'file:///app/a.tsx'));
   assert.equal(ts[0].code, 'XO201');
 });
+
+// ---- the newer elements and attributes: completion, hover, quick fixes, version ----------------------------------------------------
+
+import { readFileSync } from 'node:fs';
+import { SYNTAX } from '@xoong/cli/html-data';
+
+const request = (s, method, params) => s.handle({ jsonrpc: '2.0', id: 1, method, params }).then(([r]) => r.result);
+const at = (s, text, marker, method = 'textDocument/completion', offset = 0) => {
+  const index = text.indexOf(marker) + offset;
+  const before = text.slice(0, index).split('\n');
+  return request(s, method, { textDocument: { uri }, position: { line: before.length - 1, character: before.at(-1).length } });
+};
+const labels = (items) => items.map((i) => i.label);
+
+test('the server reports the version of the package, not a made-up one', async () => {
+  const [r] = await make().handle({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.deepEqual(r.result.serverInfo, { name: 'xoong-lsp', version: pkg.version });
+  assert.notEqual(pkg.version, '0.0.1');
+});
+
+test('completion inside an xo-* element offers its own attributes first, with what they do, and the xo-* attributes', async () => {
+  const s = make();
+  const text = '<xo-pager \n<xo-dialog hea\n<xo-table columns="a" \n<div class="x" xo-c';
+  await open(s, text);
+  const pager = await at(s, text, '<xo-pager ', 'textDocument/completion', '<xo-pager '.length);
+  assert.deepEqual(labels(pager).slice(0, 2), ['page-size', 'page-sizes']);
+  assert.match(pager[0].documentation, /Rows per page/);
+  assert.equal(pager[0].detail, '<xo-pager>');
+  assert.ok(labels(pager).includes('xo-click'), 'the xo-* attributes work on any element');
+  const dialog = await at(s, text, 'hea', 'textDocument/completion', 3);
+  assert.deepEqual(labels(dialog), ['heading']); // filtered by what was typed
+  const table = await at(s, text, 'columns="a" ', 'textDocument/completion', 'columns="a" '.length);
+  assert.ok(labels(table).includes('page-size') && labels(table).includes('empty') && labels(table).includes('xo-then'));
+  const div = await at(s, text, 'xo-c', 'textDocument/completion', 4);
+  assert.ok(labels(div).includes('xo-confirm-kind') && labels(div).every((l) => l.startsWith('xo-c')));
+  assert.ok(!labels(div).includes('page-size'));
+  // a plain element after a space is left to the editor's own HTML completion
+  const plain = '<div class="x" ';
+  await open(s, plain);
+  assert.deepEqual(await at(s, plain, 'class="x" ', 'textDocument/completion', 'class="x" '.length), []);
+});
+
+test('completion of the attributes of an element works on a tag that spans lines, and offers p-<param> on a view', async () => {
+  const s = make();
+  const text = '<xo-view get="/users"\n  live\n  ';
+  await open(s, text);
+  const items = await request(s, 'textDocument/completion', { textDocument: { uri }, position: { line: 2, character: 2 } });
+  assert.ok(labels(items).includes('url-params') && labels(items).includes('p-id'), labels(items).join(','));
+  const typed = '<xo-view get="/users" p';
+  await open(s, typed);
+  assert.deepEqual(labels(await at(s, typed, ' p', 'textDocument/completion', 2)), ['p-id']);
+  const closed = '<xo-pager page-size="5"></xo-pager> ';
+  await open(s, closed);
+  assert.deepEqual(await at(s, closed, '</xo-pager> ', 'textDocument/completion', '</xo-pager> '.length), []); // the tag is closed: not inside it
+});
+
+test('completion of values: the fixed sets (xo-confirm-kind, size), filtered by what is typed, replacing it', async () => {
+  const s = make();
+  const text = '<button xo-confirm-kind="d"></button>\n<xo-dialog heading="T" size="">\n<xo-dialog size=\n<xo-avatar status=\'';
+  await open(s, text);
+  const kind = await at(s, text, 'kind="d', 'textDocument/completion', 'kind="d'.length);
+  assert.deepEqual(labels(kind), ['danger']);
+  assert.equal(kind[0].textEdit.newText, 'danger');
+  assert.equal(kind[0].textEdit.range.end.character - kind[0].textEdit.range.start.character, 1); // the typed "d" is replaced
+  assert.match(kind[0].documentation, /icon and the matching colour/);
+  assert.deepEqual(labels(await at(s, text, 'size=""', 'textDocument/completion', 'size="'.length)), ['sm', 'wide', 'full']);
+  assert.deepEqual(await at(s, text, 'size=\n', 'textDocument/completion', 'size='.length), []); // no quote yet: nothing to complete
+  assert.deepEqual(labels(await at(s, text, "status='", 'textDocument/completion', "status='".length)), ['ok', 'warn', 'muted']);
+  const other = '<xo-dialog heading="';
+  await open(s, other);
+  assert.deepEqual(await at(s, other, 'heading="', 'textDocument/completion', 'heading="'.length), []); // free text has no values
+});
+
+test('xo-open completes with the ids of the <xo-dialog>s in the file', async () => {
+  const s = make();
+  const text = '<xo-dialog id="add" heading="A"></xo-dialog><xo-dialog\n  heading="B" id=\'edit\'></xo-dialog><div id="nope"></div>\n<button xo-open="#e">';
+  await open(s, text);
+  const edit = await at(s, text, '"#e', 'textDocument/completion', 3);
+  assert.deepEqual(labels(edit), ['#edit']);
+  assert.equal(edit[0].textEdit.newText, '#edit');
+  assert.deepEqual(labels(await at(s, text, '"#e', 'textDocument/completion', 2)).sort(), ['#add', '#edit']);
+});
+
+test('every element and attribute of the syntax lists can be completed', async () => {
+  const s = make();
+  const text = '<xo-\n<p xo-';
+  await open(s, text);
+  const tags = labels(await request(s, 'textDocument/completion', { textDocument: { uri }, position: { line: 0, character: 4 } }));
+  const attributes = labels(await request(s, 'textDocument/completion', { textDocument: { uri }, position: { line: 1, character: 6 } }));
+  for (const name of SYNTAX.elements) assert.ok(tags.includes(name), `<${name}> is not offered`);
+  for (const name of SYNTAX.attributes) assert.ok(attributes.includes(name), `${name} is not offered`);
+});
+
+test('hover explains an attribute of an xo-* element, its values, and p-<param>', async () => {
+  const s = make();
+  const text = '<xo-dialog heading="T" size="wide" dismiss>\n<xo-view get="/users" p-id="3">\n<button xo-confirm-kind="danger" xo-confirm="x">\n<div size="x" heading="y">\n<xo-pager page-size="5">';
+  await open(s, text);
+  const hover = (marker, extra = 1) => at(s, text, marker, 'textDocument/hover', extra);
+  const size = await hover(' size="wide"', 3);
+  assert.match(size.contents.value, /^\*\*<xo-dialog> size\*\*\n\n`sm`, `wide` or `full`[\s\S]*Values: `sm`, `wide`, `full`$/);
+  assert.match((await hover(' heading="T"', 3)).contents.value, /\*\*<xo-dialog> heading\*\*[\s\S]*The title/);
+  assert.match((await hover(' dismiss', 3)).contents.value, /\*\*<xo-dialog> dismiss\*\*[\s\S]*click outside/);
+  assert.match((await hover('p-id', 2)).contents.value, /^\*\*p-id\*\*[\s\S]*path parameter "id"/);
+  assert.match((await hover('xo-confirm-kind', 5)).contents.value, /^\*\*xo-confirm-kind\*\*[\s\S]*Values: `danger`, `warning`, `info`, `success`$/);
+  assert.match((await hover('page-size', 3)).contents.value, /\*\*<xo-pager> page-size\*\*[\s\S]*Rows per page/);
+  assert.equal(await hover(' size="x"', 3), null); // a <div> has no such attribute: nothing to say
+  assert.equal(await hover('heading="y"', 3), null);
+});
+
+test('quick fixes: a misspelled attribute, element and value are replaced by the closest one', async () => {
+  const s = make();
+  const text = '<xo-view get="/users"><button xo-clik="x">x</button>\n<xo-tabel></xo-tabel>\n<xo-dialog heading="T" size="wid"></xo-dialog></xo-view>';
+  const d = diagnostics(await open(s, text));
+  assert.deepEqual(d.map((x) => x.code).sort(), ['XO230', 'XO230', 'XO271']);
+  const [r] = await s.handle({ jsonrpc: '2.0', id: 2, method: 'textDocument/codeAction', params: { textDocument: { uri }, context: { diagnostics: d } } });
+  assert.deepEqual(r.result.map((a) => a.title).sort(), ['Use "wide"', 'Use <xo-table>', 'Use xo-click']);
+  const lines = text.split('\n');
+  for (const action of r.result) {
+    const [edit] = action.edit.changes[uri];
+    const row = lines[edit.range.start.line];
+    lines[edit.range.start.line] = row.slice(0, edit.range.start.character) + edit.newText + row.slice(edit.range.end.character);
+  }
+  assert.equal(lines.join('\n'), '<xo-view get="/users"><button xo-click="x">x</button>\n<xo-table></xo-tabel>\n<xo-dialog heading="T" size="wide"></xo-dialog></xo-view>'); // the closing tag is the author's to rename
+});
+
+test('diagnostics for the newer rules arrive with their code, level and fix', async () => {
+  const s = make();
+  const text = '<xo-view get="/users">\n<button xo-click="POST /users/{id}/disable" xo-confirm-kind="danger">x</button>\n<xo-pager></xo-pager>\n</xo-view>';
+  const d = diagnostics(await open(s, text));
+  assert.deepEqual(d.map((x) => [x.code, x.severity]), [['XO270', 1], ['XO250', 1]]);
+  assert.match(d[0].message, /xo-confirm-kind does nothing without xo-confirm/);
+  assert.match(d[0].message, /\nfix: Add xo-confirm=/);
+  assert.equal(d[1].range.start.line, 2);
+});

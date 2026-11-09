@@ -22,6 +22,8 @@ export const builtin = {
   "xoong.command.results": "Results",
   "xoong.confirm.cancel": "Cancel",
   "xoong.confirm.ok": "Confirm",
+  "xoong.dialog.close": "Close",
+  "xoong.dialog.ok": "OK",
   "xoong.consent.all": "Accept all",
   "xoong.consent.essential": "Essential only",
   "xoong.consent.label": "Cookie consent",

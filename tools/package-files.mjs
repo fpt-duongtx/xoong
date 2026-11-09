@@ -85,11 +85,16 @@ await setLocale('vi');
 \`\`\`` },
   cli: { description: 'The xoong command line: sync (OpenAPI to typed operations), doctor, check (lint screens), dev, build (strict-CSP static output), render and i18n.', intro: 'The `xoong` command: turns an OpenAPI document into typed operations, lints your screens, runs the dev server and builds static output that runs under a strict Content-Security-Policy.', use: `
 \`\`\`bash
-npx xoong sync openapi.json        # writes .xoong/operations.json and api.d.ts
-npx xoong check index.html         # lint screens against the API
+npx xoong sync openapi.json        # writes .xoong/operations.json, api.d.ts and the editor data
+npx xoong doctor openapi.json      # what in the document (and in xoong.hints.json) limits xoong
+npx xoong check index.html         # lint screens against the API (--format json, --exclude)
 npx xoong dev                      # static server with an API proxy
-npx xoong build --out dist         # strict-CSP static output
-\`\`\`` },
+npx xoong build --out dist         # strict-CSP static output (--base, --include, --exclude, --no-preload)
+npx xoong render page.html --api http://localhost:8080   # prerender a page (needs @xoong/ssr)
+npx xoong i18n extract src --out catalogs/en.json         # the xo-t messages; i18n check <catalog> --source <en.json>
+npx xoong --help                   # every command and option; an option that does not exist is refused
+\`\`\`
+Exit code: 0 done, 1 findings or a failure, 2 an unknown command or a missing argument.` },
   server: { intro: 'The server behind `xoong dev` and `xoong build`: one `(Request) => Response` handler for static files, an API proxy and TypeScript type stripping, with a Node adapter. Never shipped to the browser.', use: `
 \`\`\`js
 import { createHandler } from '@xoong/server';
@@ -104,12 +109,12 @@ const api = mockApi(operations, { listPeople: () => ({ items: [{ id: 1, name: 'A
 const screen = await mount('<xo-view get="listPeople"><li xo-each="items">{name}</li></xo-view>', { api });
 expect(screen.texts('li')).toEqual(['Ada']);
 \`\`\`` },
-  mcp: { intro: 'An MCP server for xoong: gives AI assistants the spec (`llms.txt`), the operations of your API, `xoong check` and explanations of errors, over stdio.', use: `
+  mcp: { intro: 'An MCP server for xoong: gives AI assistants the spec (`llms.txt`) and the docs, the operations of your API, `xoong check`, and explanations of every error code, element and attribute, over stdio.', use: `
 \`\`\`bash
 npx xoong-mcp
 \`\`\`
-Add it to your assistant's MCP configuration as a stdio server running \`xoong-mcp\`.` },
-  lsp: { intro: 'A language server for xoong screens: the diagnostics of `xoong check`, completion of operation names and `xo-*` attributes, and hover documentation in any editor that speaks LSP.', use: `
+Add it to your assistant's MCP configuration as a stdio server running \`xoong-mcp\`. Tools: \`get_spec\`, \`list_operations\`, \`check\`, \`explain_error\`, \`explain_syntax\`, \`search_docs\`. The spec and the docs come with the package.` },
+  lsp: { intro: 'A language server for xoong screens: the diagnostics of `xoong check`, completion of operation names, `xo-*` attributes and the attributes and values of each element, hover documentation and quick fixes, in any editor that speaks LSP.', use: `
 \`\`\`bash
 npx xoong-lsp
 \`\`\`` },

@@ -26,16 +26,32 @@ export class XoongError extends Error {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /**
- * Build an error from a failed response. Understands RFC 9457 problem+json,
- * `{ error: { code, message, retry_after_s, fields } }` envelopes and FastAPI-style
- * `{ detail: [{ loc, msg }] }` validation errors. Field messages end up in `error.fields`.
+ * Build an error from a failed response. Understands RFC 9457 problem+json, `{ error: { code, message, retry_after_s, fields } }`
+ * envelopes, FastAPI `{ detail: [{ loc, msg }] }`, Laravel/Rails `{ errors: { field: [msgs] } }`, Django REST `{ field: [msgs] }`,
+ * Spring `errors` / `fieldErrors` as `[{ field, defaultMessage }]`, Zod `{ fieldErrors }` and JSON:API `errors: [{ source: { pointer } }]`.
+ * Field messages end up in `error.fields`.
  */
+const NOT_FIELDS = ['detail', 'message', 'error', 'errors', 'fieldErrors', 'formErrors', 'non_field_errors'];
 function fieldErrors(body, env) {
   const out = {};
   const add = (name, msg) => { if (name && msg && !(name in out)) out[String(name)] = String(msg); };
+  /** { field: 'msg' | ['msg', ...] | { nested } | [{ nested }] } -> dotted names. `strings` false: only lists of messages count (a bare body also holds metadata). */
+  const fromMap = (map, strings, prefix = '') => {
+    for (const [k, v] of Object.entries(map)) {
+      const name = prefix ? `${prefix}.${k}` : k;
+      if (typeof v === 'string') { if (strings) add(name, v); }
+      else if (Array.isArray(v) && v.length && v.every((x) => typeof x === 'string')) add(name, v.join(' '));
+      else if (v && typeof v === 'object') fromMap(v, strings, name);
+    }
+  };
+  const fromList = (list) => { for (const e of list) add(e?.field ?? String(e?.pointer ?? e?.source?.pointer ?? '').replace(/^#?\/(data\/attributes\/)?/, '').replace(/\//g, '.'), e?.detail ?? e?.defaultMessage ?? e?.message); };
   if (env?.fields && typeof env.fields === 'object') for (const [k, v] of Object.entries(env.fields)) add(k, v);
   if (Array.isArray(body?.detail)) for (const d of body.detail) if (Array.isArray(d?.loc)) add(d.loc.filter((x) => x !== 'body').join('.'), d.msg);
-  if (Array.isArray(body?.errors)) for (const e of body.errors) add(e?.field ?? String(e?.pointer ?? '').replace(/^#?\//, '').replace(/\//g, '.'), e?.detail ?? e?.message);
+  for (const list of [body?.errors, body?.fieldErrors]) {
+    if (Array.isArray(list)) fromList(list);
+    else if (list && typeof list === 'object') fromMap(list, true);
+  }
+  if (!Object.keys(out).length && body && typeof body === 'object' && !Array.isArray(body) && !('title' in body || 'type' in body || 'status' in body)) fromMap(Object.fromEntries(Object.entries(body).filter(([k]) => !NOT_FIELDS.includes(k))), false); // Django REST: the body is the map (a problem+json body is not)
   return out;
 }
 
@@ -43,7 +59,7 @@ function errorFromBody(status, statusText, body, operation) {
   const env = body?.error && typeof body.error === 'object' ? body.error : undefined;
   const detail = Array.isArray(body?.detail)
     ? body.detail.map((d) => d?.msg ?? String(d)).join('; ')
-    : (typeof body?.detail === 'string' ? body.detail : env?.message ?? body?.message);
+    : (typeof body?.detail === 'string' ? body.detail : env?.message ?? body?.message ?? (Array.isArray(body?.non_field_errors) ? body.non_field_errors.join(' ') : undefined));
   return new XoongError({
     status, operation, problem: body,
     title: body?.title ?? env?.code ?? statusText,
@@ -225,6 +241,7 @@ export function createClient(options) {
       /** @type {Promise<any>} */ let self;
       self = request(this.op, this.params, undefined, ctl.signal)
         .then((json) => {
+          if (ctl.signal.aborted) throw ctl.signal.reason; // cancelled (reset(), the view moved on) while a fetch that ignores the signal answered
           batch(() => {
             this.root.value = normalize(store, this.op.response, json);
             this.status.value = 'success';
@@ -411,6 +428,23 @@ export function createClient(options) {
     /** Invalidate every cached query (e.g. after a stream resync). */
     invalidateAll() {
       for (const q of queries.values()) q.invalidate();
+    },
+
+    /**
+     * Forget everything this client loaded (a logout, another user): requests in flight are cancelled, cached queries and the entity store are
+     * dropped, and what a mounted view shows is fetched again. Mutations already sent are not cancelled.
+     */
+    reset() {
+      batch(() => {
+        for (const q of [...queries.values()]) {
+          q.abort?.abort(); q.inflight = null;
+          batch(() => { q.root.value = undefined; q.status.value = 'idle'; q.error.value = null; });
+          q.stale = true; q.updatedAt = 0;
+          if (!q.observers) { clearTimeout(q.gcTimer); queries.delete(q.key); disposeComputed(q.data); }
+        }
+        store.clear();
+      });
+      for (const q of queries.values()) q.fetch().catch(() => {}); // the ones a view is showing
     },
 
     /** Number of requests in flight (used by test helpers to wait until idle). */

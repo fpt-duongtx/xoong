@@ -18,7 +18,7 @@ no virtual DOM, JSX, hooks or required build.
     xoong dev                                 # static server + API proxy + .ts stripping (xoong.config.json)
     xoong check index.html                    # lint screens against the API
     xoong doctor openapi.json                 # what in the OpenAPI document limits xoong
-    xoong build --out dist                    # strict-CSP static output; xoong i18n extract <files> --out en.json
+    xoong build --out dist [--base /p --include dir --exclude glob --no-preload]  # strict-CSP static output; xoong render page.html (prerender); xoong i18n extract <files> --out en.json
 
 xoong.config.json: `{ "port": 5173, "proxy": { "/api": "http://localhost:8080" } }`
 xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } },
@@ -51,7 +51,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each applies at once; undone on failure.
 - `xo-select` on a row checkbox ticks the row (`all:items`: all); `xo-selected` on an xo-click runs it per ticked row. `<xo-table selectable>` adds both. `$selectedCount` counts them.
-- `xo-confirm="Delete {title}?"` asks first (native dialog). `xo-notice="Saved"` toasts on success. `xo-then="/articles/{id}"` goes there after success. `xo-with="status=published"` adds body fields.
+- `xo-confirm="Delete {title}?"` asks first (native dialog; `xo-confirm-title`, `xo-confirm-ok`, `xo-confirm-cancel`, `xo-confirm-kind` tune it). `xo-notice="Saved"` toasts on success. `xo-then="/articles/{id}"` goes there after success. `xo-with="status=published"` adds body fields.
   `xo-selected="ids"` sends ONE request with the ticked ids; `$selected`: ticked rows.
 - `<xo-view url-params="status,q,sort,offset">` keeps those params in the page URL. A button `xo-param="status=draft"` gets `aria-current` while current.
 - Formats: `{publishedAt | datetime}` (date, time, relative, number).
@@ -92,6 +92,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     </xo-view>
     <xo-form op="POST /users" submit="Add"></xo-form>
     <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
+    <xo-dialog heading="Edit" size="wide" dismiss> titled modal (slot="footer" buttons). JS: await confirm|alert|prompt|ask(msg, { kind: danger|warning|info|success, title }) from @xoong/ui
   <xo-toast></xo-toast> shows errors and xo-notice. Style: xoong.css properties; layout: `<body class="xo-admin">` + header, nav, main.
 
 ## Routing (admin apps; `import { router } from '@xoong/ui'`; public pages stay one HTML file each)

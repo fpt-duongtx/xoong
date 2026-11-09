@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
@@ -53,17 +54,48 @@
     </div>
   </header>
   <details class="docs-menu"><summary><span>Menu · <span class="here">Forms flow</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
     <h2>Start</h2>
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
     <h2>Guides</h2>
     <a href="data.html">Data and tables</a>
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
     <h2>Architecture</h2>
     <a href="arch-overview.html">Layers</a>
     <a href="arch-data-flow.html">Data flow</a>
@@ -72,35 +104,58 @@
     <a href="arch-routing.html">Router</a>
     <a href="arch-build.html">Build and delivery</a>
     <a href="arch-tooling.html">Tooling and tests</a>
-    <h2>Controls</h2>
-    <a href="controls.html">Overview</a>
-    <a href="tabs.html">Tabs</a>
-    <a href="menu.html">Menu and tooltip</a>
-    <a href="combobox.html">Combobox and tags</a>
-    <a href="more-controls.html">More controls</a>
-    <a href="carousel.html">Carousel</a>
-    <a href="own-control.html">Your own control</a>
-    <a href="components.html">Standard</a>
-    <a href="controls-demo.html">All controls</a>
-    <a href="overlays.html">Overlays</a>
-    <a href="focus-audit.html">Focus audit</a>
-    <a href="icons.html">Icons</a>
-    <h2>Demo</h2>
-    <a href="demo.html">Live demo</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
   </nav></details>
   <div class="shell">
     <nav class="side" aria-label="Documentation">
+      <div class="grp">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
       <h2>Architecture</h2>
       <a href="arch-overview.html">Layers</a>
       <a href="arch-data-flow.html">Data flow</a>
@@ -109,21 +164,13 @@
       <a href="arch-routing.html">Router</a>
       <a href="arch-build.html">Build and delivery</a>
       <a href="arch-tooling.html">Tooling and tests</a>
-      <h2>Controls</h2>
-      <a href="controls.html">Overview</a>
-      <a href="tabs.html">Tabs</a>
-      <a href="menu.html">Menu and tooltip</a>
-      <a href="combobox.html">Combobox and tags</a>
-      <a href="more-controls.html">More controls</a>
-      <a href="carousel.html">Carousel</a>
-      <a href="own-control.html">Your own control</a>
-      <a href="components.html">Standard</a>
-      <a href="controls-demo.html">All controls</a>
-      <a href="overlays.html">Overlays</a>
-      <a href="focus-audit.html">Focus audit</a>
-      <a href="icons.html">Icons</a>
-      <h2>Demo</h2>
-      <a href="demo.html">Live demo</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
     </nav>
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Forms flow</span></div>
@@ -134,12 +181,12 @@
 
 <h2 id="from-the-schema-to-the-controls">From the schema to the controls</h2>
 <p>The pieces, in the order the data meets them:</p>
-<figure class="dg-fig">
+<figure class="dg-fig dg-anim">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: from the request schema to the form controls">
 <svg class="dg dg-sm" viewBox="0 0 560 520" role="img" aria-labelledby="fm-model-t fm-model-d">
 <title id="fm-model-t">From the request schema to the form controls</title>
-<desc id="fm-model-d">At the top left, the request schema in the OpenAPI document becomes the bodySchema node tree in operations.json when xoong sync runs. At the top right is the record, the item of the enclosing xo-view. Both feed the form model, created by createForm: the bodySchema is its schema and a copy of the record is its baseline. The model holds the baseline, the draft and the state of every path. Below it is the DOM binder, attach(form). Effects carry values and errors from the model to the binder, and set(path, raw) carries changes back. The binder writes to the form controls (input, select, textarea, XoControl) and hears their input, change and focusout events.</desc>
-<defs><marker id="fm-model-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<desc id="fm-model-d">At the top left, the request schema in the OpenAPI document becomes the bodySchema node tree in operations.json when xoong sync runs. At the top right is the record, the item of the enclosing xo-view. Both feed the form model, created by createForm: the bodySchema is its schema and a copy of the record is its baseline. The model holds the baseline, the draft and the state of every path. Below it is the DOM binder, attach(form). Effects carry values and errors from the model to the binder, and set(path, raw) carries changes back. The binder writes to the form controls (input, select, textarea, XoControl) and hears their input, change and focusout events. When the animation plays, a dot follows the road in order. The schema becomes the bodySchema and, with the record, makes the model; the model's values go out through the binder to the controls. Then a change a person makes comes back as set(path, raw), and the new value and error go out again.</desc>
+<defs><marker id="fm-model-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="fm-model-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="10" y="14" width="250" height="58" rx="8"/><text class="dg-t" x="135" y="36">Request schema</text><text class="dg-sub" x="135" y="56">requestBody in OpenAPI</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="104" width="250" height="58" rx="8"/><text class="dg-t" x="135" y="126">bodySchema</text><text class="dg-sub" x="135" y="146">node tree in operations.json</text></g>
 <g class="dg-node"><rect class="dg-box" x="300" y="14" width="250" height="58" rx="8"/><text class="dg-t" x="425" y="36">Record</text><text class="dg-sub" x="425" y="56">item of the enclosing xo-view</text></g>
@@ -159,9 +206,10 @@
 <text class="dg-lab dg-end" x="158" y="418">value, error note</text>
 <path class="dg-line" d="M390 442 L390 394" marker-end="url(#fm-model-a)"/>
 <text class="dg-lab dg-start" x="402" y="418">input, change, focusout</text>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M135 72 L135 104" marker-end="url(#fm-model-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.033;0.047;0.111;0.144;1"/></path><path class="dg-hot" d="M135 162 L135 188 L200 188 L200 214" marker-end="url(#fm-model-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.122;0.136;0.2;0.233;1"/></path><path class="dg-hot" d="M425 72 L425 188 L360 188 L360 214" marker-end="url(#fm-model-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.122;0.136;0.2;0.233;1"/></path><path class="dg-hot" d="M170 288 L170 336" marker-end="url(#fm-model-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.211;0.224;0.289;0.322;0.633;0.647;0.711;0.744;1"/></path><path class="dg-hot" d="M390 336 L390 288" marker-end="url(#fm-model-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.544;0.558;0.622;0.656;1"/></path><path class="dg-hot" d="M170 394 L170 442" marker-end="url(#fm-model-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.3;0.313;0.378;0.411;0.722;0.736;0.8;0.833;1"/></path><path class="dg-hot" d="M390 442 L390 394" marker-end="url(#fm-model-ah)" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.456;0.469;0.533;0.567;1"/></path><rect class="dg-glow" x="10" y="14" width="250" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.033;0.047;0.053;0.072;1"/></rect><rect class="dg-glow" x="10" y="104" width="250" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.1;0.113;0.139;0.167;1"/></rect><rect class="dg-glow" x="300" y="14" width="250" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.122;0.136;0.142;0.161;1"/></rect><rect class="dg-glow" x="80" y="214" width="400" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.189;0.202;0.228;0.256;0.611;0.624;0.65;0.678;1"/></rect><rect class="dg-glow" x="80" y="336" width="400" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.278;0.291;0.317;0.344;0.522;0.536;0.561;0.589;0.7;0.713;0.739;0.767;1"/></rect><rect class="dg-glow" x="80" y="442" width="400" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.367;0.38;0.406;0.433;0.456;0.469;0.475;0.494;0.789;0.802;0.828;0.856;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M135 72 L135 104" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.033;0.111;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.033;0.05;0.094;0.111;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M135 162 L135 188 L200 188 L200 214" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.122;0.2;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.122;0.139;0.183;0.2;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M425 72 L425 188 L360 188 L360 214" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.122;0.2;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.122;0.139;0.183;0.2;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M170 288 L170 336" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.211;0.289;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.211;0.228;0.272;0.289;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M170 288 L170 336" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.633;0.711;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.633;0.65;0.694;0.711;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M390 336 L390 288" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.544;0.622;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.544;0.561;0.606;0.622;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M170 394 L170 442" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.3;0.378;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.3;0.317;0.361;0.378;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M170 394 L170 442" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.722;0.8;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.722;0.739;0.783;0.8;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="9s" begin="0s" repeatCount="indefinite" path="M390 442 L390 394" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.456;0.533;1"/><animate attributeName="opacity" dur="9s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.456;0.472;0.517;0.533;1"/></circle></g>
 </svg>
 </div>
-<p class="hint">The model is the single source of truth. The DOM is a view of it: values go out through effects, changes come back through delegated events.</p>
+<div class="dg-cap"><p class="hint">The model is the single source of truth. The DOM is a view of it: values go out through effects, changes come back through delegated events. <span class="dg-motion">In motion, a dot follows the road in order. The schema becomes the bodySchema and, with the record, makes the model; the model's values go out through the binder to the controls. Then a change a person makes comes back as set(path, raw), and the new value and error go out again.</span></p></div>
 </figure>
 <ol>
 <li><strong><code>bodySchema</code>.</strong> <code>xoong sync</code> converts the JSON request body of an operation into a compact node tree and stores it in <code>operations.json</code>. A node has a type <code>t</code> (<code>string</code>, <code>integer</code>, <code>number</code>, <code>boolean</code>, <code>object</code>, <code>array</code>, <code>union</code>, <code>any</code>) and the rules that OpenAPI states: <code>format</code>, <code>enum</code>, length, range, <code>pattern</code>, <code>nullable</code>, <code>readOnly</code>, <code>default</code>, <code>title</code>, <code>description</code>. <code>allOf</code> is merged; <code>oneOf: [X, null]</code> is a nullable X; a <code>oneOf</code> of objects becomes a <code>union</code> when a discriminator or a property with one fixed value per member tells them apart. Otherwise the node is <code>any</code>, which is accepted as it is and not drawn by <code>&lt;xo-form&gt;</code>, and <code>xoong doctor</code> warns (XO161). A multipart body has no <code>bodySchema</code>: <code>xo-submit</code> sends <code>FormData</code>.</li>
@@ -261,6 +309,7 @@ form.serialize = (draft, body) =&gt; body;        <span class="tok-c">// the esc
 <text class="dg-lab dg-start" x="158" y="389">ok</text>
 <path class="dg-line" d="M290 329 L350 329" marker-end="url(#fm-submit-a)"/>
 <text class="dg-lab" x="320" y="316">error</text>
+
 </svg>
 </div>
 <p class="hint">Nothing leaves the page until the model says the draft is valid.</p>

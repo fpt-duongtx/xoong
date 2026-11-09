@@ -102,11 +102,18 @@ const TOP = [['home', 'index.html', 'Home'], ['docs', 'overview.html', 'Docs'], 
 /** A code card in the brand's "window" look (highlighted when the page is generated). */
 export const codeCard = (name, lang, src) => `<div class="window"><div class="bar"><i></i><i></i><i></i><span>${esc(name)}</span></div>${code(lang, src)}</div>`;
 
+/** The order of the sidebar groups: what you do first, then how you build, then reference, then the inside. A page names its group; this decides where it sits. */
+const GROUP_ORDER = ['Start', 'Guides', 'Overlays', 'Controls', 'Design', 'Extend', 'Architecture', 'Live demos'];
+/** Full-page demos: not documentation pages (they have their own layout), so they are listed in the sidebar but are not in the Previous/Next pager. */
+const EXTRA = { 'Live demos': [{ file: 'live-admin.html', nav: 'Admin app' }, { file: 'live-landing.html', nav: 'Landing site' }] };
+const rank = (group) => (GROUP_ORDER.includes(group) ? GROUP_ORDER.indexOf(group) : GROUP_ORDER.length);
+
 export function layout({ pages, page }) {
-  const docs = pages.filter((p) => p.group);
+  const docs = pages.filter((p) => p.group).sort((a, b) => rank(a.group) - rank(b.group)); // a stable sort: pages keep their order inside a group
   const link = (p) => `<a href="${p.file}"${p.file === page.file ? ' aria-current="page"' : ''}>${esc(p.nav)}</a>`;
+  const demoLink = (p) => `<a href="${p.file}" title="A full-page demo, outside the docs">${esc(p.nav)}<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>`;
   const groups = [...new Set(docs.map((p) => p.group))];
-  const side = groups.map((g) => `<h2>${esc(g)}</h2>\n${docs.filter((p) => p.group === g).map(link).join('\n')}`).join('\n');
+  const side = groups.map((g) => `<div class="grp">\n<h2>${esc(g)}</h2>\n${[...docs.filter((p) => p.group === g).map(link), ...(EXTRA[g] ?? []).map(demoLink)].join('\n')}\n</div>`).join('\n');
   const i = docs.indexOf(page);
   const prev = docs[i - 1], next = docs[i + 1];
   const pager = `<nav class="pager" aria-label="Pages">${prev ? `<a rel="prev" href="${prev.file}"><small>Previous</small><span>${esc(prev.nav)}</span></a>` : '<span></span>'}${next ? `<a rel="next" href="${next.file}"><small>Next</small><span>${esc(next.nav)}</span></a>` : '<span></span>'}</nav>`;
@@ -179,7 +186,7 @@ ${page.body}
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
-  <script type="module" src="src/site.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}${page.classic ? `\n  <script src="src/${page.classic}" defer></script>` : ''}
+  <script type="module" src="src/site.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.body.includes('dg-anim') ? '\n  <script type="module" src="src/diagrams.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}${page.classic ? `\n  <script src="src/${page.classic}" defer></script>` : ''}
 </head>
 <body${page.group ? ' class="shell-page"' : ''}>
   <header class="top">

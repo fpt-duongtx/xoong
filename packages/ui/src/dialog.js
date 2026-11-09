@@ -6,10 +6,22 @@
  *
  * The dialog also closes when a form inside it succeeds (`xo-done`). Escape, focus trapping and the
  * backdrop come from the browser's <dialog>; nothing is reimplemented.
+ *
+ * With `heading` it is a titled modal (the kit's dialog.xo-modal): a header with the title and a Close button, the content as the body, and the
+ * elements marked `slot="footer"` as the footer. `size="sm|wide|full"` changes the width and `dismiss` closes it on a click outside it.
+ *
+ *   <xo-dialog id="edit" heading="Edit person" size="wide" dismiss>
+ *     <xo-form op="updatePerson" ...></xo-form>
+ *     <button slot="footer" type="button" xo-close>Cancel</button>
+ *   </xo-dialog>
  */
 import { XoElement, define } from '@xoong/core';
+import { text } from '@xoong/core';
+
+let counter = 0;
 
 class XoDialog extends XoElement {
+  static props = { heading: String, size: String };
   /** @type {HTMLDialogElement | null} */ #dialog = null;
 
   connected() {
@@ -21,10 +33,42 @@ class XoDialog extends XoElement {
   #wrap() {
     if (this.#dialog || !this.isConnected) return;
     const dialog = document.createElement('dialog');
-    dialog.append(...this.childNodes);
+    if (this.heading) this.#modal(dialog); else dialog.append(...this.childNodes);
     this.append(dialog);
     this.#dialog = dialog;
     this.addEventListener('xo-done', () => this.close());
+    if (this.hasAttribute('dismiss')) {
+      dialog.addEventListener('click', (event) => {
+        const r = dialog.getBoundingClientRect();
+        if (r.width && (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom)) this.close(); // the backdrop is part of the dialog's box model
+      });
+    }
+  }
+
+  /** A titled modal: header (title and Close), body, and the footer the author marked. @param {HTMLDialogElement} dialog */
+  #modal(dialog) {
+    const id = `xo-modal-${++counter}`;
+    dialog.className = `xo-modal${this.size === 'wide' || this.size === 'full' || this.size === 'sm' ? ` xo-modal--${this.size}` : ''}`;
+    dialog.setAttribute('aria-labelledby', id);
+    const head = document.createElement('div');
+    head.className = 'xo-modal__head';
+    const title = document.createElement('h2');
+    title.id = id;
+    title.textContent = this.heading;
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'icon-only ghost';
+    close.setAttribute('xo-close', '');
+    close.setAttribute('aria-label', text('xoong.dialog.close', 'Close'));
+    close.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>';
+    head.append(title, close);
+    const body = document.createElement('div');
+    body.className = 'xo-modal__body';
+    const foot = document.createElement('div');
+    foot.className = 'xo-modal__foot';
+    for (const node of [...this.childNodes]) (node instanceof Element && node.getAttribute('slot') === 'footer' ? foot : body).append(node);
+    dialog.append(head, body);
+    if (foot.childElementCount) dialog.append(foot);
   }
 
   get dialog() { return this.#dialog; }

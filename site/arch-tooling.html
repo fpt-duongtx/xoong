@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
@@ -53,17 +54,48 @@
     </div>
   </header>
   <details class="docs-menu"><summary><span>Menu · <span class="here">Tooling and tests</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
     <h2>Start</h2>
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
     <h2>Guides</h2>
     <a href="data.html">Data and tables</a>
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
     <h2>Architecture</h2>
     <a href="arch-overview.html">Layers</a>
     <a href="arch-data-flow.html">Data flow</a>
@@ -72,35 +104,58 @@
     <a href="arch-routing.html">Router</a>
     <a href="arch-build.html">Build and delivery</a>
     <a href="arch-tooling.html" aria-current="page">Tooling and tests</a>
-    <h2>Controls</h2>
-    <a href="controls.html">Overview</a>
-    <a href="tabs.html">Tabs</a>
-    <a href="menu.html">Menu and tooltip</a>
-    <a href="combobox.html">Combobox and tags</a>
-    <a href="more-controls.html">More controls</a>
-    <a href="carousel.html">Carousel</a>
-    <a href="own-control.html">Your own control</a>
-    <a href="components.html">Standard</a>
-    <a href="controls-demo.html">All controls</a>
-    <a href="overlays.html">Overlays</a>
-    <a href="focus-audit.html">Focus audit</a>
-    <a href="icons.html">Icons</a>
-    <h2>Demo</h2>
-    <a href="demo.html">Live demo</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
   </nav></details>
   <div class="shell">
     <nav class="side" aria-label="Documentation">
+      <div class="grp">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
       <h2>Architecture</h2>
       <a href="arch-overview.html">Layers</a>
       <a href="arch-data-flow.html">Data flow</a>
@@ -109,21 +164,13 @@
       <a href="arch-routing.html">Router</a>
       <a href="arch-build.html">Build and delivery</a>
       <a href="arch-tooling.html" aria-current="page">Tooling and tests</a>
-      <h2>Controls</h2>
-      <a href="controls.html">Overview</a>
-      <a href="tabs.html">Tabs</a>
-      <a href="menu.html">Menu and tooltip</a>
-      <a href="combobox.html">Combobox and tags</a>
-      <a href="more-controls.html">More controls</a>
-      <a href="carousel.html">Carousel</a>
-      <a href="own-control.html">Your own control</a>
-      <a href="components.html">Standard</a>
-      <a href="controls-demo.html">All controls</a>
-      <a href="overlays.html">Overlays</a>
-      <a href="focus-audit.html">Focus audit</a>
-      <a href="icons.html">Icons</a>
-      <h2>Demo</h2>
-      <a href="demo.html">Live demo</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
     </nav>
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Tooling and tests</span></div>
@@ -132,12 +179,12 @@
 <p class="lead">The tools exist so that a mistake is caught where it is made, with a message that contains the fix. One rule engine serves the command line, the editor and AI assistants, and the tests run the real framework with only the network replaced.</p>
 
 <h2 id="one-check-engine">One check engine</h2>
-<figure class="dg-fig">
+<figure class="dg-fig dg-anim">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: one check engine, three front ends">
 <svg class="dg dg-sm" viewBox="0 0 590 290" role="img" aria-labelledby="tl-engine-t tl-engine-d">
 <title id="tl-engine-t">One check engine, three front ends</title>
-<desc id="tl-engine-d">Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants.</desc>
-<defs><marker id="tl-engine-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<desc id="tl-engine-d">Three inputs feed the check engine: operations.json written by xoong sync, the list of xo-star names in syntax.js, and your HTML, JavaScript and TypeScript files. The engine, with its functions checkHtml and checkScript, produces findings with codes XO2xx. Three front ends show the same findings: the xoong check command for the terminal and CI, the xoong-lsp language server for editors, and the xoong-mcp server for AI assistants. When the animation plays, dots go from the three inputs into the engine together, and then out to the three front ends together: one set of findings, shown three ways.</desc>
+<defs><marker id="tl-engine-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="tl-engine-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="10" y="14" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="44">operations.json</text><text class="dg-sub" x="110" y="64">from xoong sync</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="104" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="134">syntax.js</text><text class="dg-sub" x="110" y="154">every xo-* name</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="194" width="200" height="74" rx="8"/><text class="dg-t" x="110" y="224">Your files</text><text class="dg-sub" x="110" y="244">HTML, JS, TS</text></g>
@@ -151,9 +198,10 @@
 <path class="dg-line" d="M400 100 L432 51" marker-end="url(#tl-engine-a)"/>
 <path class="dg-line" d="M400 150 L432 141" marker-end="url(#tl-engine-a)"/>
 <path class="dg-line" d="M400 200 L432 231" marker-end="url(#tl-engine-a)"/>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M210 51 L250 100" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.262;0.308;1"/></path><path class="dg-hot" d="M210 141 L250 150" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.262;0.308;1"/></path><path class="dg-hot" d="M210 231 L250 200" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.262;0.308;1"/></path><path class="dg-hot" d="M400 100 L432 51" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.403;0.6;0.646;1"/></path><path class="dg-hot" d="M400 150 L432 141" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.403;0.6;0.646;1"/></path><path class="dg-hot" d="M400 200 L432 231" marker-end="url(#tl-engine-ah)" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.403;0.6;0.646;1"/></path><rect class="dg-glow" x="10" y="14" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="10" y="104" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="10" y="194" width="200" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.065;0.073;0.1;1"/></rect><rect class="dg-glow" x="250" y="54" width="150" height="190" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0;1;1;0;0" keyTimes="0;0.246;0.265;0.3;0.338;0.385;0.403;0.412;0.438;1"/></rect><rect class="dg-glow" x="432" y="14" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.585;0.603;0.638;0.677;1"/></rect><rect class="dg-glow" x="432" y="104" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.585;0.603;0.638;0.677;1"/></rect><rect class="dg-glow" x="432" y="194" width="150" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.585;0.603;0.638;0.677;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M210 51 L250 100" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.262;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.238;0.262;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M210 141 L250 150" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.262;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.238;0.262;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M210 231 L250 200" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.046;0.262;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.046;0.069;0.238;0.262;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M400 100 L432 51" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.385;0.6;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.408;0.577;0.6;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M400 150 L432 141" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.385;0.6;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.408;0.577;0.6;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="6.5s" begin="0s" repeatCount="indefinite" path="M400 200 L432 231" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.385;0.6;1"/><animate attributeName="opacity" dur="6.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.385;0.408;0.577;0.6;1"/></circle></g>
 </svg>
 </div>
-<p class="hint">A new rule is written once and appears in every front end with the same message and the same fix.</p>
+<div class="dg-cap"><p class="hint">A new rule is written once and appears in every front end with the same message and the same fix. <span class="dg-motion">In motion, dots go from the three inputs into the engine together, and then out to the three front ends together: one set of findings, shown three ways.</span></p></div>
 </figure>
 <p><code>xoong check &lt;files or folders&gt;</code> lints screens against your API. The engine is <code>checkHtml(source, table, file)</code> for HTML and <code>checkScript(source, table, file)</code> for JavaScript and TypeScript. It parses HTML with <code>parse5</code> and keeps exact line and column. In scripts it reads the HTML inside <code>html`...`</code> templates and the operation named in a string passed to <code>client.load</code>, <code>query</code>, <code>mutate</code> or <code>stream</code>, on something that looks like a client (<code>client</code>, <code>apiClient</code>, <code>getClient()</code>, <code>xo</code>); a name built at run time is not checked. It knows your operations from <code>operations.json</code> and the framework's names from <code>syntax.js</code>.</p>
 <p>Every finding has a stable code, a place, a message and a fix. The output, and the process exit code (1 when there is an error), are the same in the terminal and in CI:</p>
@@ -187,7 +235,7 @@
 
 <h2 id="for-ai-assistants-llms-txt-and-the-mcp-server">For AI assistants: llms.txt and the MCP server</h2>
 <p><code>llms.txt</code>, at the root of the repository and on this site, is the whole public API in about 1,800 tokens, with the rules an assistant must follow. A test keeps it honest: it must stay under the budget, name only commands that exist, and mention exactly the <code>xo-*</code> names the code defines.</p>
-<p><code>xoong-mcp</code> is a Model Context Protocol server: JSON-RPC 2.0 over stdio with one message per line, written without an SDK. It has five tools, which make a loop: <code>get_spec</code> (the <code>llms.txt</code>), <code>list_operations</code> (the real names from <code>operations.json</code>), write the screen, <code>check</code> (HTML or script source in, findings out), fix from the message; <code>explain_error</code> says what a code means; <code>search_docs</code> searches a docs folder. A test makes sure <code>explain_error</code> covers every code that <code>check</code> can print. A <code>scaffold</code> tool is not built yet.</p>
+<p><code>xoong-mcp</code> is a Model Context Protocol server: JSON-RPC 2.0 over stdio with one message per line, written without an SDK. It has six tools, which make a loop: <code>get_spec</code> (the <code>llms.txt</code>), <code>list_operations</code> (the real names from <code>operations.json</code>), write the screen, <code>check</code> (HTML or script source in, findings out), fix from the message; <code>explain_error</code> says what a code means; <code>explain_syntax</code> says what an element or attribute does and which values it takes; <code>search_docs</code> searches the bundled docs and a project's own. A test makes sure <code>explain_error</code> covers every code that <code>check</code> can print. A <code>scaffold</code> tool is not built yet.</p>
 <xo-tabs label="MCP" class="example">
   <section xo-tab="Settings"><pre data-lang="json" tabindex="0"><code>{ <span class="tok-a">"mcpServers"</span>: { <span class="tok-a">"xoong"</span>: { <span class="tok-a">"command"</span>: <span class="tok-s">"npx"</span>, <span class="tok-a">"args"</span>: [<span class="tok-s">"xoong-mcp"</span>] } } }</code></pre></section>
 </xo-tabs>
@@ -224,6 +272,7 @@ api.unhandled;                 <span class="tok-c">// [] means nothing unexpecte
 <g class="dg-node"><rect class="dg-box" x="10" y="94" width="540" height="58" rx="8"/><text class="dg-t" x="280" y="116">Screen tests (happy-dom)</text><text class="dg-sub" x="280" y="136">mount() and mockApi(): a real DOM, a fake network</text></g>
 <g class="dg-node"><rect class="dg-box dg-k-soft" x="10" y="174" width="540" height="58" rx="8"/><text class="dg-t" x="280" y="196">Real-browser tests (Chromium)</text><text class="dg-sub" x="280" y="216">templates, router, controls, strict-CSP build, two-tab end to end</text></g>
 <g class="dg-node"><rect class="dg-box dg-k-core" x="10" y="254" width="540" height="58" rx="8"/><text class="dg-t" x="280" y="276">Documentation site tests</text><text class="dg-sub" x="280" y="296">built under /xoong with the CSP: axe, focus indicators, 390 px</text></g>
+
 </svg>
 </div>
 <p class="hint">Four layers. Cheap and fast on top, realistic at the bottom; each catches what the one above cannot.</p>
@@ -248,7 +297,7 @@ api.unhandled;                 <span class="tok-c">// [] means nothing unexpecte
 <li><code>packages/cli/src/openapi.js</code>: the analysis and the <code>doctor</code> problems</li>
 <li><code>packages/cli/src/html-data.js</code>: the editor data, written by <code>sync</code></li>
 <li><code>packages/lsp/src/server.js, cli.js</code>: the language server and its stdio framing</li>
-<li><code>packages/mcp/src/server.js</code>: the five tools and <code>EXPLANATIONS</code></li>
+<li><code>packages/mcp/src/server.js</code>: the six tools and <code>EXPLANATIONS</code></li>
 <li><code>packages/test/src/index.js</code>: <code>mockApi</code> and <code>mount</code></li>
 <li><code>vitest.config.mjs</code>: the two projects and the coverage thresholds</li>
 <li><code>tools/axe.mjs, tools/focus.mjs, tools/browser.mjs</code>: the accessibility and browser helpers</li>
@@ -256,7 +305,7 @@ api.unhandled;                 <span class="tok-c">// [] means nothing unexpecte
 <li><code>docs/testing.md, docs/ai-integration.md, docs/editor-integration.md</code>: the longer notes</li>
 </ul>
 
-<nav class="pager" aria-label="Pages"><a rel="prev" href="arch-build.html"><small>Previous</small><span>Build and delivery</span></a><a rel="next" href="controls.html"><small>Next</small><span>Overview</span></a></nav>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="arch-build.html"><small>Previous</small><span>Build and delivery</span></a><a rel="next" href="demo.html"><small>Next</small><span>All demos</span></a></nav>
     </main>
     <aside class="rail" aria-label="On this page">
       <h2>On this page</h2>

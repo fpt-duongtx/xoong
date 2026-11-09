@@ -7,7 +7,7 @@ tarball per package and a `consume.json`. All packages share the version number.
 
 ```bash
 # in your project (the repository is public: `gh` needs no sign-in for it)
-gh release download v0.0.45 -R fpt-duongtx/xoong -D vendor/xoong
+gh release download v0.0.46 -R fpt-duongtx/xoong -D vendor/xoong
 ```
 
 Then copy `dependencies` (only what you import) and the whole `overrides` from `vendor/xoong/consume.json` into your `package.json`
@@ -15,8 +15,8 @@ Then copy `dependencies` (only what you import) and the whole `overrides` from `
 
 ```json
 {
-  "dependencies": { "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-0.0.45.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.45.tgz" },
-  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.45.tgz", "...": "every package listed in consume.json" }
+  "dependencies": { "@xoong/xoong": "file:./vendor/xoong/xoong-xoong-0.0.46.tgz", "@xoong/ui": "file:./vendor/xoong/xoong-ui-0.0.46.tgz" },
+  "overrides": { "@xoong/core": "file:./vendor/xoong/xoong-core-0.0.46.tgz", "...": "every package listed in consume.json" }
 }
 ```
 
@@ -34,12 +34,13 @@ checkout directly (no tarballs).
 
 ## Serving an app in production
 
-Use `xoong build` (it needs only your project, no bundler): `xoong build --root . --out dist [--base /admin] [--include public] [--exclude 'screens/**']` (`--help` prints the options; unknown options are refused; an output folder inside the root is never read as input). It follows the
-Every `.html` file under the root is a page. HTML that is not (partials, fixtures, drafts) is kept out with `--exclude <glob>` (repeatable) or `"build": { "exclude": ["screens/**", "*.draft.html"] }` in `xoong.config.json`: paths relative to the root, `*` stays in a folder, `**` crosses folders, a name without `/` matches at any depth, a trailing `/` is a folder. A file that a page references is still published. `xoong check` takes `--exclude` too, and `"check": { "exclude": [...] }` in the config.
+Use `xoong build` (it needs only your project, no bundler): `xoong build --root . --out dist [--base /admin] [--include public] [--exclude 'screens/**']` (`--help` prints the options; unknown options are refused, in every `xoong` command; an output folder inside the root is never read as input). It follows the
 HTML pages, rewrites package imports to URLs (no import map), strips TypeScript, copies what is referenced, and prints the Content-Security-Policy
 the output is tested with ([security.md](security.md)). Serve `dist` as static files, with the pages' routes answering the app's HTML if you use
 `<xo-router>`. Nothing is minified or bundled yet: the files are the ones you wrote, and `dist/build-report.json` lists sizes (also gzipped).
+Every `.html` file under the root is a page. HTML that is not (partials, fixtures, drafts) is kept out with `--exclude <glob>` (repeatable) or `"build": { "exclude": ["screens/**", "*.draft.html"] }` in `xoong.config.json`: paths relative to the root, `*` stays in a folder, `**` crosses folders, a name without `/` matches at any depth, a trailing `/` is a folder. A file that a page references is still published. `xoong check` takes `--exclude` too, and `"check": { "exclude": [...] }` in the config.
 The build also lists, on every page, the modules its scripts import as `<link rel="modulepreload">` (static imports only; a dynamic `import()` stays lazy), so the browser fetches the whole chain at once instead of one import level at a time. `--no-preload` or `"build": { "preload": false }` turns it off.
+The build follows `src`, `poster`, a `<link>`'s `href` and every URL of a `srcset` (`<img>`, `<source>`, and `imagesrcset` of `<link rel="preload">`): each file is copied and, with `--base`, prefixed, and the descriptors (`1x`, `480w`) stay. `<a href>` is left as written on purpose: a link to another page is for the router, or a plain relative link, to resolve.
 
 ## What a drop promises
 

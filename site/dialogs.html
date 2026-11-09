@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dialogs and modals · xoong</title>
+  <meta name="description" content="Confirmation, warning, info and error dialogs, a prompt, a choice, and a titled modal: built in, native, accessible.">
+  <meta property="og:title" content="Dialogs and modals · xoong">
+  <meta property="og:description" content="Confirmation, warning, info and error dialogs, a prompt, a choice, and a titled modal: built in, native, accessible.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/page-dialogs.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Dialogs and modals</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html" aria-current="page">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html" aria-current="page">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Overlays</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Dialogs and modals</span></div>
+
+<h1>Dialogs and modals</h1>
+<p class="lead">The common questions are built in: <code>confirm</code>, <code>alert</code>, <code>prompt</code> and <code>ask</code>, plus a titled modal, <code>&lt;xo-dialog heading&gt;</code>. They are the browser's own <code>&lt;dialog&gt;</code>: the page behind is inert, the focus stays inside, Escape answers "no". Import <code>@xoong/ui</code> and they work; there is nothing to configure.</p>
+<xo-toast></xo-toast>
+
+<h2 id="which-one-to-use">Which one to use</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>You want to</th><th>Use</th><th>Blocks the page</th></tr></thead>
+<tbody>
+<tr><td>Ask yes or no before something that cannot be undone</td><td><code>confirm()</code>, or <code>xo-confirm</code> on a button</td><td>Yes</td></tr>
+<tr><td>Tell the person something they must see (info, success, warning, error)</td><td><code>alert()</code></td><td>Yes</td></tr>
+<tr><td>Ask for one line of text</td><td><code>prompt()</code></td><td>Yes</td></tr>
+<tr><td>Offer two or three named choices (Save, Don't save, Keep editing)</td><td><code>ask()</code></td><td>Yes</td></tr>
+<tr><td>Show a form or any content in a window</td><td><code>&lt;xo-dialog heading&gt;</code></td><td>Yes</td></tr>
+<tr><td>Say "done" without asking anything, maybe with Undo</td><td>A toast: <code>xo-notice</code> or <code>toast.show()</code></td><td>No</td></tr>
+<tr><td>Show a small panel next to a button</td><td><a href="more-controls.html"><code>&lt;xo-popover&gt;</code></a></td><td>No</td></tr>
+<tr><td>List actions for one item</td><td><a href="menu.html"><code>&lt;xo-menu&gt;</code></a></td><td>No</td></tr>
+<tr><td>Explain an icon button on hover or focus</td><td><a href="menu.html"><code>xo-tooltip</code></a></td><td>No</td></tr>
+</tbody></table></div>
+<p>Rule of thumb: block the page only when the person must decide or must see it. Everything that can be undone is better as a toast with Undo than as a question.</p>
+
+<h2 id="confirmation">Confirmation</h2>
+<p><code>confirm(message, options)</code> resolves to <code>true</code> or <code>false</code>. The focus starts on Cancel, the safe choice. With no <code>kind</code> the confirming button is red, as for a delete. A <code>kind</code> of <code>warning</code>, <code>info</code> or <code>success</code> adds an icon and colours the button to match; <code>title</code> adds a heading and <code>detail</code> a second, quieter line.</p>
+<xo-tabs label="confirm()" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <p class="toolbar">
+      <button data-demo="confirm-plain">Plain</button>
+      <button data-demo="confirm-danger">Danger</button>
+      <button data-demo="confirm-warning">Warning</button>
+      <button data-demo="confirm-info">Info</button>
+    </p>
+    <p class="hint">Answer: <output id="out-confirm">nothing yet</output></p>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"confirm-plain"</span>&gt;Plain&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"confirm-danger"</span>&gt;Danger&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"confirm-warning"</span>&gt;Warning&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"confirm-info"</span>&gt;Info&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">p</span>&gt;
+&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Answer: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"out-confirm"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { confirm } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+<span class="tok-k">if</span> (<span class="tok-k">await</span> confirm(<span class="tok-s">'The 14 articles in it are deleted too.'</span>, {
+  kind: <span class="tok-s">'danger'</span>,          <span class="tok-c">// 'danger' | 'warning' | 'info' | 'success'</span>
+  title: <span class="tok-s">'Delete project?'</span>,
+  ok: <span class="tok-s">'Delete'</span>,            <span class="tok-c">// the text of the confirming button</span>
+  cancel: <span class="tok-s">'Keep it'</span>,
+  detail: <span class="tok-s">'You can restore it for 30 days.'</span>,
+})) {
+  <span class="tok-c">// go on</span>
+}</code></pre></section>
+</xo-tabs>
+<p>On a button that runs an operation, the same question is an attribute. The extra attributes tune the dialog; the button is red unless <code>xo-confirm-kind</code> says otherwise.</p>
+<xo-tabs label="xo-confirm" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"deletePerson"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Delete <span class="tok-i">{name}</span>? Their posts stay."</span>
+        <span class="tok-a">xo-confirm-title</span>=<span class="tok-s">"Delete person"</span> <span class="tok-a">xo-confirm-ok</span>=<span class="tok-s">"Delete"</span> <span class="tok-a">xo-confirm-kind</span>=<span class="tok-s">"danger"</span> <span class="tok-a">xo-notice</span>=<span class="tok-s">"Deleted"</span>&gt;Delete&lt;/<span class="tok-t">button</span>&gt;
+
+&lt;<span class="tok-t">button</span> <span class="tok-a">xo-click</span>=<span class="tok-s">"publishPost"</span> <span class="tok-a">xo-confirm</span>=<span class="tok-s">"Subscribers get an e-mail."</span> <span class="tok-a">xo-confirm-kind</span>=<span class="tok-s">"info"</span>
+        <span class="tok-a">xo-confirm-title</span>=<span class="tok-s">"Publish now?"</span> <span class="tok-a">xo-confirm-ok</span>=<span class="tok-s">"Publish"</span>&gt;Publish&lt;/<span class="tok-t">button</span>&gt;</code></pre></section>
+</xo-tabs>
+
+<h2 id="alert-info-success-warning-error">Alert: info, success, warning, error</h2>
+<p><code>alert(message, options)</code> shows one OK button and resolves when it is closed. <code>kind</code> defaults to <code>info</code>; use <code>success</code>, <code>warning</code> or <code>danger</code> (also written <code>error</code>). The focus starts on OK. An alert is announced as an <code>alertdialog</code> with the title as its name and the message as its description.</p>
+<xo-tabs label="alert()" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <p class="toolbar">
+      <button data-demo="alert-info">Info</button>
+      <button data-demo="alert-success">Success</button>
+      <button data-demo="alert-warning">Warning</button>
+      <button data-demo="alert-error">Error</button>
+    </p>
+    <p class="hint">Result: <output id="out-alert">nothing yet</output></p>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"alert-info"</span>&gt;Info&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"alert-success"</span>&gt;Success&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"alert-warning"</span>&gt;Warning&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"alert-error"</span>&gt;Error&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">p</span>&gt;
+&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Result: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"out-alert"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { alert } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+<span class="tok-k">await</span> alert(<span class="tok-s">'We e-mail you when the file is ready.'</span>, { title: <span class="tok-s">'Export started'</span> });                  <span class="tok-c">// info</span>
+<span class="tok-k">await</span> alert(<span class="tok-s">'Your changes are live.'</span>, { kind: <span class="tok-s">'success'</span>, title: <span class="tok-s">'Published'</span> });
+<span class="tok-k">await</span> alert(<span class="tok-s">'Two of the five images have no description.'</span>, { kind: <span class="tok-s">'warning'</span>, title: <span class="tok-s">'Saved with warnings'</span> });
+<span class="tok-k">await</span> alert(<span class="tok-s">'The file is larger than 10 MB.'</span>, { kind: <span class="tok-s">'error'</span>, title: <span class="tok-s">'Upload failed'</span>, detail: <span class="tok-s">'Choose a smaller file.'</span> });</code></pre></section>
+</xo-tabs>
+
+<h2 id="prompt">Prompt</h2>
+<p><code>prompt(message, options)</code> asks for a line of text: it resolves with the text, or <code>null</code> when cancelled. The field is a native input, so <code>type</code>, <code>required</code> and <code>pattern</code> are checked by the browser, Enter submits, and an empty required field keeps the dialog open and marks the field invalid.</p>
+<xo-tabs label="prompt()" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <p class="toolbar">
+      <button data-demo="prompt">Name a view</button>
+      <button data-demo="prompt-required">Required web address</button>
+    </p>
+    <p class="hint">Answer: <output id="out-prompt">nothing yet</output></p>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"prompt"</span>&gt;Name a view&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"prompt-required"</span>&gt;Required web address&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">p</span>&gt;
+&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Answer: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"out-prompt"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { prompt } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+<span class="tok-k">const</span> name = <span class="tok-k">await</span> prompt(<span class="tok-s">'Name this view'</span>, { title: <span class="tok-s">'Save view'</span>, label: <span class="tok-s">'Name'</span>, value: <span class="tok-s">'My view'</span> });
+<span class="tok-k">if</span> (name !== <span class="tok-k">null</span>) save(name);                       <span class="tok-c">// null means cancelled</span>
+
+<span class="tok-k">const</span> href = <span class="tok-k">await</span> prompt(<span class="tok-s">'Where should the link point?'</span>, { label: <span class="tok-s">'Address'</span>, type: <span class="tok-s">'url'</span>, required: <span class="tok-k">true</span> });</code></pre></section>
+</xo-tabs>
+
+<h2 id="choices">Choices</h2>
+<p><code>ask(message, { buttons })</code> offers any set of choices and resolves with the <code>value</code> of the one pressed. Mark one button <code>primary</code> (the filled one), one <code>danger</code> if it destroys something, and one <code>cancel</code>: Escape answers with its value, and the focus starts on it. Without a <code>cancel</code> button, Escape resolves <code>null</code>.</p>
+<xo-tabs label="ask()" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <p class="toolbar"><button data-demo="ask">Leave with unsaved changes</button></p>
+    <p class="hint">Answer: <output id="out-ask">nothing yet</output></p>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"ask"</span>&gt;Leave with unsaved changes&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
+&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Answer: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"out-ask"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { ask } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+<span class="tok-k">const</span> answer = <span class="tok-k">await</span> ask(<span class="tok-s">'You have unsaved changes.'</span>, {
+  kind: <span class="tok-s">'warning'</span>,
+  title: <span class="tok-s">'Leave this page?'</span>,
+  buttons: [
+    { label: <span class="tok-s">"Don't save"</span>, value: <span class="tok-s">'discard'</span>, danger: <span class="tok-k">true</span> },
+    { label: <span class="tok-s">'Keep editing'</span>, value: <span class="tok-s">'stay'</span>, cancel: <span class="tok-k">true</span> },
+    { label: <span class="tok-s">'Save and leave'</span>, value: <span class="tok-s">'save'</span>, primary: <span class="tok-k">true</span> },
+  ],
+});
+<span class="tok-c">// 'discard' | 'stay' | 'save'</span></code></pre></section>
+</xo-tabs>
+
+<h2 id="a-titled-modal">A titled modal</h2>
+<p>Give <code>&lt;xo-dialog&gt;</code> a <code>heading</code> and it becomes a window: a header with the title and a Close button, the content as the body, and anything marked <code>slot="footer"</code> as the footer. <code>size</code> is <code>sm</code>, the default, <code>wide</code> or <code>full</code>; on a phone it fills the screen. <code>dismiss</code> closes it on a click outside it, which is right for a harmless dialog and wrong for a form with unsaved input, so it is off by default.</p>
+<p>A footer button outside the form still submits it with <code>form="id"</code>; with <code>method="dialog"</code> the form closes the dialog and the button's <code>value</code> is the answer.</p>
+<xo-tabs label="&lt;xo-dialog heading&gt;" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <p class="toolbar">
+      <button xo-open="#d-edit">Edit person</button>
+      <button xo-open="#d-small">Small, click outside closes</button>
+      <button xo-open="#d-wide">Wide</button>
+    </p>
+    <p class="hint">Closed by: <output id="out-modal">nothing yet</output></p>
+    
+    <xo-dialog id="d-edit" heading="Edit person" data-out="out-modal">
+      <form method="dialog" id="edit-form" class="xo-fields">
+        <label>Name <input name="name" value="Ada Lovelace" autocomplete="off"></label>
+        <label>E-mail <input type="email" name="email" value="ada@example.org" autocomplete="off"></label>
+      </form>
+      <button slot="footer" type="button" xo-close>Cancel</button>
+      <button slot="footer" type="submit" form="edit-form" value="saved" class="primary">Save</button>
+    </xo-dialog>
+    
+    <xo-dialog id="d-small" heading="Keyboard shortcuts" size="sm" dismiss data-out="out-modal">
+      <p>Press <kbd>Ctrl</kbd> + <kbd>K</kbd> for the command palette.</p>
+      <button slot="footer" type="button" xo-close value="got it" class="primary">Got it</button>
+    </xo-dialog>
+    
+    <xo-dialog id="d-wide" heading="Release notes" size="wide" data-out="out-modal">
+      <p>Wide dialogs suit tables and side-by-side content. The body scrolls when it is taller than the window; the header and footer stay put.</p>
+      <button slot="footer" type="button" xo-close>Close</button>
+    </xo-dialog>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#d-edit"</span>&gt;Edit person&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#d-small"</span>&gt;Small, click outside closes&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#d-wide"</span>&gt;Wide&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">p</span>&gt;
+&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"hint"</span>&gt;Closed by: &lt;<span class="tok-t">output</span> <span class="tok-a">id</span>=<span class="tok-s">"out-modal"</span>&gt;nothing yet&lt;/<span class="tok-t">output</span>&gt;&lt;/<span class="tok-t">p</span>&gt;
+
+&lt;<span class="tok-t">xo-dialog</span> <span class="tok-a">id</span>=<span class="tok-s">"d-edit"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Edit person"</span> <span class="tok-a">data-out</span>=<span class="tok-s">"out-modal"</span>&gt;
+  &lt;<span class="tok-t">form</span> <span class="tok-a">method</span>=<span class="tok-s">"dialog"</span> <span class="tok-a">id</span>=<span class="tok-s">"edit-form"</span> <span class="tok-a">class</span>=<span class="tok-s">"xo-fields"</span>&gt;
+    &lt;<span class="tok-t">label</span>&gt;Name &lt;<span class="tok-t">input</span> <span class="tok-a">name</span>=<span class="tok-s">"name"</span> <span class="tok-a">value</span>=<span class="tok-s">"Ada Lovelace"</span> <span class="tok-a">autocomplete</span>=<span class="tok-s">"off"</span>&gt;&lt;/<span class="tok-t">label</span>&gt;
+    &lt;<span class="tok-t">label</span>&gt;E-mail &lt;<span class="tok-t">input</span> <span class="tok-a">type</span>=<span class="tok-s">"email"</span> <span class="tok-a">name</span>=<span class="tok-s">"email"</span> <span class="tok-a">value</span>=<span class="tok-s">"ada@example.org"</span> <span class="tok-a">autocomplete</span>=<span class="tok-s">"off"</span>&gt;&lt;/<span class="tok-t">label</span>&gt;
+  &lt;/<span class="tok-t">form</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"footer"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Cancel&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"footer"</span> <span class="tok-a">type</span>=<span class="tok-s">"submit"</span> <span class="tok-a">form</span>=<span class="tok-s">"edit-form"</span> <span class="tok-a">value</span>=<span class="tok-s">"saved"</span> <span class="tok-a">class</span>=<span class="tok-s">"primary"</span>&gt;Save&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-dialog</span>&gt;
+
+&lt;<span class="tok-t">xo-dialog</span> <span class="tok-a">id</span>=<span class="tok-s">"d-small"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Keyboard shortcuts"</span> <span class="tok-a">size</span>=<span class="tok-s">"sm"</span> <span class="tok-a">dismiss</span> <span class="tok-a">data-out</span>=<span class="tok-s">"out-modal"</span>&gt;
+  &lt;<span class="tok-t">p</span>&gt;Press &lt;<span class="tok-t">kbd</span>&gt;Ctrl&lt;/<span class="tok-t">kbd</span>&gt; + &lt;<span class="tok-t">kbd</span>&gt;K&lt;/<span class="tok-t">kbd</span>&gt; for the command palette.&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"footer"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span> <span class="tok-a">value</span>=<span class="tok-s">"got it"</span> <span class="tok-a">class</span>=<span class="tok-s">"primary"</span>&gt;Got it&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-dialog</span>&gt;
+
+&lt;<span class="tok-t">xo-dialog</span> <span class="tok-a">id</span>=<span class="tok-s">"d-wide"</span> <span class="tok-a">heading</span>=<span class="tok-s">"Release notes"</span> <span class="tok-a">size</span>=<span class="tok-s">"wide"</span> <span class="tok-a">data-out</span>=<span class="tok-s">"out-modal"</span>&gt;
+  &lt;<span class="tok-t">p</span>&gt;Wide dialogs suit tables and side-by-side content. The body scrolls when it is taller than the window; the header and footer stay put.&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">slot</span>=<span class="tok-s">"footer"</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span> <span class="tok-a">xo-close</span>&gt;Close&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-dialog</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-c">// xo-open="#id" opens it from markup; from JavaScript, open() resolves with the answer</span>
+<span class="tok-k">const</span> answer = <span class="tok-k">await</span> document.querySelector(<span class="tok-s">'#d-edit'</span>).open();   <span class="tok-c">// 'saved' | '' (Escape, Cancel, Close)</span></code></pre></section>
+</xo-tabs>
+<p>A form made by xoong goes in the same way: put <code>&lt;xo-form op="createPerson"&gt;</code> in the body and the dialog closes by itself when the form succeeds (<code>xo-done</code>). <code>&lt;xo-dialog&gt;</code> without a <code>heading</code> stays a plain wrapper around whatever you put in it, as before.</p>
+
+<h2 id="notices-that-need-no-answer">Notices that need no answer</h2>
+<p>If nothing has to be decided, do not block the page. <code>xo-notice="Saved"</code> on a button or form raises a toast after success; from JavaScript use <code>toast.show()</code>, with an action such as Undo.</p>
+<xo-tabs label="toast.show()" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <p class="toolbar"><button data-demo="toast">Move to the trash</button></p>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">data-demo</span>=<span class="tok-s">"toast"</span>&gt;Move to the trash&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">p</span>&gt;</code></pre></section>
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { toast } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+toast.show({ message: <span class="tok-s">'Article moved to the trash'</span>, action: { label: <span class="tok-s">'Undo'</span>, run: () =&gt; restore() } });</code></pre></section>
+</xo-tabs>
+
+<h2 id="behaviour-and-accessibility">Behaviour and accessibility</h2>
+<ul>
+<li><strong>Native.</strong> Each dialog is a <code>&lt;dialog&gt;</code> opened with <code>showModal()</code>: it is in the top layer, the page behind is inert, Tab stays inside, and Escape closes it. When it closes the browser returns the focus to the element that opened it.</li>
+<li><strong>Names.</strong> The built-in dialogs are <code>role="alertdialog"</code>. The title (or the message, when there is no title) is the name and the message is the description. <code>&lt;xo-dialog heading&gt;</code> is named by its heading.</li>
+<li><strong>Where the focus starts.</strong> Cancel for a question, OK for a notice, the field for a prompt, the <code>cancel</code> button (else the primary one) for <code>ask()</code>.</li>
+<li><strong>One at a time.</strong> A built-in dialog that opens while another is showing answers the first one "no" and takes its place. Modals made with <code>&lt;xo-dialog&gt;</code> stack like any native modals.</li>
+<li><strong>The icon is decoration.</strong> The kind is conveyed by the icon, the colour <em>and</em> the words you write, never by colour alone.</li>
+<li><strong>Without <code>@xoong/ui</code></strong> the question behind <code>xo-confirm</code> falls back to the browser's own <code>confirm()</code>, which headless browsers dismiss silently, so import it.</li>
+</ul>
+<h3>Texts and languages</h3>
+<p>Every built-in text is a catalog key (<code>xoong.confirm.ok</code>, <code>xoong.confirm.cancel</code>, <code>xoong.dialog.ok</code>, <code>xoong.dialog.close</code>), Vietnamese included. For one call pass <code>ok</code> and <code>cancel</code>; for the whole app set <code>confirmLabels.ok = 'Delete'</code>.</p>
+<h3>Your own dialog</h3>
+<p>To draw the question yourself, for <code>xo-confirm</code> and for the leave-this-page question of a dirty form, install a replacement; resolve to <code>true</code> to go on.</p>
+<xo-tabs label="setConfirm" class="example">
+  <section xo-tab="JavaScript"><pre data-lang="js" tabindex="0"><code><span class="tok-k">import</span> { setConfirm } <span class="tok-k">from</span> <span class="tok-s">'@xoong/ui'</span>;
+
+setConfirm(<span class="tok-k">async</span> (message, context) =&gt; {
+  <span class="tok-c">// context: { kind: 'action', element } for xo-confirm, { kind: 'leave', forms } for the leave guard</span>
+  <span class="tok-k">return</span> myDialog(message);
+});</code></pre></section>
+</xo-tabs>
+<h3>In tests</h3>
+<p>Happy-dom has no <code>showModal()</code>; xoong then sets the <code>open</code> attribute instead, so a test finds <code>dialog.xo-confirm</code>, reads its text and clicks its buttons like any other markup: <code>screen.$('dialog.xo-confirm .xo-confirm-ok').click()</code>.</p>
+<aside class="notice info"><span class="ic" data-ic="info" aria-hidden="true"></span><p>Look and feel: the dialogs follow the page's tokens (<code>--xo-color-*</code>, <code>--xo-radius</code>) and the palette. Style <code>.xo-confirm</code> for the built-in questions and <code>.xo-modal</code> for titled modals.</p></aside>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="richtext.html"><small>Previous</small><span>Rich text</span></a><a rel="next" href="menu.html"><small>Next</small><span>Menu and tooltip</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#which-one-to-use" aria-current="true">Which one to use</a></li><li><a href="#confirmation">Confirmation</a></li><li><a href="#alert-info-success-warning-error">Alert: info, success, warning, error</a></li><li><a href="#prompt">Prompt</a></li><li><a href="#choices">Choices</a></li><li><a href="#a-titled-modal">A titled modal</a></li><li><a href="#notices-that-need-no-answer">Notices that need no answer</a></li><li><a href="#behaviour-and-accessibility">Behaviour and accessibility</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

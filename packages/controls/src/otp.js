@@ -99,8 +99,11 @@ class XoOtp extends XoControl {
     } else if (k === 'Delete') {
       e.preventDefault();
       if (!this.isDisabled && !this.readonly && this.#cells[i]) { this.#cells[i] = ''; this.#commit(); }
-    } else if (k === 'ArrowLeft') { e.preventDefault(); this.#focus(i - 1); }
-    else if (k === 'ArrowRight') { e.preventDefault(); this.#focus(i + 1); }
+    } else if (k === 'ArrowLeft' || k === 'ArrowRight') { // the arrows follow the screen: in right-to-left the first box is on the right
+      e.preventDefault();
+      const side = getComputedStyle(this).direction === 'rtl' ? -1 : 1;
+      this.#focus(i + (k === 'ArrowRight' ? side : -side));
+    }
     else if (k === 'Home') { e.preventDefault(); this.#focus(0); }
     else if (k === 'End') { e.preventDefault(); this.#focus(this.#boxes.length - 1); }
     else if (k.length === 1 && !/\d/.test(k)) e.preventDefault(); // letters and symbols do nothing

@@ -75,6 +75,37 @@ test('runaway effect loop is stopped with a clear error', () => {
   assert.throws(() => effect(() => { a.value = a.value + 1; }), /did not settle.*a\.value/);
 });
 
+test('one update may run more than 10,000 effects (a big table where every cell changes)', () => {
+  const a = signal(0);
+  const cells = new Array(12000).fill(-1);
+  for (let i = 0; i < cells.length; i++) effect(() => { cells[i] = a.value; });
+  a.value = 1; // used to throw "effect loop did not settle" after 10,000 runs and leave the rest stale
+  assert.ok(cells.every((c) => c === 1));
+  a.value = 2;
+  assert.ok(cells.every((c) => c === 2));
+});
+
+test('a looping effect is reported and the effects it queued still run', () => {
+  // The loop writes `z` every round (from round `skip` on); whichever round it is stopped in, the reader of `z` must end on the last value.
+  for (const skip of [0, 1, 2]) {
+    const go = signal(0), a = signal(0), z = signal(0);
+    const seen = [];
+    effect(() => { if (go.value) { a.value = a.value + 1; if (a.peek() > skip) z.value = a.peek(); } });
+    effect(() => seen.push(z.value));
+    assert.throws(() => { go.value = 1; }, /did not settle.*a\.value/);
+    assert.equal(seen.at(-1), z.peek(), `the reader of z is current (skip=${skip})`);
+    go.value = 0; // the graph still works afterwards
+    z.value = 7;
+    assert.equal(seen.at(-1), 7);
+  }
+});
+
+test('two effects that trigger each other are stopped with an error naming one of them', () => {
+  const a = signal(0), b = signal(0);
+  effect(() => { b.value = a.value + 1; });
+  assert.throws(() => effect(() => { a.value = b.value + 1; }), /did not settle/);
+});
+
 test('a throwing effect does not stop other effects from running', () => {
   const a = signal(0);
   const seen = [];

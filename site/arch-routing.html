@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/diagrams.js"></script>
 </head>
 <body class="shell-page">
   <header class="top">
@@ -53,17 +54,48 @@
     </div>
   </header>
   <details class="docs-menu"><summary><span>Menu · <span class="here">Router</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
     <h2>Start</h2>
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="grp">
     <h2>Guides</h2>
     <a href="data.html">Data and tables</a>
     <a href="forms.html">Forms</a>
     <a href="data-states.html">Loading, empty, error</a>
     <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
     <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
     <h2>Architecture</h2>
     <a href="arch-overview.html">Layers</a>
     <a href="arch-data-flow.html">Data flow</a>
@@ -72,35 +104,58 @@
     <a href="arch-routing.html" aria-current="page">Router</a>
     <a href="arch-build.html">Build and delivery</a>
     <a href="arch-tooling.html">Tooling and tests</a>
-    <h2>Controls</h2>
-    <a href="controls.html">Overview</a>
-    <a href="tabs.html">Tabs</a>
-    <a href="menu.html">Menu and tooltip</a>
-    <a href="combobox.html">Combobox and tags</a>
-    <a href="more-controls.html">More controls</a>
-    <a href="carousel.html">Carousel</a>
-    <a href="own-control.html">Your own control</a>
-    <a href="components.html">Standard</a>
-    <a href="controls-demo.html">All controls</a>
-    <a href="overlays.html">Overlays</a>
-    <a href="focus-audit.html">Focus audit</a>
-    <a href="icons.html">Icons</a>
-    <h2>Demo</h2>
-    <a href="demo.html">Live demo</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
   </nav></details>
   <div class="shell">
     <nav class="side" aria-label="Documentation">
+      <div class="grp">
       <h2>Start</h2>
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="grp">
       <h2>Guides</h2>
       <a href="data.html">Data and tables</a>
       <a href="forms.html">Forms</a>
       <a href="data-states.html">Loading, empty, error</a>
       <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
       <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
       <h2>Architecture</h2>
       <a href="arch-overview.html">Layers</a>
       <a href="arch-data-flow.html">Data flow</a>
@@ -109,21 +164,13 @@
       <a href="arch-routing.html" aria-current="page">Router</a>
       <a href="arch-build.html">Build and delivery</a>
       <a href="arch-tooling.html">Tooling and tests</a>
-      <h2>Controls</h2>
-      <a href="controls.html">Overview</a>
-      <a href="tabs.html">Tabs</a>
-      <a href="menu.html">Menu and tooltip</a>
-      <a href="combobox.html">Combobox and tags</a>
-      <a href="more-controls.html">More controls</a>
-      <a href="carousel.html">Carousel</a>
-      <a href="own-control.html">Your own control</a>
-      <a href="components.html">Standard</a>
-      <a href="controls-demo.html">All controls</a>
-      <a href="overlays.html">Overlays</a>
-      <a href="focus-audit.html">Focus audit</a>
-      <a href="icons.html">Icons</a>
-      <h2>Demo</h2>
-      <a href="demo.html">Live demo</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
     </nav>
     <main class="content" id="main">
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Architecture</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Router</span></div>
@@ -165,12 +212,12 @@ configure({ api, onUnauthorized: () =&gt; router.navigate(<span class="tok-s">'/
 
 <h2 id="the-steps-of-a-navigation">The steps of a navigation</h2>
 <p>Four things start a navigation: the first load (which replaces the current history entry), a click on a link, Back or Forward, and <code>router.navigate(path)</code>. A click is taken only when it is a plain left click on an <code>&lt;a href&gt;</code> that goes to the same origin and inside <code>base</code>, has no <code>target</code> (other than <code>_self</code>), no <code>download</code> and no <code>rel="external"</code>, and is not a jump to an anchor of the current page. Everything else stays the browser's.</p>
-<figure class="dg-fig">
+<figure class="dg-fig dg-anim">
 <div class="dg-scroll" tabindex="0" role="group" aria-label="Diagram: the steps of one navigation">
 <svg class="dg dg-sm" viewBox="0 0 570 650" role="img" aria-labelledby="rt-steps-t rt-steps-d">
 <title id="rt-steps-t">The steps of one navigation</title>
-<desc id="rt-steps-d">A navigation starts from a link click, Back or Forward, or router.navigate(). Step 1: if the new location has the same path and query as the current one, nothing is done. Step 2: the vetoes run, which are the beforeNavigate hooks and the built-in check that asks first when a form has unsaved changes. Step 3: the guards run; each returns true, false, or a path to redirect to. A veto or a guard that returns false stops here: the URL is put back, and a Back or Forward is undone with history.go. Step 4: the history is written with pushState or replaceState and a position. Step 5: the layouts are kept or replaced and the route template is cloned. Step 6: after the render, the title, the description, aria-current, the focus and the scroll are set, and the xo-navigate event fires.</desc>
-<defs><marker id="rt-steps-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker></defs>
+<desc id="rt-steps-d">A navigation starts from a link click, Back or Forward, or router.navigate(). Step 1: if the new location has the same path and query as the current one, nothing is done. Step 2: the vetoes run, which are the beforeNavigate hooks and the built-in check that asks first when a form has unsaved changes. Step 3: the guards run; each returns true, false, or a path to redirect to. A veto or a guard that returns false stops here: the URL is put back, and a Back or Forward is undone with history.go. Step 4: the history is written with pushState or replaceState and a position. Step 5: the layouts are kept or replaced and the route template is cloned. Step 6: after the render, the title, the description, aria-current, the focus and the scroll are set, and the xo-navigate event fires. When the animation plays, a dot goes down the steps in order, the way a navigation that nothing stops goes. The two ways out, to Stay, are not played.</desc>
+<defs><marker id="rt-steps-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head" d="M0 0 10 5 0 10z"/></marker><marker id="rt-steps-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dg-head dg-head-hot" d="M0 0 10 5 0 10z"/></marker></defs>
 <g class="dg-node"><rect class="dg-box" x="10" y="14" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="36">Trigger</text><text class="dg-sub" x="170" y="56">link, Back/Forward, router.navigate()</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="100" width="320" height="58" rx="8"/><text class="dg-t" x="170" y="122">Same place?</text><text class="dg-sub" x="170" y="142">same path and query: nothing to do</text></g>
 <g class="dg-node"><rect class="dg-box" x="10" y="186" width="320" height="74" rx="8"/><text class="dg-t" x="170" y="208">Vetoes</text><text class="dg-sub" x="170" y="228">beforeNavigate() hooks;</text><text class="dg-sub" x="170" y="244">a form with unsaved changes asks first</text></g>
@@ -189,9 +236,10 @@ configure({ api, onUnauthorized: () =&gt; router.navigate(<span class="tok-s">'/
 <text class="dg-lab" x="360" y="210">false</text>
 <path class="dg-line" d="M330 325 L390 325" marker-end="url(#rt-steps-a)"/>
 <text class="dg-lab" x="360" y="312">false</text>
+<g class="dg-fx" aria-hidden="true"><path class="dg-hot" d="M170 72 L170 100" marker-end="url(#rt-steps-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.056;0.147;0.187;1"/></path><path class="dg-hot" d="M170 158 L170 186" marker-end="url(#rt-steps-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.16;0.176;0.267;0.307;1"/></path><path class="dg-hot" d="M170 260 L170 288" marker-end="url(#rt-steps-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.28;0.296;0.387;0.427;1"/></path><path class="dg-hot" d="M170 362 L170 390" marker-end="url(#rt-steps-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.416;0.507;0.547;1"/></path><path class="dg-hot" d="M170 448 L170 476" marker-end="url(#rt-steps-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.52;0.536;0.627;0.667;1"/></path><path class="dg-hot" d="M170 534 L170 562" marker-end="url(#rt-steps-ah)" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.64;0.656;0.747;0.787;1"/></path><rect class="dg-glow" x="10" y="14" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.056;0.063;0.087;1"/></rect><rect class="dg-glow" x="10" y="100" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.133;0.149;0.18;0.213;1"/></rect><rect class="dg-glow" x="10" y="186" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.253;0.269;0.3;0.333;1"/></rect><rect class="dg-glow" x="10" y="288" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.373;0.389;0.42;0.453;1"/></rect><rect class="dg-glow" x="10" y="390" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.493;0.509;0.54;0.573;1"/></rect><rect class="dg-glow" x="10" y="476" width="320" height="58" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.613;0.629;0.66;0.693;1"/></rect><rect class="dg-glow" x="10" y="562" width="320" height="74" rx="8" opacity="0"><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.733;0.749;0.78;0.813;1"/></rect><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M170 72 L170 100" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.04;0.147;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.04;0.06;0.127;0.147;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M170 158 L170 186" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.16;0.267;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.16;0.18;0.247;0.267;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M170 260 L170 288" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.28;0.387;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.28;0.3;0.367;0.387;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M170 362 L170 390" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.4;0.507;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.4;0.42;0.487;0.507;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M170 448 L170 476" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.52;0.627;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.52;0.54;0.607;0.627;1"/></circle><circle class="dg-dot" r="6.5" opacity="0"><animateMotion dur="7.5s" begin="0s" repeatCount="indefinite" path="M170 534 L170 562" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.64;0.747;1"/><animate attributeName="opacity" dur="7.5s" begin="0s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.64;0.66;0.727;0.747;1"/></circle></g>
 </svg>
 </div>
-<p class="hint">One navigation. A newer navigation that starts while a veto or guard is still waiting takes over, and the older one stops.</p>
+<div class="dg-cap"><p class="hint">One navigation. A newer navigation that starts while a veto or guard is still waiting takes over, and the older one stops. <span class="dg-motion">In motion, a dot goes down the steps in order, the way a navigation that nothing stops goes. The two ways out, to Stay, are not played.</span></p></div>
 </figure>
 <ol>
 <li><strong>Same place.</strong> The same path and query as now does nothing (<code>navigate()</code> resolves <code>false</code>). If only the hash differs, there is no render: the page scrolls to the element with that id.</li>
@@ -217,6 +265,7 @@ configure({ api, onUnauthorized: () =&gt; router.navigate(<span class="tok-s">'/
 <g class="dg-node"><rect class="dg-box" x="70" y="112" width="120" height="170" rx="8"/><text class="dg-t" x="130" y="182">nav</text><text class="dg-sub" x="130" y="202">links with</text><text class="dg-sub" x="130" y="218">aria-current</text></g>
 <rect class="dg-zone" x="210" y="112" width="280" height="170" rx="12"/><text class="dg-zlab" x="224" y="130">main[xo-outlet]</text>
 <g class="dg-node"><rect class="dg-box dg-k-core" x="230" y="146" width="240" height="120" rx="8"/><text class="dg-t" x="350" y="191">Route content</text><text class="dg-sub" x="350" y="211">cloned from template[xo-route]</text><text class="dg-sub" x="350" y="227">views start and fetch now</text></g>
+
 </svg>
 </div>
 <p class="hint">Between two routes that use the same layout, only the content of the outlet is replaced; the layout and its nav stay.</p>

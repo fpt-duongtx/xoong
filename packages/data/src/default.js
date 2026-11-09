@@ -14,7 +14,20 @@ export function configure(options) {
   current = createClient(options);
   setStreamUrl(options.streamUrl);
   warnedNoStream = false;
+  for (const start of waiting.splice(0)) start(); // views that were waiting for it
   return current;
+}
+
+/** Views that tried to start before configure() ran (a module that awaits something first): they start when it is called. */
+const waiting = /** @type {(() => void)[]} */ ([]);
+let waitTimer;
+/** Has configure() been called? */
+export const configured = () => current !== null;
+/** Run `start` once configure() has been called. A page whose configure() never comes gets one clear message, instead of a view that fails silently. */
+export function whenConfigured(start) {
+  waiting.push(start);
+  waitTimer ??= setTimeout(() => { if (!current) console.error('xoong: views are waiting for configure({ api, ... }), which has not been called yet'); }, 3000);
+  waitTimer.unref?.();
 }
 
 /** The app-wide client. Throws a clear error if configure() was not called. */

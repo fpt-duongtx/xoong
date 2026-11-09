@@ -21,6 +21,14 @@ previous result is still on screen), `$error`, `$hasPrev`, `$hasNext`, `$from`, 
 
 Operation parameters in `xo-click="DELETE /users/{id}"` are resolved the same way: the item first (the row's `id`), then the result, then `p-*`.
 
+### Which braces are bindings
+
+A `{...}` is a binding only when its content is a path (`name`, `a.b[0]`, `a['x y']`, `$loading`, `.`), optionally followed by `| format`
+(`{publishedAt | date}`; a date-only string such as `2026-11-07` is a calendar date and shows as that day in every time zone). Braces around anything
+else are text: `<pre>{ "a": 1 }</pre>`, `body { color: red }`, `pattern="\d{3}"` and `{n, plural, ...}` stay as written. `{{name}}` is also left
+alone (it is not xoong syntax), and a backslash turns one binding into text: `\{name}` shows `{name}`. A name that is not path-like (it starts with a
+digit or holds a space or a colon) is reached with a quoted key: `{['a b']}`.
+
 ## Nested views
 
 An `<xo-view>` inside another one is its own screen: it fetches its own operation and binds **its own children** against **its own** data. The outer view
@@ -52,11 +60,12 @@ which waits for the data (`xoong check` warns about the plain `<img>`, XO243).
 1. The element connects. Its children are **copied as its template** and the view starts in a microtask, so the order in which custom elements are
    defined does not matter, and a page can be parsed in any order.
 2. **Route views**: a view with `p-x=":param"` needs the router. If the router is not running yet, the view waits for it and starts when it is.
+   Likewise a view that starts before `configure()` (the page's module `await`s something first, such as the API document) waits for it and starts when it is called; if it has not been called after three seconds the console says so once.
 3. The view reads its parameters (below), then runs its query. While the query runs, `$loading` is true (or `$refreshing` if there is a previous result).
 4. A change of any parameter starts the next query. The previous result stays on screen until the next one arrives; an **error clears it**.
 5. A mutation (`xo-click`, `xo-submit`) invalidates every cached query whose path overlaps the mutated path, so views showing that data refetch.
 
-When a request fails the view emits `xo-error` and the global `onError` runs; when an action succeeds it emits `xo-done`. On an invalid submit the order
+While a request runs the view has `aria-busy="true"` (and `data-refreshing` when the old result is still shown). When a request fails the view emits `xo-error` and the global `onError` runs; when an action succeeds it emits `xo-done`. These events (`xo-done`, `xo-error`, `xo-invalid`, `xo-notice`) are dispatched on the element that ran the action (the button or form), so they bubble through a dialog or panel around it, up to the view and the page; a button the result removed (a deleted row) reports from the view instead. On an invalid submit the order
 is `xo-reveal` (the tab with the first invalid field is shown) and then `xo-invalid`.
 
 ## Parameters: `p-*`, `url-params`, `?param`
@@ -82,3 +91,4 @@ names the effect (`effect loop did not settle ...`) instead of hanging the tab.
 
 `<xo-table page-size="25">` has a pager. For tiles or threads use `<xo-pager page-size="12">` inside the same view: it sets `limit`, its buttons change
 `offset`, and it shows "1–12 of 48" when the response has a `total`. The operation must declare `limit` and `offset`.
+When the response has a numeric `total` and the page asked for is past the end (the last row of the last page was deleted, or an old link) the view goes to the last page that exists.

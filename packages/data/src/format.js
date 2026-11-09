@@ -13,14 +13,16 @@ export function locale() {
   return localeSource?.() || globalThis.document?.documentElement?.lang || globalThis.navigator?.language || 'en';
 }
 const asDate = (v) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? null : d; };
+/** `2026-11-07` is a calendar date, not a moment: it is shown as that day in every time zone (as UTC; parsing it gives UTC midnight), never the day before. */
+const intl = (v, loc, options) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(loc, typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? { ...options, timeZone: 'UTC' } : options).format(d) : String(v); };
 
 const UNITS = /** @type {[Intl.RelativeTimeFormatUnit, number][]} */ ([['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]]);
 
 /** @type {Map<string, (value: any, locale?: string) => string>} */
 const formats = new Map([
-  ['date', (v, loc = locale()) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(loc, { dateStyle: 'medium' }).format(d) : String(v); }],
-  ['datetime', (v, loc = locale()) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(loc, { dateStyle: 'medium', timeStyle: 'short' }).format(d) : String(v); }],
-  ['time', (v, loc = locale()) => { const d = asDate(v); return d ? new Intl.DateTimeFormat(loc, { timeStyle: 'short' }).format(d) : String(v); }],
+  ['date', (v, loc = locale()) => intl(v, loc, { dateStyle: 'medium' })],
+  ['datetime', (v, loc = locale()) => intl(v, loc, { dateStyle: 'medium', timeStyle: 'short' })],
+  ['time', (v, loc = locale()) => intl(v, loc, { timeStyle: 'short' })],
   ['relative', (v, loc = locale()) => {
     const d = asDate(v);
     if (!d) return String(v);

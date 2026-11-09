@@ -9,7 +9,7 @@ An admin area is built from four things, all declarations:
 | `xoong.css` | Design tokens (custom properties in `@layer xoong.tokens`), base styles, the admin layout and the look of the elements below. Plain CSS; override tokens on `:root`. |
 | `<xo-table>` | A table for a list: columns, server-side sorting, server-side paging, row actions. |
 | `<xo-form>` | A form generated from the request schema of an operation, with server field errors. |
-| `<xo-dialog>` | A modal on the native `<dialog>`. |
+| `<xo-dialog>` | A modal on the native `<dialog>`; with `heading` a titled window (header, body, `slot="footer"` footer; `size`, `dismiss`). |
 | `<xo-toast>` | Shows the message of the latest `xo-error` on the page. |
 
 ```html
@@ -44,7 +44,7 @@ browser. Its application script is only `configure()`.
 * `xo-selected="ids"` on a bulk button sends **one** request with the ticked ids (as the API knows them: numbers stay numbers) plus `xo-with="status=published"` fields typed from the
   schema; bare `xo-selected` runs once per row. `$selected` is the list of ticked rows (`xo-body="$selected"`).
 * `xo-then="/articles/{id}"` on an xo-click or xo-submit goes to that path after success: `{id}` comes from the result (the created record), then from the item acted on (`xo-then="/articles"` after a delete). `<xo-router>` navigates; without a router the browser loads the path.
-* `xo-confirm="Delete {title}?"` asks first in a native dialog (`confirm()` from `@xoong/ui` replaces the browser's, labels in `confirmLabels`). `xo-notice="Saved"` raises a toast
+* `xo-confirm="Delete {title}?"` asks first in a native dialog (`confirm()` from `@xoong/ui` replaces the browser's, labels in `confirmLabels`); `xo-confirm-title`, `xo-confirm-ok`, `xo-confirm-cancel` and `xo-confirm-kind` (`danger`, `warning`, `info`, `success`) tune it. `xo-notice="Saved"` raises a toast
   after success; from JavaScript `toast.show({ message, action: { label: 'Undo', run } })`.
 * Table: `empty="..."` or a `<template slot="empty">`, `filters="q:Search"`, `page-sizes="10,25,50"`, "1–3 of 5" text, and a column format `publishedAt:Published:datetime`
   (date, datetime, time, relative, number, localized); the same formats work anywhere as `{publishedAt | datetime}`.
@@ -160,8 +160,11 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
 * **Binding by `name`** (`a.b`, `items[0].x`; `items.0.x` is the same). Attributes the author did not write are completed from the schema
   (`type`, `required`, `min`/`max`/`step`, `minlength`/`maxlength`, `pattern`, enum options); the author's attributes win. Any `XoControl` with a
   `name` is a field too; it receives `schema`, `hints` (every hint key, unknown ones included) and `xoForm` (the model, to read other paths).
+  Several `<input type="checkbox" name="roles" value="admin">` with one name over an array node bind to membership in the array (checked = the value is in it). A native reset
+  button or `form.reset()` brings the model and the controls back to the baseline together.
 * **Prefill.** An *edit* form (the operation has path parameters, is a `PUT` or `PATCH`, or `xo-body="path"` names a record) starts from the record of its view; a *create*
-  form starts from the schema's defaults and empties after success (`xo-keep` keeps the values). After an edit succeeds the saved record is the new baseline.
+  form starts from the schema's defaults and empties after success (`xo-keep` keeps the values). After an edit succeeds the saved record is the new baseline when the server answers with it
+  (an object sharing a property with the request schema); any other answer (`{ ok: true }`, `{}`, nothing) leaves what was typed as the baseline.
   If the record changes underneath (a live update) a pristine form follows it; a dirty form keeps its draft and `$form.stale` becomes true.
 * **Validation** is the model's, not the browser's: the form gets `novalidate`, so a hidden or off-screen invalid control can never block submit. Rules from the
   schema: required, type, min/max and exclusive bounds, multipleOf, minLength/maxLength, pattern, format (email, uri, uuid, date, date-time), enum,
@@ -176,6 +179,7 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
 * **Payload.** Only properties of the request schema are sent (ids and timestamps of the record never go out); empty optional values follow `emptyAs`
   (omit by default, `null` when asked); `pruneEmpty` on an object schema drops empty members and an object left empty follows its own `emptyAs`;
   `form.serialize = (draft, body) => body` is the escape hatch. Dirty uses the same normalisation, so typing and deleting is pristine again.
+  A field hidden with `xo-if`, or disabled (`disabled="{$form.submitting}"` is common), stays in the draft and is sent: drop it in `form.serialize` (recipe on the Recipes page).
 * **Submit.** Touch all, validate (async rules included), and when invalid nothing is sent: a cancelable `xo-reveal` `{ path }` lets the
   application show the field (switch a tab) before it is focused, then `xo-invalid` fires. Server field errors (problem+json pointers, FastAPI, envelopes) land on the same paths and
   clear when the field is edited.
@@ -194,6 +198,9 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
   texts in `confirmLabels` or the `xoong.confirm.*` catalog keys; style `.xo-confirm`). Without `@xoong/ui` (only the router module) the browser's own `confirm()` is used,
   which headless browsers dismiss silently. To use **your own dialog**, for this question and for `xo-confirm`: `setConfirm(async (message, context) => ...)` (from `@xoong/ui`
   or `@xoong/data/view`); resolve to `true` to go on. `context` is `{ kind: 'leave', forms }` for the leave question and `{ kind: 'action', element }` for `xo-confirm`.
+* **Built-in dialogs from JavaScript** (`import { confirm, alert, prompt, ask } from '@xoong/ui'`): `await confirm(message, { kind, title, detail, ok, cancel })` is true or false;
+  `await alert(message, { kind, title })` resolves when closed; `await prompt(message, { value, label, type, required, pattern })` is the text or `null`; `await ask(message, { buttons: [{ label, value, primary, danger, cancel }] })` is the pressed button's `value`.
+  `kind` (`info`, `success`, `warning`, `danger`) adds an icon and the colour. All are native modal dialogs; the guide with live examples is the "Dialogs and modals" page of the site.
 * **Arrays, objects and unions in a hand-written form** (the form's scope is its draft): `<div xo-each="blocks">` over the array with `name="blocks[{$index}].title.en"` (inside a nested
   array use `{$i0}` for the outer row, `{$i1}` for the next), `xo-add="blocks" xo-with="type=image"` (a union item needs its tag), `xo-remove="blocks[{$index}]"`,
   `xo-move="blocks[{$index}]:up"` (or `:down`), and `xo-if="type=image"` to show the fields of one variant (`path=value` and `path!=value` compare with a literal).

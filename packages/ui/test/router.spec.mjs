@@ -47,6 +47,17 @@ describe('<xo-router> matching', () => {
     expect(router.current.route.pattern).toBe('/users/:id');
   });
 
+  it('a route without a title goes back to the title the page came with (it does not keep the previous route\'s)', async () => {
+    document.title = 'My admin';
+    history.replaceState(null, '', '/users');
+    await open();
+    expect(document.title).toBe('Users');
+    await go('/users/new');
+    expect(document.title).toBe('My admin');
+    await go('/users');
+    expect(document.title).toBe('Users');
+  });
+
   it('static routes beat parameter routes, a trailing slash is ignored, unknown paths hit the * route', async () => {
     await open();
     await go('/users/new');

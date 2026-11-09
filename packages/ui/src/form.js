@@ -100,12 +100,16 @@ function array(node, path, text, depth) {
     + `<div class="xo-row" xo-each="${esc(path)}">${row}${rowButtons(rowPath)}</div><div class="xo-array-add">${adds}</div></fieldset>`;
 }
 
+/** What a `<xo-form op>` hands to the `<form xo-submit>` it draws: `<xo-form op="createPerson" xo-notice="Saved" xo-then="/people">`. */
+const FORWARDED = ['xo-then', 'xo-notice', 'xo-confirm', 'xo-confirm-title', 'xo-confirm-ok', 'xo-confirm-cancel', 'xo-confirm-kind', 'xo-guard', 'xo-keep', 'xo-with'];
+
 defineTemplate('xo-form', (el, { client }) => {
   const ref = el.getAttribute('op') ?? '';
   const op = client.op(ref); // unknown operations throw with the closest valid name
   const form = document.createElement('form');
   form.setAttribute('xo-submit', ref);
   form.className = 'xo-form';
+  for (const name of FORWARDED) if (el.hasAttribute(name)) form.setAttribute(name, el.getAttribute(name) ?? ''); // the modifiers of the action go to the form that runs it
   if (op.bodySchema) { // the schema-driven generator: nested objects, arrays, unions, hints
     const submit = el.getAttribute('submit');
     form.innerHTML = fields(op.bodySchema, '', 0) + (submit ? `<button class="xo-submit">${esc(submit)}</button>` : '<button class="xo-submit" xo-t="xoong.form.save">Save</button>');

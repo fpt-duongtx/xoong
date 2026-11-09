@@ -86,6 +86,12 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
   const fields = new Map();
   const state = { value: signal(draft), dirty: signal(false), valid: signal(true), submitting: signal(false), pending: signal(0), stale: signal(false) };
   let currentRules = rules;
+  /** Is the server's answer the saved record? An object sharing a property with the schema (`{ ok: true }`, `{}`, a list or a number are not). */
+  const isRecord = (r) => {
+    if (!r || typeof r !== 'object' || Array.isArray(r)) return false;
+    const props = (variant(schema, r) ?? variant(schema, draft))?.props;
+    return props ? Object.keys(r).some((k) => Object.hasOwn(props, k)) : Object.keys(r).length > 0;
+  };
 
   // ---- rules ----------------------------------------------------------------------------------------------------------------
 
@@ -348,7 +354,7 @@ export function createForm({ schema, value, rules = {}, serialize: serializeFn }
       state.submitting.value = true;
       try {
         const result = await send(form.body());
-        if (after) after(result); else form.markPristine(result && typeof result === 'object' && !Array.isArray(result) ? result : undefined);
+        if (after) after(result); else form.markPristine(isRecord(result) ? result : undefined); // the saved record is the new baseline; any other answer (`{ ok: true }`, `{}`) leaves what was typed
         return { ok: true, result };
       } catch (e) {
         if (e && typeof e === 'object' && /** @type {any} */ (e).fields) form.setServerErrors(/** @type {any} */ (e).fields);

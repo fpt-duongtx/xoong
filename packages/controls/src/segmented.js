@@ -56,7 +56,8 @@ class XoSegmented extends XoControl {
   }
   #key(/** @type {KeyboardEvent} */ e, /** @type {HTMLButtonElement} */ btn) {
     const i = this.#buttons.indexOf(btn), n = this.#buttons.length;
-    const to = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: n - 1 }[e.key];
+    const side = getComputedStyle(this).direction === 'rtl' ? -1 : 1; // the arrows follow the screen
+    const to = { ArrowRight: i + side, ArrowDown: i + 1, ArrowLeft: i - side, ArrowUp: i - 1, Home: 0, End: n - 1 }[e.key];
     if (to === undefined) return;
     e.preventDefault();
     const next = this.#buttons[Math.min(n - 1, Math.max(0, to))];

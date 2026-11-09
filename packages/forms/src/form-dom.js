@@ -12,7 +12,7 @@
  */
 import { effect, untracked } from '@xoong/core/signals';
 import { createForm } from './form-model.js';
-import { parsePath, nodeAt, isRequired, defaults } from './schema.js';
+import { parsePath, nodeAt, isRequired, defaults, coerce } from './schema.js';
 
 /** @typedef {import('./schema.js').Node} Node */
 
@@ -79,7 +79,7 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
       for (const v of node.enum) el.append(option(String(v)));
     }
     if (node.readOnly) set('readonly', true);
-    if (isRequired(schema, parsePath(name), model.value) && node.t !== 'boolean') set('required', true);
+    if (isRequired(schema, parsePath(name), model.value) && node.t !== 'boolean' && node.t !== 'array') set('required', true);
     if (isCustom(el)) { // an open registry of widgets: any XoControl gets its schema node, its hints and the form model
       const hints = { ...(node.hints ?? {}), label: node.title, hint: node.description, placeholder: node.placeholder, order: node.order, group: node.group };
       Object.assign(el, { schema: node, hints, xoForm: model });
@@ -121,12 +121,11 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
   function write(el, v, node) {
     // the control's own value is read untracked: only the model drives this write (a control that sets its value and then fires `input` must not be reverted before the model hears)
     if (isCustom(el)) { if (JSON.stringify(untracked(() => el.value)) !== JSON.stringify(v ?? '')) el.setValue(v ?? ''); return; }
-    if (el.type === 'checkbox') { el.checked = v === true; return; }
+    if (el.type === 'checkbox') { el.checked = node?.t === 'array' ? Array.isArray(v) && v.map(String).includes(el.value) : v === true; return; } // one of a group of checkboxes sharing a name: a member of the array
     if (el.type === 'radio') { el.checked = show(v) === el.value; return; }
     if (el.tagName === 'SELECT' && el.multiple) { const set = new Set(Array.isArray(v) ? v.map(String) : []); for (const o of el.options) o.selected = set.has(o.value); return; }
     const text = el.type === 'datetime-local' ? (typeof v === 'string' ? isoToLocal(v) : '') : show(v);
     if (el.value !== text) el.value = text;
-    void node;
   }
 
   /** The message of a field, as the browser's own validity, `aria-invalid` and a visible note. */
@@ -167,7 +166,14 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     writing = el;
     try {
       if (isCustom(el)) model.set(name, /** @type {any} */ (el).value, { coerced: true });
-      else if (el.type === 'checkbox') model.set(name, /** @type {HTMLInputElement} */ (el).checked);
+      else if (el.type === 'checkbox') {
+        const box = /** @type {HTMLInputElement} */ (el);
+        const items = model.field(name).node;
+        if (items?.t === 'array') { // a group of checkboxes with one name: this box joins or leaves the array
+          const list = (Array.isArray(model.get(name)) ? model.get(name) : []).filter((x) => String(x) !== box.value);
+          model.set(name, box.checked ? [...list, coerce(items.items, box.value)] : list, { coerced: true });
+        } else model.set(name, box.checked);
+      }
       else if (el.type === 'radio') { if (/** @type {HTMLInputElement} */ (el).checked) model.set(name, /** @type {HTMLInputElement} */ (el).value); }
       else if (el.tagName === 'SELECT' && /** @type {HTMLSelectElement} */ (el).multiple) model.set(name, [...(/** @type {HTMLSelectElement} */ (el)).selectedOptions].map((o) => o.value), { coerced: true });
       else if (el.type === 'datetime-local') model.set(name, localToIso(/** @type {HTMLInputElement} */ (el).value), { coerced: false });
@@ -180,9 +186,19 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     if (el && isControl(el) && el.getAttribute('name')) model.touch(/** @type {string} */ (el.getAttribute('name')));
   }
 
+  /** A native reset (a `type="reset"` button, `form.reset()`) empties the controls after this event: the model goes back to its baseline and the controls are rewritten from it once the browser is done (a task later: a microtask would run before the reset). */
+  function onReset(e) {
+    setTimeout(() => {
+      if (e.defaultPrevented) return; // somebody cancelled the reset: nothing changed
+      model.reset();
+      for (const [el, b] of bound) untracked(() => write(el, model.field(b.name).value, nodeAt(schema, parsePath(b.name), model.value)));
+    });
+  }
+
   form.addEventListener('input', onInput);
   form.addEventListener('change', onInput);
   form.addEventListener('focusout', onBlur);
+  form.addEventListener('reset', onReset);
 
   // Controls that appear later (xo-each rows, a revealed tab) and controls whose name changes (reordered rows).
   const waiting = new Set();
@@ -245,6 +261,7 @@ export function attach(form, { schema, record, hadRecord = !!record }) {
     form.removeEventListener('input', onInput);
     form.removeEventListener('change', onInput);
     form.removeEventListener('focusout', onBlur);
+    form.removeEventListener('reset', onReset);
     observer?.disconnect();
     stopRecord();
     stopDirty();
