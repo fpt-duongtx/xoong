@@ -32,10 +32,11 @@ describe('benchmark results', () => {
       expect(m.cspViolations, `${id}/${p} CSP`).toBe(0);
     }
     expect(Object.keys(r.versions.react).length).toBeGreaterThan(3);
+    expect(Object.keys(r.variants)).toContain('angular');
   });
 
   it('pin every competitor dependency to an exact version', () => {
-    for (const dir of ['apps/react', 'apps/vue', 'tooling']) {
+    for (const dir of ['apps/react', 'apps/vue', 'apps/angular', 'tooling']) {
       const pkg = JSON.parse(read(`benchmarks/${dir}/package.json`));
       for (const [name, range] of Object.entries({ ...pkg.dependencies, ...pkg.devDependencies })) expect(range, `${dir}: ${name}`).toMatch(/^\d+\.\d+\.\d+$/);
     }
@@ -46,6 +47,7 @@ describe('benchmark results', () => {
     expect(root_.workspaces).toEqual(['packages/*']);
     expect(read('package-lock.json')).not.toContain('@tanstack/react-query');
     expect(read('package-lock.json')).not.toContain('@modelcontextprotocol/sdk');
+    expect(read('package-lock.json')).not.toContain('@angular/core');
   });
 });
 

@@ -156,6 +156,13 @@ breaking: none.
 
 * Added: `@xoong/ui/mist.css` (`src/mist.css`): the Mist look (the Rainlet design system) as one self-sufficient stylesheet for an app: the tokens and a dark scheme, the `--xo-*` mapping straight from them, the component skin and the controls of the Mist spec, in the layer `xoong-mist`, without the documentation site's chrome. Generated from the design kit by `tools/build-mist.mjs`; `test/mist.test.mjs` checks it is up to date, self-contained and draws 40px controls and the Mist primary in a page with only the four framework files.
 
+## 0.0.49 (benchmarks with Angular, a React written by a specialist; kit fixes for the new controls)
+
+breaking: none.
+
+* Benchmarks: the same people screen in xoong, React (rewritten the way a specialist would: five files, 213 lines), Vue and Angular 22 (standalone components, signals, no UI library); every library a stack needs counts in full. xoong is smaller than React and has no third-party packages in the browser, but Angular and Vue are smaller and Angular is faster at 1,000 and 10,000 rows: the page says so. All stacks ran in one session on Node 26 (Angular's CLI needs it).
+* Mist (kit ux/controls-0048-fix): breadcrumb and tree marks no longer stack, the plain table on the home page and the benchmarks page is styled; alerts are as wide as their container.
+
 ## 0.0.48 (admin essentials: drawer, breadcrumb, alert, skeleton, tree, colour picker, rating; benchmarks)
 
 breaking: none.

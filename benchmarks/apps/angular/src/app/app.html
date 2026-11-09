@@ -1,0 +1,8 @@
+<header><strong>Team admin</strong></header>
+<nav aria-label="Main"><a href="/" aria-current="page">People</a></nav>
+<main>
+  <h1>People</h1>
+  <button (click)="add.open()">Add a person</button>
+  <app-people />
+  <app-add-person #add (created)="people().reload()" />
+</main>

@@ -3,9 +3,9 @@
   "date": "2026-11-09",
   "machine": "Apple M1, 8 cores, 8 GB RAM",
   "os": "Darwin 25.2.0 (arm64)",
-  "node": "v24.7.0",
-  "xoong": "0.0.47",
-  "commit": "6984eca"
+  "node": "v26.0.0",
+  "xoong": "0.0.48",
+  "commit": "6845c39"
  },
  "method": "non-blank, non-comment lines of the files a developer writes (sources, markup, stylesheet); package.json, lockfiles, vite config and the OpenAPI document are not counted (config is listed apart); JSX is counted as script",
  "stacks": {
@@ -47,12 +47,12 @@
    }
   },
   "react": {
-   "files": 8,
+   "files": 5,
    "loc": {
     "markup": 13,
-    "script": 229,
+    "script": 182,
     "style": 18,
-    "all": 260
+    "all": 213
    },
    "perFile": {
     "index.html": {
@@ -60,29 +60,14 @@
      "script": 0,
      "style": 0
     },
-    "src/AddPersonDialog.jsx": {
-     "markup": 0,
-     "script": 47,
-     "style": 0
-    },
     "src/App.jsx": {
      "markup": 0,
-     "script": 18,
-     "style": 0
-    },
-    "src/Dialog.jsx": {
-     "markup": 0,
-     "script": 14,
-     "style": 0
-    },
-    "src/PeopleTable.jsx": {
-     "markup": 0,
-     "script": 112,
+     "script": 153,
      "style": 0
     },
     "src/api.js": {
      "markup": 0,
-     "script": 25,
+     "script": 16,
      "style": 0
     },
     "src/app.css": {
@@ -115,15 +100,203 @@
      "@vitejs/plugin-react": "6.3.0",
      "vite": "8.3.6"
     }
+   },
+   "libraries": {
+    "@hookform/resolvers": {
+     "version": "5.2.2",
+     "for": "connects zod to React Hook Form",
+     "shipped": true
+    },
+    "@tanstack/react-query": {
+     "version": "5.107.1",
+     "for": "server state: fetching, cache, mutations",
+     "shipped": true
+    },
+    "@tanstack/react-table": {
+     "version": "8.21.3",
+     "for": "headless table: sorting, paging and row selection state",
+     "shipped": true
+    },
+    "react": {
+     "version": "19.3.1",
+     "for": "components and rendering",
+     "shipped": true
+    },
+    "react-dom": {
+     "version": "19.3.1",
+     "for": "rendering in the browser",
+     "shipped": true
+    },
+    "react-hook-form": {
+     "version": "7.91.0",
+     "for": "form state and submit",
+     "shipped": true
+    },
+    "zod": {
+     "version": "3.25.76",
+     "for": "validation schema",
+     "shipped": true
+    },
+    "@vitejs/plugin-react": {
+     "version": "6.3.0",
+     "for": "JSX transform in the build",
+     "shipped": false
+    },
+    "vite": {
+     "version": "8.3.6",
+     "for": "dev server and bundler",
+     "shipped": false
+    }
+   }
+  },
+  "angular": {
+   "files": 10,
+   "loc": {
+    "markup": 91,
+    "script": 120,
+    "style": 18,
+    "all": 229
+   },
+   "perFile": {
+    "src/app/add-person.html": {
+     "markup": 21,
+     "script": 0,
+     "style": 0
+    },
+    "src/app/add-person.ts": {
+     "markup": 0,
+     "script": 39,
+     "style": 0
+    },
+    "src/app/api.ts": {
+     "markup": 0,
+     "script": 21,
+     "style": 0
+    },
+    "src/app/app.html": {
+     "markup": 8,
+     "script": 0,
+     "style": 0
+    },
+    "src/app/app.ts": {
+     "markup": 0,
+     "script": 11,
+     "style": 0
+    },
+    "src/app/people.html": {
+     "markup": 50,
+     "script": 0,
+     "style": 0
+    },
+    "src/app/people.ts": {
+     "markup": 0,
+     "script": 46,
+     "style": 0
+    },
+    "src/index.html": {
+     "markup": 12,
+     "script": 0,
+     "style": 0
+    },
+    "src/main.ts": {
+     "markup": 0,
+     "script": 3,
+     "style": 0
+    },
+    "src/styles.css": {
+     "markup": 0,
+     "script": 0,
+     "style": 18
+    }
+   },
+   "configLines": {
+    "package.json": 21,
+    "angular.json": 28,
+    "tsconfig.json": 18
+   },
+   "dependencies": {
+    "runtimeInBrowser": 7,
+    "direct": 11,
+    "installedTotal": 362,
+    "versions": {
+     "@angular/common": "22.2.5",
+     "@angular/compiler": "22.2.5",
+     "@angular/core": "22.2.5",
+     "@angular/forms": "22.2.5",
+     "@angular/platform-browser": "22.2.5",
+     "rxjs": "7.8.2",
+     "tslib": "2.9.1",
+     "@angular/build": "22.2.6",
+     "@angular/cli": "22.2.6",
+     "@angular/compiler-cli": "22.2.5",
+     "typescript": "6.0.3"
+    }
+   },
+   "libraries": {
+    "@angular/common": {
+     "version": "22.2.5",
+     "for": "common directives and pipes (a dependency of the framework)",
+     "shipped": true
+    },
+    "@angular/compiler": {
+     "version": "22.2.5",
+     "for": "template compiler (a peer of the framework)",
+     "shipped": true
+    },
+    "@angular/core": {
+     "version": "22.2.5",
+     "for": "components, signals, resource",
+     "shipped": true
+    },
+    "@angular/forms": {
+     "version": "22.2.5",
+     "for": "reactive forms and validators",
+     "shipped": true
+    },
+    "@angular/platform-browser": {
+     "version": "22.2.5",
+     "for": "bootstrap in the browser",
+     "shipped": true
+    },
+    "rxjs": {
+     "version": "7.8.2",
+     "for": "observables (required by the framework; used here for the search debounce)",
+     "shipped": true
+    },
+    "tslib": {
+     "version": "2.9.1",
+     "for": "TypeScript helpers",
+     "shipped": true
+    },
+    "@angular/build": {
+     "version": "22.2.6",
+     "for": "esbuild-based builder",
+     "shipped": false
+    },
+    "@angular/cli": {
+     "version": "22.2.6",
+     "for": "the ng command",
+     "shipped": false
+    },
+    "@angular/compiler-cli": {
+     "version": "22.2.5",
+     "for": "ahead-of-time compiler",
+     "shipped": false
+    },
+    "typescript": {
+     "version": "6.0.3",
+     "for": "TypeScript compiler",
+     "shipped": false
+    }
    }
   },
   "vue": {
-   "files": 8,
+   "files": 7,
    "loc": {
-    "markup": 51,
-    "script": 125,
+    "markup": 48,
+    "script": 114,
     "style": 18,
-    "all": 194
+    "all": 180
    },
    "perFile": {
     "index.html": {
@@ -141,14 +314,9 @@
      "script": 4,
      "style": 0
     },
-    "src/Dialog.vue": {
-     "markup": 3,
-     "script": 10,
-     "style": 0
-    },
     "src/PeopleTable.vue": {
      "markup": 6,
-     "script": 54,
+     "script": 53,
      "style": 0
     },
     "src/api.js": {
@@ -184,6 +352,48 @@
      "zod": "3.25.76",
      "@vitejs/plugin-vue": "6.0.10",
      "vite": "8.3.6"
+    }
+   },
+   "libraries": {
+    "@tanstack/vue-query": {
+     "version": "5.107.1",
+     "for": "server state: fetching, cache, mutations",
+     "shipped": true
+    },
+    "@tanstack/vue-table": {
+     "version": "8.21.3",
+     "for": "headless table: sorting, paging and row selection state",
+     "shipped": true
+    },
+    "@vee-validate/zod": {
+     "version": "4.15.1",
+     "for": "connects zod to vee-validate",
+     "shipped": true
+    },
+    "vee-validate": {
+     "version": "4.15.1",
+     "for": "form state and submit",
+     "shipped": true
+    },
+    "vue": {
+     "version": "3.5.45",
+     "for": "components and rendering",
+     "shipped": true
+    },
+    "zod": {
+     "version": "3.25.76",
+     "for": "validation schema",
+     "shipped": true
+    },
+    "@vitejs/plugin-vue": {
+     "version": "6.0.10",
+     "for": "single-file component compiler in the build",
+     "shipped": false
+    },
+    "vite": {
+     "version": "8.3.6",
+     "for": "dev server and bundler",
+     "shipped": false
     }
    }
   }

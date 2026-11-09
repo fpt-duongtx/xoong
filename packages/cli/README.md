@@ -28,14 +28,14 @@ Median of 10 runs of the whole process on Apple M1 (2026-11-09); one machine, so
 
 | Command | xoong | Comparison |
 |---|---|---|
-| `xoong --version` (Node start-up included) | 52.0 ms | `node -e 0`: 24.7 ms |
-| `xoong sync`, 4 operations | 57.2 ms | `openapi-typescript` 7.13.0: 320 ms (types only) |
-| `xoong sync`, generated 500 operations | 75.4 ms | `openapi-typescript`: 478 ms (types only) |
-| `xoong check`, 1 screen | 59.2 ms | no comparable tool |
-| `xoong check`, 100 screens | 86.8 ms | no comparable tool |
-| `xoong check`, 1,000 screens | 232 ms | no comparable tool |
-| `xoong build`, people screen | 146 ms | `vite build` 8.3.6, React stack: 190 ms (bundles and minifies; xoong does not) |
-| `xoong dev`, start to first response | 104 ms | `vite` (React stack): 148 ms |
+| `xoong --version` (Node start-up included) | 52.5 ms | `node -e 0`: 26.9 ms |
+| `xoong sync`, 4 operations | 59.1 ms | `openapi-typescript` 7.13.0: 291 ms (types only) |
+| `xoong sync`, generated 500 operations | 79.3 ms | `openapi-typescript`: 437 ms (types only) |
+| `xoong check`, 1 screen | 62.3 ms | no comparable tool |
+| `xoong check`, 100 screens | 94.0 ms | no comparable tool |
+| `xoong check`, 1,000 screens | 250 ms | no comparable tool |
+| `xoong build`, people screen | 176 ms | `vite build` 8.3.6, React stack: 202 ms (bundles and minifies; xoong does not) |
+| `xoong dev`, start to first response | 110 ms | `vite` (React stack): 147 ms |
 
 ## More
 

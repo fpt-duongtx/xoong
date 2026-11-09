@@ -1,0 +1,50 @@
+@if (loading()) { <p role="status">Loading…</p> }
+@if (error(); as e) { <p class="error" role="alert">{{ e.code }}: {{ e.message }}</p> }
+<div class="filters">
+  @if (selected().size) {
+    <span>{{ selected().size }} selected</span>
+    <button class="danger" (click)="openConfirm()">Delete selected</button>
+  }
+  <input type="search" aria-label="Search" placeholder="Search" [value]="text()" (input)="setSearch($any($event.target).value)">
+</div>
+<table>
+  <thead>
+    <tr>
+      <th scope="col"><input type="checkbox" aria-label="Select all rows" [checked]="allSelected()" (change)="toggleAll()"></th>
+      @for (c of columns; track c[0]) {
+        <th scope="col" [attr.aria-sort]="ariaSort(c[0])"><button class="sort" (click)="toggleSort(c[0])">{{ c[1] }}</button></th>
+      }
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (p of page()?.items; track p.id) {
+      <tr>
+        <td><input type="checkbox" aria-label="Select row" [checked]="selected().has(p.id)" (change)="toggle(p.id)"></td>
+        <td>{{ p.name }}</td>
+        <td>{{ p.email }}</td>
+        <td>{{ p.role }}</td>
+        <td>{{ p.status }}</td>
+        <td><button (click)="disable(p.id)">Disable</button></td>
+      </tr>
+    }
+  </tbody>
+</table>
+@if (!loading() && !error() && !total()) { <p>No people found</p> }
+<nav aria-label="Pagination" class="pager">
+  <span>{{ range() }}</span>
+  <label>Rows per page
+    <select [value]="pageSize()" (change)="setSize($any($event.target).value)">
+      @for (n of pageSizes; track n) { <option [selected]="n === pageSize()">{{ n }}</option> }
+    </select>
+  </label>
+  @if (pageIndex() > 0) { <button (click)="go(-1)">Previous</button> }
+  @if ((pageIndex() + 1) * pageSize() < total()) { <button (click)="go(1)">Next</button> }
+</nav>
+<dialog #confirm role="alertdialog" aria-label="Delete the selected people?">
+  <p>Delete the selected people?</p>
+  <div class="row">
+    <button (click)="closeConfirm()">Cancel</button>
+    <button class="danger" (click)="remove()">Delete</button>
+  </div>
+</dialog>

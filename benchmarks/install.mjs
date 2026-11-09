@@ -31,7 +31,7 @@ async function measure(name, prepare, args) {
   result.install[name] = { time: s, packages: count, bytes: size };
   console.log(name, s.median, 'ms', count, 'packages', size, 'bytes');
 }
-for (const id of ['react', 'vue']) {
+for (const id of ['react', 'vue', 'angular']) {
   await measure(`${apps[id].label} stack (npm ci)`, async (dir) => { for (const f of ['package.json', 'package-lock.json']) await copyFile(join(apps[id].dir, f), join(dir, f)); }, ['ci']);
 }
 await measure('xoong (npm install @xoong/xoong, from tarballs)', async (dir) => {

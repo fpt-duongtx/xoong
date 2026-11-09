@@ -1,6 +1,6 @@
 {
   "name": "@xoong/controls",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "xoong form and page controls: tabs, popover, tooltip, menu, combobox, chips, tag input, carousel. Light DOM, accessible, zero dependencies besides @xoong/core.",
   "type": "module",
   "main": "src/index.js",
@@ -184,7 +184,7 @@
   },
   "homepage": "https://fpt-duongtx.github.io/xoong/",
   "dependencies": {
-    "@xoong/core": "0.0.48"
+    "@xoong/core": "0.0.49"
   },
   "publishConfig": {
     "access": "public"

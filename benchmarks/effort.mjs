@@ -37,8 +37,8 @@ async function walk(dir, skip) {
   return files;
 }
 
-const SKIP = new Set(['node_modules', 'dist', 'dist-nopreload', '.xoong', 'package-lock.json', 'package.json', 'vite.config.js', 'xoong.hints.json']);
-const CONFIG = ['package.json', 'vite.config.js', 'xoong.hints.json'];
+const SKIP = new Set(['node_modules', 'dist', 'dist-nopreload', '.xoong', '.angular', 'package-lock.json', 'package.json', 'vite.config.js', 'xoong.hints.json', 'angular.json', 'tsconfig.json']);
+const CONFIG = ['package.json', 'vite.config.js', 'xoong.hints.json', 'angular.json', 'tsconfig.json'];
 const lock = JSON.parse(await readFile(join(repo, 'package-lock.json'), 'utf8'));
 
 /** Every package npm installs for one package of this repository (own @xoong packages and third-party ones). */
@@ -56,6 +56,14 @@ function installed(name) {
   return [...seen];
 }
 
+/** What each library is for: published on the page, so every package a stack needs is listed and counted. */
+const PURPOSE = {
+  react: 'components and rendering', 'react-dom': 'rendering in the browser', '@tanstack/react-query': 'server state: fetching, cache, mutations', '@tanstack/react-table': 'headless table: sorting, paging and row selection state',
+  'react-hook-form': 'form state and submit', zod: 'validation schema', '@hookform/resolvers': 'connects zod to React Hook Form', '@vitejs/plugin-react': 'JSX transform in the build', vite: 'dev server and bundler',
+  vue: 'components and rendering', '@tanstack/vue-query': 'server state: fetching, cache, mutations', '@tanstack/vue-table': 'headless table: sorting, paging and row selection state', 'vee-validate': 'form state and submit', '@vee-validate/zod': 'connects zod to vee-validate', '@vitejs/plugin-vue': 'single-file component compiler in the build',
+  '@angular/core': 'components, signals, resource', '@angular/common': 'common directives and pipes (a dependency of the framework)', '@angular/compiler': 'template compiler (a peer of the framework)', '@angular/forms': 'reactive forms and validators', '@angular/platform-browser': 'bootstrap in the browser',
+  rxjs: 'observables (required by the framework; used here for the search debounce)', tslib: 'TypeScript helpers', '@angular/build': 'esbuild-based builder', '@angular/cli': 'the ng command', '@angular/compiler-cli': 'ahead-of-time compiler', typescript: 'TypeScript compiler',
+};
 const result = { environment: environment(), method: 'non-blank, non-comment lines of the files a developer writes (sources, markup, stylesheet); package.json, lockfiles, vite config and the OpenAPI document are not counted (config is listed apart); JSX is counted as script', stacks: {} };
 for (const [id, app] of Object.entries(apps)) {
   const files = (await walk(app.dir, SKIP)).sort();
@@ -77,6 +85,7 @@ for (const [id, app] of Object.entries(apps)) {
     const pkg = JSON.parse(await readFile(join(app.dir, 'package.json'), 'utf8'));
     const l = JSON.parse(await readFile(join(app.dir, 'package-lock.json'), 'utf8'));
     entry.dependencies = { runtimeInBrowser: Object.keys(pkg.dependencies).length, direct: Object.keys(pkg.dependencies).length + Object.keys(pkg.devDependencies).length, installedTotal: Object.keys(l.packages).length - 1, versions: pinned(app.dir) };
+    entry.libraries = Object.fromEntries(Object.entries(pinned(app.dir)).map(([name, version]) => [name, { version, for: PURPOSE[name] ?? (() => { throw new Error(`say what ${name} is for in PURPOSE`); })(), shipped: name in pkg.dependencies }]));
   }
   result.stacks[id] = entry;
 }

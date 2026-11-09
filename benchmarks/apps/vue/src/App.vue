@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import PeopleTable from './PeopleTable.vue';
 import AddPersonDialog from './AddPersonDialog.vue';
 
-const adding = ref(false);
+const add = ref(null);
 </script>
 
 <template>
@@ -11,8 +11,8 @@ const adding = ref(false);
   <nav aria-label="Main"><a href="/" aria-current="page">People</a></nav>
   <main>
     <h1>People</h1>
-    <button @click="adding = true">Add a person</button>
+    <button @click="add.open()">Add a person</button>
     <PeopleTable />
-    <AddPersonDialog :open="adding" @close="adding = false" />
+    <AddPersonDialog ref="add" />
   </main>
 </template>

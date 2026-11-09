@@ -66,6 +66,10 @@ for (const name of ['react', 'vue']) {
   const dir = apps[name].dir; const o = join(cache, `build-${name}`);
   results.build[`vite build (${name} screen)`] = { time: await bench(() => timeProcess(join(dir, 'node_modules/.bin/vite'), ['build', '--outDir', o, '--emptyOutDir'], { cwd: dir }), { runs: RUNS }), output: await size(o) };
 }
+{ // Angular's own builder (esbuild): `ng build`
+  const dir = apps.angular.dir; const o = join(cache, 'build-angular');
+  results.build['ng build (angular screen)'] = { time: await bench(() => timeProcess(join(dir, 'node_modules/.bin/ng'), ['build', '--output-path', o], { cwd: dir }), { runs: RUNS }), output: await size(o) };
+}
 log('build', Object.fromEntries(Object.entries(results.build).map(([k, v]) => [k, v.time.median])));
 // 5. dev server: spawn to first successful response
 const ttfb = (cmd, args, cwd, port) => async () => {
@@ -80,6 +84,7 @@ const ttfb = (cmd, args, cwd, port) => async () => {
   } finally { child.kill('SIGKILL'); await new Promise((r) => setTimeout(r, 150)); }
 };
 results.dev['xoong dev'] = await bench(ttfb('node', [XOONG, 'dev', '--root', xo, '--port', '5391'], repo, 5391), { runs: RUNS });
+results.dev['ng serve (angular)'] = await bench(ttfb(join(apps.angular.dir, 'node_modules/.bin/ng'), ['serve', '--port', '5393', '--host', '127.0.0.1'], apps.angular.dir, 5393), { runs: RUNS });
 for (const name of ['react', 'vue']) results.dev[`vite dev (${name})`] = await bench(ttfb(join(apps[name].dir, 'node_modules/.bin/vite'), ['--port', '5392', '--strictPort', '--host', '127.0.0.1'], apps[name].dir, 5392), { runs: RUNS });
 log('dev', Object.fromEntries(Object.entries(results.dev).map(([k, v]) => [k, v.median])));
 // 6. render (prerender with data): needs the API running

@@ -11,9 +11,9 @@ for *this* screen, and rerun it on yours.
 
 | Script | Measures | Output |
 |---|---|---|
-| `runtime.mjs` | The same people screen in xoong, a React stack and a Vue stack, in real Chromium over HTTP/2: bytes delivered, requests, first and largest contentful paint, blocking time, time until the screen is usable, JS heap, DOM nodes, time to show 100 / 1,000 / 10,000 rows, to sort, to search and to update one row. Unthrottled, and with a 4x slower CPU plus slow 4G while loading. Also xoong without modulepreload and over HTTP/1.1. | `results/runtime.json` |
-| `effort.mjs` | Files, lines of code (markup, script, style), direct dependencies and installed packages of the three screens. | `results/effort.json` |
-| `cli.mjs` | The `xoong` command: start-up, `sync` (against `openapi-typescript`), `check` on 1 / 100 / 1,000 screens, `build` (against `vite build`), dev server start (against `vite`), `render`. | `results/cli.json` |
+| `runtime.mjs` | The same people screen in xoong, a React stack, a Vue stack and an Angular stack, in real Chromium over HTTP/2: bytes delivered, requests, first and largest contentful paint, blocking time, time until the screen is usable, JS heap, DOM nodes, time to show 100 / 1,000 / 10,000 rows, to sort, to search and to update one row. Unthrottled, and with a 4x slower CPU plus slow 4G while loading. Also xoong without modulepreload and over HTTP/1.1. | `results/runtime.json` |
+| `effort.mjs` | Files, lines of code (markup, script, style), direct dependencies, installed packages and the list of libraries (with versions and purpose) of the four screens. | `results/effort.json` |
+| `cli.mjs` | The `xoong` command: start-up, `sync` (against `openapi-typescript`), `check` on 1 / 100 / 1,000 screens, `build` (against `vite build` and `ng build`), dev server start (against `vite` and `ng serve`), `render`. | `results/cli.json` |
 | `mcp.mjs` | `xoong-mcp` over real stdio JSON-RPC: start-up, `tools/list`, latency per tool (p50 / p95), throughput, memory; against a one-tool server on the official TypeScript SDK. | `results/mcp.json` |
 | `install.mjs` | Cold-cache install time, packages and `node_modules` size. Needs the npm registry. | `results/install.json` |
 
@@ -28,8 +28,32 @@ including an axe-core scan (WCAG 2 A and AA), server-side sort / search / paging
 the disable action, and the loading, empty and error states. A stack that fails a check is not benchmarked. Run it with `npm run accept xoong` (or `react`, `vue`).
 
 * `apps/xoong`: the screen as xoong writes it (`index.html` and a two-line script), built with `xoong build` (not minified, not bundled, modulepreload links).
-* `apps/react`: React 19, TanStack Query and Table, React Hook Form, zod, a native `<dialog>`; built with Vite (minified).
-* `apps/vue`: Vue 3, TanStack Query and Table for Vue, vee-validate, zod, a native `<dialog>`; built with Vite.
+* `apps/react`: React 19, TanStack Query and Table, React Hook Form, zod, the native `<dialog>`; built with Vite (minified).
+* `apps/vue`: Vue 3, TanStack Query and Table for Vue, vee-validate, zod, the native `<dialog>`; built with Vite.
+* `apps/angular`: Angular 22 (standalone components, signals, `resource()`, the new control flow, reactive forms, native `<dialog>`); built with `ng build` (esbuild). No Angular Material, CDK or other library: an expert could add them, none is needed for this screen. `rxjs` comes with the framework (used here for the search debounce).
+
+**The rule: a stack is measured with everything it needs for the screen; each added library counts in full.** Its bytes are in the bundle, its packages in the install count (direct and total),
+its size and time in the install benchmark, its entry in "third-party packages in the browser build", and the lines written to use it in the lines of code. Nothing is hidden or excluded.
+The libraries of every stack, with versions and what each is for, are listed on the benchmarks page (generated from `results/effort.json`, `libraries`). Libraries a stack does not need are
+not added to make it look worse either.
+
+### The React screen: what changed, and why it is the fairer version
+
+The first React screen was written like a translation of the xoong one (a hand-made `Dialog` component, separate files for the table and the dialog, sort and page state kept by hand and fed to
+TanStack Table). It was replaced by what a React specialist would write with the same libraries (no library was added or removed): TanStack Table's own `sorting`, `pagination` and `rowSelection`
+state with `manualSorting` / `manualPagination` / `rowCount`, so paging (`getCanNextPage`, `nextPage`, `setPageSize`), selection (`getToggleAllRowsSelectedHandler`) and sort toggling come from the table;
+column definitions outside the component, with the row action reaching the mutation through the table's `meta`; a small `useDebounced` hook; React Hook Form with the zod resolver,
+server field errors through `setError`; and the native `<dialog>` driven through refs (`showModal()`, `close()`) with no wrapper component. It is one component file instead of four, and
+the same 15 acceptance checks and the same behaviour (250 ms search debounce, the row patched from the "disable" answer) hold. The Vue screen got the same treatment for its dialogs (the wrapper component
+was removed in favour of the native `<dialog>` with template refs); its table and form code were left as they were.
+
+### The Angular screen under the strict policy
+
+The policy is the same for every stack (`script-src 'self'; style-src 'self'; base-uri 'none'` and the rest, see below). Angular needed three settings, none of which loosens the policy:
+`optimization.styles.inlineCritical: false` in `angular.json` (the default writes an inline style and an `onload` handler into `index.html`); all CSS in one global stylesheet (`src/styles.css`),
+because component styles are injected as `<style>` elements at run time and would need a nonce; and no `<base href>` in `index.html` (`ng new` writes one; `base-uri 'none'` forbids it, and this screen has no router).
+No nonce, no `unsafe-inline`; every run records zero violations. The Angular CLI 22 needs Node 24.15 or newer (this machine's default Node was older), so **every benchmark of every stack in the committed
+results ran on the same newer Node** (see `environment.node` in the results files).
 
 The competitors follow their documentation and the libraries most teams use for this job. Neither uses a component library (xoong has its own admin set, and a fair
 comparison with MUI or Radix would need a stack-by-stack decision this repository does not make), so they carry 18 lines of plain CSS. The search box waits 250 ms after typing in
@@ -56,7 +80,7 @@ all three, because xoong's does. After "disable", each stack does what its docum
 
 ```bash
 cd benchmarks
-npm run setup          # xoong sync + build, then `npm ci` in apps/react, apps/vue and tooling/ (their own lockfiles)
+npm run setup          # xoong sync + build, then `npm ci` in apps/react, apps/vue, apps/angular and tooling/ (their own lockfiles)
 npm run accept xoong   # the acceptance test for one stack
 npm run bench          # build everything, then runtime.mjs and effort.mjs
 npm run cli            # the xoong command
@@ -65,7 +89,7 @@ npm run install-times  # needs the registry
 ```
 
 Needs Node 22.12+, the repository's `npm ci` done once at the root (Playwright, axe-core), a Chromium that Playwright can launch (`npx playwright install chromium`), and `openssl`.
-The competitors' dependencies never enter the repository's lockfile or CI: they live in `apps/react/`, `apps/vue/` and `tooling/`, each with an exact-version `package.json`
+The competitors' dependencies never enter the repository's lockfile or CI: they live in `apps/react/`, `apps/vue/`, `apps/angular/` and `tooling/`, each with an exact-version `package.json`
 and a `package-lock.json`. Do not run other work while a benchmark runs: it shares the CPU.
 
 After a run: commit `results/*.json`, run `npm run site` (and `node tools/package-files.mjs`) at the root so the page, the home block and the READMEs follow the data.

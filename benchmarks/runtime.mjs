@@ -23,6 +23,7 @@ const VARIANTS = [
   { id: 'xoong-http1', label: 'xoong over HTTP/1.1', app: 'xoong', dist: 'dist', protocol: 'http1' },
   { id: 'react', label: 'React + TanStack + RHF + zod (vite build)', app: 'react', dist: 'dist', protocol: 'h2' },
   { id: 'vue', label: 'Vue + TanStack + vee-validate + zod (vite build)', app: 'vue', dist: 'dist', protocol: 'h2' },
+  { id: 'angular', label: 'Angular, signals and reactive forms (ng build)', app: 'angular', dist: 'dist/browser', protocol: 'h2' },
 ].filter((v) => !only.length || only.includes(v.id));
 
 export const PROFILES = [
@@ -174,7 +175,7 @@ for (const v of VARIANTS) {
   results.variants[v.id].sizes = Object.fromEntries(Object.entries(t).map(([k, [raw, gz, br]]) => [k, { raw, gzip: gz, brotli: br }]));
   delete results.variants[v.id].loaded;
 }
-results.versions = { react: pinned(apps.react.dir), vue: pinned(apps.vue.dir) };
+results.versions = { react: pinned(apps.react.dir), vue: pinned(apps.vue.dir), angular: pinned(apps.angular.dir) };
 await writeFile(outFile, JSON.stringify(results, null, 1) + '\n');
 await browser.close();
 for (const s of servers.values()) await s.close();

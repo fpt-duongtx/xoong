@@ -11,8 +11,8 @@ const x = apps.xoong.dir;
 run('node', [xoong, 'sync', join(x, '../../shared/openapi.json'), '--out', join(x, '.xoong'), '--hints', join(x, 'xoong.hints.json')], repo);
 run('node', [xoong, 'build', '--root', x, '--out', join(x, 'dist')], repo);
 run('node', [xoong, 'build', '--root', x, '--out', join(x, 'dist-nopreload'), '--no-preload'], repo);
-for (const name of ['react', 'vue']) {
+for (const name of ['react', 'vue', 'angular']) {
   const dir = apps[name].dir;
   if (!existsSync(join(dir, 'node_modules'))) run('npm', ['ci', '--no-audit', '--no-fund'], dir);
-  run('npx', ['vite', 'build'], dir);
+  run('npx', name === 'angular' ? ['ng', 'build'] : ['vite', 'build'], dir);
 }

@@ -3,7 +3,6 @@ import { computed, ref, watch } from 'vue';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table';
 import { listPeople, deletePeople, disablePerson } from './api.js';
-import Dialog from './Dialog.vue';
 
 const PAGE_SIZES = [10, 100, 1000, 10000];
 const queryClient = useQueryClient();
@@ -12,13 +11,13 @@ const text = ref('');
 const q = ref('');
 const pagination = ref({ pageIndex: 0, pageSize: 10 });
 const rowSelection = ref({});
-const confirming = ref(false);
+const confirm = ref(null);
 
 const sort = computed(() => (sorting.value[0] ? (sorting.value[0].desc ? '-' : '') + sorting.value[0].id : undefined));
 const params = computed(() => ({ q: q.value, sort: sort.value, limit: pagination.value.pageSize, offset: pagination.value.pageIndex * pagination.value.pageSize }));
 const { data, error, isLoading } = useQuery({ queryKey: computed(() => ['people', params.value]), queryFn: () => listPeople(params.value), placeholderData: keepPreviousData });
 const refresh = () => queryClient.invalidateQueries({ queryKey: ['people'] });
-const remove = useMutation({ mutationFn: deletePeople, onSuccess: () => { rowSelection.value = {}; confirming.value = false; refresh(); } });
+const remove = useMutation({ mutationFn: deletePeople, onSuccess: () => { rowSelection.value = {}; confirm.value.close(); refresh(); } });
 // the server answers with the changed person: put it into every cached page instead of fetching the page again
 const disable = useMutation({
   mutationFn: disablePerson,
@@ -66,7 +65,7 @@ const setSize = (n) => { pagination.value = { pageIndex: 0, pageSize: Number(n) 
   <div class="filters">
     <template v-if="selectedIds.length > 0">
       <span>{{ selectedIds.length }} selected</span>
-      <button class="danger" @click="confirming = true">Delete selected</button>
+      <button class="danger" @click="confirm.showModal()">Delete selected</button>
     </template>
     <input type="search" aria-label="Search" placeholder="Search" v-model="text">
   </div>
@@ -103,11 +102,11 @@ const setSize = (n) => { pagination.value = { pageIndex: 0, pageSize: Number(n) 
     <button v-if="pagination.pageIndex > 0" @click="goto(-1)">Previous</button>
     <button v-if="to < total" @click="goto(1)">Next</button>
   </nav>
-  <Dialog :open="confirming" role="alertdialog" label="Delete the selected people?" @close="confirming = false">
+  <dialog ref="confirm" role="alertdialog" aria-label="Delete the selected people?">
     <p>Delete the selected people?</p>
     <div class="row">
-      <button @click="confirming = false">Cancel</button>
+      <button @click="confirm.close()">Cancel</button>
       <button class="danger" @click="remove.mutate(selectedIds)">Delete</button>
     </div>
-  </Dialog>
+  </dialog>
 </template>

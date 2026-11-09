@@ -65,9 +65,10 @@ export async function acceptance(page, base) {
     await page.getByRole('checkbox', { name: 'Select row' }).nth(0).check();
     await page.getByRole('button', { name: 'Delete selected' }).waitFor({ timeout: 1000 });
     await page.getByRole('checkbox', { name: 'Select all rows' }).check();
-    if ((await page.getByRole('checkbox', { name: 'Select row', checked: true }).count()) !== 10) throw new Error('select all did not tick 10 rows');
+    // a framework may draw the result a frame later than the click returns: wait for it instead of reading it at once
+    await page.waitForFunction(() => document.querySelectorAll('tbody input[type=checkbox]:checked').length === 10, null, { timeout: 2000 }).catch(() => { throw new Error('select all did not tick 10 rows'); });
     await page.getByRole('checkbox', { name: 'Select all rows' }).uncheck();
-    if (await page.getByRole('button', { name: 'Delete selected' }).count()) throw new Error('bulk button still shown');
+    await page.getByRole('button', { name: 'Delete selected' }).waitFor({ state: 'detached', timeout: 2000 }).catch(() => { throw new Error('bulk button still shown'); });
   });
   await check('bulk delete asks first (Cancel keeps everything), then deletes the 2 ticked people', async () => {
     await page.getByRole('checkbox', { name: 'Select row' }).nth(0).check();

@@ -1,0 +1,21 @@
+<dialog #dialog (close)="reset()">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <h2>Add a person</h2>
+    <label>Name *<input formControlName="name" [attr.aria-invalid]="invalid('name') ? 'true' : null" [attr.aria-describedby]="invalid('name') ? 'name-error' : null"></label>
+    @if (invalid('name')) { <small id="name-error">{{ message('name') }}</small> }
+    <label>Email *<input type="email" formControlName="email" [attr.aria-invalid]="invalid('email') ? 'true' : null" [attr.aria-describedby]="invalid('email') ? 'email-error' : null"></label>
+    @if (invalid('email')) { <small id="email-error">{{ message('email') }}</small> }
+    <label>Role *
+      <select formControlName="role" [attr.aria-invalid]="invalid('role') ? 'true' : null" [attr.aria-describedby]="invalid('role') ? 'role-error' : null">
+        <option value="" disabled></option>
+        <option>admin</option>
+        <option>member</option>
+      </select>
+    </label>
+    @if (invalid('role')) { <small id="role-error">{{ message('role') }}</small> }
+    <div class="row">
+      <button type="submit" [disabled]="pending()">Add</button>
+      <button type="button" (click)="close()">Cancel</button>
+    </div>
+  </form>
+</dialog>

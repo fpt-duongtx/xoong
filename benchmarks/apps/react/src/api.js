@@ -7,21 +7,12 @@ export class ApiError extends Error {
 }
 
 async function request(method, path, body) {
-  const res = await fetch(`/api${path}`, {
-    method,
-    headers: body ? { 'content-type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  const res = await fetch(`/api${path}`, { method, headers: body && { 'content-type': 'application/json' }, body: body && JSON.stringify(body) });
   if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => null));
   return res.status === 204 ? null : res.json();
 }
 
-export const listPeople = ({ q, sort, limit, offset }) => {
-  const p = new URLSearchParams({ limit, offset });
-  if (q) p.set('q', q);
-  if (sort) p.set('sort', sort);
-  return request('GET', `/people?${p}`);
-};
+export const listPeople = (params) => request('GET', `/people?${new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== ''))}`);
 export const createPerson = (person) => request('POST', '/people', person);
 export const deletePeople = (ids) => request('POST', '/people/delete', { ids });
 export const disablePerson = (id) => request('POST', `/people/${id}/disable`);

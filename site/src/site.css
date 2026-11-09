@@ -138,6 +138,7 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 
 /* notices made by the generator (the kit's .notice, with an icon drawn by CSS) */
 .notice { max-width: var(--measure); margin: 1.2rem 0; }
+.notice.xo-alert { max-width: none; margin: 0; } /* the alert element is as wide as its container and sits flush: alerts side by side were three different widths */
 .notice .ic { --xo-icon: 1.25rem; margin-top: 0.15rem; }
 .notice.info .ic { color: var(--xo-color-accent); }
 .notice.warn .ic { color: color-mix(in srgb, var(--xo-color-warning) 35%, var(--xo-color-text)); }

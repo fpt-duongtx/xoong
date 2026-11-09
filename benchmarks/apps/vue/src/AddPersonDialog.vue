@@ -3,11 +3,11 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import Dialog from './Dialog.vue';
+import { ref } from 'vue';
 import { createPerson, ApiError } from './api.js';
 
-defineProps({ open: Boolean });
-const emit = defineEmits(['close']);
+const dialog = ref(null);
+defineExpose({ open: () => dialog.value.showModal() });
 
 const schema = toTypedSchema(z.object({
   name: z.string().trim().min(1, 'Please fill in this field.').max(60),
@@ -22,7 +22,7 @@ const [role, roleAttrs] = defineField('role');
 
 const create = useMutation({
   mutationFn: createPerson,
-  onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['people'] }); resetForm(); emit('close'); },
+  onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['people'] }); dialog.value.close(); },
   onError: (e) => {
     if (e instanceof ApiError) for (const [field, message] of Object.entries(e.fields)) setFieldError(field, message);
   },
@@ -31,7 +31,7 @@ const submit = handleSubmit((values) => create.mutate(values));
 </script>
 
 <template>
-  <Dialog :open="open" @close="emit('close')">
+  <dialog ref="dialog" @close="resetForm()">
     <form novalidate @submit.prevent="submit">
       <h2>Add a person</h2>
       <label>Name *<input v-model="name" v-bind="nameAttrs" :aria-invalid="errors.name ? 'true' : undefined" :aria-describedby="errors.name ? 'name-error' : undefined"></label>
@@ -48,8 +48,8 @@ const submit = handleSubmit((values) => create.mutate(values));
       <small v-if="errors.role" id="role-error">{{ errors.role }}</small>
       <div class="row">
         <button type="submit" :disabled="create.isPending.value">Add</button>
-        <button type="button" @click="emit('close')">Cancel</button>
+        <button type="button" @click="dialog.close()">Cancel</button>
       </div>
     </form>
-  </Dialog>
+  </dialog>
 </template>
