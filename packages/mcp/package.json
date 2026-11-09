@@ -1,6 +1,6 @@
 {
   "name": "@xoong/mcp",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "MCP server for xoong: gives AI assistants the spec (llms.txt), the API's operations, `xoong check` and error explanations over stdio.",
   "type": "module",
   "bin": {
@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@xoong/cli": "0.0.44"
+    "@xoong/cli": "0.0.45"
   },
   "files": [
     "src"
