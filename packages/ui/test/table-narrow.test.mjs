@@ -26,10 +26,14 @@ configure({
 window.ready = true;
 </script></body></html>`;
 
-/** Nine links and Edit. `coordinator` is wide enough that a flat 20rem of padding leaves it partly outside a 390px frame, and narrow enough to clear a single Edit button once the padding is capped at 40%. */
+/** Nine links and Edit. Each link is 80px wide, so a flat 20rem of padding leaves it partly outside a 390px frame, and the capped padding keeps it clear of the Edit button. The width is in pixels so a different font does not move the cell under the actions column. */
 const CELLS = (dir) => `<!doctype html><html dir="${dir}"><head>
 <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-<style>body { margin: 0; }</style></head><body>
+<style>
+  body { margin: 0; }
+  tbody a { display: inline-block; width: 80px; }
+  td.xo-actions button { width: 48px; box-sizing: border-box; }
+</style></head><body>
 <xo-view get="listUsers"><xo-table columns="c1,c2,c3,c4,c5,c6,c7,c8,c9">
 <a slot="c1" href="#c1">{c1}</a><a slot="c2" href="#c2">{c2}</a><a slot="c3" href="#c3">{c3}</a>
 <a slot="c4" href="#c4">{c4}</a><a slot="c5" href="#c5">{c5}</a><a slot="c6" href="#c6">{c6}</a>
