@@ -17,6 +17,8 @@ const PAGE = `<!doctype html><html><head><title>App</title></head><body>
   <template xo-route="/a" title="A"><h1>Page A</h1></template>
   <template xo-route="/b" title="B"><h1>Page B</h1></template>
   <template xo-route="/lazy" title="Lazy" src="/lazy.html"></template>
+  <template xo-route="/far" title="Far"><h1>Far</h1></template>
+  <template xo-route="/first" title="First" src="/missing-first.html"></template>
   <template xo-layout="shell" src="/shell.html"></template>
   <template xo-route="/laid" layout="shell" title="Laid"><h1>Laid</h1></template>
 </xo-router>
@@ -227,5 +229,75 @@ describe('router popstate with lazy src', () => {
     await page.waitForFunction(() => location.pathname === '/laid' && document.querySelector('.xo-router-root h1')?.textContent === 'Laid' && document.querySelector('.xo-router-root nav')?.textContent === 'Shell');
     await page.goForward();
     await page.waitForFunction(() => location.pathname === '/b' && document.querySelector('.xo-router-root h1')?.textContent === 'Page B');
+  });
+
+  // /, /b, /a (history.state has no xoPos), /lazy, /far. Two entries after the hole: pushState would drop both and the length would shrink.
+  async function hole(land) {
+    await go('/b');
+    await page.waitForFunction(() => location.pathname === '/b' && document.querySelector('.xo-router-root h1')?.textContent === 'Page B');
+    await go('/a');
+    await page.waitForFunction(() => location.pathname === '/a' && document.querySelector('.xo-router-root h1')?.textContent === 'Page A');
+    await page.evaluate(() => history.replaceState(null, '', location.href));
+    expect(await page.evaluate(() => history.state)).toBeNull();
+    await go('/lazy');
+    await page.waitForFunction(() => location.pathname === '/lazy' && document.querySelector('.xo-router-root h1')?.textContent === 'Lazy');
+    await go('/far');
+    await page.waitForFunction(() => location.pathname === '/far' && document.querySelector('.xo-router-root h1')?.textContent === 'Far');
+    if (land === '/far') return historyLength();
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/lazy' && document.querySelector('.xo-router-root h1')?.textContent === 'Lazy');
+    if (land === '/lazy') return historyLength();
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/a' && document.querySelector('.xo-router-root h1')?.textContent === 'Page A');
+    if (land === '/a') return historyLength();
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/b' && document.querySelector('.xo-router-root h1')?.textContent === 'Page B');
+    return historyLength();
+  }
+
+  async function stillForward(length) {
+    expect(await historyLength()).toBe(length);
+    await page.goForward();
+    await page.waitForFunction(() => location.pathname === '/lazy' && document.querySelector('.xo-router-root h1')?.textContent === 'Lazy');
+    await page.goForward();
+    await page.waitForFunction(() => location.pathname === '/far' && document.querySelector('.xo-router-root h1')?.textContent === 'Far');
+    expect(await historyLength()).toBe(length);
+  }
+
+  it('a Forward onto an entry with no stored position restores with replaceState, so the forward entries stay', async () => {
+    const length = await hole('/b');
+    expect(length).toBeGreaterThanOrEqual(5);
+    await fail('/a-fail.html');
+    await refetch('xo-route', '/a', '/a-fail.html');
+    await page.evaluate(() => { window.__errors = []; });
+    await page.goForward();
+    await settled();
+    expect(await path()).toBe('/b');
+    expect(await h1()).toBe('Page B');
+    expect(await errors()).toEqual([expect.stringMatching(/a-fail\.html 503/)]);
+    await stillForward(length);
+  });
+
+  it('a veto of a Back onto an entry with no stored position keeps the forward entries', async () => {
+    const length = await hole('/lazy');
+    expect(length).toBeGreaterThanOrEqual(5);
+    await page.evaluate(() => { window.__off = window.router.beforeNavigate(() => false); });
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/lazy');
+    await page.waitForTimeout(200);
+    expect(await path()).toBe('/lazy');
+    expect(await h1()).toBe('Lazy');
+    expect(await errors()).toEqual([]);
+    await page.evaluate(() => window.__off());
+    await stillForward(length);
+  });
+
+  it('a src that fails on the first load keeps the URL, renders no route, and fires one xo-error', async () => {
+    await page.goto(dev.url + '/first');
+    await page.waitForFunction(() => window.ready && window.__errors.length >= 1);
+    expect(await path()).toBe('/first');
+    expect(await page.locator('.xo-router-root h1').count()).toBe(0);
+    expect(await page.evaluate(() => window.router.current)).toBeNull();
+    expect(await errors()).toEqual([expect.stringMatching(/missing-first\.html 404/)]);
   });
 });
