@@ -48,6 +48,7 @@ Rules that follow:
 * **Error.** One `xo-error` on the router, the same event a failed link click already uses.
 * **Superseded.** If a newer navigation started while the fetch was in flight, the older fetch does not restore, does not render, and does not emit `xo-error`. The last navigation wins.
 * **Retry.** The next visit to that route fetches again. A later success renders it.
+* **First load.** The address bar is the document URL the browser opened. A failed route or layout `src` does not render (the screen stays empty), fires one `xo-error`, and is fetched again on the next visit.
 
 ## Consequences
 

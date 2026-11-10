@@ -78,7 +78,8 @@ With `base-links`, a root-relative link inside the router (`href="/users"`) is r
   veto does: the URL, the screen and the stored history position are the page you were on, and the forward entries stay. One
   `xo-error` fires on the router. A newer navigation that starts while the fetch is still in flight wins: the older fetch does not
   move the URL back, does not render, and does not fire `xo-error`. The failed fetch is forgotten, so the next visit tries again
-  and a success renders the route.
+  and a success renders the route. The first load is the document the browser opened. A failed route or layout `src` leaves that
+  URL in the address bar, does not render the route (the screen stays empty), fires one `xo-error`, and is fetched again on the next visit.
 * **Links.** Same-origin links inside `base` are intercepted and use `pushState`. The router never touches modified clicks, other
   mouse buttons, `target`, `download`, `rel="external"`, links to other origins or outside `base`, and in-page anchors. The link to the
   current page gets `aria-current="page"`; a link to a section above it gets `aria-current="true"`. `xo-current` on a link, a nav, or the router leaves `aria-current` as written.
@@ -90,7 +91,8 @@ With `base-links`, a root-relative link inside the router (`href="/users"`) is r
 * **401 to login.** `configure({ onUnauthorized: () => router.navigate('/login') })` plus a guard for pages that need a session.
 * **Unsaved changes.** `router.beforeNavigate(() => !form.dirty || confirm('Leave without saving?'))`. A vetoed Back/Forward cannot be
   prevented by the browser, so the router cancels it the way Vue Router does: each entry carries its position in `history.state`, and
-  a veto runs `history.go(-delta)`, which leaves the history (forward entries included) as it was. Closing the tab is `beforeunload`,
+  a veto runs `history.go(-delta)`, which leaves the history (forward entries included) as it was. When that position is missing,
+  the entry just shown is replaced with the page you were on, so the forward entries stay. Closing the tab is `beforeunload`,
   which is yours to handle.
 * **Behaviour borrowed from Vue Router and React Router:** going to the URL you are already on is a no-op (`navigate` resolves
   `false`); a hash-only change does not re-render, it scrolls to the element with that id; Back/Forward restores the scroll position
