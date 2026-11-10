@@ -323,7 +323,7 @@
 <section class="ref-entry" id="xo-toast" data-find="xo-toast shows the message of the latest xo-error event on the page (not when the event was prevented with  preventdefault() , or its  handled  is true because a view shows  $error  itself); hides on the next xo-done or after  timeout  seconds. notification snackbar message notice alert undo error success timeout">
 <h3><code>&lt;xo-toast&gt;</code></h3>
 <p class="ref-meta"><span class="ref-chip pkg">@xoong/ui</span> <code class="ref-import">import '@xoong/ui';</code></p>
-<p>Shows the message of the latest xo-error event on the page (not when the event was prevented with <code>preventDefault()</code>, or its <code>handled</code> is true because a view shows <code>$error</code> itself); hides on the next xo-done or after <code>timeout</code> seconds.</p>
+<p>Shows the message of the latest xo-error event on the page (not when the event was prevented with <code>preventDefault()</code>, or its <code>handled</code> is true because a view shows <code>$error</code> itself); hides on the next xo-done or after <code>timeout</code> seconds. Set <code>detail.action</code> (<code>{ label, run }</code>, for example Retry) and <code>detail.timeout</code> on the error and the toast shows that button, the same way an <a href="#xo-notice"><code>xo-notice</code></a> does.</p>
 <h4>Attributes</h4>
 <div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-toast">
 <thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
@@ -1738,11 +1738,11 @@
 <h4>Example</h4>
 <pre data-lang="js" tabindex="0"><code>document.addEventListener(<span class="tok-s">'xo-done'</span>, (event) =&gt; console.log(event.detail));</code></pre>
 </section>
-<section class="ref-entry" id="event-xo-error" data-find="xo-error a load or an action failed. failure fail problem exception handled prevent toast ">
+<section class="ref-entry" id="event-xo-error" data-find="xo-error a load or an action failed. failure fail problem exception handled prevent toast retry ">
 <h3><code>xo-error</code></h3>
 <p class="ref-meta"><span class="ref-chip">Bubbles</span> <span class="ref-chip warn">Cancelable</span></p>
-<p>A load or an action failed. Fires on the element that ran the action (or the view that could not load) and bubbles. Cancelable: call <code>preventDefault()</code> when your own code handles the failure, and <a href="#xo-toast"><code>&lt;xo-toast&gt;</code></a> stays quiet. <code>event.handled</code> is true when the view shows <code>$error</code> itself, or the error is a 401 that <code>onUnauthorized</code> deals with: the toast skips those too.</p>
-<dl class="ref-facts"><dt>Fired by</dt><dd><a href="#xo-view"><code>&lt;xo-view&gt;</code></a>, <a href="#xo-router"><code>&lt;xo-router&gt;</code></a></dd><dt><code>detail</code></dt><dd>The <code>XoongError</code> (status, code, detail, fields).</dd></dl>
+<p>A load or an action failed. Fires on the element that ran the action (or the view that could not load) and bubbles. Cancelable: call <code>preventDefault()</code> when your own code handles the failure, and <a href="#xo-toast"><code>&lt;xo-toast&gt;</code></a> stays quiet. <code>event.handled</code> is true when the view shows <code>$error</code> itself, or the error is a 401 that <code>onUnauthorized</code> deals with: the toast skips those too. <code>detail.action</code> (<code>{ label, run }</code>, for example Retry) and <code>detail.timeout</code> are drawn when the toast is not skipped.</p>
+<dl class="ref-facts"><dt>Fired by</dt><dd><a href="#xo-view"><code>&lt;xo-view&gt;</code></a>, <a href="#xo-router"><code>&lt;xo-router&gt;</code></a></dd><dt><code>detail</code></dt><dd>The <code>XoongError</code> (status, code, detail, fields). Set <code>action</code> (<code>{ label, run }</code>) and <code>timeout</code> on it and <a href="#xo-toast"><code>&lt;xo-toast&gt;</code></a> shows that button (it reads them one microtask later).</dd></dl>
 <h4>Example</h4>
 <pre data-lang="js" tabindex="0"><code>document.addEventListener(<span class="tok-s">'xo-error'</span>, (event) =&gt; console.log(event.detail));</code></pre>
 </section>

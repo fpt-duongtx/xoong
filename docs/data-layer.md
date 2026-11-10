@@ -168,7 +168,7 @@ Conflict policy (editing the same field concurrently) is last-writer-wins by
 Three ways to receive a failed call, from the markup to the code; use whichever fits the screen, they do not exclude each other.
 
 * **In the markup:** `$error` (`status`, `code`, `detail`, `fields`) inside the view: `<p xo-if="$error" role="alert">{$error.detail}</p>`, and `xo-refresh` on a "Try again" button.
-* **As an event:** every failed read and action raises `xo-error` (`detail` is the `XoongError`) on the view, button or form that made the call. It bubbles and it is **cancelable**: listen on the view, the section or the page and call `event.preventDefault()` to say "I handle this", and `<xo-toast>` stays quiet. `event.handled` is `true` when the view already shows `$error` or when a 401 goes to `onUnauthorized`.
+* **As an event:** every failed read and action raises `xo-error` (`detail` is the `XoongError`) on the view, button or form that made the call. It bubbles and it is **cancelable**: listen on the view, the section or the page and call `event.preventDefault()` to say "I handle this", and `<xo-toast>` stays quiet. `event.handled` is `true` when the view already shows `$error` or when a 401 goes to `onUnauthorized`. Set `event.detail.action = { label: 'Retry', run }` (and optionally `event.detail.timeout`) before the toast draws, one microtask later, and the error toast gets that button, the same way an `xo-notice` does.
 * **In JavaScript:** `view.error` is the `XoongError` of the latest read (or `null`); `getClient().query(...)` and `load(...)` give the same error on the query and as a rejected promise; `configure({ onError })` is the one global handler and runs first, for every failure.
 
 ```js

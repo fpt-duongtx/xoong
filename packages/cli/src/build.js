@@ -129,6 +129,8 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
   const outDir = await realOut(resolve(out));
   const basePath = base ? `/${base.replace(/^\/+|\/+$/g, '')}` : '';
   const config = await loadConfig(rootDir);
+  const inlineMode = inlineScripts ?? config.build?.inlineScripts ?? 'remove';
+  if (inlineMode !== 'remove' && inlineMode !== 'error') throw new Error(`xoong build: --inline-scripts must be remove or error, not "${inlineMode}"`);
   const packages = await findPackages(rootDir, undefined, extra ?? config.packages ?? []);
   const importMap = buildImportMap(packages).imports;
   /** @type {string[]} */ const warnings = [];
@@ -421,7 +423,6 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
   report.sort((a, b) => a.path.localeCompare(b.path));
   await writeFile(join(outDir, 'build-report.json'), JSON.stringify({ csp: CSP, minified, bundled, files: report, warnings }, null, 2) + '\n');
   void copyFile;
-  const inlineMode = inlineScripts ?? config.build?.inlineScripts ?? 'remove';
   return { out: outDir, files: report, warnings, csp: CSP, minified, bundled, failed: inlineMode === 'error' && removedInline > 0, preloads };
 }
 

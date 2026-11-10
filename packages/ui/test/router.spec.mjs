@@ -188,6 +188,34 @@ describe('<xo-router> routes added later, and templates loaded from src', () => 
     expect(screen.text('h1')).toBe('Loaded');
     expect(seen.at(-1)).toMatch(/\/admin\/edit\.html$/); // base-links prefixes a root-absolute src, once
   });
+
+  it('a failed src during a link click is reported and is not an unhandled rejection', async () => {
+    const reasons = [];
+    const onReject = (reason) => reasons.push(reason);
+    process.on('unhandledRejection', onReject);
+    globalThis.fetch = async () => new Response('no', { status: 503 });
+    await open('<xo-router><template xo-route="/"><h1>Home</h1><a id="go" href="/edit">Edit</a></template><template xo-route="/edit" src="edit.html"></template></xo-router>');
+    const errors = [];
+    document.addEventListener('xo-error', (e) => errors.push(e.detail));
+    document.querySelector('#go').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }));
+    await until(() => errors.length > 0);
+    await new Promise((r) => setTimeout(r, 30));
+    process.removeListener('unhandledRejection', onReject);
+    expect(reasons).toEqual([]);
+    expect(location.pathname).toBe('/');
+    expect(String(errors[0].message ?? errors[0])).toMatch(/503/);
+  });
+
+  it('editing xo-route on a template that is already compiled is seen on the next navigation', async () => {
+    await open('<xo-router><template xo-route="/"><h1>Home</h1></template><template xo-route="/old"><h1>Old</h1></template></xo-router>');
+    await go('/old');
+    expect(screen.text('h1')).toBe('Old');
+    document.querySelector('template[xo-route="/old"]').setAttribute('xo-route', '/new');
+    await go('/new');
+    expect(screen.text('h1')).toBe('Old');
+    await go('/old');
+    expect(text()).toBe('');
+  });
 });
 
 describe('<xo-router> links', () => {

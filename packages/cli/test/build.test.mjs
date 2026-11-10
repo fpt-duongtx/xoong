@@ -181,6 +181,7 @@ describe('xoong build: options and warnings', () => {
     expect(r.failed).toBe(true);
     expect(await readFile(join(root, 'dist/index.html'), 'utf8')).not.toContain('alert(1)');
     expect((await build({ root, out: join(root, 'dist2') })).failed).toBe(false); // remove is the default, and the build still succeeds
+    await expect(build({ root, out: join(root, 'dist3'), inlineScripts: 'keep' })).rejects.toThrow(/must be remove or error, not "keep"/);
   });
 
   it('--bundle uses esbuild.build with splitting and leaves a dynamic import as its own chunk', async () => {

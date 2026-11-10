@@ -33,6 +33,7 @@ describe('parseArgs', () => {
     expect(() => parseArgs('check', ['x.html', '--exclud', 'a'])).toThrow('xoong check: unknown option --exclud (known: --operations, --format, --exclude)');
     expect(() => parseArgs('sync', ['api.json', '--out'])).toThrow('--out needs a value');
     expect(() => parseArgs('check', ['x.html', '--format', 'sarif'])).toThrow('--format must be text or json, not "sarif"');
+    expect(() => parseArgs('build', ['--inline-scripts', 'keep'])).toThrow('--inline-scripts must be remove or error, not "keep"');
     expect(() => parseArgs('build', ['dist'])).toThrow('unexpected argument dist');
     expect(() => parseArgs('sync', ['a.json', 'b.json'])).toThrow('unexpected argument b.json');
     expect(() => parseArgs('dev', ['-p', '3000'])).toThrow('unknown option -p');
