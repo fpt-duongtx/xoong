@@ -270,8 +270,12 @@ class XoRouter extends XoElement {
       }
     }
     if (from && type !== 'start') this.#scrolls.set(this.#pos, { x: window.scrollX, y: window.scrollY }); // where we were, for Back
-    await this.#load(to.route?.template); // before the URL changes: a failed fetch leaves the address bar where it was
-    for (const name of this.#chain(to.route)) await this.#load(this.#layouts.get(name)?.template);
+    // src is pre-commit (docs/decisions/0011-popstate-src-failure.md): a link has not written the URL yet, and a failed
+    // Back/Forward is undone with history.go. A newer navigation does not restore and does not report this fetch.
+    try {
+      await this.#load(to.route?.template);
+      for (const name of this.#chain(to.route)) await this.#load(this.#layouts.get(name)?.template);
+    } catch (e) { if (token !== this.#token) return false; this.#restore(type, delta); throw e; }
     if (token !== this.#token) return false;
     if (type === 'popstate') { if (typeof popPos === 'number') this.#pos = popPos; }
     else if (type === 'start') this.#writeUrl(to, 'replace');
