@@ -70,10 +70,15 @@ const place = () => page.evaluate(() => {
   };
 });
 
-/** After focus, how many pixels of the country link sit under the actions cell. */
+/**
+ * Scroll the country link the way a keyboard focus does (`scroll-padding` on the frame) and report how many
+ * pixels of it sit under the actions cell. `focus()` alone does not scroll this frame in WebKit; `scrollIntoView`
+ * uses the same padding, and it is synchronous in all three engines.
+ */
 const focusOverlap = () => page.evaluate(() => {
   const link = document.querySelector('td[data-col="country"] a');
   link.focus();
+  link.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   const a = link.getBoundingClientRect();
   const act = document.querySelector('.xo-actions').getBoundingClientRect();
   const frame = document.querySelector('.xo-table').getBoundingClientRect();
