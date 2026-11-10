@@ -77,12 +77,20 @@ async function settled() {
   await page.waitForTimeout(200);
 }
 
+const historyLength = () => page.evaluate(() => history.length);
+
+async function allow(url, body) {
+  await page.unroute(`**${url}`);
+  await page.route(`**${url}`, (route) => route.fulfill({ status: 200, contentType: 'text/html', body }));
+}
+
 describe('router popstate with lazy src', () => {
   it('a failed src on Back restores the URL and the screen, and fires one xo-error', async () => {
     await go('/lazy');
     await page.waitForFunction(() => document.querySelector('.xo-router-root h1')?.textContent === 'Lazy');
     await go('/b');
     await page.waitForFunction(() => location.pathname === '/b');
+    const length = await historyLength();
     await fail('/lazy-fail.html');
     await refetch('xo-route', '/lazy', '/lazy-fail.html');
     await page.evaluate(() => { window.__errors = []; });
@@ -91,6 +99,12 @@ describe('router popstate with lazy src', () => {
     expect(await path()).toBe('/b');
     expect(await h1()).toBe('Page B');
     expect(await errors()).toEqual([expect.stringMatching(/lazy-fail\.html 503/)]);
+    expect(await historyLength()).toBe(length);
+    await allow('/lazy-fail.html', '<h1>Lazy</h1>');
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/lazy' && document.querySelector('.xo-router-root h1')?.textContent === 'Lazy');
+    await page.goForward();
+    await page.waitForFunction(() => location.pathname === '/b' && document.querySelector('.xo-router-root h1')?.textContent === 'Page B');
   });
 
   it('a failed src on Forward restores the URL and the screen, and fires one xo-error', async () => {
@@ -99,6 +113,7 @@ describe('router popstate with lazy src', () => {
     await page.waitForFunction(() => location.pathname === '/lazy');
     await page.goBack();
     await page.waitForFunction(() => location.pathname === '/b');
+    const length = await historyLength();
     await fail('/lazy-fail.html');
     await refetch('xo-route', '/lazy', '/lazy-fail.html');
     await page.evaluate(() => { window.__errors = []; });
@@ -107,6 +122,12 @@ describe('router popstate with lazy src', () => {
     expect(await path()).toBe('/b');
     expect(await h1()).toBe('Page B');
     expect(await errors()).toEqual([expect.stringMatching(/lazy-fail\.html 503/)]);
+    expect(await historyLength()).toBe(length);
+    await allow('/lazy-fail.html', '<h1>Lazy</h1>');
+    await page.goForward();
+    await page.waitForFunction(() => location.pathname === '/lazy' && document.querySelector('.xo-router-root h1')?.textContent === 'Lazy');
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/b' && document.querySelector('.xo-router-root h1')?.textContent === 'Page B');
   });
 
   it('after a failed Back, a further Back and then Forward land on the right URL and screen', async () => {
@@ -137,6 +158,7 @@ describe('router popstate with lazy src', () => {
     await go('/lazy');
     await go('/b');
     await page.waitForFunction(() => location.pathname === '/b');
+    const length = await historyLength();
     await fail('/lazy-fail.html');
     await refetch('xo-route', '/lazy', '/lazy-fail.html');
     await page.evaluate(() => { window.__errors = []; });
@@ -144,13 +166,15 @@ describe('router popstate with lazy src', () => {
     await settled();
     expect(await path()).toBe('/b');
     expect(await errors()).toHaveLength(1);
-    await page.unroute('**/lazy-fail.html');
-    await page.route('**/lazy-fail.html', (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<h1>Lazy again</h1>' }));
+    expect(await historyLength()).toBe(length);
+    await allow('/lazy-fail.html', '<h1>Lazy again</h1>');
     await page.evaluate(() => { window.__errors = []; });
     await page.goBack();
     await page.waitForFunction(() => document.querySelector('.xo-router-root h1')?.textContent === 'Lazy again');
     expect(await path()).toBe('/lazy');
     expect(await errors()).toEqual([]);
+    await page.goForward();
+    await page.waitForFunction(() => location.pathname === '/b' && document.querySelector('.xo-router-root h1')?.textContent === 'Page B');
   });
 
   it('a second Back while a src fetch is in flight wins, with no stale screen and no stale xo-error', async () => {
@@ -165,6 +189,7 @@ describe('router popstate with lazy src', () => {
     });
     await refetch('xo-route', '/a', '/slow.html');
     await page.evaluate(() => { window.__errors = []; });
+    const length = await historyLength();
     await page.goBack();
     await page.waitForFunction(() => location.pathname === '/a');
     await page.goBack();
@@ -174,6 +199,12 @@ describe('router popstate with lazy src', () => {
     expect(await path()).toBe('/');
     expect(await h1()).toBe('Home');
     expect(await errors()).toEqual([]);
+    expect(await historyLength()).toBe(length);
+    await allow('/slow.html', '<h1>Page A</h1>');
+    await page.goForward();
+    await page.waitForFunction(() => location.pathname === '/a' && document.querySelector('.xo-router-root h1')?.textContent === 'Page A');
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/' && document.querySelector('.xo-router-root h1')?.textContent === 'Home');
   });
 
   it('a layout src that fails on Back restores the URL and the screen, and fires one xo-error', async () => {
@@ -181,6 +212,7 @@ describe('router popstate with lazy src', () => {
     await page.waitForFunction(() => document.querySelector('.xo-router-root h1')?.textContent === 'Laid');
     await go('/b');
     await page.waitForFunction(() => location.pathname === '/b');
+    const length = await historyLength();
     await fail('/shell-fail.html');
     await refetch('xo-layout', 'shell', '/shell-fail.html');
     await page.evaluate(() => { window.__errors = []; });
@@ -189,5 +221,11 @@ describe('router popstate with lazy src', () => {
     expect(await path()).toBe('/b');
     expect(await h1()).toBe('Page B');
     expect(await errors()).toEqual([expect.stringMatching(/shell-fail\.html 503/)]);
+    expect(await historyLength()).toBe(length);
+    await allow('/shell-fail.html', '<nav>Shell</nav><main xo-outlet></main>');
+    await page.goBack();
+    await page.waitForFunction(() => location.pathname === '/laid' && document.querySelector('.xo-router-root h1')?.textContent === 'Laid' && document.querySelector('.xo-router-root nav')?.textContent === 'Shell');
+    await page.goForward();
+    await page.waitForFunction(() => location.pathname === '/b' && document.querySelector('.xo-router-root h1')?.textContent === 'Page B');
   });
 });

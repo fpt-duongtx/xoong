@@ -2,12 +2,10 @@
 // the admin example must work and the browser must report zero violations.
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createServer } from 'node:http';
-import { readFile, readdir, stat, mkdtemp, writeFile, mkdir, symlink } from 'node:fs/promises';
+import { readFile, readdir, stat, mkdtemp, writeFile, mkdir, symlink, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
 import { Readable } from 'node:stream';
 import { build, CSP } from '../src/build.js';
 import { sync } from '../src/commands.js';
@@ -223,18 +221,15 @@ describe('xoong build: options and warnings', () => {
     expect(missing.warnings.join('\n')).toMatch(/--bundle: esbuild is not installed/);
   });
 
-  it('--bundle with the real esbuild keeps a dynamic import() as its own chunk and keeps a file that was not an input', async () => {
+  it('--bundle with the real esbuild keeps a dynamic import() as its own chunk and keeps a file that was not an input', async (ctx) => {
+    if (!existsSync(join(repo, 'benchmarks/apps/xoong/node_modules/esbuild'))) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-esbuild-'));
     await mkdir(join(root, 'src'));
     await writeFile(join(root, 'package.json'), JSON.stringify({ name: 'app', private: true }));
     const vendor = join(repo, 'benchmarks/apps/xoong/node_modules');
-    if (existsSync(join(vendor, 'esbuild'))) {
-      await mkdir(join(root, 'node_modules'), { recursive: true });
-      await symlink(join(vendor, 'esbuild'), join(root, 'node_modules/esbuild'));
-      if (existsSync(join(vendor, '@esbuild'))) await symlink(join(vendor, '@esbuild'), join(root, 'node_modules/@esbuild'));
-    } else {
-      await promisify(execFile)('npm', ['install', 'esbuild@0.28.2', '--no-fund', '--no-audit'], { cwd: root, timeout: 90000 });
-    }
+    await mkdir(join(root, 'node_modules'), { recursive: true });
+    await symlink(join(vendor, 'esbuild'), join(root, 'node_modules/esbuild'));
+    if (existsSync(join(vendor, '@esbuild'))) await symlink(join(vendor, '@esbuild'), join(root, 'node_modules/@esbuild'));
     await writeFile(join(root, 'index.html'), '<!doctype html><script type="module" src="/src/main.js"></script>');
     await writeFile(join(root, 'src/main.js'), "import { n } from './lib.js';\nconst load = () => import('./lazy.js');\nexport const n2 = n + load;\n");
     await writeFile(join(root, 'src/lib.js'), 'export const n = 1;\n');
@@ -253,6 +248,86 @@ describe('xoong build: options and warnings', () => {
     expect(existsSync(join(out, 'src/lib.js'))).toBe(false);
     expect(await readFile(join(out, 'worker.js'), 'utf8')).toContain('postMessage("worker")');
   }, 90000);
+
+  // The devDependency is benchmarks/apps/xoong's esbuild. A missing install skips; the test never runs npm install.
+  const esbuildDir = join(repo, 'benchmarks/apps/xoong/node_modules/esbuild');
+  const skipEsbuild = !existsSync(esbuildDir);
+
+  async function linkedEsbuild(root) {
+    await mkdir(join(root, 'node_modules/@xoong'), { recursive: true });
+    await symlink(esbuildDir, join(root, 'node_modules/esbuild'));
+    const plat = join(repo, 'benchmarks/apps/xoong/node_modules/@esbuild');
+    if (existsSync(plat)) await symlink(plat, join(root, 'node_modules/@esbuild'));
+  }
+
+  /** An app that imports @xoong/*, loads operations.json, and registers <xo-view> by a side-effect import. */
+  async function appShape(root, { copy }) {
+    await mkdir(join(root, 'src'), { recursive: true });
+    await mkdir(join(root, '.xoong'), { recursive: true });
+    await writeFile(join(root, 'package.json'), JSON.stringify({ name: 'app', private: true }));
+    await writeFile(join(root, '.xoong/operations.json'), '{ "operations": {}, "marker": "ops-table" }\n');
+    await writeFile(join(root, 'index.html'), '<!doctype html><link rel="stylesheet" href="/@xoong/ui/src/xoong.css"><script type="module" src="/src/main.js"></script>');
+    await writeFile(join(root, 'src/main.js'), "import { configure } from '@xoong/data';\nimport '@xoong/data/view';\nimport '@xoong/ui';\nimport operations from '/.xoong/operations.json' with { type: 'json' };\nconfigure({ api: operations, baseUrl: '/api' });\n");
+    await writeFile(join(root, 'worker.js'), 'postMessage("worker");\n');
+    await writeFile(join(root, 'extra.js'), 'export const extra = 1;\n');
+    await linkedEsbuild(root);
+    for (const name of ['core', 'data', 'forms', 'ui']) {
+      const from = join(repo, 'packages', name);
+      const to = join(root, 'node_modules/@xoong', name);
+      if (copy) {
+        await mkdir(to, { recursive: true });
+        await cp(join(from, 'package.json'), join(to, 'package.json'));
+        await cp(join(from, 'src'), join(to, 'src'), { recursive: true });
+      } else await symlink(from, to);
+    }
+  }
+
+  async function expectBundled(copy) {
+    const root = await mkdtemp(join(tmpdir(), 'xoong-build-shape-'));
+    await appShape(root, { copy });
+    const out = join(root, 'dist');
+    const r = await build({ root, out, bundle: true, include: ['worker.js', 'extra.js'] });
+    expect(r.bundled).toBe(true);
+    expect(r.warnings).toEqual([]);
+    expect(r.files).toHaveLength(13); // entry, 3 shared chunks, router, dialogs, stream, css, html, two operations.json, worker, --include
+    const paths = r.files.map((f) => f.path);
+    expect(paths.filter((p) => p.startsWith('/@xoong/') && p.endsWith('.js'))).toEqual([]);
+    for (const kept of ['/worker.js', '/extra.js', '/@xoong/ui/src/xoong.css', '/.xoong/operations.json', '/operations.json', '/src/main.js', '/index.html']) expect(paths).toContain(kept);
+    expect(paths.filter((p) => /\/chunk-/.test(p))).toHaveLength(3);
+    expect(paths.filter((p) => /\/router-/.test(p))).toHaveLength(1);
+    expect(paths.filter((p) => /\/dialogs-/.test(p))).toHaveLength(1);
+    expect(paths.filter((p) => /\/stream-/.test(p))).toHaveLength(1);
+    const js = (await Promise.all(paths.filter((p) => p.endsWith('.js')).map((p) => readFile(join(out, p), 'utf8')))).join('\n');
+    expect(js).toContain('define("xo-view"'); // esbuild keeps the call; it prints double quotes
+    expect(js).toContain('options-op');
+    expect(js).toContain('ops-table'); // /.xoong/operations.json was resolved and bundled
+    expect(await readFile(join(out, 'worker.js'), 'utf8')).toContain('postMessage("worker")');
+    expect(await readFile(join(out, 'extra.js'), 'utf8')).toContain('extra = 1');
+  }
+
+  it('bundles an app that imports @xoong/* through the repository links', async (ctx) => {
+    if (skipEsbuild) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
+    await expectBundled(false);
+  }, 60000);
+
+  it('bundles an app whose @xoong packages are installed under node_modules', async (ctx) => {
+    if (skipEsbuild) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
+    await expectBundled(true);
+  }, 60000);
+
+  it('fails the build when esbuild cannot resolve an import, and writes nothing', async (ctx) => {
+    if (skipEsbuild) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
+    const root = await mkdtemp(join(tmpdir(), 'xoong-build-badbundle-'));
+    await mkdir(join(root, 'src'), { recursive: true });
+    await writeFile(join(root, 'package.json'), JSON.stringify({ name: 'app', private: true }));
+    await writeFile(join(root, 'index.html'), '<!doctype html><script type="module" src="/src/main.js"></script>');
+    await writeFile(join(root, 'src/main.js'), "import './missing.js';\n");
+    await linkedEsbuild(root);
+    const out = join(root, 'dist');
+    await expect(build({ root, out, bundle: true })).rejects.toThrow(/xoong build: --bundle failed[\s\S]*Could not resolve/);
+    expect(existsSync(join(out, 'src/main.js'))).toBe(false);
+    expect(existsSync(join(out, 'index.html'))).toBe(false);
+  }, 60000);
 
   it('refuses a folder with no page', async () => {
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-empty-'));

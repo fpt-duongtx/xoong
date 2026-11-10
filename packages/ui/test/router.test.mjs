@@ -10,7 +10,7 @@ const repo = new URL('../../..', import.meta.url).pathname;
 let dev, browser, page;
 const errors = [];
 
-const PAGE = `<!doctype html><html><head><title>App</title></head><body>
+const PAGE = `<!doctype html><html><head><title>App</title><link rel="icon" href="data:,"></head><body>
 <xo-router base="/admin">
   <template xo-layout="shell"><nav><a id="home" href="/admin/">Home</a> <a id="users" href="/admin/users">Users</a> <a id="out" href="/elsewhere.html">Out</a></nav><main xo-outlet></main></template>
   <template xo-route="/" layout="shell" title="Home"><h1>Home</h1></template>
@@ -29,7 +29,7 @@ window.ready = true;
 beforeAll(async () => {
   const root = await mkdtemp(join(tmpdir(), 'xoong-router-'));
   await writeFile(join(root, 'index.html'), PAGE);
-  await writeFile(join(root, 'elsewhere.html'), '<h1>Elsewhere</h1>');
+  await writeFile(join(root, 'elsewhere.html'), '<!doctype html><html><head><link rel="icon" href="data:,"></head><body><h1>Elsewhere</h1></body></html>');
   dev = await startDev({ root, resolveFrom: repo, port: 0, quiet: true, spa: true });
   browser = await launchChromium();
   page = await (await browser.newContext({ viewport: { width: 900, height: 600 } })).newPage();
