@@ -102,8 +102,7 @@
   }
 
   .xo-table { position: relative; overflow-x: auto; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
-  .xo-table:active { user-select: none; } /* a drag across the frame selects no text; a field below opts back in */
-  .xo-table:active :is(input, textarea, [contenteditable="true"]) { user-select: text; }
+  .xo-table:has(td.xo-actions) { scroll-padding-inline-end: 20rem; } /* a focused neighbour clears the pinned actions cell, in either writing direction */
   .xo-table table { width: 100%; border-collapse: separate; border-spacing: 0; } /* separate: the pinned actions edge stays on the cell */
   .xo-table :where(th, td) { padding: var(--xo-space-2) var(--xo-space-3); text-align: start; border-bottom: 1px solid var(--xo-color-border); }
   .xo-table :where(th) { font-size: var(--xo-text-small); color: var(--xo-color-muted); font-weight: 600; }
@@ -113,7 +112,7 @@
   .xo-table tbody { transition: opacity 0.15s ease; }
   xo-view[data-refreshing] .xo-table tbody { opacity: 0.6; } /* the rows of the last result stay while the next loads: no collapse, no jump */
   .xo-table .xo-actions { text-align: end; white-space: nowrap; } /* a table cell stays a cell (display: flex dropped its border) */
-  .xo-table:has(td.xo-actions) :is(td.xo-actions, thead th:last-child) { position: sticky; inset-inline-end: 0; z-index: 1; background: var(--xo-color-surface); border-inline-start: 1px solid var(--xo-color-border); } /* the actions column stays in a 390px frame */
+  .xo-table:has(td.xo-actions) :is(td.xo-actions, thead th:has(> .xo-visually-hidden)) { position: sticky; inset-inline-end: 0; z-index: 1; background: var(--xo-color-surface); border-inline-start: 1px solid var(--xo-color-border); } /* the actions column, not whichever header is last */
   .xo-table .xo-actions > * + * { margin-inline-start: var(--xo-space-2); }
   .xo-bulk { display: flex; align-items: center; gap: var(--xo-space-2); padding: var(--xo-space-2); background: var(--xo-color-bg); border-bottom: 1px solid var(--xo-color-border); }
   .xo-filters { display: flex; flex-wrap: wrap; gap: var(--xo-space-2); align-items: center; padding: var(--xo-space-2); border-bottom: 1px solid var(--xo-color-border); }
