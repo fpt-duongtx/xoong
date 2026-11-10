@@ -2,10 +2,12 @@
 // the admin example must work and the browser must report zero violations.
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createServer } from 'node:http';
-import { readFile, readdir, stat, mkdtemp, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, readdir, stat, mkdtemp, writeFile, mkdir, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { Readable } from 'node:stream';
 import { build, CSP } from '../src/build.js';
 import { sync } from '../src/commands.js';
@@ -196,6 +198,7 @@ describe('xoong build: options and warnings', () => {
         fs.mkdirSync(path.join(opts.outdir, 'src'), { recursive: true });
         fs.writeFileSync(path.join(opts.outdir, 'src/main.js'), 'import "../chunk-lazy.js";\\nexport const bundled = true;\\n');
         fs.writeFileSync(path.join(opts.outdir, 'chunk-lazy.js'), 'export const lazy = true;\\n');
+        return { metafile: { inputs: { 'src/main.js': {}, 'src/lib.js': {}, 'src/lazy.js': {} } } };
       };
     `);
     await writeFile(join(root, 'index.html'), '<!doctype html><script type="module" src="/src/main.js"></script><script src="/plain.js"></script>');
@@ -203,18 +206,53 @@ describe('xoong build: options and warnings', () => {
     await writeFile(join(root, 'src/lib.js'), 'export const n = 1;\n');
     await writeFile(join(root, 'src/lazy.js'), 'export const lazy = 1;\n');
     await writeFile(join(root, 'plain.js'), 'window.plain = 1;\n');
+    await writeFile(join(root, 'worker.js'), 'postMessage(1);\n');
+    await writeFile(join(root, 'extra.js'), 'export const extra = 1;\n');
     const out = join(root, 'dist');
-    const r = await build({ root, out, bundle: true });
+    const r = await build({ root, out, bundle: true, include: ['worker.js', 'extra.js'] });
     expect(r.bundled).toBe(true);
     expect(r.warnings).toEqual([]);
     expect(await readFile(join(out, 'src/main.js'), 'utf8')).toContain('bundled = true');
     expect(await readFile(join(out, 'chunk-lazy.js'), 'utf8')).toContain('lazy = true');
-    expect(existsSync(join(out, 'src/lib.js'))).toBe(false); // the copied module is replaced by the bundle
+    expect(existsSync(join(out, 'src/lib.js'))).toBe(false); // a module esbuild bundled is not copied beside the bundle
     expect(await readFile(join(out, 'plain.js'), 'utf8')).toContain('window.plain'); // a classic script is not an entry
+    expect(await readFile(join(out, 'worker.js'), 'utf8')).toContain('postMessage'); // --include, not a bundle input
+    expect(await readFile(join(out, 'extra.js'), 'utf8')).toContain('extra = 1');
     const missing = await build({ root: await (async () => { const d = await mkdtemp(join(tmpdir(), 'xoong-build-nobundle-')); await writeFile(join(d, 'index.html'), '<script type="module" src="/a.js"></script>'); await writeFile(join(d, 'a.js'), 'export const a = 1;\n'); return d; })(), out: join(root, 'dist-none'), bundle: true });
     expect(missing.bundled).toBe(false);
     expect(missing.warnings.join('\n')).toMatch(/--bundle: esbuild is not installed/);
   });
+
+  it('--bundle with the real esbuild keeps a dynamic import() as its own chunk and keeps a file that was not an input', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'xoong-build-esbuild-'));
+    await mkdir(join(root, 'src'));
+    await writeFile(join(root, 'package.json'), JSON.stringify({ name: 'app', private: true }));
+    const vendor = join(repo, 'benchmarks/apps/xoong/node_modules');
+    if (existsSync(join(vendor, 'esbuild'))) {
+      await mkdir(join(root, 'node_modules'), { recursive: true });
+      await symlink(join(vendor, 'esbuild'), join(root, 'node_modules/esbuild'));
+      if (existsSync(join(vendor, '@esbuild'))) await symlink(join(vendor, '@esbuild'), join(root, 'node_modules/@esbuild'));
+    } else {
+      await promisify(execFile)('npm', ['install', 'esbuild@0.28.2', '--no-fund', '--no-audit'], { cwd: root, timeout: 90000 });
+    }
+    await writeFile(join(root, 'index.html'), '<!doctype html><script type="module" src="/src/main.js"></script>');
+    await writeFile(join(root, 'src/main.js'), "import { n } from './lib.js';\nconst load = () => import('./lazy.js');\nexport const n2 = n + load;\n");
+    await writeFile(join(root, 'src/lib.js'), 'export const n = 1;\n');
+    await writeFile(join(root, 'src/lazy.js'), 'export const lazyMark = "from-lazy";\n');
+    await writeFile(join(root, 'worker.js'), 'postMessage("worker");\n');
+    const out = join(root, 'dist');
+    const r = await build({ root, out, bundle: true, include: ['worker.js'] });
+    expect(r.bundled).toBe(true);
+    expect(r.warnings).toEqual([]);
+    const main = await readFile(join(out, 'src/main.js'), 'utf8');
+    const imported = [...main.matchAll(/import\(\s*['"]([^'"]+)['"]\s*\)/g)].map((m) => m[1]);
+    expect(imported.length).toBeGreaterThan(0);
+    const chunk = await readFile(join(out, 'src', imported[0]), 'utf8');
+    expect(chunk).toContain('from-lazy');
+    expect(imported[0]).not.toContain('main.js');
+    expect(existsSync(join(out, 'src/lib.js'))).toBe(false);
+    expect(await readFile(join(out, 'worker.js'), 'utf8')).toContain('postMessage("worker")');
+  }, 90000);
 
   it('refuses a folder with no page', async () => {
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-empty-'));
