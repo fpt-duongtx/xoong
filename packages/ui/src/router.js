@@ -53,6 +53,8 @@ class XoRouter extends XoElement {
   #root = /** @type {HTMLElement | null} */ (null);
   #token = 0;
   #started = false;
+  /** In-flight or finished `src` loads, so a route is fetched once. A failure is dropped so the next visit tries again. */
+  #loads = new Map();
   /** Index of the current history entry (kept in history.state, like Vue Router): lets Back/Forward be cancelled with history.go. */
   #pos = 0;
   #reverting = false;
@@ -117,14 +119,6 @@ class XoRouter extends XoElement {
     if (this.#started || !this.isConnected) return;
     this.#started = true;
     active = this;
-    for (const t of /** @type {HTMLTemplateElement[]} */ ([...this.querySelectorAll(':scope > template')])) {
-      if (t.hasAttribute('xo-layout')) this.#layouts.set(t.getAttribute('xo-layout') ?? '', { template: t, layout: t.getAttribute('layout') });
-      else if (t.hasAttribute('xo-route')) {
-        const pattern = t.getAttribute('xo-route') ?? '';
-        this.#routes.push({ pattern, ...compile(pattern), layout: t.getAttribute('layout'), title: t.getAttribute('title') ?? '', description: t.getAttribute('description') ?? undefined, template: t });
-      }
-    }
-    this.#routes.sort((a, b) => b.score - a.score);
     for (const old of this.querySelectorAll(':scope > .xo-router-root')) old.remove(); // content prerendered by @xoong/ssr: the router renders it again
     this.#root = document.createElement('div');
     this.#root.className = 'xo-router-root';
@@ -172,15 +166,50 @@ class XoRouter extends XoElement {
 
   /** @param {string} target a path (with optional query) relative to the base, or a full path when `absolute` */
   #parse(target, absolute = false) {
-    const url = new URL(target, `${window.location.origin}${absolute ? '' : this.#base === '/' ? '/' : this.#base + '/'}`);
+    const url = new URL(target, absolute ? window.location.origin : this.#abs);
     let path = trim(dec(url.pathname, decodeURI));
     const base = this.#base;
     if (base !== '/' && (path === base || path.startsWith(base + '/'))) path = trim(path.slice(base.length) || '/');
     return this.#locate(path, url);
   }
 
+  /** Read the child templates again, so a route added after start is seen on the next navigation. */
+  #collect() {
+    this.#routes = [];
+    this.#layouts.clear();
+    for (const t of /** @type {HTMLTemplateElement[]} */ ([...this.querySelectorAll(':scope > template')])) {
+      const attr = (/** @type {string} */ name) => t.getAttribute(name);
+      if (t.hasAttribute('xo-layout')) this.#layouts.set(attr('xo-layout') ?? '', { template: t, layout: attr('layout') });
+      else if (t.hasAttribute('xo-route')) {
+        const pattern = attr('xo-route') ?? '';
+        this.#routes.push({ pattern, ...compile(pattern), layout: attr('layout'), title: attr('title') ?? '', description: attr('description') ?? undefined, template: t });
+      }
+    }
+    this.#routes.sort((a, b) => b.score - a.score);
+  }
+
+  /** Origin plus the router base, with a trailing slash, so a relative `src` does not follow the current path. */
+  get #abs() { return `${window.location.origin}${this.#base === '/' ? '/' : this.#base + '/'}`; }
+
+  /**
+   * Fill an empty route or layout template from `src` before it is cloned. A root-absolute URL is prefixed when `base-links`
+   * is set. A script in the fetched markup does not run (it is written into a template). A failed fetch is forgotten, so the next visit retries.
+   */
+  async #load(/** @type {HTMLTemplateElement | undefined} */ t) {
+    const src = t?.getAttribute('src');
+    if (!src || t.content.querySelector('*') || t.content.textContent.trim()) return;
+    let job = this.#loads.get(t);
+    if (!job) this.#loads.set(t, job = fetch(new URL(src[0] === '/' ? this.#own(src) : src, this.#abs)).then(async (res) => {
+      if (!res.ok) throw new Error(`xoong router: ${src} ${res.status}`);
+      const html = await res.text();
+      t.innerHTML = html.split(/<\/?body[^>]*>/i)[1] ?? html;
+    }).catch((err) => { this.#loads.delete(t); throw err; }));
+    await job;
+  }
+
   /** @returns {Location} */
   #locate(path, url) {
+    this.#collect();
     const base = this.#base === '/' ? '' : this.#base;
     const full = (base + (path === '/' ? '' : path)) || '/'; // as in the address bar: base + path, no trailing slash
     const out = { path, params: {}, query: url.searchParams, url: full + url.search + url.hash, route: null };
@@ -236,11 +265,14 @@ class XoRouter extends XoElement {
       if (token !== this.#token) return false;
       if (result === false) { this.#restore(type, delta); return false; }
       if (typeof result === 'string') {
-        if (depth >= 10) throw new Error('xoong router: too many redirects (a guard keeps redirecting)');
+        if (depth >= 10) throw new Error('xoong router: too many redirects');
         return this.#go(this.#parse(result), 'replace', 'redirect', depth + 1);
       }
     }
     if (from && type !== 'start') this.#scrolls.set(this.#pos, { x: window.scrollX, y: window.scrollY }); // where we were, for Back
+    await this.#load(to.route?.template); // before the URL changes: a failed fetch leaves the address bar where it was
+    for (const name of this.#chain(to.route)) await this.#load(this.#layouts.get(name)?.template);
+    if (token !== this.#token) return false;
     if (type === 'popstate') { if (typeof popPos === 'number') this.#pos = popPos; }
     else if (type === 'start') this.#writeUrl(to, 'replace');
     else this.#writeUrl(to, mode);
@@ -294,7 +326,7 @@ class XoRouter extends XoElement {
     for (let name = route?.layout; name; ) {
       if (names.includes(name)) throw new Error(`xoong router: layout "${name}" includes itself`);
       const layout = this.#layouts.get(name);
-      if (!layout) throw new Error(`xoong router: layout "${name}" is not declared (<template xo-layout="${name}">)`);
+      if (!layout) throw new Error(`xoong router: layout "${name}" is not declared`);
       names.unshift(name);
       name = layout.layout ?? null;
     }
@@ -340,6 +372,7 @@ class XoRouter extends XoElement {
       if (!a.getAttribute('rel')?.includes('external') && !a.getAttribute('target') && this.#own(href) !== href) a.setAttribute('href', this.#own(href));
     }
     for (const a of document.querySelectorAll('a[href]')) {
+      if (a.closest('[xo-current]')) continue; // the link, its nav, or the router owns aria-current
       let path;
       try { path = trim(new URL(a.getAttribute('href') ?? '', window.location.href).pathname); } catch { continue; }
       const base = this.#base;
@@ -368,6 +401,6 @@ export const router = {
 };
 
 function need() {
-  if (!active) throw new Error('xoong router: there is no <xo-router> on this page yet (it starts after the page is parsed)');
+  if (!active) throw new Error('xoong router: no <xo-router> yet');
   return active;
 }

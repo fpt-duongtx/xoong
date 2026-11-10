@@ -569,6 +569,14 @@ export const DIRECTIVES = {
   </form>
 </xo-view>`,
   },
+  'xo-current': {
+    category: 'Routing', package: '@xoong/ui', guide: 'arch-routing.html', keywords: 'aria-current active nav current page author',
+    applies: 'A link, a nav, or `<xo-router>`.', value: 'Present. No value.',
+    example: `
+<nav xo-current>
+  <a href="/studio/pages" aria-current="page">Pages</a>
+</nav>`,
+  },
   'xo-route': {
     category: 'Routing', package: '@xoong/ui', guide: 'arch-routing.html', keywords: 'path url page screen router template',
     applies: 'A `<template>` inside `<xo-router>`.', value: 'The path the route answers: `/users/:id`; `*` is the not-found route.',

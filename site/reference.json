@@ -2913,7 +2913,7 @@
    "id": "directives",
    "label": "Directives",
    "summary": "The xo-* attributes you put on your own markup: data, actions, form rows, routing, dialogs.",
-   "count": 34,
+   "count": 35,
    "entries": [
     {
      "id": "xo-each",
@@ -3402,7 +3402,7 @@
      "category": "Routing",
      "package": "@xoong/ui",
      "summary": "On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route.",
-     "description": "On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route. The content is inert until the route matches.",
+     "description": "On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route. The content is inert until the route matches. An empty template with `src` fetches that URL the first time the route (or a layout) is shown.",
      "applies": "A `<template>` inside `<xo-router>`.",
      "value": "The path the route answers: `/users/:id`; `*` is the not-found route.",
      "values": null,
@@ -3451,6 +3451,25 @@
      },
      "guide": "arch-routing.html",
      "keywords": "slot content area route placeholder"
+    },
+    {
+     "id": "xo-current",
+     "name": "xo-current",
+     "kind": "directive",
+     "category": "Routing",
+     "package": "@xoong/ui",
+     "summary": "On a link, a nav, or the router: leave aria-current as the author set it.",
+     "description": "On a link, a nav, or the router: leave aria-current as the author set it. The router then does not mark that link current.",
+     "applies": "A link, a nav, or `<xo-router>`.",
+     "value": "Present. No value.",
+     "values": null,
+     "notes": [],
+     "example": {
+      "lang": "html",
+      "code": "<nav xo-current>\n  <a href=\"/studio/pages\" aria-current=\"page\">Pages</a>\n</nav>"
+     },
+     "guide": "arch-routing.html",
+     "keywords": "aria-current active nav current page author"
     },
     {
      "id": "xo-open",
