@@ -4,9 +4,11 @@ Status: Accepted
 
 ## Context
 
-Rainlet QA-3 (PR #4, `docs/qa-report.md`, round 1, commit `0ef186b`) says:
+Rainlet QA-3 (PR #4, `docs/qa-report.md`, round 1, commit `0ef186b`) records these two cells:
 
-> Edit/Actions/Delete start outside the viewport inside a horizontal scroller. The row action is on screen, or a sideways drag reveals it.
+Actual: Edit/Actions/Delete start outside the viewport inside a horizontal scroller.
+
+Expected: The row action is on screen, or a sideways drag reveals it.
 
 The frame is `.xo-table` (`overflow-x: auto` in `packages/ui/src/xoong.css`). The actions are the last cell, `td.xo-actions`, with `white-space: nowrap`. The header for that column is a `th` whose only child is `.xo-visually-hidden`. At 390px that cell starts past the right edge of the frame.
 
@@ -29,8 +31,8 @@ Rainlet closed the item in round 2 by adding `cards` to the articles, pages and 
 
 Do this in `xoong.css` only. Do not suppress text selection. A double-click and a drag still select cell text, in every app. QA-3 asks for the row action to be on screen (or for a sideways drag to reveal it). Pinning does the first. Carbon and Polaris leave selection alone, and Primer's `user-select` is on buttons and pagination.
 
-* Pin `td.xo-actions` and the actions header to the inline end (`position: sticky; inset-inline-end: 0`) with an opaque background and a 1px inline-start edge, so the buttons stay inside the frame and the cells that scroll under them do not show through. The header is `thead th:has(> .xo-visually-hidden)`, the cell that carries the "Actions" label, rather than whichever `th` is last. The table uses `border-collapse: separate; border-spacing: 0` so that edge stays with the cell (with `collapse`, the shared border can be left behind). The border is visible at every width.
-* Set `scroll-padding-inline-end: 20rem` on a frame that has an actions cell. Focusing a control in the column beside the pinned cell then scrolls that control clear of the cell, left-to-right and right-to-left (WCAG 2.4.12). 20rem clears Edit, Actions and Delete (about 274px in `xoong.css`). `anchor-size()` would track the column's own width, and it is not used: anchor positioning is not in every browser this project supports ([browser-support.md](../browser-support.md)), and in this Chromium the function was dropped (`scroll-padding-inline-end` stayed `auto`). An actions cell wider than 20rem can still cover its neighbour. An unlayered rule can raise the padding.
+* Pin `td.xo-actions`, `th.xo-actions` and the generated actions header to the inline end (`position: sticky; inset-inline-end: 0`) with an opaque background and a 1px inline-start edge, so the buttons stay inside the frame and the cells that scroll under them do not show through. The generated header matches `thead th:last-child:has(> .xo-visually-hidden)`: it is last, and its child is the visually hidden "Actions" label. A hand-written table uses `th.xo-actions`, so the pin does not depend on that header being last. A header that contains a hidden child but is not last, and is not `th.xo-actions`, is not pinned. The table uses `border-collapse: separate; border-spacing: 0` so that edge stays with the cell (with `collapse`, the shared border can be left behind). The border is visible at every width.
+* Set `scroll-padding-inline-end: min(var(--xo-table-actions-size, 20rem), 40%)` on a frame that has an actions cell. `--xo-table-actions-size` defaults to 20rem, and the 40% cap keeps the padding smaller than the frame. A flat 20rem is 320px; at 390px the frame is about 372px, so the padded viewing area was about 52px and tabbing left cells partly hidden. Focusing a control in the neighbouring column scrolls it into the remaining area, in either writing direction (WCAG 2.4.12). A control in the actions cell (`td.xo-actions *`) has `scroll-margin-inline-end: -100vw`. The pinned cell sits inside the padding zone, and without that margin Chromium scrolls the frame when the action is focused or clicked (Firefox does not). `anchor-size()` would track the column's own width, and it is not used: anchor positioning is not in every browser this project supports ([browser-support.md](../browser-support.md)), and in this Chromium the function was dropped (`scroll-padding-inline-end` stayed `auto`). An actions column wider than the used padding can still cover its neighbour. Set `--xo-table-actions-size` (the cap still applies), or raise the padding with an unlayered rule.
 
 Not done, and why:
 
@@ -40,6 +42,6 @@ Not done, and why:
 
 ## Consequences
 
-The actions column stays at the inline end while the other columns scroll. Cell text can be selected and copied. A focused control in the neighbouring column is scrolled clear of the pinned cell in both writing directions, unless the actions cell is wider than 20rem. An actions cell wider than the frame itself still overflows the frame; the column is only pinned, not shrunk.
+The actions column stays at the inline end while the other columns scroll. Cell text can be selected and copied. Focusing or clicking a pinned action does not move the frame. A focused control in a neighbouring column is scrolled into the padded area in both writing directions. The padding is `min(var(--xo-table-actions-size, 20rem), 40%)`, so a 390px frame does not collapse to a sliver. An actions column wider than that padding can still cover its neighbour. An actions cell wider than the frame itself still overflows the frame; the column is only pinned, not shrunk.
 
 This is a change to the default table. The user-facing rule is in [docs/admin.md](../admin.md).
