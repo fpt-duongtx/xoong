@@ -120,7 +120,7 @@ defineTemplate('xo-form', (el, { client }) => {
   }
   const flat = op.bodyFields ?? [];
   const missing = (op.bodySkipped ?? []).filter((s) => s.required);
-  if (missing.length) console.warn(`xoong: <xo-form op="${ref}"> cannot generate the required field(s) ${missing.map((m) => `${m.name} (${m.type})`).join(', ')}: the server will refuse this form`);
+  if (missing.length) console.warn(`xoong: <xo-form op="${ref}"> cannot generate the required field(s) ${missing.map((m) => `${m.name} (${m.type})`).join(', ')}`);
   if (!flat.length) console.error(`xoong: <xo-form op="${ref}"> has no simple fields`);
   for (const f of flat) {
     const wrap = document.createElement('label');

@@ -39,5 +39,5 @@ to navigate. The first consumer of the admin set (rainlet, for Bloomoz) is an ad
 + Route content is created when the route matches, so views inside a route start (and fetch) then, and stop when leaving.
 - A vetoed back/forward button cannot be prevented by the platform. The router stores a position in `history.state` and cancels the move
   with `history.go(-delta)` (as Vue Router does), so the history is left intact. Where the position is unknown (an entry created by
-  something else) it falls back to `pushState`, which drops forward entries.
+  something else) it replaces that entry, which keeps the forward entries (`pushState` would drop them).
 - One more element and three attributes in `llms.txt`, `xoong check`, the editor data and the docs.

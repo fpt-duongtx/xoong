@@ -270,8 +270,12 @@ class XoRouter extends XoElement {
       }
     }
     if (from && type !== 'start') this.#scrolls.set(this.#pos, { x: window.scrollX, y: window.scrollY }); // where we were, for Back
-    await this.#load(to.route?.template); // before the URL changes: a failed fetch leaves the address bar where it was
-    for (const name of this.#chain(to.route)) await this.#load(this.#layouts.get(name)?.template);
+    // src is pre-commit (docs/decisions/0011-popstate-src-failure.md): a link has not written the URL yet, and a failed
+    // Back/Forward is undone with history.go. A newer navigation does not restore and does not report this fetch.
+    try {
+      await this.#load(to.route?.template);
+      for (const name of this.#chain(to.route)) await this.#load(this.#layouts.get(name)?.template);
+    } catch (e) { if (token !== this.#token) return false; this.#restore(type, delta); throw e; }
     if (token !== this.#token) return false;
     if (type === 'popstate') { if (typeof popPos === 'number') this.#pos = popPos; }
     else if (type === 'start') this.#writeUrl(to, 'replace');
@@ -284,13 +288,13 @@ class XoRouter extends XoElement {
 
   /**
    * A vetoed or cancelled Back/Forward already moved the address bar. Put it back with history.go(-delta), as Vue Router does:
-   * the history stays as it was, forward entries included. Where the position is unknown (or the DOM has no history.go), push the
-   * previous URL again as a fallback, which drops forward entries.
+   * the history stays as it was, forward entries included. Where the position is unknown (or the DOM has no history.go), replace
+   * the entry just shown. replaceState keeps the forward entries; pushState would drop them.
    */
   #restore(type, delta) {
     if (type !== 'popstate' || !this.#current) return;
     if (delta && typeof window.history.go === 'function') { this.#reverting = true; window.history.go(-delta); return; }
-    window.history.pushState({ xoPos: this.#pos }, '', this.#current.url);
+    window.history.replaceState({ xoPos: this.#pos }, '', this.#current.url);
   }
 
   /** A view changed its url-params: update the query string of the current location (a new entry for a click, replace for typing). */

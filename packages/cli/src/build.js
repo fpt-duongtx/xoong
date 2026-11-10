@@ -354,7 +354,23 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     }
     const tmp = await mkdtemp(join(tmpdir(), 'xoong-bundle-'));
     try {
-      await esbuild.build({ absWorkingDir: rootDir, entryPoints: points, bundle: true, splitting: true, format: 'esm', target: 'es2022', legalComments: 'none', minify: minifyJs, outdir: tmp, write: true, charset: 'utf8' });
+      const built = await esbuild.build({
+        absWorkingDir: rootDir, entryPoints: points, bundle: true, splitting: true, format: 'esm', target: 'es2022', legalComments: 'none', minify: minifyJs, outdir: tmp, write: true, charset: 'utf8', metafile: true, logLevel: 'silent',
+        plugins: [{
+          name: 'xoong-root-url',
+          setup(api) {
+            // A root-absolute import is a URL in this project (`/.xoong/operations.json`), not a path from the filesystem root.
+            api.onResolve({ filter: /^\// }, async (args) => {
+              const spec = args.path.split(/[?#]/)[0];
+              if (!spec.startsWith('/') || spec.startsWith('//') || spec.startsWith(rootDir)) return null;
+              const file = fileFor(canon(spec));
+              if (!(await exists(file))) return null;
+              return { path: file };
+            });
+          },
+        }],
+      });
+      for (const w of built.warnings ?? []) warnings.push(`--bundle: ${w.text}`);
       /** @type {Map<string, Buffer | string>} */
       const produced = new Map();
       const collect = async (dir) => {
@@ -380,11 +396,18 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
           if (src.startsWith('/')) classic.add(toJs(src));
         });
       }
-      for (const key of [...written.keys()]) if (/\.m?js$/.test(key) && sources.has(key) && !produced.has(key) && !classic.has(key)) written.delete(key);
+      // esbuild names an input by its path on disk (`../../../packages/...` here, `node_modules/@xoong/...` when installed),
+      // never by the /@xoong URL the copy was written at. Map the path back to that URL. A worker, a URL fetch, or --include is not an input.
+      const bundled = new Set();
+      for (const input of Object.keys(built.metafile?.inputs ?? {})) {
+        let abs = resolve(rootDir, input.split('?')[0]);
+        try { abs = await realpath(abs); } catch { /* the path esbuild reported */ }
+        bundled.add(toJs(urlOf(abs)));
+      }
+      for (const key of [...written.keys()]) if (/\.m?js$/.test(key) && bundled.has(key) && !produced.has(key) && !classic.has(key)) written.delete(key);
       return true;
     } catch (error) {
-      warnings.push(`--bundle: esbuild failed (${error instanceof Error ? error.message : error}); the output is not bundled`);
-      return false;
+      throw new Error(`xoong build: --bundle failed (${error instanceof Error ? error.message : error})`);
     } finally {
       await rm(tmp, { recursive: true, force: true });
     }

@@ -14,7 +14,7 @@
     "test:coverage": "vitest run --coverage",
     "test:logic": "vitest run --project logic",
     "test:screens": "vitest run --project screens",
-    "test:browsers": "vitest run packages/ui/test/router.test.mjs packages/ui/test/shell.test.mjs packages/ui/test/confirm.test.mjs packages/forms/test/native-reset.test.mjs packages/controls/test/controls.test.mjs packages/controls/test/new-controls.test.mjs packages/richtext/test/richtext.test.mjs packages/core/test/control.test.mjs packages/cli/test/build.test.mjs packages/ssr/test examples/admin"
+    "test:browsers": "vitest run packages/ui/test/router.test.mjs packages/ui/test/router-popstate-src.test.mjs packages/ui/test/shell.test.mjs packages/ui/test/confirm.test.mjs packages/forms/test/native-reset.test.mjs packages/controls/test/controls.test.mjs packages/controls/test/new-controls.test.mjs packages/richtext/test/richtext.test.mjs packages/core/test/control.test.mjs packages/cli/test/build.test.mjs packages/ssr/test examples/admin"
   },
   "engines": {
     "node": ">=22.12"
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@vitest/coverage-v8": "^5.1.0",
     "axe-core": "^4.14.0",
+    "esbuild": "0.28.2",
     "happy-dom": "^21.0.4",
     "oxlint": "^1.92.0",
     "playwright": "^1.65.0",
