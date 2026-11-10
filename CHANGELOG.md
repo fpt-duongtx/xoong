@@ -7,7 +7,7 @@ projects run xoong in production. The `@xoong/*` packages are published to npm u
 
 breaking: none.
 
-* Added (ui): an `xo-error` toast shows `detail.action` (`{ label, run }`, for example Retry) and honours `detail.timeout`, the same way an `xo-notice` does. Set them on the error before the toast draws (it waits one microtask). `@xoong/ui` 12.78 KB gzip of the source without comments (13083 bytes; was 13061, 12.75 KB; budget 12.8, unchanged).
+* Added (ui): an `xo-error` toast shows `detail.action` (`{ label, run }`, for example Retry) and honours `detail.timeout`, the same way an `xo-notice` does. Set them on the error before the toast draws (it waits one microtask). `@xoong/ui` 12.76 KB gzip of the source without comments (13071 bytes; was 13061, 12.75 KB; budget 12.8, unchanged).
 
 ## 0.0.46 (dialogs, recipes, edge cases, animated diagrams)
 
