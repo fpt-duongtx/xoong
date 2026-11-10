@@ -2,10 +2,11 @@
 /**
  * <xo-toast></xo-toast>: messages for the person, from anywhere on the page.
  *
- *  - errors: the latest `xo-error` (a failed action), in a `role="alert"` region; hidden by the next `xo-done` or after `timeout` seconds;
+ *  - errors: the latest `xo-error` (a failed action), in a `role="alert"` region; hidden by the next `xo-done` or after `timeout` seconds.
+ *    `detail.action` (`{ label, run }`) and `detail.timeout` are honoured, so a listener can add Retry before the toast draws it;
  *  - notices: an `xo-notice` event ({ message, kind: 'success' | 'info', action?, timeout? }) in a `role="status"` region. `xo-notice="Saved"`
  *    on an `xo-click`/`xo-submit` element raises one after success; from JavaScript use `toast.show({ message, action })`.
- *  - an action is a button inside the toast, for example Undo: `action: { label: 'Undo', run: () => ... }`.
+ *  - an action is a button inside the toast, for example Undo or Retry: `action: { label: 'Retry', run: () => ... }`.
  *
  *   <xo-toast timeout="8"></xo-toast>
  *
@@ -19,7 +20,7 @@ class XoToast extends XoElement {
   /** @type {HTMLElement | null} */ #status = null;
   #timers = /** @type {Record<string, any>} */ ({});
   // Decided after the event has gone round (a microtask): a handler anywhere, even on the document and registered later, can prevent it; a view that shows `$error` itself marks it handled
-  #onError = (/** @type {Event} */ e) => queueMicrotask(() => { if (!e.defaultPrevented && !(/** @type {any} */ (e).handled)) this.#show('error', { message: this.#text(/** @type {any} */ (e).detail) }); });
+  #onError = (/** @type {Event} */ e) => queueMicrotask(() => { const d = /** @type {any} */ (e).detail; if (!e.defaultPrevented && !(/** @type {any} */ (e).handled)) this.#show('error', { message: this.#text(d), action: d?.action, timeout: d?.timeout }); });
   #onNotice = (/** @type {Event} */ e) => this.#show('status', /** @type {any} */ (e).detail ?? {});
   #onDone = () => this.#hide('error');
 

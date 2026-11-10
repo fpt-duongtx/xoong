@@ -168,6 +168,7 @@ import { toast } from '@xoong/ui';
 
 toast.show({ message: 'Article moved to the trash', action: { label: 'Undo', run: () => restore() } });`]],
 })}
+<p>A failed action can offer the same kind of button. Listen for <code>xo-error</code> and set <code>event.detail.action = { label: 'Retry', run }</code> (and <code>event.detail.timeout</code> when the toast should stay a different length) before the toast draws it, one microtask later.</p>
 
 <h2>Behaviour and accessibility</h2>
 <ul>

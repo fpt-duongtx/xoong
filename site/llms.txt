@@ -93,7 +93,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     <xo-form op="POST /users" submit="Add"></xo-form>
     <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
     <xo-dialog heading="Edit" size="wide" dismiss> titled modal (slot="footer" buttons). JS: await confirm|alert|prompt|ask(msg, { kind: danger|warning|info|success, title }) from @xoong/ui
-  <xo-toast></xo-toast> shows errors and xo-notice. Style: xoong.css properties; layout: `<body class="xo-admin">` + header, nav, main.
+  <xo-toast></xo-toast> shows errors and xo-notice; both take detail.action ({label, run}). Style: xoong.css properties; layout: `<body class="xo-admin">` + header, nav, main.
 
 ## Routing (admin apps; `import { router } from '@xoong/ui'`; public pages stay one HTML file each)
     <xo-router base="/admin" base-links>
