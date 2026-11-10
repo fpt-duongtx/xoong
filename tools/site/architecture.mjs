@@ -1030,6 +1030,7 @@ ${navSteps}
 <li><strong>After.</strong> The route's ${c('title')} becomes ${c('document.title')} and its ${c('description')} the description meta tag. Every ${c('<a href>')} on the page gets ${c('aria-current="page"')} when it points at this path, or ${c('aria-current="true"')} when it points at a parent section, unless the link, its nav, or the router has ${c('xo-current')}. Except on the first load, the focus moves to the outlet (it is given ${c('tabindex="-1"')}), and the page scrolls: to the top for a new page, to the anchor if there is one, to the saved position on Back or Forward. Last, ${c('xo-navigate')} fires with ${c('{ to, from }')}.</li>
 </ol>
 <p>A navigation that starts while an earlier one is still waiting in a veto or guard takes over; the older one stops quietly.</p>
+<p>An empty route or layout template with ${c('src')} is fetched before that route is shown. A link or ${c('navigate()')} writes the URL only after the fetch succeeds, so a failure leaves the address bar and the screen where they were. On Back or Forward the browser has already moved the URL, so a failed fetch undoes that move with ${c('history.go(-delta)')}: the URL, the screen and the stored history position stay on the page that was showing, one ${c('xo-error')} fires, and the next visit fetches again. A newer navigation does not restore, render, or report the fetch it replaced (<a href="https://github.com/fpt-duongtx/xoong/blob/main/docs/decisions/0011-popstate-src-failure.md">decision record 0011</a>).</p>
 
 <h2>Layouts and rendering</h2>
 ${layoutBoxes}

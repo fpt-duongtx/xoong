@@ -69,10 +69,16 @@ With `base-links`, a root-relative link inside the router (`href="/users"`) is r
 
 * **Routes.** `xo-route="/users/:id"` (static segments beat `:param` beats `*`). `title` sets `document.title`. An empty
   `<template xo-route src="edit.html">` (and an empty layout template) is fetched the first time it is shown, including the first
-  navigation and a route added after the router started; the address bar does not change until that fetch succeeds. A relative `src`
-  resolves against the router's base, and a root-absolute one is prefixed when `base-links` is set. `layout` names an `xo-layout`
-  template (layouts nest with `layout=` on a layout). Inside the route, `p-id=":id"` hands the path parameter to a view
-  (`p-id="?id"` still reads the query string).
+  navigation and a route added after the router started. A relative `src` resolves against the router's base, and a root-absolute
+  one is prefixed when `base-links` is set. `layout` names an `xo-layout` template (layouts nest with `layout=` on a layout).
+  Inside the route, `p-id=":id"` hands the path parameter to a view (`p-id="?id"` still reads the query string).
+* **A failed `src`.** The fetch has to succeed before the route is shown ([ADR-0011](decisions/0011-popstate-src-failure.md)).
+  A link click and `navigate()` do not write the URL until then, so a failure leaves the address bar and the screen where they were.
+  Back and Forward have already moved the URL. A failed route or layout `src` undoes that with `history.go(-delta)`, the same way a
+  veto does: the URL, the screen and the stored history position are the page you were on, and the forward entries stay. One
+  `xo-error` fires on the router. A newer navigation that starts while the fetch is still in flight wins: the older fetch does not
+  move the URL back, does not render, and does not fire `xo-error`. The failed fetch is forgotten, so the next visit tries again
+  and a success renders the route.
 * **Links.** Same-origin links inside `base` are intercepted and use `pushState`. The router never touches modified clicks, other
   mouse buttons, `target`, `download`, `rel="external"`, links to other origins or outside `base`, and in-page anchors. The link to the
   current page gets `aria-current="page"`; a link to a section above it gets `aria-current="true"`. `xo-current` on a link, a nav, or the router leaves `aria-current` as written.
