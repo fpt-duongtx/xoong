@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // @ts-check
-import { sync, doctor } from './commands.js';
+import { sync, doctor, failed } from './commands.js';
 import { startDev, parseProxyFlags, loadConfig } from './dev.js';
 import { checkFiles, formatFindings } from './check.js';
 import { scaffold } from './scaffold.js';
@@ -30,15 +30,15 @@ try {
     console.log(`synced ${Object.keys(result.operations).length} operations, ${Object.keys(result.entities).length} entities`);
     const errors = result.problems.filter((p) => p.level === 'error');
     for (const p of errors) console.error(`error ${p.code} ${p.where}\n  ${p.message}\n  fix: ${p.fix}`);
-    if (errors.length) process.exitCode = 1;
+    if (failed(result.problems)) process.exitCode = 1;
     const dropped = result.problems.filter((p) => p.code === 'XO113'); // what the document asks for and xoong does not do: said in full, one line per kind
     for (const p of dropped) console.warn(`warning ${p.code}: ${p.message}. ${p.fix}`);
     const warnings = result.problems.length - errors.length - dropped.length;
     if (warnings) console.log(`${warnings} warnings: run "xoong doctor ${a.args[0]}"`);
   } else if (cmd === 'doctor') {
-    const { text, errors } = await doctor(a.args[0], { hints: a.value('--hints'), all: a.has('--all') });
+    const { text, problems } = await doctor(a.args[0], { hints: a.value('--hints'), all: a.has('--all') });
     console.log(text);
-    process.exitCode = errors ? 1 : 0;
+    process.exitCode = failed(problems) ? 1 : 0;
   } else if (cmd === 'new') {
     const result = await scaffold(a.args[0], { spec: a.value('--spec'), title: a.value('--title'), link: a.value('--link') });
     console.log(`created ${result.dir}\n  first screen: ${result.screen ?? 'none (no list operation found)'}\n  next: cd ${a.args[0]} && npm install && npm run dev\n  ${a.value('--link') ? '(packages linked from ' + a.value('--link') + ')' : '(the @xoong/* packages come from npm; to use a checkout of the xoong repository instead, run again with --link <path to the xoong repository>)'}`);
@@ -76,16 +76,18 @@ try {
     process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'build') {
     const { build, CSP } = await import('./build.js');
-    const r = await build({ root: a.value('--root', '.'), out: a.value('--out', 'dist'), base: a.value('--base', ''), include: a.all('--include'), exclude: a.all('--exclude'), preload: a.has('--no-preload') ? false : undefined, minify: a.has('--minify') ? true : undefined });
+    const r = await build({ root: a.value('--root', '.'), out: a.value('--out', 'dist'), base: a.value('--base', ''), include: a.all('--include'), exclude: a.all('--exclude'), preload: a.has('--no-preload') ? false : undefined, minify: a.has('--minify') ? true : undefined, bundle: a.has('--bundle') ? true : undefined, inlineScripts: a.value('--inline-scripts') });
     const total = r.files.reduce((n, f) => n + f.bytes, 0);
     const gz = r.files.reduce((n, f) => n + f.gzip, 0);
-    console.log(`built ${r.files.length} files into ${r.out}${r.minified ? ' (minified)' : ''} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);
+    console.log(`built ${r.files.length} files into ${r.out}${r.minified ? ' (minified)' : ''}${r.bundled ? ' (bundled)' : ''} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);
     for (const w of r.warnings) console.warn(`warning: ${w}`);
+    if (r.preloads != null) console.log(`${r.preloads} modulepreload links; pass --no-preload to omit`);
     console.log(`\nruns under:  Content-Security-Policy: ${CSP}`);
+    if (r.failed) process.exitCode = 1;
   } else if (cmd === 'dev') {
     const port = a.value('--port');
     if (port !== undefined && !(/^\d+$/.test(port) && Number(port) <= 65535)) throw new Error(`xoong dev: --port must be a number from 0 to 65535, not "${port}"`);
-    await startDev({ root: a.value('--root'), port: port ? Number(port) : undefined, proxy: parseProxyFlags(a.all('--proxy')), spa: a.has('--spa') || undefined });
+    await startDev({ root: a.value('--root'), port: port ? Number(port) : undefined, proxy: parseProxyFlags(a.all('--proxy')), spa: a.has('--spa') || undefined, base: a.value('--base') });
     // keep running until interrupted
   }
 } catch (e) {

@@ -115,15 +115,18 @@ describe('xoong build', () => {
 describe('xoong build: options and warnings', () => {
   it('warns about what a strict policy blocks (inline script, style attribute, inline style), and about unresolved imports', async () => {
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-warn-'));
-    await writeFile(join(root, 'index.html'), '<!doctype html><html><head><style>p{}</style><script type="module" src="/a.js"></script></head><body style="margin:0"><script>alert(1)</script></body></html>');
+    await writeFile(join(root, 'index.html'), '<!doctype html><html><head><style>p{}</style><script type="module" src="/a.js"></script><script type="application/ld+json">{"@type":"Thing"}</script></head><body style="margin:0"><script>alert(1)</script></body></html>');
     await writeFile(join(root, 'a.js'), "import 'lodash'; import './b.js';");
     await writeFile(join(root, 'b.js'), 'export const b = 1;');
     const r = await build({ root, out: join(root, 'dist') });
     const text = r.warnings.join('\n');
     expect(text).toMatch(/inline <style> is blocked/);
     expect(text).toMatch(/style="" attribute is blocked/);
-    expect(text).toMatch(/inline <script> is blocked/);
+    expect(text).toMatch(/removed an inline <script>/);
     expect(text).toMatch(/cannot resolve "lodash"/);
+    const html = await readFile(join(root, 'dist/index.html'), 'utf8');
+    expect(html).not.toContain('alert(1)'); // an executable inline script is removed, not copied
+    expect(html).toContain('application/ld+json'); // JSON-LD is data, and stays
     expect((await files(join(root, 'dist'))).sort()).toEqual(['/a.js', '/b.js', '/build-report.json', '/index.html']);
   });
 
@@ -150,6 +153,66 @@ describe('xoong build: options and warnings', () => {
     expect(main).toContain("import('/admin/src/lazy.js')");
     expect(main).not.toMatch(/: number/);
     expect(await readFile(join(root, 'dist/src/a.css'), 'utf8')).toContain("url('/admin/src/bg.png')");
+  });
+
+  it('--base does not prefix a URL that already has it, and operations.json is also written at the site root', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'xoong-build-ops-'));
+    await mkdir(join(root, 'src'));
+    await mkdir(join(root, '.xoong'));
+    await writeFile(join(root, '.xoong', 'operations.json'), '{ "operations": {} }\n');
+    await writeFile(join(root, 'index.html'), '<!doctype html><script type="module" src="/src/main.js"></script>');
+    await writeFile(join(root, 'src/main.js'), "import table from '/.xoong/operations.json' with { type: 'json' };\nimport { n } from '/admin/src/lib.js';\nexport { table, n };\n");
+    await writeFile(join(root, 'src/lib.js'), 'export const n = 1;\n');
+    const out = join(root, 'dist');
+    const r = await build({ root, out, base: '/admin' });
+    expect(r.warnings).toEqual([]);
+    const main = await readFile(join(out, 'src/main.js'), 'utf8');
+    expect(main).toContain("from '/admin/operations.json'");
+    expect(main).toContain("from '/admin/src/lib.js'");
+    expect(main).not.toContain('/admin/admin/');
+    expect(await readFile(join(out, 'operations.json'), 'utf8')).toContain('operations');
+    expect(await readFile(join(out, '.xoong/operations.json'), 'utf8')).toContain('operations');
+  });
+
+  it('--inline-scripts error still removes the script and fails the build', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'xoong-build-inline-'));
+    await writeFile(join(root, 'index.html'), '<!doctype html><script>alert(1)</script>');
+    const r = await build({ root, out: join(root, 'dist'), inlineScripts: 'error' });
+    expect(r.failed).toBe(true);
+    expect(await readFile(join(root, 'dist/index.html'), 'utf8')).not.toContain('alert(1)');
+    expect((await build({ root, out: join(root, 'dist2') })).failed).toBe(false); // remove is the default, and the build still succeeds
+  });
+
+  it('--bundle uses esbuild.build with splitting and leaves a dynamic import as its own chunk', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'xoong-build-bundle-'));
+    await mkdir(join(root, 'src'));
+    await mkdir(join(root, 'node_modules', 'esbuild'), { recursive: true });
+    await writeFile(join(root, 'node_modules', 'esbuild', 'package.json'), JSON.stringify({ name: 'esbuild', main: 'index.js' }));
+    await writeFile(join(root, 'node_modules', 'esbuild', 'index.js'), `
+      const fs = require('fs'); const path = require('path');
+      exports.build = async (opts) => {
+        if (!opts.splitting || opts.format !== 'esm' || opts.bundle !== true) throw new Error('bundle options');
+        fs.mkdirSync(path.join(opts.outdir, 'src'), { recursive: true });
+        fs.writeFileSync(path.join(opts.outdir, 'src/main.js'), 'import "../chunk-lazy.js";\\nexport const bundled = true;\\n');
+        fs.writeFileSync(path.join(opts.outdir, 'chunk-lazy.js'), 'export const lazy = true;\\n');
+      };
+    `);
+    await writeFile(join(root, 'index.html'), '<!doctype html><script type="module" src="/src/main.js"></script><script src="/plain.js"></script>');
+    await writeFile(join(root, 'src/main.js'), "import { n } from './lib.js';\nimport('./lazy.js');\nexport const n2 = n;\n");
+    await writeFile(join(root, 'src/lib.js'), 'export const n = 1;\n');
+    await writeFile(join(root, 'src/lazy.js'), 'export const lazy = 1;\n');
+    await writeFile(join(root, 'plain.js'), 'window.plain = 1;\n');
+    const out = join(root, 'dist');
+    const r = await build({ root, out, bundle: true });
+    expect(r.bundled).toBe(true);
+    expect(r.warnings).toEqual([]);
+    expect(await readFile(join(out, 'src/main.js'), 'utf8')).toContain('bundled = true');
+    expect(await readFile(join(out, 'chunk-lazy.js'), 'utf8')).toContain('lazy = true');
+    expect(existsSync(join(out, 'src/lib.js'))).toBe(false); // the copied module is replaced by the bundle
+    expect(await readFile(join(out, 'plain.js'), 'utf8')).toContain('window.plain'); // a classic script is not an entry
+    const missing = await build({ root: await (async () => { const d = await mkdtemp(join(tmpdir(), 'xoong-build-nobundle-')); await writeFile(join(d, 'index.html'), '<script type="module" src="/a.js"></script>'); await writeFile(join(d, 'a.js'), 'export const a = 1;\n'); return d; })(), out: join(root, 'dist-none'), bundle: true });
+    expect(missing.bundled).toBe(false);
+    expect(missing.warnings.join('\n')).toMatch(/--bundle: esbuild is not installed/);
   });
 
   it('refuses a folder with no page', async () => {

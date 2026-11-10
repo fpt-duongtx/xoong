@@ -15,10 +15,10 @@ no virtual DOM, JSX, hooks or required build.
 ## Project setup
     xoong new my-app --spec openapi.json      # scaffold + first list screen
     xoong sync openapi.json --hints xoong.hints.json   # writes .xoong/operations.json, api.d.ts
-    xoong dev                                 # static server + API proxy + .ts stripping (xoong.config.json)
+    xoong dev [--base /p]                     # static server + API proxy + .ts (xoong.config.json; allowedHosts "*")
     xoong check index.html                    # lint screens against the API
     xoong doctor openapi.json                 # what in the OpenAPI document limits xoong
-    xoong build --out dist [--base /p --include dir --exclude glob --no-preload]  # strict-CSP static output; xoong render page.html (prerender); xoong i18n extract <files> --out en.json
+    xoong build --out dist [--base /p --bundle --include dir --exclude glob --no-preload]  # strict-CSP static output; xoong render page.html (prerender); xoong i18n extract <files> --out en.json
 
 xoong.config.json: `{ "port": 5173, "proxy": { "/api": "http://localhost:8080" } }`
 xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { "entity": "Session", "id": "session_id" } },

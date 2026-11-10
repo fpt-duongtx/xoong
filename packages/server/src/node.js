@@ -108,7 +108,7 @@ export const packagePath = (exports, rest) => (typeof exports === 'object' && ex
 const ALLOWED_DOT = new Set(['.xoong', '.well-known']);
 export const isHidden = (/** @type {string} */ path) => path.split('/').some((seg) => seg.startsWith('.') && !ALLOWED_DOT.has(seg) && seg !== '');
 
-export async function createDevHandler({ root = '.', resolveFrom = root, proxy = {}, spa = false, onError, packages: extraPackages = [] } = {}) {
+export async function createDevHandler({ root = '.', resolveFrom = root, proxy = {}, spa = false, onError, packages: extraPackages = [], base = '' } = {}) {
   const pkgs = await findPackages(resolveFrom, undefined, extraPackages);
   const projectFiles = nodeFiles(root);
   const exportsOf = Object.fromEntries(Object.values(pkgs).map((p) => [p.prefix, p.exports]));
@@ -119,7 +119,7 @@ export async function createDevHandler({ root = '.', resolveFrom = root, proxy =
     return projectFiles(path);
   };
   const packages = Object.fromEntries(Object.entries(pkgs).map(([name, p]) => [name, { prefix: p.prefix, exports: p.exports }]));
-  return createHandler({ files, packages, proxy, spa, onError, transform: { '.ts': stripTypes } });
+  return createHandler({ files, packages, proxy, spa, base, onError, transform: { '.ts': stripTypes } });
 }
 
 /** The host name in a Host header: "[::1]:5173" -> "::1", "Localhost:80" -> "localhost". */
@@ -136,11 +136,13 @@ export function hostName(header) {
  *   `allowedHosts`: Host header names accepted besides localhost, 127.0.0.1 and [::1] (blocks DNS-rebinding pages).
  */
 export function serve(handler, { port = 5173, host = '127.0.0.1', allowedHosts = [] } = {}) {
+  const trustAnyHost = allowedHosts.some((h) => String(h).trim() === '*'); // explicit opt-in: a LAN preview whose Host is not the bind address
   const allowed = new Set(['localhost', '127.0.0.1', '::1', host, ...allowedHosts].map((h) => h.toLowerCase()));
   const server = createServer(async (req, res) => {
     try {
       const name = hostName(String(req.headers.host ?? ''));
-      if (!allowed.has(name)) {
+      // The Host header is what is checked. X-Forwarded-Host is not a substitute: a page could set it and rebind DNS at the machine.
+      if (!trustAnyHost && !allowed.has(name)) {
         res.writeHead(403, { 'content-type': 'text/plain' });
         return res.end(`xoong server: host "${name}" is not allowed (add it to allowedHosts if this is intended)`);
       }

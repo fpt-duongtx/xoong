@@ -3,6 +3,16 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+breaking: none.
+
+* Added (cli): `xoong dev --base` (or `base` in `xoong.config.json`, or a safe `X-Forwarded-Prefix`) prefixes the import map and root-absolute asset URLs the way `build --base` does, and serves a request that still carries the prefix from the project root. `allowedHosts` accepts `"*"` to turn the host check off. `X-Forwarded-Host` is not used in place of `Host`.
+* Added (cli): `xoong build --bundle` (or `"build": { "bundle": true }`) bundles scripts into CSP-clean ESM with the esbuild the project has installed. Static imports go into the entry; a dynamic `import()` stays its own chunk. Without esbuild the build warns and copies every module. CSS stays separate.
+* Added (cli): when `.xoong/operations.json` exists, the build also writes it at `/operations.json` and rewrites an import of the dot path to that URL (with `--base` applied once). A URL that already starts with `--base` is not prefixed again.
+* Changed (cli): an inline `<script>` is removed (JSON and JSON-LD stay) and the warning says so. `--inline-scripts error` exits 1. The build summary prints how many `modulepreload` links it added and names `--no-preload`.
+* Changed (cli): `xoong sync` and `xoong doctor` share one check for error-level findings. A duplicate `operationId` (XO111) or a `$ref` to a missing schema (XO150) exits 1 from both, and sync still writes its files. Warnings stay a zero exit.
+
 ## 0.0.46 (dialogs, recipes, edge cases, animated diagrams)
 
 breaking: a `{...}` in a view binds only when it holds a path (optionally with `| format`), so JSON, CSS and `\d{3}` stay as written; `{{name}}` is literal now (it rendered `{value}`), and `\{name}` escapes one binding. `packages/ui/src/confirm.js` is now `dialogs.js` (the package exports are unchanged and grew).

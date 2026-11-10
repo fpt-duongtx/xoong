@@ -21,6 +21,9 @@ export async function load(source) {
   }
 }
 
+/** True when doctor would fail the command: an error-level finding. Warnings stay a zero exit. */
+export const failed = (problems) => problems.some((p) => p.level === 'error');
+
 /** @returns the analysis and writes .xoong/operations.json + .xoong/api.d.ts */
 export async function sync(source, { out = '.xoong', hints } = {}) {
   const a = analyze(await load(source), { hints: hints ? JSON.parse(await readFile(hints, 'utf8')) : undefined });
