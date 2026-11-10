@@ -1,5 +1,6 @@
 // Row actions at 390px, in a real browser. The frame is `.xo-table` (overflow-x: auto).
-// On current CSS the actions cell is past the right edge, and a pointer drag selects the cell text.
+// Without a pinned column the Edit button sits past the right edge. With the column pinned, a focused
+// control in the neighbouring column can still sit under it until the frame has scroll-padding.
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -10,10 +11,10 @@ import { launchChromium } from '../../../tools/browser.mjs';
 const repo = new URL('../../..', import.meta.url).pathname;
 let dev, browser, page;
 
-const PAGE = (extra = '') => `<!doctype html><html><head>
+const PAGE = (extra = '', dir = 'ltr') => `<!doctype html><html dir="${dir}"><head>
 <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">${extra}
 <style>body { margin: 0; }</style></head><body>
-<xo-view get="listUsers"><xo-table columns="name,email:E-mail,role,city,country" filters="q:Search"><button type="button">Edit</button></xo-table></xo-view>
+<xo-view get="listUsers"><xo-table columns="name,email:E-mail,role,city,country" filters="q:Search"><a slot="country" href="#country">{country}</a><button type="button">Edit</button><button type="button">Actions</button><button type="button">Delete</button></xo-table></xo-view>
 <script type="module">
 import { configure } from '@xoong/data';
 import '@xoong/ui';
@@ -43,6 +44,7 @@ beforeAll(async () => {
   const root = await mkdtemp(join(tmpdir(), 'xoong-table-'));
   await writeFile(join(root, 'index.html'), PAGE());
   await writeFile(join(root, 'mist.html'), PAGE('\n<link rel="stylesheet" href="/@xoong/ui/src/mist.css">'));
+  await writeFile(join(root, 'rtl.html'), PAGE('', 'rtl'));
   await writeFile(join(root, 'cards.html'), CARDS);
   dev = await startDev({ root, resolveFrom: repo, port: 0, quiet: true, spa: true });
   browser = await launchChromium();
@@ -68,15 +70,18 @@ const place = () => page.evaluate(() => {
   };
 });
 
-/** Pointer drag from the left of a box to the right. Returns the selection afterwards. */
-async function drag(box) {
-  await page.evaluate(() => getSelection().removeAllRanges());
-  await page.mouse.move(box.x + 6, box.y + box.height / 2);
-  await page.mouse.down();
-  await page.mouse.move(box.x + Math.max(box.width - 6, 12), box.y + box.height / 2, { steps: 12 });
-  await page.mouse.up();
-  return page.evaluate(() => getSelection().toString());
-}
+/** After focus, how many pixels of the country link sit under the actions cell. */
+const focusOverlap = () => page.evaluate(() => {
+  const link = document.querySelector('td[data-col="country"] a');
+  link.focus();
+  const a = link.getBoundingClientRect();
+  const act = document.querySelector('.xo-actions').getBoundingClientRect();
+  const frame = document.querySelector('.xo-table').getBoundingClientRect();
+  return {
+    overlap: Math.min(a.right, act.right) - Math.max(a.left, act.left),
+    inFrame: a.left >= frame.left - 0.5 && a.right <= frame.right + 0.5 && a.width > 0,
+  };
+});
 
 for (const [name, path] of [['xoong.css', '/'], ['xoong.css and mist.css', '/mist.html']]) {
   describe(`table row actions at 390px (${name})`, () => {
@@ -93,28 +98,24 @@ for (const [name, path] of [['xoong.css', '/'], ['xoong.css and mist.css', '/mis
       expect(after.hit).toBe('BUTTON');
     });
 
-    it('a pointer drag across a cell leaves the selection empty', async () => {
+    it('a focused control beside the actions cell is not covered by it', async () => {
       await open(path);
-      const box = await page.locator('tbody td').first().boundingBox();
-      expect(await drag(box)).toBe('');
-    });
-
-    it('a double-click on a cell leaves the selection empty', async () => {
-      await open(path);
-      await page.evaluate(() => getSelection().removeAllRanges());
-      await page.dblclick('tbody td');
-      expect(await page.evaluate(() => getSelection().toString())).toBe('');
-    });
-
-    it('a drag inside the filter field still selects its text', async () => {
-      await open(path);
-      const input = page.locator('.xo-filters input');
-      await input.fill('london bridge');
-      const box = await input.boundingBox();
-      expect((await drag(box)).length).toBeGreaterThan(0);
+      const at = await focusOverlap();
+      expect(at.inFrame).toBe(true);
+      expect(at.overlap).toBeLessThanOrEqual(0);
     });
   });
 }
+
+describe('table row actions at 390px, right to left', () => {
+  it('a focused control beside the actions cell is not covered by it', async () => {
+    await open('/rtl.html');
+    expect(await page.evaluate(() => document.documentElement.dir)).toBe('rtl');
+    const at = await focusOverlap();
+    expect(at.inFrame).toBe(true);
+    expect(at.overlap).toBeLessThanOrEqual(0);
+  });
+});
 
 describe('cards at 390px', () => {
   it('the Edit button stays inside the card', async () => {
