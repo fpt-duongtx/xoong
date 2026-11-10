@@ -60,10 +60,12 @@
   :where(a) { color: var(--xo-color-accent); }
   :where(:focus-visible) { outline: var(--xo-focus); outline-offset: 2px; }
   :where(button) {
-    font: inherit; min-height: var(--xo-control-height); padding: 0 var(--xo-control-padding); box-sizing: border-box; cursor: pointer;
+    font: inherit; padding: 0 var(--xo-control-padding); box-sizing: border-box; cursor: pointer;
     color: var(--xo-color-text); background: var(--xo-color-surface);
     border: 1px solid var(--xo-color-control-border); border-radius: var(--xo-radius);
   }
+  /* a switch sets its own height (44×24). The 40px minimum would turn it into a square, and height does not override min-height. */
+  :where(button:not([role="switch"])) { min-height: var(--xo-control-height); }
   :where(button:hover) { border-color: var(--xo-color-accent); }
   :where(button[aria-busy="true"]) { opacity: 0.6; cursor: progress; }
   :where(input, select, textarea) {

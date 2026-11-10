@@ -29,23 +29,53 @@ describe('mist.css', () => {
     expect(droppedSelectors().length).toBeGreaterThan(50);
   });
 
+  it('keeps button metrics overridable, skips switches, and does not repeat the admin-demo chunk', () => {
+    expect(mist).toContain(':where(button:not([role="switch"]), .button:not([role="switch"])) { align-items: center; white-space: nowrap; min-height: var(--xo-control-height); }');
+    expect(mist).toContain('.xo-app { flex-wrap: nowrap; }');
+    expect(mist).toContain('.xo-main { flex: 1 1 0%; }');
+    expect(mist.match(/\.admin-demo \{ margin: 0/g)).toHaveLength(1);
+    expect(mist.match(/\.xo-side \{ display: none/g)).toHaveLength(1);
+    expect(mist).not.toMatch(/color-mix\([^)]*#(?:1f2a33|000)\b/i);
+    for (const name of ['grid', 'file', 'layers', 'sliders']) {
+      expect(mist).toContain(`--ic-${name}:`);
+      expect(mist).toContain(`.ic[data-ic="${name}"]`);
+    }
+  });
+
   describe('in a browser, with xoong.css, controls.css, richtext.css and nothing else', () => {
     let browser, page;
     beforeAll(async () => {
       browser = await launchChromium();
       page = await (await browser.newContext({ viewport: { width: 800, height: 600 } })).newPage();
-      await page.setContent('<!doctype html><body><p><button id="b">Plain</button> <button id="p" class="primary">Primary</button> <input id="i" placeholder="x"> <span class="badge ok" id="badge">ok</span></p><div class="xo-seg" id="seg" role="group" aria-label="View"><button aria-pressed="true">A</button><button aria-pressed="false">B</button></div><div hidden id="h" style="display:block">gone</div></body>');
-      for (const css of [...framework, mist, '* { transition: none !important; animation: none !important; }']) await page.addStyleTag({ content: css });
+      await page.setContent('<!doctype html><body><p><button id="b">Plain</button> <button id="p" class="primary">Primary</button> <button id="sw" role="switch" aria-checked="true" aria-label="On" style="height:24px;width:44px"></button> <button class="tile" id="tile">Tile</button> <input id="i" placeholder="x"> <span class="badge ok" id="badge">ok</span></p><div class="xo-seg" id="seg" role="group" aria-label="View"><button aria-pressed="true">A</button><button aria-pressed="false">B</button></div><div hidden id="h" style="display:block">gone</div><div class="xo-app" id="app"><aside class="xo-side">Side</aside><div class="xo-main" id="main">Main</div></div></body>');
+      for (const css of [...framework, mist, '@layer xoong-mist { button.tile { align-items: stretch; white-space: normal; min-height: 0; } }', '* { transition: none !important; animation: none !important; }']) await page.addStyleTag({ content: css });
     });
     afterAll(async () => { await browser?.close(); });
     const style = (selector, prop) => page.$eval(selector, (el, p) => getComputedStyle(el)[p], prop);
 
     it('draws 40px controls, a Mist blue primary button and the Mist radius', async () => {
       expect(await style('#b', 'minHeight')).toBe('40px');
+      expect(await style('#b', 'alignItems')).toBe('center');
       expect(await style('#i', 'minHeight')).toBe('40px');
       expect(await style('#p', 'backgroundColor')).toBe('rgb(11, 99, 206)');
       expect(await style('#p', 'color')).toBe('rgb(255, 255, 255)');
       expect(await style('#b', 'borderRadius')).toBe('8px');
+    });
+
+    it('a switch keeps its own height, and the main column stays beside the sidebar at 800px', async () => {
+      expect(await style('#sw', 'height')).toBe('24px');
+      expect(await style('#sw', 'minHeight')).not.toBe('40px');
+      expect(await style('#tile', 'alignItems')).toBe('stretch');
+      expect(await style('#tile', 'whiteSpace')).toBe('normal');
+      expect(await style('#tile', 'minHeight')).toBe('0px');
+      const box = await page.evaluate(() => {
+        const side = document.querySelector('.xo-side').getBoundingClientRect();
+        const main = document.querySelector('.xo-main').getBoundingClientRect();
+        return { sideTop: side.top, mainTop: main.top, sideRight: side.right, mainLeft: main.left, mainWidth: main.width };
+      });
+      expect(Math.abs(box.mainTop - box.sideTop)).toBeLessThan(2);
+      expect(box.mainLeft).toBeGreaterThanOrEqual(box.sideRight - 1);
+      expect(box.mainWidth).toBeGreaterThan(200);
     });
 
     it('follows the dark scheme and keeps the primary fill', async () => {
