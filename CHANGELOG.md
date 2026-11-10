@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+breaking: none.
+
+* Fixed: a button's centering, `white-space: nowrap` and 40px minimum no longer hit every button. In `mist.css` they sit on `:where(button:not([role="switch"]))`, so a same-layer `button` rule can opt out (a tile with an empty child can stretch again). In `xoong.css` the 40px minimum is the same `:where(button:not([role="switch"]))`, so a switch that only sets `height: 24px` stays 24px (`height` does not override `min-height`). The admin shell no longer wraps the main column under the sidebar between 768px and about 824px (`.xo-app` is `nowrap`, `.xo-main` takes the rest). Drawer backdrops and primary hovers mix against `var(--text)` instead of `#1f2a33` and `#000`, so dark mode follows the theme. The generator emits the duplicated `.admin-demo` chunk once. New masks: `--ic-grid`, `--ic-file`, `--ic-layers`, `--ic-sliders`. `mist.css` gzip 23.44 KB before, 23.83 KB after (CSS, not the JS budget). No JS size change.
+
 ## 0.0.46 (dialogs, recipes, edge cases, animated diagrams)
 
 breaking: a `{...}` in a view binds only when it holds a path (optionally with `| format`), so JSON, CSS and `\d{3}` stay as written; `{{name}}` is literal now (it rendered `{value}`), and `\{name}` escapes one binding. `packages/ui/src/confirm.js` is now `dialogs.js` (the package exports are unchanged and grew).
