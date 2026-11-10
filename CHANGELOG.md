@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+breaking: none.
+
+* Added (router): `xo-current` on a link, a nav, or `<xo-router>` leaves `aria-current` as the author set it (the router no longer strips it or writes `page` / `true` on those links). An empty `<template xo-route src="...">` or layout template is fetched the first time it is shown, including the first navigation and a template added after the router started; a failed fetch does not change the URL and is retried next time. A relative `src` resolves against the router's base, and a root-absolute one is prefixed when `base-links` is set. A response that is a full document contributes its `<body>`. `@xoong/ui` 12.88 KB gzip of the source without comments (was 12.75; budget 12.9, from 12.8, because the fetch does not fit in the 46 bytes that were left). `@xoong/core` 5.88 KB (was 5.87) for the `xo-current` attribute name. Collecting templates on each navigation is one query of the router's child templates, off the data path. The router is still loaded only when an `<xo-router>` is on the page.
+
 ## 0.0.46 (dialogs, recipes, edge cases, animated diagrams)
 
 breaking: a `{...}` in a view binds only when it holds a path (optionally with `| format`), so JSON, CSS and `\d{3}` stay as written; `{{name}}` is literal now (it rendered `{value}`), and `\{name}` escapes one binding. `packages/ui/src/confirm.js` is now `dialogs.js` (the package exports are unchanged and grew).

@@ -101,7 +101,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
       <template xo-route="/users/:id" layout="shell" title="User"><xo-view get="getUser" p-id=":id">...</xo-view></template>
       <template xo-route="*">Not found</template>
     </xo-router>
-  Links are intercepted (`base-links`: `/users` is `/admin/users`); `p-id=":id"` reads a path param. JS: `router.navigate('/users/3')`,
+  Links are intercepted (`base-links`: `/users` is `/admin/users`). `xo-current` keeps aria-current; empty `src` loads when shown. `p-id=":id"` reads a path param. JS: `router.navigate('/users/3')`,
   `router.guard((to, from) => ok ? true : '/login')`, `router.beforeNavigate(() => !dirty)` vetoes.
   A dirty form makes the router ask first (`xo-guard="off"`: no). 401: `configure({ onUnauthorized: () => router.navigate('/login') })`.
 

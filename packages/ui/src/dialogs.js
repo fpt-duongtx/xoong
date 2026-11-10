@@ -99,14 +99,7 @@ function present(o) {
     });
     const body2 = document.createElement('div');
     body2.className = 'xo-confirm-body';
-    if (kind) {
-      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      icon.setAttribute('viewBox', '0 0 24 24');
-      icon.setAttribute('class', 'xo-confirm-icon');
-      icon.setAttribute('aria-hidden', 'true');
-      icon.innerHTML = ICONS[kind]; // a fixed string from this file
-      body2.append(icon);
-    }
+    if (kind) body2.insertAdjacentHTML('afterbegin', `<svg viewBox="0 0 24 24" class="xo-confirm-icon" aria-hidden="true">${ICONS[kind]}</svg>`);
     body2.append(content);
     if (field) {
       const form = document.createElement('form'); // Enter in the field submits
