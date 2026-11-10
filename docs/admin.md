@@ -147,6 +147,12 @@ tests see plain markup).
 
 Other children (typically buttons) form the actions cell. For layouts the table cannot express, write the table by hand with `xo-each`; it composes with everything else.
 
+### A 390px frame
+
+The actions column stays at the inline end of the frame (the element with class `xo-table`). The cell is `td.xo-actions` and the header cell of that column is pinned with it. The other columns scroll underneath. At a viewport of 390px the action buttons are inside the frame, and a hit on a button reaches that button, with the frame's scroll position at the start or after it has been scrolled. The pinned cells use an opaque background so the text that slides under them stays hidden. An actions cell that is itself wider than the frame still overflows it. Reasons and the libraries this follows: [ADR-0013](decisions/0013-narrow-table-actions.md).
+
+A pointer drag across the table leaves the selection empty. The rule applies while the pointer is down, so a double-click on a cell also leaves the selection empty. A field inside the frame (a filter box, any `input`, `textarea`, or `contenteditable`) still selects its own text.
+
 ### Narrow panes: `cards`
 
 `<xo-table cards>` asks the theme to draw each row as a card when the table's own box is narrow (a container query, not the screen). The table only provides the hooks: the frame gets the class `xo-cards`, every `td` has `data-label` (the column label, also handy in tests), the first column (or `title="field"`) is the card title (`data-title`) and `status="field"` marks the status cell (`data-status`); the select and actions cells are recognised by their own markup. The Mist skin in `design/brand-kit/css/mist.css` is an example.
