@@ -288,13 +288,13 @@ class XoRouter extends XoElement {
 
   /**
    * A vetoed or cancelled Back/Forward already moved the address bar. Put it back with history.go(-delta), as Vue Router does:
-   * the history stays as it was, forward entries included. Where the position is unknown (or the DOM has no history.go), push the
-   * previous URL again as a fallback, which drops forward entries.
+   * the history stays as it was, forward entries included. Where the position is unknown (or the DOM has no history.go), replace
+   * the entry just shown. replaceState keeps the forward entries; pushState would drop them.
    */
   #restore(type, delta) {
     if (type !== 'popstate' || !this.#current) return;
     if (delta && typeof window.history.go === 'function') { this.#reverting = true; window.history.go(-delta); return; }
-    window.history.pushState({ xoPos: this.#pos }, '', this.#current.url);
+    window.history.replaceState({ xoPos: this.#pos }, '', this.#current.url);
   }
 
   /** A view changed its url-params: update the query string of the current location (a new entry for a click, replace for typing). */

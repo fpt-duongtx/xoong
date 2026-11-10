@@ -12,7 +12,7 @@
     "./view": "./src/view.js",
     "./format": "./src/format.js"
   },
-  "sideEffects": false,
+  "sideEffects": ["./src/view.js", "./src/options.js"],
   "license": "MIT",
   "dependencies": {
     "@xoong/core": "0.0.52"
