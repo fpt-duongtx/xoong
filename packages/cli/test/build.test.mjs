@@ -4,8 +4,9 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createServer } from 'node:http';
 import { readFile, readdir, stat, mkdtemp, writeFile, mkdir, symlink, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
-import { join, extname } from 'node:path';
+import { dirname, join, extname } from 'node:path';
 import { Readable } from 'node:stream';
 import { build, CSP } from '../src/build.js';
 import { sync } from '../src/commands.js';
@@ -13,6 +14,18 @@ import { launchChromium } from '../../../tools/browser.mjs';
 import { startBackend } from '../../../examples/admin/backend.mjs';
 
 const repo = new URL('../../..', import.meta.url).pathname;
+
+/** esbuild 0.28.2, the version benchmarks/apps/xoong uses, as a root devDependency. Absent outside CI: skip. In CI: fail. */
+function esbuildHome() {
+  try { return dirname(createRequire(join(repo, 'package.json')).resolve('esbuild/package.json')); } catch { return null; }
+}
+function esbuildOrSkip(ctx) {
+  const dir = esbuildHome();
+  if (dir) return dir;
+  if (process.env.CI) throw new Error('esbuild 0.28.2 is a root devDependency, but node_modules/esbuild is missing. CI runs these tests; it does not skip them.');
+  ctx.skip('esbuild is not installed (root devDependency 0.28.2, the version benchmarks/apps/xoong uses). This test does not download it.');
+  return null;
+}
 const example = join(repo, 'examples/admin');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json' };
 
@@ -222,14 +235,11 @@ describe('xoong build: options and warnings', () => {
   });
 
   it('--bundle with the real esbuild keeps a dynamic import() as its own chunk and keeps a file that was not an input', async (ctx) => {
-    if (!existsSync(join(repo, 'benchmarks/apps/xoong/node_modules/esbuild'))) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
+    if (!esbuildOrSkip(ctx)) return;
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-esbuild-'));
     await mkdir(join(root, 'src'));
     await writeFile(join(root, 'package.json'), JSON.stringify({ name: 'app', private: true }));
-    const vendor = join(repo, 'benchmarks/apps/xoong/node_modules');
-    await mkdir(join(root, 'node_modules'), { recursive: true });
-    await symlink(join(vendor, 'esbuild'), join(root, 'node_modules/esbuild'));
-    if (existsSync(join(vendor, '@esbuild'))) await symlink(join(vendor, '@esbuild'), join(root, 'node_modules/@esbuild'));
+    await linkedEsbuild(root);
     await writeFile(join(root, 'index.html'), '<!doctype html><script type="module" src="/src/main.js"></script>');
     await writeFile(join(root, 'src/main.js'), "import { n } from './lib.js';\nconst load = () => import('./lazy.js');\nexport const n2 = n + load;\n");
     await writeFile(join(root, 'src/lib.js'), 'export const n = 1;\n');
@@ -249,14 +259,10 @@ describe('xoong build: options and warnings', () => {
     expect(await readFile(join(out, 'worker.js'), 'utf8')).toContain('postMessage("worker")');
   }, 90000);
 
-  // The devDependency is benchmarks/apps/xoong's esbuild. A missing install skips; the test never runs npm install.
-  const esbuildDir = join(repo, 'benchmarks/apps/xoong/node_modules/esbuild');
-  const skipEsbuild = !existsSync(esbuildDir);
-
   async function linkedEsbuild(root) {
     await mkdir(join(root, 'node_modules/@xoong'), { recursive: true });
-    await symlink(esbuildDir, join(root, 'node_modules/esbuild'));
-    const plat = join(repo, 'benchmarks/apps/xoong/node_modules/@esbuild');
+    await symlink(esbuildHome(), join(root, 'node_modules/esbuild'));
+    const plat = join(dirname(esbuildHome()), '@esbuild');
     if (existsSync(plat)) await symlink(plat, join(root, 'node_modules/@esbuild'));
   }
 
@@ -306,17 +312,17 @@ describe('xoong build: options and warnings', () => {
   }
 
   it('bundles an app that imports @xoong/* through the repository links', async (ctx) => {
-    if (skipEsbuild) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
+    if (!esbuildOrSkip(ctx)) return;
     await expectBundled(false);
   }, 60000);
 
   it('bundles an app whose @xoong packages are installed under node_modules', async (ctx) => {
-    if (skipEsbuild) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
+    if (!esbuildOrSkip(ctx)) return;
     await expectBundled(true);
   }, 60000);
 
   it('fails the build when esbuild cannot resolve an import, and writes nothing', async (ctx) => {
-    if (skipEsbuild) ctx.skip('esbuild is not installed at benchmarks/apps/xoong/node_modules (that app\'s devDependency). This test does not download it.');
+    if (!esbuildOrSkip(ctx)) return;
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-badbundle-'));
     await mkdir(join(root, 'src'), { recursive: true });
     await writeFile(join(root, 'package.json'), JSON.stringify({ name: 'app', private: true }));
@@ -382,8 +388,8 @@ describe('xoong build --minify', () => {
 });
 
 describe('xoong build --minify with the real esbuild (when the project has it)', () => {
-  const esbuildHere = existsSync(join(repo, 'benchmarks/apps/xoong/node_modules/esbuild'));
-  it.skipIf(!esbuildHere)('the minified benchmark screen is smaller and runs in the browser under the policy', async () => {
+  it('the minified benchmark screen is smaller and runs in the browser under the policy', async (ctx) => {
+    if (!esbuildOrSkip(ctx)) return;
     const app = join(repo, 'benchmarks/apps/xoong');
     await sync(join(repo, 'benchmarks/shared/openapi.json'), { out: join(app, '.xoong'), hints: join(app, 'xoong.hints.json') });
     const out = join(await mkdtemp(join(tmpdir(), 'xoong-minreal-')), 'dist');
