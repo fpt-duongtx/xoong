@@ -149,9 +149,9 @@ Other children (typically buttons) form the actions cell. For layouts the table 
 
 ### A 390px frame
 
-The actions column stays at the inline end of the frame (the element with class `xo-table`). The cell is `td.xo-actions` and the header cell of that column is pinned with it. The other columns scroll underneath. At a viewport of 390px the action buttons are inside the frame, and a hit on a button reaches that button, with the frame's scroll position at the start or after it has been scrolled. The pinned cells use an opaque background so the text that slides under them stays hidden. An actions cell that is itself wider than the frame still overflows it. Reasons and the libraries this follows: [ADR-0013](decisions/0013-narrow-table-actions.md).
+The actions column stays at the inline end of the frame (the element with class `xo-table`). The cell is `td.xo-actions`. The header pinned with it is the `th` whose child is the visually hidden "Actions" label, so a column after that header is not pinned. The other columns scroll underneath. At a viewport of 390px the action buttons are inside the frame, and a hit on a button reaches that button, with the frame's scroll position at the start or after it has been scrolled. The pinned cells use an opaque background, and a 1px inline-start border, so the text that slides under them stays hidden. That border is there at every width. An actions cell that is itself wider than the frame still overflows it. Cell text selects and copies as it does in any other table. Reasons and the libraries this follows: [ADR-0013](decisions/0013-narrow-table-actions.md).
 
-A pointer drag across the table leaves the selection empty. The rule applies while the pointer is down, so a double-click on a cell also leaves the selection empty. A field inside the frame (a filter box, any `input`, `textarea`, or `contenteditable`) still selects its own text.
+Focusing a control in the column beside the actions scrolls it clear of the pinned cell. The frame sets `scroll-padding-inline-end: 20rem`, which follows the writing direction, so the same rule holds left-to-right and right-to-left (WCAG 2.4.12). 20rem clears a row of Edit, Actions and Delete. A wider actions cell can still cover its neighbour; an unlayered rule can raise `scroll-padding-inline-end`.
 
 ### Narrow panes: `cards`
 
