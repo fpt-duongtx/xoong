@@ -354,7 +354,7 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     }
     const tmp = await mkdtemp(join(tmpdir(), 'xoong-bundle-'));
     try {
-      await esbuild.build({ absWorkingDir: rootDir, entryPoints: points, bundle: true, splitting: true, format: 'esm', target: 'es2022', legalComments: 'none', minify: minifyJs, outdir: tmp, write: true, charset: 'utf8' });
+      const built = await esbuild.build({ absWorkingDir: rootDir, entryPoints: points, bundle: true, splitting: true, format: 'esm', target: 'es2022', legalComments: 'none', minify: minifyJs, outdir: tmp, write: true, charset: 'utf8', metafile: true });
       /** @type {Map<string, Buffer | string>} */
       const produced = new Map();
       const collect = async (dir) => {
@@ -380,7 +380,17 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
           if (src.startsWith('/')) classic.add(toJs(src));
         });
       }
-      for (const key of [...written.keys()]) if (/\.m?js$/.test(key) && sources.has(key) && !produced.has(key) && !classic.has(key)) written.delete(key);
+      // Delete only modules esbuild actually bundled. A worker, a file fetched by URL, or a file named with --include
+      // was copied but is not a bundle input, and the page still needs it.
+      const bundled = new Set();
+      const rootUrl = rootDir.split(sep).join('/');
+      for (const input of Object.keys(built.metafile?.inputs ?? {})) {
+        let rel = input.split('\\').join('/');
+        if (rel.startsWith(rootUrl + '/')) rel = rel.slice(rootUrl.length);
+        if (!rel.startsWith('/')) rel = `/${rel}`;
+        bundled.add(rel.split('?')[0]);
+      }
+      for (const key of [...written.keys()]) if (/\.m?js$/.test(key) && bundled.has(key) && !produced.has(key) && !classic.has(key)) written.delete(key);
       return true;
     } catch (error) {
       warnings.push(`--bundle: esbuild failed (${error instanceof Error ? error.message : error}); the output is not bundled`);
