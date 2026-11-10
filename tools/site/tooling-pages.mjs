@@ -109,11 +109,14 @@ const CONFIG_KEYS = [
   ['port', 'dev', '5173', 'The port. The <code>--port</code> flag wins.'],
   ['proxy', 'dev', 'none', 'An object of prefixes and backends, <code>{ "/api": "http://localhost:8080" }</code>. It adds to the <code>--proxy</code> flags; for the same prefix the flag wins.'],
   ['spa', 'dev', 'false', 'The same as <code>--spa</code>.'],
-  ['allowedHosts', 'dev', '[]', 'Host names the dev server accepts besides localhost, 127.0.0.1 and ::1. Any other <code>Host</code> header gets a 403, which stops a web page from reaching your machine through DNS rebinding. Add a name when you reach the server through a tunnel.'],
+  ['base', 'dev, build', 'none', 'The URL path the app is served under, the same value as <code>--base</code>. Dev prefixes the import map and root-absolute asset URLs; a request that still carries the prefix is served from the root. <code>X-Forwarded-Prefix</code> overrides it when the header is a safe path.'],
+  ['allowedHosts', 'dev', '[]', 'Host names the dev server accepts besides localhost, 127.0.0.1 and ::1. Any other <code>Host</code> header gets a 403, which stops a web page from reaching your machine through DNS rebinding. Add a name when you reach the server through a tunnel. <code>"*"</code> turns the check off. <code>X-Forwarded-Host</code> is not trusted in place of <code>Host</code>.'],
   ['packages', 'dev, build', '[]', 'Installed packages, besides xoong\'s own, whose browser code the app imports. They are served at <code>/@name</code>, listed in the import map and copied by the build.'],
   ['build.exclude', 'build', '[]', 'Globs of HTML files that are not pages. They add to the <code>--exclude</code> flags of <code>build</code>.'],
   ['build.preload', 'build', 'true', '<code>false</code> turns off the <code>modulepreload</code> links, like <code>--no-preload</code>.'],
   ['build.minify', 'build', 'false', '<code>true</code> minifies scripts, stylesheets and JSON with the esbuild the project has installed, like <code>--minify</code>; without esbuild the build warns and does not minify.'],
+  ['build.bundle', 'build', 'false', '<code>true</code> bundles scripts into CSP-clean ESM with that esbuild, like <code>--bundle</code>. A dynamic <code>import()</code> stays its own chunk. Without esbuild the build warns and copies every module.'],
+  ['build.inlineScripts', 'build', 'remove', '<code>error</code> makes the build exit 1 when it removes an inline script, like <code>--inline-scripts error</code>. JSON and JSON-LD scripts stay either way.'],
   ['check.exclude', 'check', '[]', 'Globs of files and folders that <code>check</code> skips. They add to its <code>--exclude</code> flags.'],
 ];
 
@@ -243,7 +246,8 @@ ${table(['Codes', 'What they find'], CODE_FAMILIES.filter((f) => f.tool === 'che
 <li><strong>TypeScript.</strong> A ${c('.ts')} file is served as JavaScript, with its types stripped (erasable syntax only: no ${c('enum')}, ${c('namespace')} or parameter properties; lines and columns stay the same). Import your own files with the ${c('.ts')} extension.</li>
 <li><strong>A proxy</strong> for every prefix you give. ${c('/api/people')} reaches ${c('http://localhost:8080')} as ${c('/people')}: the prefix is removed, so put it in the target (${c('/api=http://localhost:8080/api')}) to keep it. Whole path segments only (${c('/api')} does not match ${c('/apix')}), the longest prefix first, bodies streamed both ways (server-sent events pass through), and a backend that does not answer gives a 502 with the reason.</li>
 <li><strong>${c('--spa')}</strong> answers a path without a file extension with ${c('index.html')}, for an app with an ${c('<xo-router>')}.</li>
-<li><strong>Safe on a shared network.</strong> It listens on 127.0.0.1 only, serves nothing outside the root, hides folders that start with a dot (except ${c('.xoong')} and ${c('.well-known')}) and refuses a ${c('Host')} that is not local (${c('allowedHosts')} adds names).</li>
+<li><strong>${c('--base')}</strong> (or ${c('base')} in the config, or the ${c('X-Forwarded-Prefix')} header) prefixes the import map and root-absolute asset URLs, the same prefix as ${c('xoong build --base')}. A request that still carries the prefix is served from the root.</li>
+<li><strong>Safe on a shared network.</strong> It listens on 127.0.0.1 only, serves nothing outside the root, hides folders that start with a dot (except ${c('.xoong')} and ${c('.well-known')}) and refuses a ${c('Host')} that is not local (${c('allowedHosts')} adds names; ${c('"*"')} turns the check off).</li>
 </ul>
 ${reference('dev')}
 ${term(`
@@ -260,7 +264,9 @@ xoong dev  http://127.0.0.1:5173   (root: /home/you/people-app)
 <li>${c('src')}, ${c('poster')}, a ${c('<link>')}'s ${c('href')} and every URL of a ${c('srcset')} are copied and, with ${c('--base')}, given the prefix. ${c('<a href>')} is left as written on purpose: a link to another page is for the router, or a plain relative link, to resolve;</li>
 <li>every page gets ${c('<link rel="modulepreload">')} for the modules its scripts import, so the browser fetches the chain at once instead of one level at a time (${c('--no-preload')} turns it off);</li>
 <li>with ${c('--minify')} (or ${c('build.minify')}), scripts, stylesheets and JSON are minified by the esbuild your project has installed (xoong does not depend on it; without it the build warns and goes on). Two risks: esbuild renames local identifiers (code that reads <code>Function.name</code> or a class's <code>name</code> sees short names), and without esbuild the flag is only a warning, so check that it is in your <code>devDependencies</code>.</li>
-<li>nothing is minified or bundled: every output file is the one you wrote, readable in the browser's tools.</li>
+<li>with ${c('--bundle')} (or ${c('build.bundle')}), that esbuild folds static imports into CSP-clean ESM. A dynamic ${c('import()')} stays its own chunk. Without esbuild the build warns and copies every module.</li>
+<li>an inline ${c('<script>')} is removed (it cannot run under ${c("script-src 'self'")}). ${c('--inline-scripts error')} also exits 1. JSON and JSON-LD stay. When ${c('.xoong/operations.json')} exists it is also written at ${c('/operations.json')}, and an import of the dot path is rewritten to that.</li>
+<li>the default still writes the files you wrote: nothing is minified or bundled unless you ask.</li>
 </ul>
 ${reference('build')}
 <p>HTML that is not a page (a partial, a fixture, a draft) is kept out with ${c('--exclude')}; a file that a page references is still published. What the build cannot see, such as a ${c('fetch()')} of a data file or an image named in JavaScript, is added with ${c('--include')}.</p>

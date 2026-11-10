@@ -178,6 +178,35 @@ test('doctor groups repeated warnings and prints errors in full; --all lists eve
   assert.equal((all.text.match(/^warn XO130/gm) ?? []).length, 12);
 });
 
+test('CLI: sync and doctor both exit 1 on a duplicate operationId and a broken $ref, and sync still writes', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'xoong-'));
+  const { writeFile, access } = await import('node:fs/promises');
+  const spec = join(dir, 'broken.json');
+  await writeFile(spec, JSON.stringify({
+    openapi: '3.0.3', info: { title: 't', version: '1' },
+    paths: {
+      '/a': { get: { operationId: 'same', responses: { 200: { description: 'ok' } } } },
+      '/b': { get: { operationId: 'same', responses: { 200: { description: 'ok', content: { 'application/json': { schema: { $ref: '#/components/schemas/Missing' } } } } } } },
+    },
+  }));
+  const out = join(dir, 'o');
+  await assert.rejects(run('node', [cli, 'sync', spec, '--out', out]), (e) => e.code === 1 && /XO111/.test(e.stderr) && /XO150/.test(e.stderr));
+  await access(join(out, 'operations.json'));
+  await assert.rejects(run('node', [cli, 'doctor', spec]), (e) => e.code === 1 && /XO111/.test(e.stdout) && /XO150/.test(e.stdout));
+});
+
+test('CLI: the build summary names --no-preload, and --inline-scripts error exits 1', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'xoong-'));
+  const { writeFile } = await import('node:fs/promises');
+  await writeFile(join(dir, 'index.html'), '<!doctype html><script type="module" src="/a.js"></script><script>alert(1)</script>');
+  await writeFile(join(dir, 'a.js'), 'export const a = 1;\n');
+  const ok = await run('node', [cli, 'build', '--root', dir, '--out', join(dir, 'dist')]);
+  assert.match(ok.stdout, /modulepreload links; pass --no-preload to omit/);
+  const off = await run('node', [cli, 'build', '--root', dir, '--out', join(dir, 'dist2'), '--no-preload']);
+  assert.doesNotMatch(off.stdout, /pass --no-preload/);
+  await assert.rejects(run('node', [cli, 'build', '--root', dir, '--out', join(dir, 'dist3'), '--inline-scripts', 'error']), (e) => e.code === 1);
+});
+
 test('CLI: sync exits non-zero and prints errors for a broken document', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'xoong-'));
   const { writeFile } = await import('node:fs/promises');

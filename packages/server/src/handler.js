@@ -42,6 +42,74 @@ export function buildImportMap(packages) {
   return { imports };
 }
 
+/**
+ * A URL path the app is mounted under (`/admin`), or `''` when it is served at `/`.
+ * `null` means the value is not a safe path (`..`, a scheme, a double slash, whitespace).
+ * @param {string | undefined | null} raw
+ * @returns {string | null}
+ */
+export function sanitizeBase(raw) {
+  if (raw == null) return null;
+  const text = String(raw).trim();
+  if (text === '' || text === '/') return '';
+  if (/[\s\\?#]|:\/\//.test(text) || text.includes('..') || text.includes('//')) return null;
+  const path = (text.startsWith('/') ? text : `/${text}`).replace(/\/+$/, '');
+  return path === '/' || path.includes('..') ? null : path;
+}
+
+/** Prefix a root-absolute URL once. Relative, protocol-relative and already-prefixed URLs stay as they are. */
+export function prefixRoot(url, base) {
+  if (!base || !url.startsWith('/') || url.startsWith('//')) return url;
+  if (url === base || url.startsWith(`${base}/`) || url.startsWith(`${base}?`) || url.startsWith(`${base}#`)) return url;
+  return base + url;
+}
+
+/** The path with `base` removed, when the request carried it. A path that only shares the prefix (`/administrator`) stays. */
+export function stripBase(pathname, base) {
+  if (!base) return pathname;
+  if (pathname === base || pathname === `${base}/`) return '/';
+  return pathname.startsWith(`${base}/`) ? pathname.slice(base.length) || '/' : pathname;
+}
+
+const ASSET_REL = /stylesheet|icon|preload|modulepreload|manifest/;
+
+/** Prefix root-absolute asset URLs in HTML. Links (`<a href>`) are left for the router. An import map's root-absolute values are prefixed too. */
+export function prefixHtml(html, base) {
+  if (!base) return html;
+  const src = (tag) => tag.replace(/\bsrc\s*=\s*(["'])(\/[^"']*)\1/i, (m, q, url) => (url.startsWith('//') ? m : `src=${q}${prefixRoot(url, base)}${q}`));
+  let out = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi, (full, attrs, inner) => {
+    if (!/type\s*=\s*["']importmap["']/i.test(attrs)) return src(full);
+    const next = inner.replace(/"(\/[^"]*)"/g, (m, url) => (url.startsWith('//') ? m : `"${prefixRoot(url, base)}"`));
+    return `<script${attrs}>${next}</script>`;
+  });
+  out = out.replace(/<link\b[^>]*>/gi, (tag) => {
+    const rel = tag.match(/\brel\s*=\s*(["'])([^"']*)\1/i)?.[2] ?? '';
+    if (!ASSET_REL.test(rel)) return tag;
+    return tag.replace(/\bhref\s*=\s*(["'])(\/[^"']*)\1/i, (m, q, url) => (url.startsWith('//') ? m : `href=${q}${prefixRoot(url, base)}${q}`));
+  });
+  return out;
+}
+
+/** Prefix root-absolute `url()` and `@import` in a stylesheet. */
+export function prefixCss(css, base) {
+  if (!base) return css;
+  return css.replace(/url\(\s*(['"]?)([^'")\s]+)\1\s*\)|@import\s+(['"])([^'"]+)\3/g, (m, q1, u1, q2, u2) => {
+    const url = u1 ?? u2;
+    if (!url.startsWith('/') || url.startsWith('//')) return m;
+    const q = u1 != null ? q1 : q2;
+    const next = prefixRoot(url, base);
+    return u1 != null ? `url(${q}${next}${q})` : `@import ${q}${next}${q}`;
+  });
+}
+
+const IMPORT_SPEC = /(\bimport\s*(?:[\w*${}\s,]*?\bfrom\s*)?|\bexport\s+(?:\*(?:\s+as\s+\w+)?|\{[^}]*\})\s*from\s*|\bimport\s*\(\s*)(['"])(\/[^'"\n]+)\2/g;
+
+/** Prefix root-absolute import specifiers. A relative import is left, so a deep link still resolves it against the module URL. */
+export function prefixJs(code, base) {
+  if (!base) return code;
+  return code.replace(IMPORT_SPEC, (m, lead, q, spec) => (spec.startsWith('//') ? m : `${lead}${q}${prefixRoot(spec, base)}${q}`));
+}
+
 /** Insert an import map before the first <script> (or at the end of <head>) unless the page has one. */
 export function injectImportMap(html, importMap) {
   if (/<script[^>]+type\s*=\s*["']importmap["']/i.test(html)) return html;
@@ -61,12 +129,17 @@ export function injectImportMap(html, importMap) {
  *   transform?: Record<string, (code: string, path: string) => string | Promise<string>>,
  *   fetch?: typeof fetch,
  *   spa?: boolean,
+ *   base?: string,
  *   headers?: Record<string, string>,
  *   onError?: (error: unknown, request: Request) => void,
  * }} options
+ * `base`: the path the app is mounted under (`/admin`). `X-Forwarded-Prefix` overrides it per request when the header is a safe path
+ * (a reverse proxy that strips the prefix sets it). Root-absolute asset URLs are prefixed; a request that still carries the prefix is served from the root.
  */
 export function createHandler(options = {}) {
   const { files, proxy = {}, packages = {}, transform = {}, spa = false, headers: extra = {}, onError } = options;
+  const configuredBase = sanitizeBase(options.base ?? '');
+  if (configuredBase == null) throw new Error(`xoong server: base must be a path like /admin, not "${options.base}"`);
   const upstreamFetch = options.fetch ?? globalThis.fetch;
   const importMap = Object.keys(packages).length ? buildImportMap(packages) : null;
   // Longest prefix first so "/api/v2" wins over "/api".
@@ -109,8 +182,8 @@ export function createHandler(options = {}) {
     }
   }
 
-  /** Serve a file, applying transforms and the import map. */
-  async function serveFile(path, request) {
+  /** Serve a file, applying transforms, the import map and the base prefix. */
+  async function serveFile(path, request, base) {
     const found = await files?.(path);
     if (!found) return null;
     const ext = extOf(path);
@@ -126,20 +199,32 @@ export function createHandler(options = {}) {
         return text(500, `xoong server: could not transform ${path}\n${/** @type {Error} */ (error)?.message ?? error}`);
       }
     }
-    if (ext === '.html' && importMap) body = injectImportMap(typeof body === 'string' ? body : new TextDecoder().decode(body), importMap);
+    const textExt = ext === '.html' || ext === '.css' || ext === '.js' || ext === '.mjs' || ext === '.ts';
+    if (ext === '.html' && importMap || (base && textExt)) {
+      let source = typeof body === 'string' ? body : new TextDecoder().decode(body);
+      if (ext === '.html' && importMap) source = injectImportMap(source, importMap);
+      if (base && ext === '.html') source = prefixHtml(source, base);
+      else if (base && ext === '.css') source = prefixCss(source, base);
+      else if (base) source = prefixJs(source, base);
+      body = source;
+    }
     const h = { 'content-type': found.type ?? TYPES[ext] ?? 'application/octet-stream', 'cache-control': 'no-cache', ...extra };
     return new Response(request.method === 'HEAD' ? null : /** @type {BodyInit} */ (body), { status: 200, headers: h });
   }
 
   return async function handle(/** @type {Request} */ request) {
     const url = new URL(request.url);
+    const header = request.headers.get('x-forwarded-prefix');
+    const fromHeader = header == null ? null : sanitizeBase(header);
+    const base = fromHeader == null ? configuredBase : fromHeader; // an unsafe header is ignored; the configured base stands
     let pathname;
-    try { pathname = decodeURIComponent(url.pathname); } catch { return text(400, 'Bad request'); }
+    try { pathname = stripBase(decodeURIComponent(url.pathname), base); } catch { return text(400, 'Bad request'); }
     if (pathname.includes('\0') || pathname.split('/').includes('..')) return text(400, 'Bad request');
+    const rawPath = stripBase(url.pathname, base);
 
     // Match on the encoded path so the forwarded path is sliced from the same string that was matched.
     for (const [prefix, target] of proxies) {
-      const rest = below(url.pathname, prefix);
+      const rest = below(rawPath, prefix);
       if (rest !== null) return forward(request, url, rest, target);
     }
     if (request.method !== 'GET' && request.method !== 'HEAD') return text(405, 'Method not allowed');
@@ -147,7 +232,7 @@ export function createHandler(options = {}) {
     // Files provided by installed packages (served under their prefix; the import map points here).
     for (const pkg of Object.values(packages)) {
       if (pathname.startsWith(pkg.prefix + '/')) {
-        const res = await serveFile(pathname, request);
+        const res = await serveFile(pathname, request, base);
         if (res) return res;
         return text(404, 'Not found');
       }
@@ -155,11 +240,11 @@ export function createHandler(options = {}) {
 
     const candidates = pathname.endsWith('/') ? [pathname + 'index.html'] : [pathname];
     for (const path of candidates) {
-      const res = await serveFile(path, request);
+      const res = await serveFile(path, request, base);
       if (res) return res;
     }
     if (spa && !extOf(pathname)) {
-      const res = await serveFile('/index.html', request);
+      const res = await serveFile('/index.html', request, base);
       if (res) return res;
     }
     return text(404, 'Not found');

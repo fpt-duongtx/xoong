@@ -40,6 +40,10 @@ into HTML pages that have none) and strips TypeScript types from `.ts` files on 
 only; the transform keeps line and column positions). Import local TypeScript with the `.ts` extension.
 Not done yet: live reload and SCSS compilation.
 
+`--base /admin` (or `"base": "/admin"` in `xoong.config.json`) is the same prefix as `xoong build --base`. The injected import map, root-absolute `script`/`link` URLs, root-absolute CSS `url()` and `@import`, and root-absolute import specifiers are prefixed with it. A request whose path still starts with the prefix is served from the project root, so it works both when the dev server is opened at `/admin/...` and when a reverse proxy has already stripped the prefix. `X-Forwarded-Prefix` overrides `--base` for that request when the header is a safe path (`/admin`, not a scheme, `..` or `//`). `<a href>` is not rewritten.
+
+`allowedHosts` accepts a host name, or `"*"` to turn the host check off (a LAN preview whose `Host` is not the bind address). `X-Forwarded-Host` is not trusted in place of `Host`.
+
 **Your own packages.** A package that ships browser code (a component library, a theme) is named in `xoong.config.json`:
 `{ "packages": ["rainlet"] }`. `xoong dev` and `xoong build` then serve it under `/@rainlet/...` (scoped names keep their scope: `/@acme/ui/...`)
 and resolve `import 'rainlet'` and `import 'rainlet/widgets/slug'` through its `exports` map the way Node does: conditions (`browser`, `import`, `default`),

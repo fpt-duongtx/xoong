@@ -373,13 +373,15 @@ screens/people.html:2:34  error XO270  xo-confirm-kind does nothing without xo-c
 <li><strong>TypeScript.</strong> A <code>.ts</code> file is served as JavaScript, with its types stripped (erasable syntax only: no <code>enum</code>, <code>namespace</code> or parameter properties; lines and columns stay the same). Import your own files with the <code>.ts</code> extension.</li>
 <li><strong>A proxy</strong> for every prefix you give. <code>/api/people</code> reaches <code>http://localhost:8080</code> as <code>/people</code>: the prefix is removed, so put it in the target (<code>/api=http://localhost:8080/api</code>) to keep it. Whole path segments only (<code>/api</code> does not match <code>/apix</code>), the longest prefix first, bodies streamed both ways (server-sent events pass through), and a backend that does not answer gives a 502 with the reason.</li>
 <li><strong><code>--spa</code></strong> answers a path without a file extension with <code>index.html</code>, for an app with an <code>&lt;xo-router&gt;</code>.</li>
-<li><strong>Safe on a shared network.</strong> It listens on 127.0.0.1 only, serves nothing outside the root, hides folders that start with a dot (except <code>.xoong</code> and <code>.well-known</code>) and refuses a <code>Host</code> that is not local (<code>allowedHosts</code> adds names).</li>
+<li><strong><code>--base</code></strong> (or <code>base</code> in the config, or the <code>X-Forwarded-Prefix</code> header) prefixes the import map and root-absolute asset URLs, the same prefix as <code>xoong build --base</code>. A request that still carries the prefix is served from the root.</li>
+<li><strong>Safe on a shared network.</strong> It listens on 127.0.0.1 only, serves nothing outside the root, hides folders that start with a dot (except <code>.xoong</code> and <code>.well-known</code>) and refuses a <code>Host</code> that is not local (<code>allowedHosts</code> adds names; <code>"*"</code> turns the check off).</li>
 </ul>
-<pre class="plain" data-lang="bash" tabindex="0"><code>xoong dev [--root .] [--port 5173] [--proxy /api=http://localhost:8080]... [--spa]</code></pre>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong dev [--root .] [--base /admin] [--port 5173] [--proxy /api=http://localhost:8080]... [--spa]</code></pre>
 <div class="table-wrap" tabindex="0"><table class="names">
 <thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
 <tbody>
 <tr><td><code>--root</code></td><td><code>.</code></td><td>The folder to serve. xoong.config.json is read from it.</td></tr>
+<tr><td><code>--base</code></td><td>none</td><td>The URL path the app is served under, the same value as build --base. The import map and root-absolute asset URLs are prefixed, and a request that still carries the prefix is served from the root. X-Forwarded-Prefix overrides it when the header is a safe path.</td></tr>
 <tr><td><code>--port</code></td><td><code>5173</code></td><td>The port, a number from 0 to 65535 (0 lets the system pick one). The server listens on 127.0.0.1 only.</td></tr>
 <tr><td><code>--proxy</code></td><td>none</td><td>Forward the requests under a prefix to a backend, written /prefix=http://host:port. It adds to proxy of xoong.config.json; for the same prefix the flag wins. May be given more than once.</td></tr>
 <tr><td><code>--spa</code></td><td>off</td><td>Answer every path without a file extension with index.html, for an app with an &lt;xo-router&gt;.</td></tr>
@@ -397,9 +399,11 @@ xoong dev  http://127.0.0.1:5173   (root: /home/you/people-app)
 <li><code>src</code>, <code>poster</code>, a <code>&lt;link&gt;</code>'s <code>href</code> and every URL of a <code>srcset</code> are copied and, with <code>--base</code>, given the prefix. <code>&lt;a href&gt;</code> is left as written on purpose: a link to another page is for the router, or a plain relative link, to resolve;</li>
 <li>every page gets <code>&lt;link rel="modulepreload"&gt;</code> for the modules its scripts import, so the browser fetches the chain at once instead of one level at a time (<code>--no-preload</code> turns it off);</li>
 <li>with <code>--minify</code> (or <code>build.minify</code>), scripts, stylesheets and JSON are minified by the esbuild your project has installed (xoong does not depend on it; without it the build warns and goes on). Two risks: esbuild renames local identifiers (code that reads <code>Function.name</code> or a class's <code>name</code> sees short names), and without esbuild the flag is only a warning, so check that it is in your <code>devDependencies</code>.</li>
-<li>nothing is minified or bundled: every output file is the one you wrote, readable in the browser's tools.</li>
+<li>with <code>--bundle</code> (or <code>build.bundle</code>), that esbuild folds static imports into CSP-clean ESM. A dynamic <code>import()</code> stays its own chunk. Without esbuild the build warns and copies every module.</li>
+<li>an inline <code>&lt;script&gt;</code> is removed (it cannot run under <code>script-src 'self'</code>). <code>--inline-scripts error</code> also exits 1. JSON and JSON-LD stay. When <code>.xoong/operations.json</code> exists it is also written at <code>/operations.json</code>, and an import of the dot path is rewritten to that.</li>
+<li>the default still writes the files you wrote: nothing is minified or bundled unless you ask.</li>
 </ul>
-<pre class="plain" data-lang="bash" tabindex="0"><code>xoong build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]... [--no-preload] [--minify]</code></pre>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]... [--inline-scripts remove|error] [--no-preload] [--minify] [--bundle]</code></pre>
 <div class="table-wrap" tabindex="0"><table class="names">
 <thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
 <tbody>
@@ -408,8 +412,10 @@ xoong dev  http://127.0.0.1:5173   (root: /home/you/people-app)
 <tr><td><code>--base</code></td><td>none</td><td>The URL path the app is served under. Root-absolute URLs get this prefix. By default the app is served at /.</td></tr>
 <tr><td><code>--include</code></td><td>none</td><td>A file or folder (relative to the root) to publish although no page names it: data fetched from JavaScript, images named in code. May be given more than once.</td></tr>
 <tr><td><code>--exclude</code></td><td>none</td><td>Keep matching .html files out of the start list (partials, drafts). A file that a page references is still published. May be given more than once.</td></tr>
+<tr><td><code>--inline-scripts</code></td><td><code>remove</code></td><td>Inline JavaScript is removed, because script-src 'self' blocks it. error does the same and makes the build exit 1. JSON and JSON-LD scripts stay. One of <code>remove</code> or <code>error</code>.</td></tr>
 <tr><td><code>--no-preload</code></td><td>off</td><td>Do not add &lt;link rel="modulepreload"&gt; to the pages.</td></tr>
 <tr><td><code>--minify</code></td><td>off</td><td>Minify the scripts and stylesheets (and JSON) with the esbuild your project has installed; the output stays strict-CSP and the imports are rewritten as usual. Without esbuild installed the build warns and writes the files as they are.</td></tr>
+<tr><td><code>--bundle</code></td><td>off</td><td>Bundle scripts into CSP-clean ESM with the esbuild your project has installed. Static imports go into the entry; a dynamic import() stays its own chunk. Without esbuild the build warns and copies every module. CSS stays separate.</td></tr>
 </tbody></table></div>
 <p>HTML that is not a page (a partial, a fixture, a draft) is kept out with <code>--exclude</code>; a file that a page references is still published. What the build cannot see, such as a <code>fetch()</code> of a data file or an image named in JavaScript, is added with <code>--include</code>.</p>
 <xo-tabs label="What changes" class="example">
@@ -497,11 +503,14 @@ catalogs/vi.json: "extra.key" is not used by the source
 <tr><td><code>port</code></td><td>dev</td><td><code>5173</code></td><td>The port. The <code>--port</code> flag wins.</td></tr>
 <tr><td><code>proxy</code></td><td>dev</td><td>none</td><td>An object of prefixes and backends, <code>{ "/api": "http://localhost:8080" }</code>. It adds to the <code>--proxy</code> flags; for the same prefix the flag wins.</td></tr>
 <tr><td><code>spa</code></td><td>dev</td><td><code>false</code></td><td>The same as <code>--spa</code>.</td></tr>
-<tr><td><code>allowedHosts</code></td><td>dev</td><td><code>[]</code></td><td>Host names the dev server accepts besides localhost, 127.0.0.1 and ::1. Any other <code>Host</code> header gets a 403, which stops a web page from reaching your machine through DNS rebinding. Add a name when you reach the server through a tunnel.</td></tr>
+<tr><td><code>base</code></td><td>dev, build</td><td>none</td><td>The URL path the app is served under, the same value as <code>--base</code>. Dev prefixes the import map and root-absolute asset URLs; a request that still carries the prefix is served from the root. <code>X-Forwarded-Prefix</code> overrides it when the header is a safe path.</td></tr>
+<tr><td><code>allowedHosts</code></td><td>dev</td><td><code>[]</code></td><td>Host names the dev server accepts besides localhost, 127.0.0.1 and ::1. Any other <code>Host</code> header gets a 403, which stops a web page from reaching your machine through DNS rebinding. Add a name when you reach the server through a tunnel. <code>"*"</code> turns the check off. <code>X-Forwarded-Host</code> is not trusted in place of <code>Host</code>.</td></tr>
 <tr><td><code>packages</code></td><td>dev, build</td><td><code>[]</code></td><td>Installed packages, besides xoong's own, whose browser code the app imports. They are served at <code>/@name</code>, listed in the import map and copied by the build.</td></tr>
 <tr><td><code>build.exclude</code></td><td>build</td><td><code>[]</code></td><td>Globs of HTML files that are not pages. They add to the <code>--exclude</code> flags of <code>build</code>.</td></tr>
 <tr><td><code>build.preload</code></td><td>build</td><td><code>true</code></td><td><code>false</code> turns off the <code>modulepreload</code> links, like <code>--no-preload</code>.</td></tr>
 <tr><td><code>build.minify</code></td><td>build</td><td><code>false</code></td><td><code>true</code> minifies scripts, stylesheets and JSON with the esbuild the project has installed, like <code>--minify</code>; without esbuild the build warns and does not minify.</td></tr>
+<tr><td><code>build.bundle</code></td><td>build</td><td><code>false</code></td><td><code>true</code> bundles scripts into CSP-clean ESM with that esbuild, like <code>--bundle</code>. A dynamic <code>import()</code> stays its own chunk. Without esbuild the build warns and copies every module.</td></tr>
+<tr><td><code>build.inlineScripts</code></td><td>build</td><td><code>remove</code></td><td><code>error</code> makes the build exit 1 when it removes an inline script, like <code>--inline-scripts error</code>. JSON and JSON-LD scripts stay either way.</td></tr>
 <tr><td><code>check.exclude</code></td><td>check</td><td><code>[]</code></td><td>Globs of files and folders that <code>check</code> skips. They add to its <code>--exclude</code> flags.</td></tr>
 </tbody></table></div>
 <xo-tabs label="Example" class="example">

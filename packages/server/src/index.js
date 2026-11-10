@@ -1,1 +1,1 @@
-export { createHandler, buildImportMap, injectImportMap } from './handler.js';
+export { createHandler, buildImportMap, injectImportMap, sanitizeBase, prefixRoot, stripBase, prefixHtml, prefixCss, prefixJs } from './handler.js';
