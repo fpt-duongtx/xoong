@@ -316,7 +316,7 @@
      "package": "@xoong/ui",
      "import": "import '@xoong/ui';",
      "summary": "Shows the message of the latest xo-error event on the page (not when the event was prevented with `preventDefault()`, or its `handled` is true because a view shows `$error` itself); hides on the next xo-done or after `timeout` seconds.",
-     "description": "Shows the message of the latest xo-error event on the page (not when the event was prevented with `preventDefault()`, or its `handled` is true because a view shows `$error` itself); hides on the next xo-done or after `timeout` seconds.",
+     "description": "Shows the message of the latest xo-error event on the page (not when the event was prevented with `preventDefault()`, or its `handled` is true because a view shows `$error` itself); hides on the next xo-done or after `timeout` seconds. Set `detail.action` (`{ label, run }`, for example Retry) and `detail.timeout` on the error and the toast shows that button, the same way an `xo-notice` does.",
      "attributes": [
       {
        "name": "timeout",
@@ -2913,7 +2913,7 @@
    "id": "directives",
    "label": "Directives",
    "summary": "The xo-* attributes you put on your own markup: data, actions, form rows, routing, dialogs.",
-   "count": 34,
+   "count": 35,
    "entries": [
     {
      "id": "xo-each",
@@ -3402,7 +3402,7 @@
      "category": "Routing",
      "package": "@xoong/ui",
      "summary": "On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route.",
-     "description": "On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route. The content is inert until the route matches.",
+     "description": "On a <template> inside <xo-router>: the path this route answers, for example `/users/:id`; `*` is the not-found route. The content is inert until the route matches. An empty template with `src` fetches that URL the first time the route (or a layout) is shown.",
      "applies": "A `<template>` inside `<xo-router>`.",
      "value": "The path the route answers: `/users/:id`; `*` is the not-found route.",
      "values": null,
@@ -3451,6 +3451,25 @@
      },
      "guide": "arch-routing.html",
      "keywords": "slot content area route placeholder"
+    },
+    {
+     "id": "xo-current",
+     "name": "xo-current",
+     "kind": "directive",
+     "category": "Routing",
+     "package": "@xoong/ui",
+     "summary": "On a link, a nav, or the router: leave aria-current as the author set it.",
+     "description": "On a link, a nav, or the router: leave aria-current as the author set it. The router then does not mark that link current.",
+     "applies": "A link, a nav, or `<xo-router>`.",
+     "value": "Present. No value.",
+     "values": null,
+     "notes": [],
+     "example": {
+      "lang": "html",
+      "code": "<nav xo-current>\n  <a href=\"/studio/pages\" aria-current=\"page\">Pages</a>\n</nav>"
+     },
+     "guide": "arch-routing.html",
+     "keywords": "aria-current active nav current page author"
     },
     {
      "id": "xo-open",
@@ -3622,9 +3641,9 @@
      "name": "xo-error",
      "kind": "event",
      "summary": "A load or an action failed.",
-     "description": "A load or an action failed. Fires on the element that ran the action (or the view that could not load) and bubbles. Cancelable: call `preventDefault()` when your own code handles the failure, and `<xo-toast>` stays quiet. `event.handled` is true when the view shows `$error` itself, or the error is a 401 that `onUnauthorized` deals with: the toast skips those too.",
+     "description": "A load or an action failed. Fires on the element that ran the action (or the view that could not load) and bubbles. Cancelable: call `preventDefault()` when your own code handles the failure, and `<xo-toast>` stays quiet. `event.handled` is true when the view shows `$error` itself, or the error is a 401 that `onUnauthorized` deals with: the toast skips those too. `detail.action` (`{ label, run }`, for example Retry) and `detail.timeout` are drawn when the toast is not skipped.",
      "from": "`<xo-view>`, `<xo-router>`",
-     "detail": "The `XoongError` (status, code, detail, fields).",
+     "detail": "The `XoongError` (status, code, detail, fields). Set `action` (`{ label, run }`) and `timeout` on it and `<xo-toast>` shows that button (it reads them one microtask later).",
      "bubbles": true,
      "cancelable": true,
      "firedBy": [
@@ -3632,7 +3651,7 @@
       "xo-form",
       "xo-router"
      ],
-     "keywords": "failure fail problem exception handled prevent toast",
+     "keywords": "failure fail problem exception handled prevent toast retry",
      "example": {
       "lang": "js",
       "code": "document.addEventListener('xo-error', (event) => console.log(event.detail));"

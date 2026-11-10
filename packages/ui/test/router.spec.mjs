@@ -156,6 +156,68 @@ describe('<xo-router> layouts', () => {
   });
 });
 
+describe('<xo-router> routes added later, and templates loaded from src', () => {
+  const realFetch = globalThis.fetch;
+  afterEach(() => { globalThis.fetch = realFetch; });
+
+  it('a route template appended after start is used on the next navigation', async () => {
+    await open();
+    const t = document.createElement('template');
+    t.setAttribute('xo-route', '/late');
+    t.innerHTML = '<h1>Late</h1>';
+    document.querySelector('xo-router').append(t);
+    await go('/late');
+    expect(screen.text('h1')).toBe('Late');
+  });
+
+  it('fetches an empty route template from src before changing the URL, including a full document and a retry', async () => {
+    const seen = [];
+    let n = 0;
+    globalThis.fetch = async (url) => {
+      seen.push(String(url));
+      n += 1;
+      if (n === 2) return new Response('no', { status: 503 });
+      return new Response('<!doctype html><html><body><h1>Loaded</h1></body></html>');
+    };
+    await open('<xo-router base="/admin" base-links><template xo-route="/" src="home.html"></template><template xo-route="/edit" src="/edit.html"></template></xo-router>');
+    expect(screen.text('h1')).toBe('Loaded'); // the first navigation waits for src
+    expect(seen[0]).toMatch(/\/admin\/home\.html$/);
+    await expect(router.navigate('/edit')).rejects.toThrow(/503/);
+    expect(location.pathname).toBe('/admin'); // a failed fetch does not move the address bar
+    await go('/edit');
+    expect(screen.text('h1')).toBe('Loaded');
+    expect(seen.at(-1)).toMatch(/\/admin\/edit\.html$/); // base-links prefixes a root-absolute src, once
+  });
+
+  it('a failed src during a link click is reported and is not an unhandled rejection', async () => {
+    const reasons = [];
+    const onReject = (reason) => reasons.push(reason);
+    process.on('unhandledRejection', onReject);
+    globalThis.fetch = async () => new Response('no', { status: 503 });
+    await open('<xo-router><template xo-route="/"><h1>Home</h1><a id="go" href="/edit">Edit</a></template><template xo-route="/edit" src="edit.html"></template></xo-router>');
+    const errors = [];
+    document.addEventListener('xo-error', (e) => errors.push(e.detail));
+    document.querySelector('#go').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }));
+    await until(() => errors.length > 0);
+    await new Promise((r) => setTimeout(r, 30));
+    process.removeListener('unhandledRejection', onReject);
+    expect(reasons).toEqual([]);
+    expect(location.pathname).toBe('/');
+    expect(String(errors[0].message ?? errors[0])).toMatch(/503/);
+  });
+
+  it('editing xo-route on a template that is already compiled is seen on the next navigation', async () => {
+    await open('<xo-router><template xo-route="/"><h1>Home</h1></template><template xo-route="/old"><h1>Old</h1></template></xo-router>');
+    await go('/old');
+    expect(screen.text('h1')).toBe('Old');
+    document.querySelector('template[xo-route="/old"]').setAttribute('xo-route', '/new');
+    await go('/new');
+    expect(screen.text('h1')).toBe('Old');
+    await go('/old');
+    expect(text()).toBe('');
+  });
+});
+
 describe('<xo-router> links', () => {
   // Records whether the router handled the click, then cancels it so the DOM does not really navigate (happy-dom would fetch the URL).
   const click = (el, init = {}) => {
@@ -183,6 +245,20 @@ describe('<xo-router> links', () => {
     await go('/users/4');
     expect(screen.$('#users').getAttribute('aria-current')).toBe('true');
     expect(screen.$('#home').hasAttribute('aria-current')).toBe(false); // "/" is never a parent section
+  });
+
+  it('xo-current keeps an author-set aria-current (on the link, a nav, or the router)', async () => {
+    await open(`<xo-router><template xo-layout="shell"><nav><a id="home" href="/">Home</a> <a id="users" href="/users">Users</a></nav><main xo-outlet></main></template>
+      <template xo-route="/" layout="shell"><h1>Home</h1></template>
+      <template xo-route="/users" layout="shell"><h1>Users</h1></template>
+      <template xo-route="/users/:id" layout="shell"><h1>User</h1></template>
+      <nav xo-current><a id="pages" href="/users" aria-current="page">Pages</a></nav>
+      <a id="own" href="/users" xo-current aria-current="page">Own</a>
+    </xo-router>`);
+    await go('/users/4');
+    expect(screen.$('#pages').getAttribute('aria-current')).toBe('page');
+    expect(screen.$('#own').getAttribute('aria-current')).toBe('page');
+    expect(screen.$('#users').getAttribute('aria-current')).toBe('true');
   });
 
   it('leaves alone: modified clicks, other buttons, target, download, rel=external, other origins, in-page anchors', async () => {

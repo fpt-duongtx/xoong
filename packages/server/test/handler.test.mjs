@@ -258,6 +258,34 @@ describe('review fixes', () => {
     expect([(await get(dev, '/.xoong/operations.json')).status, (await get(dev, '/.well-known/x.txt')).status]).toEqual([200, 200]);
   });
 
+  it('a base prefixes asset URLs and is stripped from the request, including X-Forwarded-Prefix', async () => {
+    const files = memory({
+      '/index.html': '<link rel="stylesheet" href="/app.css"><script type="module" src="/src/main.js"></script><a href="/other">x</a>',
+      '/app.css': "body{background:url(/bg.png)} @import '/extra.css';",
+      '/src/main.js': "import '/src/lib.js';\nimport { x } from './lib.js';\n",
+      '/src/lib.js': 'export const x = 1;\n',
+    });
+    const dev = createHandler({ files, base: '/admin', packages: { '@xoong/ui': { prefix: '/@xoong/ui', exports: { '.': './src/index.js' } } } });
+    const home = await (await get(dev, '/admin/studio/pages')).text(); // no such file: 404 without spa. Use the page path.
+    expect((await get(dev, '/admin/index.html')).status).toBe(200);
+    const html = await (await get(dev, '/admin/index.html')).text();
+    expect(html).toContain('href="/admin/app.css"');
+    expect(html).toContain('src="/admin/src/main.js"');
+    expect(html).toContain('href="/other"'); // a link is not an asset
+    expect(html).toContain('"/admin/@xoong/ui/src/index.js"'); // the injected import map
+    expect(await (await get(dev, '/admin/src/main.js')).text()).toContain("import '/admin/src/lib.js'");
+    expect(await (await get(dev, '/admin/src/main.js')).text()).toContain("from './lib.js'"); // a relative import follows the module URL
+    expect(await (await get(dev, '/admin/app.css')).text()).toContain('url(/admin/bg.png)');
+    expect(await (await get(dev, '/src/main.js')).status).toBe(200); // the prefix was already stripped by a proxy
+    const forwarded = await (await get(createHandler({ files }), '/index.html', { headers: { 'x-forwarded-prefix': '/apps/rainlet' } })).text();
+    expect(forwarded).toContain('src="/apps/rainlet/src/main.js"');
+    const again = await (await get(dev, '/admin/index.html', { headers: { 'x-forwarded-prefix': '/admin' } })).text();
+    expect(again).not.toContain('/admin/admin/');
+    expect(await (await get(dev, '/index.html', { headers: { 'x-forwarded-prefix': 'http://evil' } })).text()).toContain('src="/admin/src/main.js"'); // an unsafe header is ignored
+    expect(home).toBe('Not found');
+    expect(() => createHandler({ base: '../secret' })).toThrow(/base must be a path/);
+  });
+
   it('serve() rejects unknown Host headers (DNS rebinding) and accepts localhost and allowedHosts', async () => {
     const handler = async () => new Response('secret');
     const s = await serve(handler, { port: 0, allowedHosts: ['dev.test'] });
@@ -269,6 +297,17 @@ describe('review fixes', () => {
     expect(await ask(`localhost:${s.port}`)).toEqual([200, 'secret']);
     expect(await ask(`[::1]:${s.port}`)).toEqual([200, 'secret']);
     expect((await ask('dev.test:80'))[0]).toBe(200);
+    const any = await serve(handler, { port: 0, allowedHosts: ['*'] });
+    const askAny = (host, extra) => new Promise((resolve) => {
+      http.get({ host: '127.0.0.1', port: any.port, path: '/', headers: { host, ...extra } }, (res) => { res.resume(); res.on('end', () => resolve(res.statusCode)); });
+    });
+    expect(await askAny('192.168.0.200:5173')).toBe(200); // "*" is the opt-in that disables the host check
+    await any.close();
+    expect((await ask('evil.example'))[0]).toBe(403); // X-Forwarded-Host is not consulted: Host is what is checked
+    const forwarded = await new Promise((resolve) => {
+      http.get({ host: '127.0.0.1', port: s.port, path: '/', headers: { host: 'evil.example', 'x-forwarded-host': 'localhost' } }, (res) => { res.resume(); res.on('end', () => resolve(res.statusCode)); });
+    });
+    expect(forwarded).toBe(403);
     await s.close();
   });
 

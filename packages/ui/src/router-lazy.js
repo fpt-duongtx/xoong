@@ -24,7 +24,7 @@ if (typeof document !== 'undefined') {
   if (has(document)) load();
   else if (typeof MutationObserver !== 'undefined') {
     const watch = new MutationObserver((records) => {
-      for (const r of records) for (const n of r.addedNodes) if (n.nodeType === 1 && ((/** @type {Element} */ (n)).localName === 'xo-router' || has(/** @type {Element} */ (n)))) { watch.disconnect(); load(); return; }
+      for (const r of records) for (const n of r.addedNodes) if (n instanceof Element && (n.localName === 'xo-router' || has(n))) { watch.disconnect(); load(); return; }
     });
     watch.observe(document, { childList: true, subtree: true });
   }

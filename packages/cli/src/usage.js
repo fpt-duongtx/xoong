@@ -80,8 +80,10 @@ export const USAGE = [
       { flag: '--base', value: '/admin', doc: 'The URL path the app is served under. Root-absolute URLs get this prefix. By default the app is served at /.' },
       { flag: '--include', value: 'path', repeatable: true, doc: 'A file or folder (relative to the root) to publish although no page names it: data fetched from JavaScript, images named in code.' },
       { flag: '--exclude', value: 'glob', repeatable: true, doc: 'Keep matching .html files out of the start list (partials, drafts). A file that a page references is still published.' },
+      { flag: '--inline-scripts', value: 'remove|error', default: 'remove', choices: ['remove', 'error'], doc: 'Inline JavaScript is removed, because script-src \'self\' blocks it. error does the same and makes the build exit 1. JSON and JSON-LD scripts stay.' },
       { flag: '--no-preload', doc: 'Do not add <link rel="modulepreload"> to the pages.' },
       { flag: '--minify', doc: 'Minify the scripts and stylesheets (and JSON) with the esbuild your project has installed; the output stays strict-CSP and the imports are rewritten as usual. Without esbuild installed the build warns and writes the files as they are.' },
+      { flag: '--bundle', doc: 'Bundle scripts into CSP-clean ESM with the esbuild your project has installed. Static imports go into the entry; a dynamic import() stays its own chunk. Without esbuild the build warns and copies every module. CSS stays separate.' },
     ],
   },
   {
@@ -100,6 +102,7 @@ export const USAGE = [
     name: 'dev', count: 0, summary: 'serve the app (static, proxy, .ts)',
     options: [
       { flag: '--root', value: '.', default: '.', doc: 'The folder to serve. xoong.config.json is read from it.' },
+      { flag: '--base', value: '/admin', doc: 'The URL path the app is served under, the same value as build --base. The import map and root-absolute asset URLs are prefixed, and a request that still carries the prefix is served from the root. X-Forwarded-Prefix overrides it when the header is a safe path.' },
       { flag: '--port', value: '5173', default: '5173', doc: 'The port, a number from 0 to 65535 (0 lets the system pick one). The server listens on 127.0.0.1 only.' },
       { flag: '--proxy', value: '/api=http://localhost:8080', repeatable: true, doc: 'Forward the requests under a prefix to a backend, written /prefix=http://host:port. It adds to proxy of xoong.config.json; for the same prefix the flag wins.' },
       { flag: '--spa', doc: 'Answer every path without a file extension with index.html, for an app with an <xo-router>.' },

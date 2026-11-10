@@ -143,6 +143,14 @@ describe('<xo-toast>', () => {
     expect(toast().textContent).toBe('boom');
     screen.container.dispatchEvent(new CustomEvent('xo-done', { bubbles: true }));
     expect(toast().hidden).toBe(true);
+    let ran = false;
+    screen.container.dispatchEvent(new CustomEvent('xo-error', { bubbles: true, detail: Object.assign(new Error('again'), { action: { label: 'Retry', run: () => { ran = true; } }, timeout: 0 }) }));
+    await Promise.resolve();
+    expect(toast().querySelector('button')?.textContent).toBe('Retry');
+    toast().querySelector('button').click();
+    await Promise.resolve();
+    expect(ran).toBe(true);
+    expect(toast().hidden).toBe(true);
   });
 });
 

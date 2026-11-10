@@ -46,7 +46,7 @@ describe('cli.html (the command line)', () => {
 
   it('documents every key of xoong.config.json that the code reads, and every key of the hints file', () => {
     const readBy = [read('packages/cli/src/dev.js'), read('packages/cli/src/build.js'), read('packages/cli/src/cli.js')].join('\n');
-    const keys = ['root', 'port', 'proxy', 'spa', 'allowedHosts', 'packages', 'build.exclude', 'build.preload', 'check.exclude'];
+    const keys = ['root', 'port', 'proxy', 'spa', 'base', 'allowedHosts', 'packages', 'build.exclude', 'build.preload', 'build.bundle', 'build.inlineScripts', 'check.exclude'];
     for (const key of keys) {
       expect(text, `config key ${key}`).toContain(key);
       const [head, tail] = key.split('.');

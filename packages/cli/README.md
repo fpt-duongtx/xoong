@@ -14,8 +14,8 @@ npm install @xoong/cli
 npx xoong sync openapi.json        # writes .xoong/operations.json, api.d.ts and the editor data
 npx xoong doctor openapi.json      # what in the document (and in xoong.hints.json) limits xoong
 npx xoong check index.html         # lint screens against the API (--format json, --exclude)
-npx xoong dev                      # static server with an API proxy
-npx xoong build --out dist         # strict-CSP static output (--base, --include, --exclude, --no-preload)
+npx xoong dev --base /admin        # static server with an API proxy, mounted at /admin
+npx xoong build --out dist         # strict-CSP static output (--base, --bundle, --include, --exclude, --no-preload)
 npx xoong render page.html --api http://localhost:8080   # prerender a page (needs @xoong/ssr)
 npx xoong i18n extract src --out catalogs/en.json         # the xo-t messages; i18n check <catalog> --source <en.json>
 npx xoong --help                   # every command and option; an option that does not exist is refused

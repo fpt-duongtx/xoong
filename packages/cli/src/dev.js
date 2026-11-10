@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path';
 
 /**
  * Read `xoong.config.json` from `dir` (all fields optional):
- *   { "root": ".", "port": 5173, "proxy": { "/api": "http://localhost:8080" }, "spa": false, "allowedHosts": [], "packages": ["rainlet"] }
+ *   { "root": ".", "port": 5173, "base": "/admin", "proxy": { "/api": "http://localhost:8080" }, "spa": false, "allowedHosts": [], "packages": ["rainlet"] }
  * `packages`: installed packages (besides xoong's own) whose browser code the app imports; served at /@name and listed in the import map.
  */
 export async function loadConfig(dir = '.') {
@@ -28,7 +28,7 @@ export function parseProxyFlags(values) {
 
 /**
  * Start the dev server.
- * @param {{ root?: string, port?: number, host?: string, allowedHosts?: string[], proxy?: Record<string,string>, spa?: boolean, resolveFrom?: string, quiet?: boolean, packages?: string[] }} [options]
+ * @param {{ root?: string, port?: number, host?: string, base?: string, allowedHosts?: string[], proxy?: Record<string,string>, spa?: boolean, resolveFrom?: string, quiet?: boolean, packages?: string[] }} [options]
  */
 export async function startDev(options = {}) {
   const config = await loadConfig(options.root ?? '.');
@@ -37,6 +37,7 @@ export async function startDev(options = {}) {
   const { createDevHandler, serve } = await import('@xoong/server/node');
   const handler = await createDevHandler({
     root, resolveFrom: options.resolveFrom ?? root, proxy, packages: options.packages ?? config.packages ?? [], spa: options.spa ?? config.spa ?? false,
+    base: options.base ?? config.base ?? '',
     onError: (error, request) => console.error(`xoong dev: ${request.method} ${new URL(request.url).pathname}: ${/** @type {Error} */ (error)?.message ?? error}`),
   });
   const running = await serve(handler, { port: options.port ?? config.port ?? 5173, host: options.host ?? '127.0.0.1', allowedHosts: options.allowedHosts ?? config.allowedHosts ?? [] });

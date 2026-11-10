@@ -68,9 +68,8 @@ function field(node, path, name, depth) {
   const text = label(name);
   if (node.widget?.includes('-') && !PRIMITIVE.has(node.t)) return control(node, path, text); // a custom control owns a whole array, object or union (tags, a block picker)
   if (PRIMITIVE.has(node.t)) return control(node, path, text);
-  if (node.t === 'object') return `<fieldset class="xo-object"><legend>${esc(node.title ?? text)}</legend>${fields(node, path, depth)}</fieldset>`;
+  if (node.t === 'object' || node.t === 'union') return `<fieldset class="xo-object"><legend>${esc(node.title ?? text)}</legend>${node.t === 'object' ? fields(node, path, depth) : variants(node, path, depth)}</fieldset>`;
   if (node.t === 'array') return array(node, path, text, depth);
-  if (node.t === 'union') return `<fieldset class="xo-object"><legend>${esc(node.title ?? text)}</legend>${variants(node, path, depth)}</fieldset>`;
   return ''; // `any`: not drawn
 }
 
@@ -121,8 +120,8 @@ defineTemplate('xo-form', (el, { client }) => {
   }
   const flat = op.bodyFields ?? [];
   const missing = (op.bodySkipped ?? []).filter((s) => s.required);
-  if (missing.length) console.warn(`xoong: <xo-form op="${ref}"> cannot generate the required field(s) ${missing.map((m) => `${m.name} (${m.type})`).join(', ')}: the server will refuse this form. Write those fields by hand or wait for nested form support.`);
-  if (!flat.length) console.error(`xoong: <xo-form op="${ref}">: the request body has no simple fields to generate (see docs/admin.md)`);
+  if (missing.length) console.warn(`xoong: <xo-form op="${ref}"> cannot generate the required field(s) ${missing.map((m) => `${m.name} (${m.type})`).join(', ')}: the server will refuse this form`);
+  if (!flat.length) console.error(`xoong: <xo-form op="${ref}"> has no simple fields`);
   for (const f of flat) {
     const wrap = document.createElement('label');
     wrap.className = 'xo-field';

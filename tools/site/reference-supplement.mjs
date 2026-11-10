@@ -569,6 +569,14 @@ export const DIRECTIVES = {
   </form>
 </xo-view>`,
   },
+  'xo-current': {
+    category: 'Routing', package: '@xoong/ui', guide: 'arch-routing.html', keywords: 'aria-current active nav current page author',
+    applies: 'A link, a nav, or `<xo-router>`.', value: 'Present. No value.',
+    example: `
+<nav xo-current>
+  <a href="/studio/pages" aria-current="page">Pages</a>
+</nav>`,
+  },
   'xo-route': {
     category: 'Routing', package: '@xoong/ui', guide: 'arch-routing.html', keywords: 'path url page screen router template',
     applies: 'A `<template>` inside `<xo-router>`.', value: 'The path the route answers: `/users/:id`; `*` is the not-found route.',
@@ -647,7 +655,7 @@ export const DIRECTIVES = {
 // detail: what `event.detail` holds; from: who fires it; listen: what listens (optional). `cancelable` events can be stopped with preventDefault().
 export const EVENTS = {
   'xo-done': { from: '`<xo-view>` (xo-click, xo-submit, `<xo-form>`)', detail: 'The result of the operation.', summary: 'An action succeeded.', description: 'Fires on the element that ran the action, after the server answered, and bubbles. `<xo-dialog>` closes when a form inside it fires it; `<xo-toast>` hides its error.', keywords: 'success saved finished complete' },
-  'xo-error': { from: '`<xo-view>`, `<xo-router>`', detail: 'The `XoongError` (status, code, detail, fields).', summary: 'A load or an action failed.', description: 'Fires on the element that ran the action (or the view that could not load) and bubbles. Cancelable: call `preventDefault()` when your own code handles the failure, and `<xo-toast>` stays quiet. `event.handled` is true when the view shows `$error` itself, or the error is a 401 that `onUnauthorized` deals with: the toast skips those too.', cancelable: true, keywords: 'failure fail problem exception handled prevent toast' },
+  'xo-error': { from: '`<xo-view>`, `<xo-router>`', detail: 'The `XoongError` (status, code, detail, fields). Set `action` (`{ label, run }`) and `timeout` on it and `<xo-toast>` shows that button (it reads them one microtask later).', summary: 'A load or an action failed.', description: 'Fires on the element that ran the action (or the view that could not load) and bubbles. Cancelable: call `preventDefault()` when your own code handles the failure, and `<xo-toast>` stays quiet. `event.handled` is true when the view shows `$error` itself, or the error is a 401 that `onUnauthorized` deals with: the toast skips those too. `detail.action` (`{ label, run }`, for example Retry) and `detail.timeout` are drawn when the toast is not skipped.', cancelable: true, keywords: 'failure fail problem exception handled prevent toast retry' },
   'xo-invalid': { from: '`<form xo-submit>`', detail: '`{ errors }`: the messages by field path.', summary: 'A form was not sent because it is invalid.', description: 'Nothing was sent; the form already shows why beside each field.', keywords: 'validation errors fields' },
   'xo-notice': { from: '`xo-notice`, `toast.show()`', detail: '`{ message, kind }`; `toast.show()` adds `action` and `timeout`.', summary: 'A message for the toast.', description: 'Fires after an action with `xo-notice` succeeded, and when you call `toast.show()`. `<xo-toast>` listens on the document.', keywords: 'toast message snackbar' },
   'xo-go': { from: '`xo-then`', detail: '`{ path }`: where to go.', summary: 'An action asked to go to another page.', description: 'Cancelable. `<xo-router>` handles it and cancels the default; without a router the page is loaded with `location.assign`.', cancelable: true, keywords: 'redirect navigate then' },

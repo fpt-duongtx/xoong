@@ -12,13 +12,14 @@
  *   - `src`, `poster`, `href` of <link>, `srcset` (and `imagesrcset` of <link rel=preload>) are followed: every URL of a srcset is copied and prefixed, its `1x`/`480w` descriptors kept.
  *     `<a href>` is NOT touched, on purpose: a link to another page is left as written for the router and for plain relative links to resolve;
  *   - every page gets <link rel="modulepreload"> for the modules its scripts import (the whole graph is known here; `--no-preload` or `"build": { "preload": false }` turns it off);
- *   - nothing is minified or bundled; every file is the one you wrote (readable in the browser's tools).
+ *   - `--minify` and `--bundle` are opt-in and use the esbuild the project has installed (xoong does not depend on it). The default leaves every file as written.
  * HTML files that are not pages (partials, fixtures, drafts) are kept out of the start list with `--exclude <glob>` (repeatable) or `"build": { "exclude": [...] }` in
  * xoong.config.json (paths relative to the root; see exclude.js). A file that a page references is still published.
  * What cannot be seen (a fetch() of a data file, an image named in JavaScript) is added with `--include <file-or-folder>`.
  */
-import { readFile, writeFile, mkdir, readdir, stat, copyFile, realpath } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, readdir, stat, copyFile, realpath, mkdtemp, rm } from 'node:fs/promises';
 import { basename, dirname, join, relative, resolve, extname, posix, sep } from 'node:path';
+import { tmpdir } from 'node:os';
 import { gzipSync } from 'node:zlib';
 import { createRequire } from 'node:module';
 import { parse } from 'parse5';
@@ -71,6 +72,7 @@ const STATIC_IMPORT = /(?:\bimport\s*(?:[\w*${}\s,]*?\bfrom\s*)?|\bexport\s+(?:\
  * @param {string} basePath
  */
 export function preloadModules(written, basePath) {
+  let count = 0;
   const toOut = (url) => {
     const clean = url.split(/[?#]/)[0];
     if (basePath ? !clean.startsWith(`${basePath}/`) : !clean.startsWith('/') || clean.startsWith('//')) return null;
@@ -111,23 +113,33 @@ export function preloadModules(written, basePath) {
     const router = [...written.keys()].find((k) => k.endsWith('/@xoong/ui/src/router.js')); // loaded lazily, so a page that has <xo-router> asks for it now
     if (router && /<xo-router[\s>]/i.test(html) && !seen.has(router)) { seen.add(router); follow(router, seen); }
     const links = [...seen].filter((p) => !entries.includes(p) && !have.has(p)).sort().map((p) => `<link rel="modulepreload" href="${basePath}${p}">`);
-    if (links.length) written.set(page, `${html.slice(0, first)}${links.join('\n')}\n${html.slice(first)}`);
+    if (links.length) { count += links.length; written.set(page, `${html.slice(0, first)}${links.join('\n')}\n${html.slice(first)}`); }
   }
+  return count;
 }
 
 /**
- * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[], preload?: boolean }} [options]
- * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string }>}
+ * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[], preload?: boolean, minify?: boolean, bundle?: boolean, inlineScripts?: string, packages?: string[] }} [options]
+ * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string, minified: boolean, bundled: boolean, failed: boolean, preloads: number | null }>}
  */
-export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, preload, minify, packages: extra } = {}) {
+export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, preload, minify, bundle, inlineScripts, packages: extra } = {}) {
   const rootDir = await realpath(resolve(root)); // real path: packages are found by theirs, so an app inside a symlinked package must compare equal
   // the output folder may not exist yet: resolve the part that does
   const realOut = async (p) => { try { return await realpath(p); } catch { const up = dirname(p); return up === p ? p : join(await realOut(up), basename(p)); } };
   const outDir = await realOut(resolve(out));
   const basePath = base ? `/${base.replace(/^\/+|\/+$/g, '')}` : '';
-  const packages = await findPackages(rootDir, undefined, extra ?? (await loadConfig(rootDir)).packages ?? []);
+  const config = await loadConfig(rootDir);
+  const inlineMode = inlineScripts ?? config.build?.inlineScripts ?? 'remove';
+  if (inlineMode !== 'remove' && inlineMode !== 'error') throw new Error(`xoong build: --inline-scripts must be remove or error, not "${inlineMode}"`);
+  const packages = await findPackages(rootDir, undefined, extra ?? config.packages ?? []);
   const importMap = buildImportMap(packages).imports;
   /** @type {string[]} */ const warnings = [];
+  let removedInline = 0;
+  const JS_TYPE = /^(?:module|text\/javascript|application\/javascript|text\/ecmascript|application\/ecmascript)$/i;
+  /** A URL that already carries the base is not prefixed again, and a file lookup uses the path without it. */
+  const unbase = (url) => (!basePath || !url.startsWith('/') || url === basePath ? (url === basePath ? '/' : url) : url.startsWith(`${basePath}/`) ? url.slice(basePath.length) || '/' : url);
+  const applyBase = (url) => (!basePath || !url.startsWith('/') || url === basePath || url.startsWith(`${basePath}/`) || url.startsWith(`${basePath}?`) || url.startsWith(`${basePath}#`) ? url : `${basePath}${url}`);
+  const publishOps = await stat(join(rootDir, '.xoong', 'operations.json')).then((s) => s.isFile(), () => false);
   /** @type {Map<string, string>} output path (relative to out, with a leading slash) -> source file */
   const sources = new Map();
   /** @type {Map<string, Buffer | string>} */ const written = new Map();
@@ -169,10 +181,11 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     } else if (spec.startsWith('/')) target = spec.split(/[?#]/)[0];
     else if (spec.startsWith('.')) target = posix.normalize(posix.join(posix.dirname(fromUrl), spec.split(/[?#]/)[0]));
     else return spec; // an absolute URL: not ours
-    target = canon(target);
+    target = canon(unbase(target));
     const suffix = (spec.match(/[?#].*$/) ?? [''])[0];
+    if (publishOps && target === '/.xoong/operations.json') { queue.push(target); return `${applyBase('/operations.json')}${suffix}`; }
     queue.push(target);
-    return `${basePath}${toJs(target)}${suffix}`;
+    return `${applyBase(toJs(target))}${suffix}`;
   }
 
   async function transformScript(urlPath, source) {
@@ -215,7 +228,14 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
       const attr = (n) => node.attrs.find((a) => a.name === n);
       if (node.tagName === 'script') {
         if (attr('type')?.value === 'importmap') { const l = node.sourceCodeLocation; edits.push([l.startOffset, l.endOffset, '']); return; }
-        if (!attr('src') && (node.childNodes ?? []).some((c) => c.value?.trim())) warnings.push(`${urlPath}:${node.sourceCodeLocation.startLine}: an inline <script> is blocked by script-src 'self'; move it to a file`);
+        const type = (attr('type')?.value ?? '').trim();
+        if (!attr('src') && (type === '' || JS_TYPE.test(type)) && (node.childNodes ?? []).some((c) => c.value?.trim())) {
+          removedInline += 1;
+          warnings.push(`${urlPath}:${node.sourceCodeLocation.startLine}: removed an inline <script> (blocked by script-src 'self'); move it to a file`);
+          const l = node.sourceCodeLocation;
+          edits.push([l.startOffset, l.endOffset, '']);
+          return;
+        }
       }
       if (attr('style')) warnings.push(`${urlPath}:${node.sourceCodeLocation.startLine}: a style="" attribute is blocked by style-src 'self'; use a class`);
       if (node.tagName === 'style') warnings.push(`${urlPath}:${node.sourceCodeLocation.startLine}: an inline <style> is blocked by style-src 'self'; move it to a stylesheet`);
@@ -276,7 +296,7 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
 
   // pages first, then whatever they pull in
   const pages = [];
-  const skip = excluder([...(exclude ?? []), ...(((await loadConfig(rootDir)).build ?? {}).exclude ?? [])]);
+  const skip = excluder([...(exclude ?? []), ...((config.build ?? {}).exclude ?? [])]);
   const walk = async (dir) => {
     for (const name of await readdir(dir)) {
       if (name === 'node_modules' || name.startsWith('.') || resolve(dir, name) === outDir) continue;
@@ -298,23 +318,99 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
   }
   queue.push(...pages);
   while (queue.length) await emit(/** @type {string} */ (queue.shift()));
+  if (publishOps) {
+    const body = await readFile(join(rootDir, '.xoong', 'operations.json'), 'utf8');
+    written.set('/.xoong/operations.json', body);
+    written.set('/operations.json', body); // nginx hides dot-directories, so the table is also at the site root
+  }
 
-  if (preload ?? (await loadConfig(rootDir)).build?.preload ?? true) preloadModules(written, basePath);
+  /** Bundle module entries from their source (bare specifiers), then drop the copied modules the bundle replaces. A dynamic import() stays a chunk. */
+  async function bundleModules(minifyJs) {
+    /** @type {Record<string, string>} */
+    const points = {};
+    const scan = (html, fn) => {
+      const visit = (node) => {
+        for (const child of node.childNodes ?? []) visit(child);
+        if (node.nodeName === 'template') for (const child of node.content?.childNodes ?? []) visit(child);
+        fn(node);
+      };
+      visit(parse(html));
+    };
+    for (const [page, html] of written) {
+      if (typeof html !== 'string' || !/\.html?$/i.test(page)) continue;
+      scan(html, (node) => {
+        if (node.tagName !== 'script') return;
+        const attr = (n) => node.attrs.find((a) => a.name === n)?.value;
+        if (attr('type') !== 'module' || !attr('src')) return;
+        const src = unbase(attr('src').split(/[?#]/)[0]);
+        if (src.startsWith('/') && sources.has(src)) points[src.slice(1).replace(/\.m?js$/, '')] = /** @type {string} */ (sources.get(src));
+      });
+    }
+    if (!Object.keys(points).length) return false;
+    const esbuild = findEsbuild(rootDir);
+    if (typeof esbuild?.build !== 'function') {
+      warnings.push('--bundle: esbuild is not installed in this project (npm install --save-dev esbuild); the output is not bundled');
+      return false;
+    }
+    const tmp = await mkdtemp(join(tmpdir(), 'xoong-bundle-'));
+    try {
+      await esbuild.build({ absWorkingDir: rootDir, entryPoints: points, bundle: true, splitting: true, format: 'esm', target: 'es2022', legalComments: 'none', minify: minifyJs, outdir: tmp, write: true, charset: 'utf8' });
+      /** @type {Map<string, Buffer | string>} */
+      const produced = new Map();
+      const collect = async (dir) => {
+        for (const name of await readdir(dir)) {
+          const p = join(dir, name);
+          if ((await stat(p)).isDirectory()) await collect(p);
+          else {
+            const rel = `/${relative(tmp, p).split(sep).join('/')}`;
+            produced.set(rel, /\.(m?js|css|json|html?)$/.test(rel) ? await readFile(p, 'utf8') : await readFile(p));
+          }
+        }
+      };
+      await collect(tmp);
+      for (const [rel, content] of produced) written.set(rel, content);
+      const classic = new Set();
+      for (const [page, html] of written) {
+        if (typeof html !== 'string' || !/\.html?$/i.test(page)) continue;
+        scan(html, (node) => {
+          if (node.tagName !== 'script') return;
+          const attr = (n) => node.attrs.find((a) => a.name === n)?.value;
+          if (!attr('src') || attr('type') === 'module') return;
+          const src = unbase(attr('src').split(/[?#]/)[0]);
+          if (src.startsWith('/')) classic.add(toJs(src));
+        });
+      }
+      for (const key of [...written.keys()]) if (/\.m?js$/.test(key) && sources.has(key) && !produced.has(key) && !classic.has(key)) written.delete(key);
+      return true;
+    } catch (error) {
+      warnings.push(`--bundle: esbuild failed (${error instanceof Error ? error.message : error}); the output is not bundled`);
+      return false;
+    } finally {
+      await rm(tmp, { recursive: true, force: true });
+    }
+  }
+
+  const wantMinify = minify ?? config.build?.minify ?? false;
+  const wantBundle = bundle ?? config.build?.bundle ?? false;
+  let bundled = false;
+  if (wantBundle) bundled = await bundleModules(!!wantMinify);
 
   let minified = false;
-  if (minify ?? (await loadConfig(rootDir)).build?.minify ?? false) {
+  if (wantMinify) {
     const esbuild = findEsbuild(rootDir);
-    if (!esbuild) warnings.push('--minify: esbuild is not installed in this project (npm install --save-dev esbuild); the output is not minified');
+    if (!esbuild?.transform) warnings.push('--minify: esbuild is not installed in this project (npm install --save-dev esbuild); the output is not minified');
     else {
       for (const [outPath, content] of written) {
-        if (typeof content !== 'string') continue;
+        if (typeof content !== 'string' || (bundled && /\.m?js$/.test(outPath))) continue; // a bundle was already minified by esbuild.build
         if (/\.m?js$/.test(outPath)) written.set(outPath, (await esbuild.transform(content, { loader: 'js', format: 'esm', target: 'esnext', minify: true, legalComments: 'none' })).code);
         else if (outPath.endsWith('.css')) written.set(outPath, (await esbuild.transform(content, { loader: 'css', minify: true, legalComments: 'none' })).code);
       }
-      for (const [outPath, content] of written) if (outPath.endsWith('.json')) written.set(outPath, JSON.stringify(JSON.parse(content.toString())));
+      for (const [outPath, content] of written) if (outPath.endsWith('.json') && outPath !== '/build-report.json') written.set(outPath, JSON.stringify(JSON.parse(content.toString())));
       minified = true;
     }
   }
+
+  const preloads = (preload ?? config.build?.preload ?? true) ? preloadModules(written, basePath) : null;
 
   const report = [];
   for (const [outPath, content] of written) {
@@ -325,9 +421,9 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     report.push({ path: outPath, bytes: buf.length, gzip: gzipSync(buf).length });
   }
   report.sort((a, b) => a.path.localeCompare(b.path));
-  await writeFile(join(outDir, 'build-report.json'), JSON.stringify({ csp: CSP, minified, files: report, warnings }, null, 2) + '\n');
+  await writeFile(join(outDir, 'build-report.json'), JSON.stringify({ csp: CSP, minified, bundled, files: report, warnings }, null, 2) + '\n');
   void copyFile;
-  return { out: outDir, files: report, warnings, csp: CSP, minified };
+  return { out: outDir, files: report, warnings, csp: CSP, minified, bundled, failed: inlineMode === 'error' && removedInline > 0, preloads };
 }
 
 /** esbuild as the project has it installed (xoong does not depend on it); null when it is not there. */

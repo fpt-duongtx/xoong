@@ -67,12 +67,15 @@ content changes:
 
 With `base-links`, a root-relative link inside the router (`href="/users"`) is relative to the base, like the `xo-route` paths: the same screens mount under `/admin` or `/admin-next` without editing a link, and the address shown on hover and opened in a new tab is the real one (`/admin/users`). A link that already starts with the base, one with `rel="external"` or a `target`, is left as written (use `rel="external"` to leave the app: `/logout`). Without `base-links` links are as written, so write the base in them.
 
-* **Routes.** `xo-route="/users/:id"` (static segments beat `:param` beats `*`). `title` sets `document.title`. `layout` names an
-  `xo-layout` template (layouts nest with `layout=` on a layout). Inside the route, `p-id=":id"` hands the path parameter to a view
+* **Routes.** `xo-route="/users/:id"` (static segments beat `:param` beats `*`). `title` sets `document.title`. An empty
+  `<template xo-route src="edit.html">` (and an empty layout template) is fetched the first time it is shown, including the first
+  navigation and a route added after the router started; the address bar does not change until that fetch succeeds. A relative `src`
+  resolves against the router's base, and a root-absolute one is prefixed when `base-links` is set. `layout` names an `xo-layout`
+  template (layouts nest with `layout=` on a layout). Inside the route, `p-id=":id"` hands the path parameter to a view
   (`p-id="?id"` still reads the query string).
 * **Links.** Same-origin links inside `base` are intercepted and use `pushState`. The router never touches modified clicks, other
   mouse buttons, `target`, `download`, `rel="external"`, links to other origins or outside `base`, and in-page anchors. The link to the
-  current page gets `aria-current="page"`; a link to a section above it gets `aria-current="true"`.
+  current page gets `aria-current="page"`; a link to a section above it gets `aria-current="true"`. `xo-current` on a link, a nav, or the router leaves `aria-current` as written.
 * **Navigation.** After each navigation the new content gets focus (`xo-outlet` becomes focusable) and the page scrolls to the top, like a page
   load. Not for the first render. `xo-navigate` bubbles with `{ to, from }`.
 * **JavaScript.** `router.navigate(path, { replace })`, `router.current` (`path`, `params`, `query`, `url`, `route`),
