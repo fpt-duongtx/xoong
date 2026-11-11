@@ -94,6 +94,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
     <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
     <xo-dialog heading="Edit" size="wide" dismiss> titled modal (slot="footer" buttons). JS: await confirm|alert|prompt|ask(msg, { kind: danger|warning|info|success, title }) from @xoong/ui
   <xo-toast></xo-toast> shows errors and xo-notice; detail.action is {label, run}. Style: xoong.css. Layout: `<body class="xo-admin">` + header, nav, main.
+  Attributes a template does not take() land on the element it becomes; class and style merge.
 
 ## Routing (admin apps; `import { router } from '@xoong/ui'`; public pages stay one HTML file each)
     <xo-router base="/admin" base-links>
