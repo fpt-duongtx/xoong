@@ -147,11 +147,13 @@ tests see plain markup).
 
 Other children (typically buttons) form the actions cell. For layouts the table cannot express, write the table by hand with `xo-each`; it composes with everything else.
 
-### A 390px frame
+### A sticky column
 
-The actions column stays at the inline end of the frame (the element with class `xo-table`). The cell is `td.xo-actions`. The generated table pins the last header when that header's child is the visually hidden label with `xo-t="xoong.table.actions"`. A hand-written table marks the actions header `th.xo-actions`, and that header is pinned even when a column follows it. A last header that hides a different label, and is not `th.xo-actions`, is not pinned. A header that only contains a hidden child, and is not last, stays with the columns that scroll. The other columns scroll underneath. At a viewport of 390px the action buttons are inside the frame, and a hit on a button reaches that button, with the frame's scroll position at the start or after it has been scrolled. The pinned cells use an opaque background, and a 1px inline-start border, so the text that slides under them stays hidden. That border is there at every width. An actions cell that is itself wider than the frame still overflows it. Cell text selects and copies as it does in any other table. Reasons and the libraries this follows: [ADR-0013](decisions/0013-narrow-table-actions.md).
+By default nothing sticks. The actions cell scrolls away with the rest of the row, and the frame sets no scroll padding and no scroll margin. To keep one column in view, put `xo-sticky-start` or `xo-sticky-end` on its `th` and on each of its `td`s. Start sticks to the inline-start edge and end sticks to the inline-end edge, so a right-to-left table mirrors both. The other columns scroll underneath, as they do without the class. The sticky cells use an opaque background and a 1px border on the edge that meets those columns.
 
-Focusing or clicking a pinned action leaves the frame's scroll position where it is. The frame's `scroll-padding-inline-end` is 1px, and an action has no scroll margin. A negative margin large enough to cancel a padding band the size of the actions column is applied to every ancestor scroller, so the page, or a wrapper with `overflow-x: auto`, would leave the focused action off-screen. Those scrollers do scroll the action into view. A focused cell that already lies inside the frame is not moved out from under the sticky column, in either writing direction. Tabbing does not leave a cell entirely outside the frame. The cell can still be partly or wholly covered by the actions column.
+One column per side. A second cell with the same class uses the same edge and paints over the first. `<xo-table>` does not add the class (the generator change does not fit the `@xoong/ui` budget; see [ADR-0013](decisions/0013-narrow-table-actions.md)). Write the table by hand, with `xo-each` or your own `.xo-table`, and mark that column.
+
+A sticky column can cover a focused cell in the column beside it. That is WCAG 2.2 SC 2.4.11 (Focus Not Obscured, Minimum): keep the sticky column narrow, or use `cards` when the pane is narrow. Rainlet closed QA-3 that way, with `cards` on the articles, pages and inbox tables. This stylesheet does not scroll neighbours out from under the sticky column.
 
 ### Narrow panes: `cards`
 
