@@ -15,6 +15,7 @@
  */
 import { XoElement, define } from '@xoong/core';
 import { prepareLayer, showLayer, hideLayer } from './layer.js';
+import { ownLabel } from './label.js';
 
 let counter = 0;
 
@@ -50,7 +51,7 @@ class XoPopover extends XoElement {
 
   #paint() {
     if (!this.isConnected) return;
-    if (this.label) this.setAttribute('aria-label', this.label); else this.removeAttribute('aria-label');
+    ownLabel(this, this.label);
     this.#trigger?.setAttribute('aria-expanded', String(this.open));
     if (this.open === this.#wasOpen) return;
     if (this.open) {

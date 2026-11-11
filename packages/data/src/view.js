@@ -54,9 +54,15 @@ let formEngine = /** @type {{ attach: Function } | null} */ (null);
 /** @param {{ attach: Function }} engine */
 export function setFormEngine(engine) { formEngine = engine; }
 
-/** Components that expand into plain markup before binding (used by @xoong/ui). tag -> (el, { host, client }) => Node */
+/**
+ * Components that expand into plain markup before binding (used by @xoong/ui).
+ * tag -> (el, { host, client, take }) => Node.
+ * `take(name)` reads an attribute the component handles and removes it. Every attribute still on the host after
+ * expand is copied onto the first element root of the output (ADR-0014): `class` is appended, `style` is the
+ * component's declarations then the author's, and any other attribute is the author's.
+ */
 const templates = new Map();
-/** @param {string} tag @param {(el: Element, env: { host: any, client: any }) => Node} expand */
+/** @param {string} tag @param {(el: Element, env: { host: any, client: any, take: (name: string) => string | null }) => Node} expand */
 export function defineTemplate(tag, expand) { templates.set(tag, expand); }
 
 const camel = (s) => s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
@@ -388,15 +394,17 @@ function bindNode(node, scope, ctx, disposers) {
   if (expand) {
     let out;
     try {
-      out = expand(el, { host: ctx.host, client: ctx.client });
+      out = expand(el, { host: ctx.host, client: ctx.client, take: (n, v = el.getAttribute(n)) => (el.removeAttribute(n), v) });
     } catch (e) {
       console.error(e); // a typo in the screen: say so, leave a marker, keep the rest of the screen alive
       ctx.host.emit('xo-error', e);
       el.replaceWith(document.createComment(`<${el.localName}> failed: ${e.message}`));
       return;
     }
+    const nodes = out.nodeType === 11 ? [...out.childNodes] : [out], root = nodes.find((n) => n.nodeType === 1) || el; // replaceWith moves a fragment's children out, so remember them first. No element root: copy onto the host, which replaceWith then removes
+    for (const n of el.getAttributeNames()) root.setAttribute(n, ((n === 'class' || n === 'style') && root.getAttribute(n) ? root.getAttribute(n) + (n === 'class' ? ' ' : ';') : '') + el.getAttribute(n));
     el.replaceWith(out);
-    for (const n of out.nodeType === 11 ? [...out.childNodes] : [out]) bindNode(n, scope, ctx, disposers);
+    for (const n of nodes) bindNode(n, scope, ctx, disposers);
     return;
   }
   if (el.hasAttribute('xo-each')) return bindEach(el, scope, ctx, disposers);

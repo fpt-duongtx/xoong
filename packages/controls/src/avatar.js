@@ -16,6 +16,7 @@
  *   Without `max` all are shown.
  */
 import { XoElement, define, text } from '@xoong/core';
+import { ownLabel } from './label.js';
 
 /** Initials for a name: first letter of the first and the last word, or the first two letters of a single word. */
 export function initialsOf(/** @type {string} */ name) {
@@ -85,7 +86,7 @@ class XoAvatar extends XoElement {
     for (const s of STATUS) cls.toggle(`xo-avatar--${s}`, this.status === s);
     const status = this.status === 'ok' ? text('xoong.avatar.ok', 'online') : this.status === 'warn' ? text('xoong.avatar.warn', 'needs attention') : this.status === 'muted' ? text('xoong.avatar.muted', 'inactive') : '';
     const label = name ? (status ? `${name}, ${status}` : name) : text('xoong.avatar.unknown', 'Unknown user');
-    this.setAttribute('aria-label', label);
+    ownLabel(this, label);
     this.setAttribute('role', this.closest('xo-avatars') ? 'listitem' : 'img');
   }
 }

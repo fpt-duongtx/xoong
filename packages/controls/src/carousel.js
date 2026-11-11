@@ -22,6 +22,7 @@
  *   `index` is the first visible slide.
  */
 import { XoElement, define, text } from '@xoong/core';
+import { ownLabel } from './label.js';
 
 class XoCarousel extends XoElement {
   static props = { label: String, items: Number, autoplay: Number, loop: Boolean, dots: Boolean, counter: Boolean, noArrows: Boolean };
@@ -161,7 +162,7 @@ class XoCarousel extends XoElement {
         slide.inert = a.right <= b.left + 1 || a.left >= b.right - 1;
       }
     });
-    if (this.label) this.setAttribute('aria-label', this.label); else this.removeAttribute('aria-label');
+    ownLabel(this, this.label);
     const wraps = this.loop && this.#positions > 1;
     /** @type {HTMLButtonElement} */ (this.#prev).disabled = !wraps && index <= 0;
     /** @type {HTMLButtonElement} */ (this.#next).disabled = !wraps && index >= this.#positions - 1;

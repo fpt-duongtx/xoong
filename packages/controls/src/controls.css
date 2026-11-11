@@ -220,3 +220,5 @@
   xo-rating[readonly] .xo-rating__input, xo-rating[disabled] .xo-rating__input { cursor: default; }
   xo-rating[disabled] { opacity: .5; }
 }
+/* Unlayered, so a host rule such as `xo-carousel { display: block }` does not keep a hidden control on screen. A stylesheet loaded later still wins. */
+[hidden] { display: none; }
