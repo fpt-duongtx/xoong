@@ -1,8 +1,6 @@
-// Row actions at 390px, in a real browser. The frame is `.xo-table` (overflow-x: auto).
-// Without a pinned column the Edit button sits past the right edge. With the column pinned, focusing
-// or clicking that button must not scroll the frame. A page or a nested scroller must still reveal
-// it. Tabbing must not leave a cell entirely outside the frame. A cell already inside the frame can
-// sit under the sticky column; the browser does not scroll that.
+// Opt-in sticky columns. With no class, the table matches main: the actions cell is not
+// sticky, borders collapse, and the frame sets no scroll padding. xo-sticky-start and
+// xo-sticky-end pin one column to the inline edge. The other cells scroll with the table.
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -13,360 +11,135 @@ import { launchChromium } from '../../../tools/browser.mjs';
 const repo = new URL('../../..', import.meta.url).pathname;
 let dev, browser, page;
 
-const PAGE = (extra = '', dir = 'ltr') => `<!doctype html><html dir="${dir}"><head>
-<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">${extra}
-<style>body { margin: 0; }</style></head><body>
-<xo-view get="listUsers"><xo-table columns="name,email:E-mail,role,city,country,office" filters="q:Search"><a slot="country" href="#country">{country}</a><button type="button">Edit</button><button type="button">Actions</button><button type="button">Delete</button></xo-table></xo-view>
-<script type="module">
-import { configure } from '@xoong/data';
-import '@xoong/ui';
-configure({
-  api: { version: 1, operations: { listUsers: { id: 'listUsers', method: 'GET', path: '/users', query: ['q'], response: { t: 'object', props: { items: { t: 'array', items: { t: 'object' } } } } } } },
-  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, name: 'Ada Lovelace', email: 'ada@analytical.engine', role: 'administrator', city: 'London', country: 'United Kingdom', office: '${'M'.repeat(400)}' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
-});
-window.ready = true;
-</script></body></html>`;
-
-/** Nine links of different lengths, then Edit, Actions and Delete. The widths come from the text, so a font change cannot be papered over with a fixed link width. */
-const CELLS = (dir) => `<!doctype html><html dir="${dir}"><head>
+const PAGE = (dir) => `<!doctype html><html dir="${dir}"><head>
 <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
 <style>body { margin: 0; }</style></head><body>
-<xo-view get="listUsers"><xo-table columns="c1,c2,c3,c4,c5,c6,c7,c8,c9">
-<a slot="c1" href="#c1">{c1}</a><a slot="c2" href="#c2">{c2}</a><a slot="c3" href="#c3">{c3}</a>
-<a slot="c4" href="#c4">{c4}</a><a slot="c5" href="#c5">{c5}</a><a slot="c6" href="#c6">{c6}</a>
-<a slot="c7" href="#c7">{c7}</a><a slot="c8" href="#c8">{c8}</a><a slot="c9" href="#c9">{c9}</a>
-<button type="button">Edit</button><button type="button">Actions</button><button type="button">Delete</button>
-</xo-table></xo-view>
-<script type="module">
-import { configure } from '@xoong/data';
-import '@xoong/ui';
-configure({
-  api: { version: 1, operations: { listUsers: { id: 'listUsers', method: 'GET', path: '/users', response: { t: 'object', props: { items: { t: 'array', items: { t: 'object' } } } } } } },
-  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, c1: 'North', c2: 'A very long city name indeed', c3: 'x', c4: 'United Kingdom of notes', c5: 'Hi', c6: 'administrator', c7: 'QQ', c8: 'Field', c9: 'Lead' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
-});
-window.ready = true;
-</script></body></html>`;
-
-/** The page is wider than the window and the frame itself does not overflow. Edit, Actions and Delete sit at the inline end, off the window. */
-const WIDE = `<!doctype html><html><head>
-<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-<style>body { margin: 0; } html, body { width: 1900px; }</style></head><body>
-<xo-view get="listUsers"><xo-table columns="name"><span slot="name">{name}</span><button type="button">Edit</button><button type="button">Actions</button><button type="button">Delete</button></xo-table></xo-view>
-<script type="module">
-import { configure } from '@xoong/data';
-import '@xoong/ui';
-configure({
-  api: { version: 1, operations: { listUsers: { id: 'listUsers', method: 'GET', path: '/users', response: { t: 'object', props: { items: { t: 'array', items: { t: 'object' } } } } } } },
-  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, name: 'Ada' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
-});
-window.ready = true;
-</script></body></html>`;
-
-/** A 300px scroller around an 800px table. The frame fills the inner box, so the wrapper is the scroller that has to move. */
-const NEST = `<!doctype html><html><head>
-<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-<style>body { margin: 0; }</style></head><body>
-<div id="wrap" style="width: 300px; overflow-x: auto;"><div style="width: 800px;">
-<xo-view get="listUsers"><xo-table columns="name"><span slot="name">{name}</span><button type="button">Edit</button><button type="button">Actions</button><button type="button">Delete</button></xo-table></xo-view>
-</div></div>
-<script type="module">
-import { configure } from '@xoong/data';
-import '@xoong/ui';
-configure({
-  api: { version: 1, operations: { listUsers: { id: 'listUsers', method: 'GET', path: '/users', response: { t: 'object', props: { items: { t: 'array', items: { t: 'object' } } } } } } },
-  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, name: 'Ada' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
-});
-window.ready = true;
-</script></body></html>`;
-
-/** The table starts below a 500px viewport. scrollIntoView({ block: 'nearest' }) has to bring Edit onto the screen. */
-const BELOW = `<!doctype html><html><head>
-<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-<style>body { margin: 0; }</style></head><body>
-<div style="height: 900px;"></div>
-<xo-view get="listUsers"><xo-table columns="name"><span slot="name">{name}</span><button type="button">Edit</button></xo-table></xo-view>
-<script type="module">
-import { configure } from '@xoong/data';
-import '@xoong/ui';
-configure({
-  api: { version: 1, operations: { listUsers: { id: 'listUsers', method: 'GET', path: '/users', response: { t: 'object', props: { items: { t: 'array', items: { t: 'object' } } } } } } },
-  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, name: 'Ada' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
-});
-window.ready = true;
-</script></body></html>`;
-
-/** The generated header carries xo-t="xoong.table.actions". The hand-written table's last header hides a different label, and its actions header is not last. */
-const HEADERS = `<!doctype html><html><head>
-<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-<style>body { margin: 0; }</style></head><body>
-<xo-view get="listUsers"><xo-table columns="name"><span slot="name">{name}</span><button type="button">Edit</button></xo-table></xo-view>
-<div class="xo-table" id="hand"><table>
-<thead><tr><th>Name</th><th class="xo-actions"><span class="xo-visually-hidden">Do</span></th><th><span class="xo-visually-hidden">Secret</span></th></tr></thead>
-<tbody><tr><td>Ada</td><td class="xo-actions"><button type="button">Edit</button></td><td>notes</td></tr></tbody>
+<xo-view get="listUsers"><xo-table columns="name,note"><span slot="name">{name}</span><span slot="note">{note}</span><button type="button">Edit</button></xo-table></xo-view>
+<div class="xo-table" id="plain"><table>
+<thead><tr><th>Name</th><th>Note</th><th class="xo-actions">Actions</th></tr></thead>
+<tbody><tr><td>Ada</td><td class="note">${'M'.repeat(80)}</td><td class="xo-actions"><button type="button">Edit</button></td></tr></tbody>
+</table></div>
+<div class="xo-table" id="pin"><table>
+<thead><tr><th class="xo-sticky-start">Name</th><th>Note</th><th class="xo-sticky-end">Role</th></tr></thead>
+<tbody><tr>
+<td class="xo-sticky-start"><a href="#name">Ada</a></td>
+<td class="note">${'M'.repeat(400)}</td>
+<td class="xo-sticky-end"><button type="button">Edit</button></td>
+</tr></tbody>
 </table></div>
 <script type="module">
 import { configure } from '@xoong/data';
 import '@xoong/ui';
 configure({
   api: { version: 1, operations: { listUsers: { id: 'listUsers', method: 'GET', path: '/users', response: { t: 'object', props: { items: { t: 'array', items: { t: 'object' } } } } } } },
-  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, name: 'Ada' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
-});
-window.ready = true;
-</script></body></html>`;
-
-const CARDS = `<!doctype html><html><head>
-<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
-<link rel="stylesheet" href="/@xoong/ui/src/mist.css">
-<style>body { margin: 0; }</style></head><body>
-<xo-view get="listUsers"><xo-table cards columns="name,email:E-mail,role,city,country"><button type="button">Edit</button></xo-table></xo-view>
-<script type="module">
-import { configure } from '@xoong/data';
-import '@xoong/ui';
-configure({
-  api: { version: 1, operations: { listUsers: { id: 'listUsers', method: 'GET', path: '/users', response: { t: 'object', props: { items: { t: 'array', items: { t: 'object' } } } } } } },
-  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, name: 'Ada Lovelace', email: 'ada@analytical.engine', role: 'administrator', city: 'London', country: 'United Kingdom' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
+  fetch: async () => new Response(JSON.stringify({ items: [{ id: 1, name: 'Ada', note: '${'M'.repeat(80)}' }] }), { status: 200, headers: { 'content-type': 'application/json' } }),
 });
 window.ready = true;
 </script></body></html>`;
 
 beforeAll(async () => {
-  const root = await mkdtemp(join(tmpdir(), 'xoong-table-'));
-  await writeFile(join(root, 'index.html'), PAGE());
-  await writeFile(join(root, 'mist.html'), PAGE('\n<link rel="stylesheet" href="/@xoong/ui/src/mist.css">'));
-  await writeFile(join(root, 'rtl.html'), PAGE('', 'rtl'));
-  await writeFile(join(root, 'cells.html'), CELLS('ltr'));
-  await writeFile(join(root, 'cells-rtl.html'), CELLS('rtl'));
-  await writeFile(join(root, 'cards.html'), CARDS);
-  await writeFile(join(root, 'wide.html'), WIDE);
-  await writeFile(join(root, 'nest.html'), NEST);
-  await writeFile(join(root, 'below.html'), BELOW);
-  await writeFile(join(root, 'headers.html'), HEADERS);
+  const root = await mkdtemp(join(tmpdir(), 'xoong-sticky-'));
+  await writeFile(join(root, 'ltr.html'), PAGE('ltr'));
+  await writeFile(join(root, 'rtl.html'), PAGE('rtl'));
   dev = await startDev({ root, resolveFrom: repo, port: 0, quiet: true, spa: true });
   browser = await launchChromium();
   page = await (await browser.newContext({ viewport: { width: 390, height: 800 } })).newPage();
 }, 60000);
 afterAll(async () => { await browser?.close(); await dev?.close(); });
 
-const open = async (path, width = 390) => {
-  await page.setViewportSize({ width, height: 800 });
-  await page.goto(dev.url + path);
-  await page.waitForFunction(() => window.ready && document.querySelector('.xo-actions button'));
+const open = async (dir) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto(`${dev.url}/${dir}.html`);
+  await page.waitForFunction(() => window.ready && document.querySelector('#pin td.xo-sticky-end button'));
 };
 
+/** Scroll part way. A full scroll would park the last column on the inline end even when it is not sticky. RTL scrollLeft is negative. */
+const scrollFrame = () => page.evaluate(() => {
+  const frame = document.querySelector('#pin');
+  const before = frame.scrollLeft;
+  frame.scrollLeft = 240;
+  if (frame.scrollLeft === before) frame.scrollLeft = -240;
+  return frame.scrollLeft;
+});
+
 const place = () => page.evaluate(() => {
-  const frame = document.querySelector('.xo-table').getBoundingClientRect();
-  const btn = document.querySelector('.xo-actions button').getBoundingClientRect();
-  const hit = document.elementFromPoint(btn.left + btn.width / 2, btn.top + btn.height / 2);
-  const scroller = document.querySelector('.xo-table');
+  const frame = document.querySelector('#pin');
+  const fr = frame.getBoundingClientRect();
+  const box = (sel) => {
+    const r = document.querySelector(sel).getBoundingClientRect();
+    return { left: r.left, right: r.right };
+  };
   return {
-    width: window.innerWidth,
-    overflows: scroller.scrollWidth > scroller.clientWidth + 1,
-    inside: btn.right <= frame.right + 0.5 && btn.left >= frame.left - 0.5,
-    hit: hit ? hit.tagName : '',
+    scroll: frame.scrollLeft,
+    frameLeft: fr.left,
+    frameRight: fr.right,
+    start: box('#pin td.xo-sticky-start'),
+    end: box('#pin td.xo-sticky-end'),
+    headStart: box('#pin th.xo-sticky-start'),
+    headEnd: box('#pin th.xo-sticky-end'),
+    note: box('#pin td.note'),
   };
 });
 
-/**
- * Scroll the country link the way a keyboard focus does. Edit, Actions and Delete together are wider than
- * the frame's padding, so the link can sit under that cell. It still has to stay inside the frame.
- * `scrollIntoView` is synchronous in all three engines.
- */
-const focusOverlap = () => page.evaluate(() => {
-  const link = document.querySelector('td[data-col="country"] a');
-  link.focus();
-  link.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  const a = link.getBoundingClientRect();
-  const act = document.querySelector('.xo-actions').getBoundingClientRect();
-  const frame = document.querySelector('.xo-table').getBoundingClientRect();
-  return {
-    overlap: Math.min(a.right, act.right) - Math.max(a.left, act.left),
-    inFrame: a.left >= frame.left - 0.5 && a.right <= frame.right + 0.5 && a.width > 0,
-  };
-});
+const near = (a, b) => Math.abs(a - b) <= 2;
 
-for (const [name, path] of [['xoong.css', '/'], ['xoong.css and mist.css', '/mist.html']]) {
-  describe(`table row actions at 390px (${name})`, () => {
-    it('the Edit button is inside the frame, including after the frame scrolls', async () => {
-      await open(path);
-      const before = await place();
-      expect(before.width).toBe(390);
-      expect(before.overflows).toBe(true);
-      expect(before.inside).toBe(true);
-      expect(before.hit).toBe('BUTTON');
-      await page.evaluate(() => { document.querySelector('.xo-table').scrollLeft = 160; });
-      const after = await place();
-      expect(after.inside).toBe(true);
-      expect(after.hit).toBe('BUTTON');
-    });
-
-    it('a focused control beside a wide actions cell stays inside the frame', async () => {
-      await open(path);
-      const at = await focusOverlap();
-      expect(at.inFrame).toBe(true);
-    });
-  });
-}
-
-describe('table row actions at 390px, right to left', () => {
-  it('a focused control beside a wide actions cell stays inside the frame', async () => {
-    await open('/rtl.html');
-    expect(await page.evaluate(() => document.documentElement.dir)).toBe('rtl');
-    const at = await focusOverlap();
-    expect(at.inFrame).toBe(true);
-  });
-});
-
-for (const [dir, path] of [['left to right', '/'], ['right to left', '/rtl.html']]) {
-  for (const width of [390, 1280]) {
-    it(`focusing or clicking Edit leaves the frame at scrollLeft 0 (${dir}, ${width}px)`, async () => {
-      await open(path, width);
-      const before = await page.evaluate(() => {
-        const scroller = document.querySelector('.xo-table');
-        scroller.scrollLeft = 0;
-        return { scroll: scroller.scrollLeft, overflows: scroller.scrollWidth > scroller.clientWidth + 1 };
+for (const dir of ['ltr', 'rtl']) {
+  describe(`sticky columns, ${dir}`, () => {
+    it('a generated table and an unmarked actions cell do not stick', async () => {
+      await open(dir);
+      const at = await page.evaluate(() => {
+        const generated = document.querySelector('xo-view .xo-table');
+        const plain = document.querySelector('#plain');
+        return {
+          actions: getComputedStyle(generated.querySelector('td.xo-actions')).position,
+          hand: getComputedStyle(plain.querySelector('td.xo-actions')).position,
+          collapse: getComputedStyle(plain.querySelector('table')).borderCollapse,
+          padding: getComputedStyle(generated).scrollPaddingInlineEnd,
+        };
       });
-      expect(before.overflows).toBe(true);
-      expect(before.scroll).toBe(0);
-      const button = page.locator('.xo-actions button').first();
+      expect(at.actions).not.toBe('sticky');
+      expect(at.hand).not.toBe('sticky');
+      expect(at.collapse).toBe('collapse');
+      expect(at.padding).toBe('auto');
+    });
+
+    it('the start column, including its header, stays at the inline start', async () => {
+      await open(dir);
+      const before = await place();
+      const scroll = await scrollFrame();
+      expect(scroll).not.toBe(0);
+      const after = await place();
+      expect(Math.abs(after.note.left - before.note.left)).toBeGreaterThan(20);
+      const startEdge = dir === 'rtl' ? 'right' : 'left';
+      const frameEdge = dir === 'rtl' ? after.frameRight : after.frameLeft;
+      expect(near(after.start[startEdge], frameEdge)).toBe(true);
+      expect(near(after.headStart[startEdge], frameEdge)).toBe(true);
+    });
+
+    it('the end column, including its header, stays at the inline end', async () => {
+      await open(dir);
+      await scrollFrame();
+      const after = await place();
+      const endEdge = dir === 'rtl' ? 'left' : 'right';
+      const frameEdge = dir === 'rtl' ? after.frameLeft : after.frameRight;
+      expect(near(after.end[endEdge], frameEdge)).toBe(true);
+      expect(near(after.headEnd[endEdge], frameEdge)).toBe(true);
+    });
+
+    it('focusing or clicking a control in a sticky column leaves the frame where it is', async () => {
+      await open(dir);
+      const reset = () => page.evaluate(() => { document.querySelector('#pin').scrollLeft = 0; document.activeElement?.blur(); });
+      await reset();
+      await page.evaluate(() => document.querySelector('#pin td.xo-sticky-end button').focus());
+      expect(await page.evaluate(() => document.querySelector('#pin').scrollLeft)).toBe(0);
+      await reset();
+      await page.evaluate(() => document.querySelector('#pin td.xo-sticky-start a').focus());
+      expect(await page.evaluate(() => document.querySelector('#pin').scrollLeft)).toBe(0);
+      await reset();
+      const button = page.locator('#pin td.xo-sticky-end button');
       const box = await button.boundingBox();
       await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-      expect(await page.evaluate(() => document.querySelector('.xo-table').scrollLeft)).toBe(0);
-      await page.evaluate(() => { document.activeElement.blur(); document.querySelector('.xo-table').scrollLeft = 0; });
-      await button.focus();
-      expect(await page.evaluate(() => document.querySelector('.xo-table').scrollLeft)).toBe(0);
+      expect(await page.evaluate(() => document.querySelector('#pin').scrollLeft)).toBe(0);
     });
-  }
-}
-
-for (const [dir, path] of [['left to right', '/cells.html'], ['right to left', '/cells-rtl.html']]) {
-  it(`tabbing a row does not leave a cell entirely outside the frame (${dir})`, async () => {
-    await open(path, 390);
-    const count = await page.locator('tbody tr :is(a, button)').count();
-    expect(count).toBe(12);
-    await page.locator('tbody a').first().focus();
-    const seen = [];
-    for (let i = 0; i < count; i++) {
-      seen.push(await page.evaluate(() => {
-        const el = document.activeElement;
-        const rect = el.getBoundingClientRect();
-        const frame = document.querySelector('.xo-table').getBoundingClientRect();
-        const visible = Math.min(rect.right, frame.right) - Math.max(rect.left, frame.left);
-        return { text: el.textContent, visible };
-      }));
-      if (i < count - 1) await page.keyboard.press('Tab');
-    }
-    expect(seen.map((cell) => cell.text)).toEqual([
-      'North', 'A very long city name indeed', 'x', 'United Kingdom of notes', 'Hi',
-      'administrator', 'QQ', 'Field', 'Lead', 'Edit', 'Actions', 'Delete',
-    ]);
-    for (const cell of seen) expect(cell.visible, cell.text).toBeGreaterThan(1);
   });
 }
-
-describe('a pinned action stays reachable from an ancestor scroller', () => {
-  it('the page scrolls Edit into the window, and the frame stays put', async () => {
-    await open('/wide.html', 1280);
-    const read = () => page.evaluate(() => {
-      const button = document.querySelector('.xo-actions button');
-      const rect = button.getBoundingClientRect();
-      const frame = document.querySelector('.xo-table');
-      return {
-        scrollX: Math.round(window.scrollX),
-        frame: Math.round(frame.scrollLeft),
-        overflows: frame.scrollWidth > frame.clientWidth + 1,
-        inWindow: rect.left >= -1 && rect.right <= window.innerWidth + 1 && rect.width > 0,
-      };
-    });
-    const start = await read();
-    expect(start.overflows).toBe(false);
-    expect(start.scrollX).toBe(0);
-    expect(start.inWindow).toBe(false);
-    await page.evaluate(() => document.querySelector('.xo-actions button').focus());
-    const focused = await read();
-    expect(focused.inWindow, `scrollX ${focused.scrollX}`).toBe(true);
-    expect(focused.scrollX).toBeGreaterThan(0);
-    expect(focused.frame).toBe(0);
-    await page.evaluate(() => {
-      window.scrollTo(0, 0);
-      document.querySelector('.xo-actions button').scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    });
-    const scrolled = await read();
-    expect(scrolled.inWindow, `scrollX ${scrolled.scrollX}`).toBe(true);
-    expect(scrolled.scrollX).toBeGreaterThan(0);
-    expect(scrolled.frame).toBe(0);
-  });
-
-  it('a nested scroller reveals Edit, and the frame stays put', async () => {
-    await open('/nest.html', 1280);
-    const read = () => page.evaluate(() => {
-      const button = document.querySelector('.xo-actions button');
-      const rect = button.getBoundingClientRect();
-      const wrap = document.querySelector('#wrap');
-      const box = wrap.getBoundingClientRect();
-      return {
-        wrap: Math.round(wrap.scrollLeft),
-        frame: Math.round(document.querySelector('.xo-table').scrollLeft),
-        inWrap: rect.left >= box.left - 1 && rect.right <= box.right + 1 && rect.width > 0,
-      };
-    });
-    const start = await read();
-    expect(start.wrap).toBe(0);
-    expect(start.inWrap).toBe(false);
-    await page.evaluate(() => document.querySelector('.xo-actions button').focus());
-    const focused = await read();
-    expect(focused.inWrap, `wrap ${focused.wrap}`).toBe(true);
-    expect(focused.wrap).not.toBe(0);
-    expect(focused.frame).toBe(0);
-    await page.evaluate(() => {
-      document.querySelector('#wrap').scrollLeft = 0;
-      document.querySelector('.xo-actions button').scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    });
-    const scrolled = await read();
-    expect(scrolled.inWrap, `wrap ${scrolled.wrap}`).toBe(true);
-    expect(scrolled.wrap).not.toBe(0);
-    expect(scrolled.frame).toBe(0);
-  });
-
-  it('scrollIntoView keeps Edit on screen when the table starts below the fold', async () => {
-    await page.setViewportSize({ width: 1280, height: 500 });
-    await page.goto(dev.url + '/below.html');
-    await page.waitForFunction(() => window.ready && document.querySelector('.xo-actions button'));
-    await page.evaluate(() => {
-      window.scrollTo(0, 0);
-      document.querySelector('.xo-actions button').scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    });
-    const at = await page.evaluate(() => {
-      const rect = document.querySelector('.xo-actions button').getBoundingClientRect();
-      return { top: rect.top, bottom: rect.bottom, height: window.innerHeight };
-    });
-    expect(at.top, `top ${at.top}`).toBeGreaterThanOrEqual(-1);
-    expect(at.bottom, `bottom ${at.bottom}`).toBeLessThanOrEqual(at.height + 1);
-  });
-});
-
-describe('which actions header is pinned', () => {
-  it('pins the generated actions label, and a hand-written th.xo-actions, not a different hidden last header', async () => {
-    await open('/headers.html', 800);
-    const pinned = await page.evaluate(() => {
-      const at = (selector) => getComputedStyle(document.querySelector(selector)).position;
-      return {
-        generated: at('xo-view thead th:last-child'),
-        marked: at('#hand th.xo-actions'),
-        other: at('#hand th:last-child'),
-      };
-    });
-    expect(pinned.generated).toBe('sticky');
-    expect(pinned.marked).toBe('sticky');
-    expect(pinned.other).toBe('static');
-  });
-});
-
-describe('cards at 390px', () => {
-  it('the Edit button stays inside the card', async () => {
-    await open('/cards.html');
-    const at = await place();
-    expect(at.width).toBe(390);
-    expect(at.inside).toBe(true);
-    expect(at.hit).toBe('BUTTON');
-  });
-});
