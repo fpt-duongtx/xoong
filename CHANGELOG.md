@@ -3,7 +3,7 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
-## Unreleased
+## 0.0.53 (rainlet feedback: lazy routes, path prefix, bundle, Mist fixes)
 
 breaking: `xoong build` removes an inline JavaScript `<script>` instead of copying it and warning. JSON and JSON-LD scripts stay. `--inline-scripts` and `build({ inlineScripts })` accept only `remove` or `error`; any other value is refused. `error` still removes the script and exits 1. When `.xoong/operations.json` exists, the build also writes it at `/operations.json` (the site root, not only `/.xoong/operations.json`).
 

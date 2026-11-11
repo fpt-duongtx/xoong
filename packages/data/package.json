@@ -1,6 +1,6 @@
 {
   "name": "@xoong/data",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "description": "xoong data layer: OpenAPI-driven client, auto cache, entity store, derived views, live updates. Depends only on @xoong/core.",
   "type": "module",
   "main": "src/index.js",
@@ -12,10 +12,13 @@
     "./view": "./src/view.js",
     "./format": "./src/format.js"
   },
-  "sideEffects": ["./src/view.js", "./src/options.js"],
+  "sideEffects": [
+    "./src/view.js",
+    "./src/options.js"
+  ],
   "license": "MIT",
   "dependencies": {
-    "@xoong/core": "0.0.52"
+    "@xoong/core": "0.0.53"
   },
   "files": [
     "src"
