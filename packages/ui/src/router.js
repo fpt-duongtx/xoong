@@ -265,7 +265,7 @@ class XoRouter extends XoElement {
       if (token !== this.#token) return false;
       if (result === false) { this.#restore(type, delta); return false; }
       if (typeof result === 'string') {
-        if (depth >= 10) throw new Error('xoong router: too many redirects');
+        if (depth >= 10) throw new Error('xoong router: too many redirects (a guard keeps redirecting)');
         return this.#go(this.#parse(result), 'replace', 'redirect', depth + 1);
       }
     }
@@ -330,7 +330,7 @@ class XoRouter extends XoElement {
     for (let name = route?.layout; name; ) {
       if (names.includes(name)) throw new Error(`xoong router: layout "${name}" includes itself`);
       const layout = this.#layouts.get(name);
-      if (!layout) throw new Error(`xoong router: layout "${name}" is not declared`);
+      if (!layout) throw new Error(`xoong router: layout "${name}" is not declared (<template xo-layout="${name}">)`);
       names.unshift(name);
       name = layout.layout ?? null;
     }
@@ -405,6 +405,6 @@ export const router = {
 };
 
 function need() {
-  if (!active) throw new Error('xoong router: no <xo-router> yet');
+  if (!active) throw new Error('xoong router: there is no <xo-router> on this page yet (it starts after the page is parsed)');
   return active;
 }

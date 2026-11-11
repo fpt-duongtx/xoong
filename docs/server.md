@@ -42,7 +42,7 @@ Not done yet: live reload and SCSS compilation.
 
 `--base /admin` (or `"base": "/admin"` in `xoong.config.json`) is the same prefix as `xoong build --base`. The injected import map, root-absolute `script`/`link` URLs, root-absolute CSS `url()` and `@import`, and root-absolute import specifiers are prefixed with it. A request whose path still starts with the prefix is served from the project root, so it works both when the dev server is opened at `/admin/...` and when a reverse proxy has already stripped the prefix. `X-Forwarded-Prefix` overrides `--base` for that request when the header is a safe path (`/admin`, not a scheme, `..` or `//`). `<a href>` is not rewritten.
 
-`allowedHosts` accepts a host name, or `"*"` to turn the host check off (a LAN preview whose `Host` is not the bind address). `X-Forwarded-Host` is not trusted in place of `Host`.
+`allowedHosts` accepts a host name, or `"*"` to turn the host check off (a LAN preview whose `Host` is not the bind address). `X-Forwarded-Host` is not trusted in place of `Host`. `"*"` also removes the protection against DNS rebinding, so use it only on a trusted network, never on a machine that holds anything private. `X-Forwarded-Prefix` is honoured when it is a safe path; run the dev server behind a proxy you trust, because any client that can reach it can set the header.
 
 **Your own packages.** A package that ships browser code (a component library, a theme) is named in `xoong.config.json`:
 `{ "packages": ["rainlet"] }`. `xoong dev` and `xoong build` then serve it under `/@rainlet/...` (scoped names keep their scope: `/@acme/ui/...`)
