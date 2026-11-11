@@ -86,6 +86,25 @@ describe('mist.css', () => {
       await page.emulateMedia({ colorScheme: 'light' });
     });
 
+    it('keeps the primary button readable (AA, 4.5:1) on hover in the dark scheme', async () => {
+      await page.emulateMedia({ colorScheme: 'dark' });
+      await page.hover('#p');
+      const ratio = await page.evaluate(() => {
+        const px = (value) => {
+          const c = document.createElement('canvas').getContext('2d');
+          c.fillStyle = value; c.fillRect(0, 0, 1, 1);
+          return [...c.getImageData(0, 0, 1, 1).data.slice(0, 3)].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+        };
+        const lum = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        const s = getComputedStyle(document.getElementById('p'));
+        const [a, b] = [lum(px(s.backgroundColor)), lum(px(s.color))].sort((x, y) => y - x);
+        return (a + 0.05) / (b + 0.05);
+      });
+      await page.mouse.move(0, 0);
+      await page.emulateMedia({ colorScheme: 'light' });
+      expect(ratio).toBeGreaterThanOrEqual(4.5);
+    });
+
     it('hidden stays hidden, and the segmented group and the badge are styled', async () => {
       expect(await style('#h', 'display')).toBe('none'); // [hidden] wins over a display set by the page's own rule? only when the rule is not important
       expect(await style('#seg', 'display')).not.toBe('block'); // a segmented control, not a plain block
