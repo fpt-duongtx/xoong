@@ -103,9 +103,10 @@
 
   .xo-table { position: relative; overflow-x: auto; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
   .xo-table table { width: 100%; border-collapse: collapse; }
+  :is(.xo-table, xo-table):is([sticky~=start], [sticky~=end]) table,
   .xo-table:has(.xo-sticky-start, .xo-sticky-end) table { border-collapse: separate; border-spacing: 0; } /* a collapsed border does not stay on a sticky cell */
-  .xo-table :is(th, td).xo-sticky-start { position: sticky; inset-inline-start: 0; z-index: 1; background: var(--xo-color-surface); border-inline-end: 1px solid var(--xo-color-border); }
-  .xo-table :is(th, td).xo-sticky-end { position: sticky; inset-inline-end: 0; z-index: 1; background: var(--xo-color-surface); border-inline-start: 1px solid var(--xo-color-border); }
+  :is(.xo-table :is(th, td).xo-sticky-start, :is(.xo-table, xo-table)[sticky~=start] tr > :first-child) { position: sticky; inset-inline-start: 0; z-index: 1; background: var(--xo-color-surface); border-inline-end: 1px solid var(--xo-color-border); }
+  :is(.xo-table :is(th, td).xo-sticky-end, :is(.xo-table, xo-table)[sticky~=end] tr > :last-child) { position: sticky; inset-inline-end: 0; z-index: 1; background: var(--xo-color-surface); border-inline-start: 1px solid var(--xo-color-border); }
   .xo-table :where(th, td) { padding: var(--xo-space-2) var(--xo-space-3); text-align: start; border-bottom: 1px solid var(--xo-color-border); }
   .xo-table :where(th) { font-size: var(--xo-text-small); color: var(--xo-color-muted); font-weight: 600; }
   .xo-table :where(th button) { all: unset; cursor: pointer; font: inherit; }
