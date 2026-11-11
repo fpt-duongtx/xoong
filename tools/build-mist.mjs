@@ -87,7 +87,7 @@ function relaxButtons(css) {
   });
 }
 
-/** A raw hex in a component rule does not follow the theme. Mix against the text token instead (dark mode included). Token definitions stay hex. */
+/** A raw hex in a component rule does not follow the theme. Mix against the text token instead (dark mode included). A mix with #000 is a darkening for the white primary text, so it stays black: the text token turns light in dark mode and would lighten the button below AA. Token definitions stay hex. */
 function themeMixes(css) {
   let out = '';
   let i = 0;
@@ -100,7 +100,7 @@ function themeMixes(css) {
       if (css[j] === '(') depth++;
       else if (css[j] === ')' && --depth === 0) { j++; break; }
     }
-    out += css.slice(i, at) + css.slice(at, j).replace(/#1f2a33\b/gi, 'var(--text)').replace(/#000\b/g, 'var(--text)');
+    out += css.slice(i, at) + css.slice(at, j).replace(/#1f2a33\b/gi, 'var(--text)').replace(/#000\b/g, 'black');
     i = j;
   }
   return out;

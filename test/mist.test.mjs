@@ -36,6 +36,7 @@ describe('mist.css', () => {
     expect(mist.match(/\.admin-demo \{ margin: 0/g)).toHaveLength(1);
     expect(mist.match(/\.xo-side \{ display: none/g)).toHaveLength(1);
     expect(mist).not.toMatch(/color-mix\([^)]*#(?:1f2a33|000)\b/i);
+    expect(mist).toMatch(/button\.primary:hover[^}]*color-mix\(in srgb, var\(--xo-color-primary\) 84%, black\)/);
     for (const name of ['grid', 'file', 'layers', 'sliders']) {
       expect(mist).toContain(`--ic-${name}:`);
       expect(mist).toContain(`.ic[data-ic="${name}"]`);

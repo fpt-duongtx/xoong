@@ -677,7 +677,7 @@
     background: var(--xo-color-primary);
   }
   .xo-switch[aria-checked='true']:hover {
-    background: color-mix(in srgb, var(--xo-color-primary) 84%, var(--text));
+    background: color-mix(in srgb, var(--xo-color-primary) 84%, black);
   }
   .xo-switch[aria-checked='true']::after {
     margin-left: 22px;
@@ -847,7 +847,7 @@
     background: var(--xo-color-muted);
   }
   .xo-switch[aria-checked='true'].is-hover {
-    background: color-mix(in srgb, var(--xo-color-primary) 84%, var(--text));
+    background: color-mix(in srgb, var(--xo-color-primary) 84%, black);
   }
   .xo-switch.is-focus {
     outline: 2px solid var(--xo-color-accent);
@@ -1651,7 +1651,7 @@
   button:hover, button.is-hover, .button:hover { background: var(--xo-color-subtle); border-color: var(--xo-color-control-border); }
   button:active, button.is-active { background: var(--xo-color-border); transform: none; }
   button.primary { font-weight: 600; color: var(--xo-color-primary-text); background: var(--xo-color-primary); border-color: var(--xo-color-primary); }
-  button.primary:hover, button.primary.is-hover { color: var(--xo-color-primary-text); background: color-mix(in srgb, var(--xo-color-primary) 84%, var(--text)); border-color: color-mix(in srgb, var(--xo-color-primary) 84%, var(--text)); }
+  button.primary:hover, button.primary.is-hover { color: var(--xo-color-primary-text); background: color-mix(in srgb, var(--xo-color-primary) 84%, black); border-color: color-mix(in srgb, var(--xo-color-primary) 84%, black); }
   button.primary:disabled { background: var(--xo-color-subtle); color: var(--xo-color-muted); border-color: var(--xo-color-border); }
   button.danger { color: var(--xo-color-danger); border-color: var(--xo-color-danger); }
   button.danger:hover { background: color-mix(in srgb, var(--xo-color-danger) 10%, var(--xo-color-surface)); border-color: var(--xo-color-danger); }
@@ -1772,7 +1772,7 @@
   .button { text-decoration: none; }
   .button:hover { text-decoration: none; color: var(--xo-color-text); }
   .button.primary { font-weight: 600; color: var(--xo-color-primary-text); background: var(--xo-color-primary); border-color: var(--xo-color-primary); }
-  .button.primary:hover { color: var(--xo-color-primary-text); background: color-mix(in srgb, var(--xo-color-primary) 84%, var(--text)); border-color: color-mix(in srgb, var(--xo-color-primary) 84%, var(--text)); }
+  .button.primary:hover { color: var(--xo-color-primary-text); background: color-mix(in srgb, var(--xo-color-primary) 84%, black); border-color: color-mix(in srgb, var(--xo-color-primary) 84%, black); }
   .button.ghost { background: transparent; border-color: transparent; }
   .button.ghost:hover { background: var(--xo-color-subtle); }
   .button.danger { color: var(--xo-color-danger); border-color: var(--xo-color-danger); }
@@ -1801,8 +1801,8 @@
   .xo-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
   .xo-confirm-actions button { min-width: 88px; }
   button.xo-confirm-danger { color: var(--xo-color-surface); background: var(--xo-color-danger); border-color: var(--xo-color-danger); }
-  button.xo-confirm-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--xo-color-danger) 88%, var(--text)); }
-  button.xo-confirm-ok:hover:not(:disabled) { background: color-mix(in srgb, var(--xo-kind, var(--xo-color-danger)) 88%, var(--text)); }
+  button.xo-confirm-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--xo-color-danger) 88%, black); }
+  button.xo-confirm-ok:hover:not(:disabled) { background: color-mix(in srgb, var(--xo-kind, var(--xo-color-danger)) 88%, black); }
   @media (max-width: 30rem) {
     .xo-confirm-actions { flex-direction: column-reverse; }
     .xo-confirm-actions button { width: 100%; }
