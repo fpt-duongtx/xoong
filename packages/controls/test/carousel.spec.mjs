@@ -36,6 +36,15 @@ describe('<xo-carousel>', () => {
     expect(q('.xo-carousel-count').hidden).toBe(true);
   });
 
+  it('keeps an aria-label the author wrote on the carousel itself', async () => {
+    document.body.innerHTML = '<xo-carousel aria-label="Mine"><section>a</section><section>b</section></xo-carousel>';
+    await new Promise((r) => setTimeout(r, 0));
+    const el = document.querySelector('xo-carousel');
+    expect(el.getAttribute('aria-label')).toBe('Mine');
+    el.setAttribute('label', 'Services');
+    expect(el.getAttribute('aria-label')).toBe('Mine');
+  });
+
   it('keeps a slide label the author wrote', async () => {
     document.body.innerHTML = '<xo-carousel><section aria-label="Intro">a</section><section>b</section></xo-carousel>';
     await new Promise((r) => setTimeout(r, 0));
@@ -168,6 +177,8 @@ describe('<xo-carousel>', () => {
     el.setAttribute('counter', '');
     expect(el.getAttribute('aria-label')).toBe('Gallery');
     expect(q('.xo-carousel-count').hidden).toBe(false);
+    el.removeAttribute('label');
+    expect(el.hasAttribute('aria-label')).toBe(false); // a label the carousel computed goes away with the attribute
   });
 
   it('a copy of a carousel that was already built (a view clones its content) is built again, not nested', async () => {

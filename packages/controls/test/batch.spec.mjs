@@ -42,6 +42,15 @@ describe('<xo-popover>', () => {
     t.click();
     document.querySelector('#out').dispatchEvent(new Event('pointerdown', { bubbles: true }));
     expect(pop.hidden).toBe(true);
+    pop.removeAttribute('label');
+    expect(pop.hasAttribute('aria-label')).toBe(false); // a label the popover computed goes away with the attribute
+  });
+  it('keeps an aria-label the author wrote when label is absent', async () => {
+    await mount('<div><button>Open</button><xo-popover aria-label="Mine">Hi</xo-popover></div>');
+    const pop = document.querySelector('xo-popover');
+    expect(pop.getAttribute('aria-label')).toBe('Mine');
+    pop.setAttribute('label', 'Notes');
+    expect(pop.getAttribute('aria-label')).toBe('Mine');
   });
 });
 
