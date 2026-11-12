@@ -42,6 +42,12 @@ describe('<xo-avatar>', () => {
     expect(el.querySelector('.ic[data-ic=user]')).toBeTruthy();
     expect(el.getAttribute('aria-label')).toBe('Unknown user');
   });
+  it('keeps an aria-label the author wrote, including after the name changes', async () => {
+    const el = await mount('<xo-avatar name="An Dao" status="ok" aria-label="Person"></xo-avatar>');
+    expect(el.getAttribute('aria-label')).toBe('Person');
+    el.setAttribute('name', 'Mai Pham');
+    expect(el.getAttribute('aria-label')).toBe('Person');
+  });
   it('shows the image once it loads and the initials when it fails', async () => {
     const el = await mount('<xo-avatar name="An Dao" src="/an.jpg"></xo-avatar>');
     const img = el.querySelector('img');

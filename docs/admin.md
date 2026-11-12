@@ -47,7 +47,7 @@ browser. Its application script is only `configure()`.
 * `xo-confirm="Delete {title}?"` asks first in a native dialog (`confirm()` from `@xoong/ui` replaces the browser's, labels in `confirmLabels`); `xo-confirm-title`, `xo-confirm-ok`, `xo-confirm-cancel` and `xo-confirm-kind` (`danger`, `warning`, `info`, `success`) tune it. `xo-notice="Saved"` raises a toast
   after success; from JavaScript `toast.show({ message, action: { label: 'Undo', run } })`.
 * Table: `column-picker` adds a "Columns" dropdown at the right of the search row to show and hide columns (`hidden-columns="email"` starts with some hidden, `columns-key="people"` remembers the choice in this browser, `xo-columns-change` tells your code); a header without a label is the field name in words (`createdAt` is "Created at"); Previous and Next are icon buttons (named by `aria-label`). `empty="..."` or a `<template slot="empty">`, `filters="q:Search"`, `page-sizes="10,25,50"`, "1–3 of 5" text, and a column format `publishedAt:Published:datetime`
-  (date, datetime, time, relative, number, localized); the same formats work anywhere as `{publishedAt | datetime}`.
+  (date, datetime, time, relative, number, localized); the same formats work anywhere as `{publishedAt | datetime}`. Any other attribute on `<xo-table>`, `<xo-pager>` or `<xo-form>` (`class`, `style`, `hidden`, `aria-*`, `data-*`, `size`, …) is on the element that gets rendered. `<xo-pager>` is the `<nav>` itself, so `<xo-pager hidden>` hides it. See Extending.
 
 ## Router: `<xo-router>`
 
@@ -223,6 +223,7 @@ from, state per path) with the DOM as a view; the rules come from the OpenAPI **
   fieldsets, arrays as rows with add/remove/up/down buttons, unions as one "Add <variant>" button each with the fields of the row's variant. Hints change it: `order`, `group` (a fieldset with
   a legend), `widget` (textarea, password, url, email, color, date, datetime, select, or the tag of any `XoControl`), `hidden` (kept in the model and sent, not drawn), `readOnly` (not drawn, not sent), `label`/`hint`.
   The same binder does the rest. An operation without a request schema (a multipart body) gets the flat generator, and `xoong check` XO255 warns when it cannot draw a required nested field.
+  `op` and `submit` are the form's own; every other attribute (`xo-notice`, `xo-then`, `novalidate`, `class`, …) is on the `<form>`.
 
 ## `<xo-dialog>`
 
@@ -249,9 +250,28 @@ available inside the view.
 
 ## Extending
 
-`@xoong/ui` is built on `defineTemplate(tag, (el, { host, client }) => Node)` from `@xoong/data/view`: a function
+`@xoong/ui` is built on `defineTemplate(tag, (el, { host, client, take }) => Node)` from `@xoong/data/view`: a function
 that turns an element into plain markup, which is then bound like hand-written markup. Your own components can use
-the same hook; keep them plain, one way to do each thing.
+the same hook; keep them plain, one way to do each thing. Reasons and the other libraries: [ADR-0014](decisions/0014-attributes-survive-templates.md).
+
+Every attribute the author writes on the host survives, on the first element root of the output. The shared layer does this after `expand` returns and before that node is inserted. A component does not opt in.
+
+* **`take(name)`** reads an attribute the component handles and removes it. The value is the string the author wrote, `""` when the attribute is present with no value, and `null` when it is absent. Call it for every attribute the component understands. An attribute that is left on the host is copied.
+* **`class`** is appended after the component's own classes (`xo-table wide`). **`style`** is the component's declarations, then `;`, then the author's, so the author wins a property. **Any other attribute** is set to the author's value, which replaces one the component set.
+* The value is copied raw. `{name}` and `p-*` are bound once, in the view's scope, on the rendered element. They are not bound on the host as well.
+* A `DocumentFragment` is snapshotted before it is inserted (`replaceWith` empties it). Every node is bound. The attributes go to the first element only. An output with no element (a text node, a comment, an empty fragment) is still inserted, and the attributes have nowhere to land.
+* `<xo-table>` takes `of`, `columns`, `sortable`, `selectable`, `page-size`, `page-sizes`, `filters`, `empty`, `title`, `status`, `cards`, `column-picker`, `hidden-columns`, `columns-key`. `<xo-pager>` takes `page-size` and `page-sizes` and returns its `<nav>`. `<xo-form>` takes `op`, `submit` and `xo-submit` (an author `xo-submit` is dropped; the form's `xo-submit` is `op`).
+
+```js
+defineTemplate('my-card', (el, { take }) => {
+  const h = document.createElement('h2');
+  h.className = 'card';
+  h.textContent = take('heading') ?? '';
+  return h; // class, style and any other attribute the author wrote land on this h2
+});
+```
+
+These tags expand only while `bindNode` is walking an `<xo-view>`. Written outside one, they stay in the tree and do nothing, and `xoong.css` sets `xo-table`, `xo-pager` and `xo-form` to `display: none` for as long as those tags are present (they used to show their raw children). An HTML `<template>` is inert in either place: the browser does not render its contents. Raw `{name}` text inside an `<xo-view>` is hidden while the view is not defined yet (`xo-view:not(:defined)`, unless the view is a prerender). The same stylesheet hides the page while a view still holds an unexpanded `xo-table`, `xo-pager` or `xo-form`, so the content under the view does not jump when the host is replaced. Defining the element is not enough: the view can start on a later turn when the module arrives after the document was parsed. A prerender has those tags only inside its saved template, so the page stays visible. That does not depend on `blocking="render"`. Adding `blocking="render"` to the module is recommended in Chromium and Safari, where it is supported: the browser then does not paint while the module downloads. Firefox ignores the attribute unless `dom.element.blocking.enabled` is set. With `xoong.css` the page stays hidden until the hosts are replaced, so Firefox does not shift either. Without the stylesheet, Firefox can still shift. A module that waits (`await`) before `configure()` can show raw `{name}` text once the view is defined and before it starts; the template hosts stay hidden. A prerendered page already shows the expanded markup. `<xo-form>` takes `op`, `submit` and `xo-submit`: the form's `xo-submit` is the operation, so an author `xo-submit` is dropped instead of sending a different operation than the one the fields were built from. A class that sets `display` (`.xo-pager` is `flex`, `.xo-form` is `grid`) would otherwise beat the user-agent `[hidden]` rule. `xoong.css`, `controls.css` and `richtext.css` end with an unlayered `[hidden] { display: none }`, so `hidden` hides, and a stylesheet loaded later still wins.
 
 ## Not done yet
 

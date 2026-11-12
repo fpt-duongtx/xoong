@@ -31,19 +31,19 @@ const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>'
 /** A header from a field name: `createdAt`, `created_at` and `created-at` become "Created at"; a dotted path reads as words (`author.name` is "Author name"). */
 const humanize = (/** @type {string} */ field) => { const s = field.replace(/[._-]+/g, ' ').replace(/([a-z\d])([A-Z])/g, '$1 $2').toLowerCase() ?? field; return s.charAt(0).toUpperCase() + s.slice(1); };
 
-defineTemplate('xo-table', (el, { host }) => {
-  const of = el.getAttribute('of') || 'items';
-  const sortable = el.hasAttribute('sortable');
-  const pageSize = Number(el.getAttribute('page-size')) || 0;
-  const columns = (el.getAttribute('columns') || '').split(',').map((c) => c.trim()).filter(Boolean).map((c) => {
+defineTemplate('xo-table', (el, { host, take }) => {
+  const of = take('of') || 'items';
+  const sortable = take('sortable') != null;
+  const pageSize = Number(take('page-size')) || 0;
+  const columns = (take('columns') || '').split(',').map((c) => c.trim()).filter(Boolean).map((c) => {
     const [field, label, fmt] = c.split(':'); // field, optional label, optional display format (date, datetime, time, relative, number, localized)
     return { field, label: label || humanize(field), fmt }; // no label: "createdAt" is shown as "Created at", not as the field name
   });
   const cellOf = new Map();
   const rest = [];
   const bulk = [];
-  let empty = el.getAttribute('empty') ? esc(el.getAttribute('empty') ?? '') : '';
-  const selectable = el.hasAttribute('selectable');
+  let empty = esc(take('empty') ?? '');
+  const selectable = take('selectable') != null;
   /** The child as markup, without its slot attribute. */
   const unslotted = (child) => { const copy = /** @type {Element} */ (child.cloneNode(true)); copy.toggleAttribute('slot', false); return copy.outerHTML; };
   for (const child of [...el.childNodes]) {
@@ -54,29 +54,30 @@ defineTemplate('xo-table', (el, { host }) => {
     else rest.push(child);
   }
   const actions = rest.map((n) => (n.nodeType === 1 ? n.outerHTML : n.textContent)).join('').trim();
-  const filters = (el.getAttribute('filters') || '').split(',').map((f) => f.trim()).filter(Boolean).map((f) => { const [field, label] = f.split(':'); return { field, label: label || columns.find((c) => c.field === field)?.label || field }; });
-  const sizes = (el.getAttribute('page-sizes') || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const filters = (take('filters') || '').split(',').map((f) => f.trim()).filter(Boolean).map((f) => { const [field, label] = f.split(':'); return { field, label: label || columns.find((c) => c.field === field)?.label || field }; });
+  const sizes = (take('page-sizes') || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const hidden = take('hidden-columns') || '', key = take('columns-key');
   if (pageSize && host.params.limit == null) host.params = { ...host.params, limit: pageSize };
 
   const tickAll = selectable ? `<th scope="col"><input type="checkbox" xo-select="all:${esc(of)}" aria-label="Select all rows" xo-t="aria-label:xoong.table.selectAll"></th>` : '';
   const tickRow = selectable ? '<td><input type="checkbox" xo-select aria-label="Select row" xo-t="aria-label:xoong.table.selectRow"></td>' : '';
   const head = columns.map((c) => `<th scope="col" data-col="${esc(c.field)}">${sortable ? `<button type="button" xo-param="sort~=${esc(c.field)}">${esc(c.label)}</button>` : esc(c.label)}</th>`).join('');
   const cellText = (c) => (['date', 'datetime', 'time', 'relative'].includes(c.fmt) ? `<time datetime="{${esc(c.field)}}">{${esc(c.field)} | ${c.fmt}}</time>` : c.fmt ? `{${esc(c.field)} | ${esc(c.fmt)}}` : `{${esc(c.field)}}`);
-  const titleField = el.getAttribute('title') || columns[0]?.field; // the card title of the narrow layout
-  const statusField = el.getAttribute('status');
+  const titleField = take('title') || columns[0]?.field; // the card title of the narrow layout
+  const statusField = take('status');
   const cells = columns.map((c) => `<td data-col="${esc(c.field)}" data-label="${esc(c.label)}"${c.field === titleField ? ' data-title' : ''}${c.field === statusField ? ' data-status' : ''}>${cellOf.get(c.field) ?? cellText(c)}</td>`).join('');
   const box = document.createElement('div');
-  box.className = el.hasAttribute('cards') ? 'xo-table xo-cards' : 'xo-table'; // `cards`: rows become cards in a narrow pane (the theme draws them)
+  box.className = take('cards') != null ? 'xo-table xo-cards' : 'xo-table'; // `cards`: rows become cards in a narrow pane (the theme draws them)
   const search = filters.map((f) => `<input type="search" xo-param="${esc(f.field)}" placeholder="${esc(f.label)}" aria-label="${esc(f.label)}">`).join('');
   const bar = bulk.length ? `<div class="xo-bulk" xo-if="$selectedCount"><span xo-t="xoong.table.selected">{$selectedCount} selected</span>${bulk.join('')}</div>` : '';
-  const picker = el.hasAttribute('column-picker') && columns.length > 1
+  const picker = take('column-picker') != null && columns.length > 1
     ? `<details class="xo-columns"><summary xo-t="xoong.table.columns">Columns</summary><div class="xo-columns-panel" role="group" aria-label="Columns" xo-t="aria-label:xoong.table.columns">${columns.map((c) => `<label><input type="checkbox" value="${esc(c.field)}" checked><span>${esc(c.label)}</span></label>`).join('')}</div></details>` : '';
   box.innerHTML = `${bar}${search || picker ? `<div class="xo-filters">${search}${picker}</div>` : ''}<table>
   <thead><tr>${tickAll}${head}${actions ? '<th scope="col"><span class="xo-visually-hidden" xo-t="xoong.table.actions">Actions</span></th>' : ''}</tr></thead>
   <tbody><tr xo-each="${esc(of)}">${tickRow}${cells}${actions ?`<td class="xo-actions">${actions}</td>` : ''}</tr></tbody>
 </table>${empty ? `
 <div class="xo-empty" xo-if="!${esc(of)}"><div xo-if="!$loading"><div xo-if="!$error">${empty}</div></div></div>` : ''}${pageSize ? pagerMarkup({ pageSize, sizes }) : ''}`;
-  if (picker) columnPicker(box, columns.map((c) => c.field), el.getAttribute('hidden-columns') || '', el.getAttribute('columns-key'));
+  if (picker) columnPicker(box, columns.map((c) => c.field), hidden, key);
   return box;
 });
 

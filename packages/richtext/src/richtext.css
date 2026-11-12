@@ -43,3 +43,5 @@
     .xo-richtext-dialog { width: 100vw; height: 100dvh; max-height: none; margin: 0; border: 0; border-radius: 0; }
   }
 }
+/* Unlayered, so `xo-richtext { display: block }` does not keep a hidden editor on screen. A stylesheet loaded later still wins. */
+[hidden] { display: none; }

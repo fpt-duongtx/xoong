@@ -26,12 +26,11 @@ export function pagerMarkup({ pageSize, sizes = [] }) {
 </nav>`;
 }
 
-defineTemplate('xo-pager', (el, { host }) => {
-  const pageSize = Number(el.getAttribute('page-size')) || 25;
+defineTemplate('xo-pager', (el, { host, take }) => {
+  const pageSize = Number(take('page-size')) || 25;
   if (host.params.limit == null) host.params = { ...host.params, limit: pageSize }; // the view asks for one page
-  const sizes = (el.getAttribute('page-sizes') || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const sizes = (take('page-sizes') || '').split(',').map((s) => s.trim()).filter(Boolean);
   const box = document.createElement('div');
-  box.style.display = 'contents'; // the pager sits where the element was, in the layout of its parent
   box.innerHTML = pagerMarkup({ pageSize, sizes });
-  return box;
+  return box.firstElementChild; // the <nav> itself, so an attribute written on <xo-pager> (hidden, id, …) applies to it
 });

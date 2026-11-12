@@ -150,6 +150,9 @@
   .xo-form > .xo-submit, .xo-form-actions > .xo-submit { justify-self: start; color: var(--xo-color-accent-text); background: var(--xo-color-accent); border-color: transparent; }
 
   xo-view:not(:defined):not(:has(> template[data-xo-template])) { visibility: hidden; } /* raw {name} templates are not shown while the script loads; a prerendered view (@xoong/ssr keeps its template aside) is the content and stays visible */
+  /* Hide the page while a view still holds an unexpanded host, so the content under it does not jump when the host is replaced. Defining the element is not enough: #start can be later (the module arrived after the document was parsed). A prerender has no host tag in the tree (it sits in the saved template), so the page stays visible. This does not depend on blocking="render". */
+  body:has(xo-view :is(xo-table, xo-pager, xo-form)):not(:has(xo-view :is(.xo-table, .xo-pager, .xo-form))) { visibility: hidden; }
+  xo-table, xo-pager, xo-form { display: none; } /* these tags are replaced inside <xo-view> and are never defined. Until then, and outside a view where they are never expanded, the raw host and its children are not shown and take no box */
   .xo-confirm { max-width: 26rem; padding: var(--xo-space-4); color: inherit; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); }
   .xo-confirm::backdrop { background: rgb(0 0 0 / 0.45); }
   .xo-confirm-actions { display: flex; gap: var(--xo-space-2); justify-content: flex-end; margin-top: var(--xo-space-3); }
@@ -185,3 +188,5 @@
   .xo-modal__body .xo-form-actions { position: sticky; bottom: calc(-1 * var(--xo-modal-pad)); z-index: 1; margin: 0 calc(-1 * var(--xo-modal-pad)) calc(-1 * var(--xo-modal-pad)); padding: var(--xo-space-2) var(--xo-modal-pad); background: var(--xo-color-surface); border-top: 1px solid var(--xo-color-border); }
   .xo-modal__foot { display: flex; align-items: center; justify-content: flex-end; gap: var(--xo-space-2); padding: var(--xo-space-2) var(--xo-space-3); border-top: 1px solid var(--xo-color-border); }
 }
+/* Unlayered, so it beats every layered display ( .xo-pager is flex, .xo-form is grid, and the same for a control host or a rule in mist.css ). A stylesheet loaded later still wins. */
+[hidden] { display: none; }

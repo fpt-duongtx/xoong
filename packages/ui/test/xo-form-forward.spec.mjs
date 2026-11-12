@@ -25,10 +25,11 @@ describe('<xo-form> hands the modifiers of the action to the form it draws', () 
     expect(form.getAttribute('xo-guard')).toBe('off');
     expect(form.getAttribute('xo-with')).toBe('role=admin');
   });
-  it('attributes that are not modifiers are not copied', async () => {
+  it('attributes that are not modifiers are copied too', async () => {
     screen = await mount('<xo-view><xo-form op="createPerson" class="wide" data-x="1"></xo-form></xo-view>', { api: mockApi(table, { createPerson: () => ({ id: 1 }) }) });
     await screen.settle();
     const form = screen.$('form[xo-submit]');
-    expect(form.hasAttribute('data-x')).toBe(false);
+    expect(form.getAttribute('data-x')).toBe('1');
+    expect(form.getAttribute('class')).toBe('xo-form wide');
   });
 });
