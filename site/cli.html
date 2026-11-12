@@ -403,7 +403,7 @@ xoong dev  http://127.0.0.1:5173   (root: /home/you/people-app)
 <li>an inline <code>&lt;script&gt;</code> is removed (it cannot run under <code>script-src 'self'</code>). <code>--inline-scripts error</code> also exits 1. JSON and JSON-LD stay. When <code>.xoong/operations.json</code> exists it is also written at <code>/operations.json</code>, and an import of the dot path is rewritten to that.</li>
 <li>the default still writes the files you wrote: nothing is minified or bundled unless you ask.</li>
 </ul>
-<pre class="plain" data-lang="bash" tabindex="0"><code>xoong build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]... [--inline-scripts remove|error] [--no-preload] [--minify] [--bundle]</code></pre>
+<pre class="plain" data-lang="bash" tabindex="0"><code>xoong build [--root .] [--out dist] [--base /admin] [--include path]... [--exclude glob]... [--inline-scripts remove|error] [--no-preload] [--minify] [--bundle] [--budget KB]</code></pre>
 <div class="table-wrap" tabindex="0"><table class="names">
 <thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
 <tbody>
@@ -416,6 +416,7 @@ xoong dev  http://127.0.0.1:5173   (root: /home/you/people-app)
 <tr><td><code>--no-preload</code></td><td>off</td><td>Do not add &lt;link rel="modulepreload"&gt; to the pages.</td></tr>
 <tr><td><code>--minify</code></td><td>off</td><td>Minify the scripts and stylesheets (and JSON) with the esbuild your project has installed; the output stays strict-CSP and the imports are rewritten as usual. Without esbuild installed the build warns and writes the files as they are.</td></tr>
 <tr><td><code>--bundle</code></td><td>off</td><td>Bundle scripts into CSP-clean ESM with the esbuild your project has installed. Static imports go into the entry; a dynamic import() stays its own chunk. Without esbuild the build warns and copies every module. CSS stays separate.</td></tr>
+<tr><td><code>--budget</code></td><td>none</td><td>Print the first load of every page (HTML, stylesheets, scripts and their static imports, gzip, no images or data) and exit 1 when one is above this many KB. Also <code>"build": { "budget": 120 }</code> in xoong.config.json. build-report.json always lists the sizes.</td></tr>
 </tbody></table></div>
 <p>HTML that is not a page (a partial, a fixture, a draft) is kept out with <code>--exclude</code>; a file that a page references is still published. What the build cannot see, such as a <code>fetch()</code> of a data file or an image named in JavaScript, is added with <code>--include</code>.</p>
 <xo-tabs label="What changes" class="example">

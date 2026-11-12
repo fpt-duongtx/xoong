@@ -90,7 +90,7 @@ function array(node, path, text, depth) {
   let adds;
   if (item.t === 'union') {
     row = Object.entries(item.map).map(([v, n]) => `<div class="xo-variant" xo-if="type=${esc(v)}">${rowTitle(n.title ?? label(v))}${fields(n, rowPath, depth + 1, [item.key])}</div>`).join('');
-    adds = Object.keys(item.map).map((v) => `<button type="button" xo-add="${esc(path)}" xo-with="${esc(item.key)}=${esc(v)}">Add ${esc(label(item.map[v].title ?? v))}</button>`).join('');
+    adds = Object.keys(item.map).map((v) => `<button type="button" xo-add="${esc(path)}" xo-with="${esc(item.key)}=${esc(v)}"><span xo-t="xoong.form.add">Add</span> ${esc(label(item.map[v].title ?? v))}</button>`).join('');
   } else {
     row = PRIMITIVE.has(item.t) ? control({ ...item, title: item.title ?? `${text} item` }, rowPath, text) : item.t === 'object' ? rowTitle(item.title ?? '') + fields(item, rowPath, depth + 1) : '';
     adds = `<button type="button" xo-add="${esc(path)}" xo-t="xoong.form.add">Add</button>`;

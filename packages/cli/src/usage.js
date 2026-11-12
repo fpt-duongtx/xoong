@@ -84,6 +84,7 @@ export const USAGE = [
       { flag: '--no-preload', doc: 'Do not add <link rel="modulepreload"> to the pages.' },
       { flag: '--minify', doc: 'Minify the scripts and stylesheets (and JSON) with the esbuild your project has installed; the output stays strict-CSP and the imports are rewritten as usual. Without esbuild installed the build warns and writes the files as they are.' },
       { flag: '--bundle', doc: 'Bundle scripts into CSP-clean ESM with the esbuild your project has installed. Static imports go into the entry; a dynamic import() stays its own chunk. Without esbuild the build warns and copies every module. CSS stays separate.' },
+      { flag: '--budget', value: 'KB', doc: 'Print the first load of every page (HTML, stylesheets, scripts and their static imports, gzip, no images or data) and exit 1 when one is above this many KB. Also `"build": { "budget": 120 }` in xoong.config.json. build-report.json always lists the sizes.' },
     ],
   },
   {
