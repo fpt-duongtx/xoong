@@ -25,7 +25,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest # npm Trusted Publishing (OIDC) needs a GitHub-hosted runner; CI and Pages run on the home server
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: 24
