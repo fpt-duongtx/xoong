@@ -76,12 +76,16 @@ try {
     process.exitCode = problems.length ? 1 : 0;
   } else if (cmd === 'build') {
     const { build, CSP } = await import('./build.js');
-    const r = await build({ root: a.value('--root', '.'), out: a.value('--out', 'dist'), base: a.value('--base', ''), include: a.all('--include'), exclude: a.all('--exclude'), preload: a.has('--no-preload') ? false : undefined, minify: a.has('--minify') ? true : undefined, bundle: a.has('--bundle') ? true : undefined, inlineScripts: a.value('--inline-scripts') });
+    const r = await build({ root: a.value('--root', '.'), out: a.value('--out', 'dist'), base: a.value('--base', ''), include: a.all('--include'), exclude: a.all('--exclude'), preload: a.has('--no-preload') ? false : undefined, minify: a.has('--minify') ? true : undefined, bundle: a.has('--bundle') ? true : undefined, inlineScripts: a.value('--inline-scripts'), budget: a.value('--budget') === undefined ? undefined : Number(a.value('--budget')) });
     const total = r.files.reduce((n, f) => n + f.bytes, 0);
     const gz = r.files.reduce((n, f) => n + f.gzip, 0);
     console.log(`built ${r.files.length} files into ${r.out}${r.minified ? ' (minified)' : ''}${r.bundled ? ' (bundled)' : ''} (${(total / 1024).toFixed(1)} KB, ${(gz / 1024).toFixed(1)} KB gzip)`);
     for (const w of r.warnings) console.warn(`warning: ${w}`);
     if (r.preloads != null) console.log(`${r.preloads} modulepreload links; pass --no-preload to omit`);
+    if (r.firstLoad.some((p) => p.over !== undefined)) {
+      console.log('\nfirst load per page (gzip: HTML, stylesheets, scripts and their static imports):');
+      for (const p of r.firstLoad) console.log(`  ${p.over ? 'OVER ' : 'ok   '} ${(p.gzip / 1024).toFixed(1).padStart(6)} KB  ${p.files} files  ${p.page}`);
+    }
     console.log(`\nruns under:  Content-Security-Policy: ${CSP}`);
     if (r.failed) process.exitCode = 1;
   } else if (cmd === 'dev') {

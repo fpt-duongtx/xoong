@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { mount, mockApi } from '@xoong/test';
 import { define, XoControl, html } from '@xoong/core';
 import '@xoong/ui';
+import { addMessages, resetI18n } from '@xoong/i18n';
 
 const str = (extra = {}) => ({ t: 'string', ...extra });
 const localized = { t: 'object', nullable: true, pruneEmpty: true, emptyAs: 'null', title: 'Subtitle', props: { en: str({ title: 'English' }), vi: str({ title: 'Vietnamese' }) } };
@@ -108,6 +109,14 @@ describe('<xo-form> from a request schema with nesting, arrays, unions and hints
     screen.$('[name="faq[0].q"]').value = '';
     screen.$('[name="faq[0].q"]').dispatchEvent(new Event('input', { bubbles: true }));
     expect(screen.$('form').model.errors['faq[0].q']).toBe('Please fill in this field.');
+  });
+
+  it('an application catalog replaces the built-in words, including "Add" on a union variant button (this one was a literal)', async () => {
+    addMessages('en', { 'xoong.form.add': 'Plus' });
+    try {
+      screen = await edit(mockApi(table, { getPage: () => record }));
+      expect(screen.texts('.xo-array-add button').filter((t) => /block/i.test(t))).toEqual(['Plus Text block', 'Plus Image block']);
+    } finally { resetI18n(); }
   });
 
   it('an array of unions: one add button per variant, and each row shows the fields of its variant (the tag itself is not a field)', async () => {

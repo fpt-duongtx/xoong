@@ -65,6 +65,64 @@ export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; con
 
 const STATIC_IMPORT = /(?:\bimport\s*(?:[\w*${}\s,]*?\bfrom\s*)?|\bexport\s+(?:\*(?:\s+as\s+\w+)?|\{[^}]*\})\s*from\s*)(['"])([^'"\n]+)\1/g;
 
+/** The output path a root-absolute URL points at (the `base` prefix removed), or null for another origin or path. */
+function outPathOf(url, basePath) {
+  const clean = url.split(/[?#]/)[0];
+  if (basePath ? !clean.startsWith(`${basePath}/`) : !clean.startsWith('/') || clean.startsWith('//')) return null;
+  return basePath ? clean.slice(basePath.length) : clean;
+}
+
+/** Add to `seen` every module `at` imports statically, and theirs. A dynamic import() stays out: it is lazy. */
+function followImports(written, basePath, at, seen) {
+  const code = written.get(at);
+  if (typeof code !== 'string') return;
+  for (const m of code.matchAll(STATIC_IMPORT)) {
+    const target = outPathOf(m[2], basePath);
+    if (!target || seen.has(target) || !/\.m?js$/.test(target) || !written.has(target)) continue;
+    seen.add(target);
+    followImports(written, basePath, target, seen);
+  }
+}
+
+/**
+ * What a first visit downloads, per page: the HTML, its local stylesheets, and the module scripts with every static import under them
+ * (a page with `<xo-router>` also gets the router, which loads on demand). Images, fonts and data are not counted.
+ * @param {Map<string, Buffer | string>} written output path -> content
+ * @param {string} basePath
+ * @returns {{ page: string, files: number, bytes: number, gzip: number }[]}
+ */
+export function firstLoad(written, basePath) {
+  const router = [...written.keys()].find((k) => k.endsWith('/@xoong/ui/src/router.js'));
+  const out = [];
+  for (const [page, html] of written) {
+    if (typeof html !== 'string' || !/\.html?$/i.test(page)) continue;
+    const used = new Set([page]);
+    const visit = (/** @type {any} */ node) => {
+      for (const child of node.childNodes ?? []) visit(child);
+      if (!node.tagName) return;
+      const attr = (/** @type {string} */ n) => node.attrs.find((/** @type {{ name: string }} */ a) => a.name === n)?.value;
+      const target = (node.tagName === 'link' && /\bstylesheet\b/.test(attr('rel') ?? '') && attr('href')) || (node.tagName === 'script' && attr('type') === 'module' && attr('src'));
+      const path = target ? outPathOf(target, basePath) : null;
+      if (!path || !written.has(path)) return;
+      used.add(path);
+      if (node.tagName === 'script') followImports(written, basePath, path, used);
+    };
+    visit(parse(html, { sourceCodeLocationInfo: false }));
+    if (router && /<xo-router[\s>]/i.test(html) && !used.has(router)) { used.add(router); followImports(written, basePath, router, used); }
+    let bytes = 0;
+    let gzip = 0;
+    for (const p of used) {
+      const content = written.get(p);
+      const buf = typeof content === 'string' ? Buffer.from(content) : content;
+      if (!buf) continue;
+      bytes += buf.length;
+      gzip += gzipSync(buf).length;
+    }
+    out.push({ page, files: used.size, bytes, gzip });
+  }
+  return out.sort((a, b) => a.page.localeCompare(b.page));
+}
+
 /**
  * Modules are fetched one import level at a time, so a chain of N modules costs N round trips. The build knows the whole graph (static imports only;
  * a dynamic import() stays lazy): every page lists the modules its scripts pull in as `<link rel="modulepreload">`, ahead of its first module script.
@@ -73,22 +131,8 @@ const STATIC_IMPORT = /(?:\bimport\s*(?:[\w*${}\s,]*?\bfrom\s*)?|\bexport\s+(?:\
  */
 export function preloadModules(written, basePath) {
   let count = 0;
-  const toOut = (url) => {
-    const clean = url.split(/[?#]/)[0];
-    if (basePath ? !clean.startsWith(`${basePath}/`) : !clean.startsWith('/') || clean.startsWith('//')) return null;
-    return basePath ? clean.slice(basePath.length) : clean;
-  };
-  /** @param {string} at @param {Set<string>} seen */
-  const follow = (at, seen) => {
-    const code = written.get(at);
-    if (typeof code !== 'string') return;
-    for (const m of code.matchAll(STATIC_IMPORT)) {
-      const target = toOut(m[2]);
-      if (!target || seen.has(target) || !/\.m?js$/.test(target) || !written.has(target)) continue;
-      seen.add(target);
-      follow(target, seen);
-    }
-  };
+  const toOut = (/** @type {string} */ url) => outPathOf(url, basePath);
+  const follow = (/** @type {string} */ at, /** @type {Set<string>} */ seen) => followImports(written, basePath, at, seen);
   for (const [page, html] of written) {
     if (typeof html !== 'string' || !/\.html?$/i.test(page)) continue;
     /** @type {string[]} */ const entries = [];
@@ -119,10 +163,10 @@ export function preloadModules(written, basePath) {
 }
 
 /**
- * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[], preload?: boolean, minify?: boolean, bundle?: boolean, inlineScripts?: string, packages?: string[] }} [options]
- * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string, minified: boolean, bundled: boolean, failed: boolean, preloads: number | null }>}
+ * @param {{ root?: string, out?: string, base?: string, include?: string[], exclude?: string[], preload?: boolean, minify?: boolean, bundle?: boolean, inlineScripts?: string, budget?: number, packages?: string[] }} [options]
+ * @returns {Promise<{ out: string, files: { path: string, bytes: number, gzip: number }[], warnings: string[], csp: string, minified: boolean, bundled: boolean, failed: boolean, preloads: number | null, firstLoad: { page: string, files: number, bytes: number, gzip: number, over?: boolean }[] }>}
  */
-export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, preload, minify, bundle, inlineScripts, packages: extra } = {}) {
+export async function build({ root = '.', out = 'dist', base = '', include = [], exclude, preload, minify, bundle, inlineScripts, budget, packages: extra } = {}) {
   const rootDir = await realpath(resolve(root)); // real path: packages are found by theirs, so an app inside a symlinked package must compare equal
   // the output folder may not exist yet: resolve the part that does
   const realOut = async (p) => { try { return await realpath(p); } catch { const up = dirname(p); return up === p ? p : join(await realOut(up), basename(p)); } };
@@ -435,6 +479,10 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
 
   const preloads = (preload ?? config.build?.preload ?? true) ? preloadModules(written, basePath) : null;
 
+  const limitKb = budget ?? config.build?.budget;
+  if (limitKb !== undefined && !(Number(limitKb) > 0)) throw new Error(`xoong build: budget must be a number of KB above 0, not "${limitKb}"`);
+  const loads = firstLoad(written, basePath).map((p) => (limitKb === undefined ? p : { ...p, over: p.gzip > Number(limitKb) * 1024 }));
+
   const report = [];
   for (const [outPath, content] of written) {
     const dest = join(outDir, outPath);
@@ -444,9 +492,9 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     report.push({ path: outPath, bytes: buf.length, gzip: gzipSync(buf).length });
   }
   report.sort((a, b) => a.path.localeCompare(b.path));
-  await writeFile(join(outDir, 'build-report.json'), JSON.stringify({ csp: CSP, minified, bundled, files: report, warnings }, null, 2) + '\n');
+  await writeFile(join(outDir, 'build-report.json'), JSON.stringify({ csp: CSP, minified, bundled, files: report, firstLoad: loads, warnings }, null, 2) + '\n');
   void copyFile;
-  return { out: outDir, files: report, warnings, csp: CSP, minified, bundled, failed: inlineMode === 'error' && removedInline > 0, preloads };
+  return { out: outDir, files: report, warnings, csp: CSP, minified, bundled, failed: (inlineMode === 'error' && removedInline > 0) || loads.some((p) => p.over), preloads, firstLoad: loads };
 }
 
 /** esbuild as the project has it installed (xoong does not depend on it); null when it is not there. */

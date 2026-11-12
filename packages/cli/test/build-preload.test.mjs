@@ -60,3 +60,30 @@ describe('xoong build: modulepreload', () => {
     expect(written.get('/p.html')).not.toContain('modulepreload');
   });
 });
+
+describe('xoong build: first load per page and --budget', () => {
+  it('counts the HTML, the stylesheets and the static module graph, never a dynamic import, and a page with no script is only its HTML', async () => {
+    const root = await app();
+    await writeFile(join(root, 'index.html'), '<!doctype html><html><head><link rel="stylesheet" href="/s.css"></head><body><script type="module" src="/app.js"></script></body></html>');
+    await writeFile(join(root, 's.css'), 'body{margin:0}');
+    const r = await build({ root, out: join(root, 'dist') });
+    const index = r.firstLoad.find((p) => p.page === '/index.html');
+    expect(index.files).toBe(6); // page, css, app, a, sub/b, c: not lazy.js
+    const plain = r.firstLoad.find((p) => p.page === '/plain.html');
+    expect(plain.files).toBe(1);
+    expect(index.gzip).toBeGreaterThan(plain.gzip);
+    const report = JSON.parse(await readFile(join(root, 'dist/build-report.json'), 'utf8'));
+    expect(report.firstLoad.map((p) => p.page)).toEqual(['/index.html', '/plain.html', '/some.html']);
+    expect(r.failed).toBe(false);
+  });
+
+  it('a budget marks the pages over it and fails the build; a bad budget is refused', async () => {
+    const root = await app();
+    const r = await build({ root, out: join(root, 'dist'), budget: 0.2 });
+    expect(r.firstLoad.find((p) => p.page === '/index.html').over).toBe(true);
+    expect(r.firstLoad.find((p) => p.page === '/plain.html').over).toBe(false);
+    expect(r.failed).toBe(true);
+    expect((await build({ root, out: join(root, 'dist2'), budget: 50 })).failed).toBe(false);
+    await expect(build({ root, out: join(root, 'dist3'), budget: Number('x') })).rejects.toThrow(/budget/);
+  });
+});
