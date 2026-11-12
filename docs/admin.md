@@ -147,6 +147,20 @@ tests see plain markup).
 
 Other children (typically buttons) form the actions cell. For layouts the table cannot express, write the table by hand with `xo-each`; it composes with everything else.
 
+### A sticky column
+
+By default nothing sticks. The actions cell scrolls away with the rest of the row, and the frame sets no scroll padding and no scroll margin. The other cells scroll as they do on a table with no sticky column.
+
+To keep one column in view, put `xo-sticky-start` or `xo-sticky-end` on its `th` and on each of its `td`s. Or put `sticky` on a frame that stays in the page: `sticky="start"` sticks `tr > :first-child` to the inline-start edge, `sticky="end"` sticks `tr > :last-child` to the inline-end edge, and `sticky="start end"` sticks one column on each edge. The tokens are lowercase. A right-to-left table mirrors both. The sticky cells use an opaque background and a 1px border on the edge that meets the scrolling cells. The class and the attribute share those rules.
+
+`<xo-table sticky="end">` works as written: the table keeps every attribute you put on it when it expands (see [ADR-0014](decisions/0014-attributes-survive-templates.md)), so `sticky` lands on the generated `div.xo-table`. A hand-written `.xo-table`, or cells marked with the classes, work the same.
+
+With `selectable`, the first cell is the select-all checkbox, then the data columns, then the actions cell when the row has buttons. `sticky="start"` sticks that checkbox, not the first data column. To stick the name column, put `xo-sticky-start` on the name cells. `sticky="end"` sticks the last cell. A hidden first column is still `:first-child`, so that hidden cell is the one that sticks.
+
+One column per side. The attribute only sticks the first cell and the last cell. A second cell with the same class uses the same edge and paints over the first.
+
+A sticky column can cover a focused cell in the column beside it. That is WCAG 2.2 SC 2.4.11 (Focus Not Obscured, Minimum): keep the sticky column narrow, or use `cards` when the pane is narrow. Rainlet closed QA-3 that way, with `cards` on the articles, pages and inbox tables. This stylesheet does not scroll neighbours out from under the sticky column.
+
 ### Narrow panes: `cards`
 
 `<xo-table cards>` asks the theme to draw each row as a card when the table's own box is narrow (a container query, not the screen). The table only provides the hooks: the frame gets the class `xo-cards`, every `td` has `data-label` (the column label, also handy in tests), the first column (or `title="field"`) is the card title (`data-title`) and `status="field"` marks the status cell (`data-status`); the select and actions cells are recognised by their own markup. The Mist skin in `design/brand-kit/css/mist.css` is an example.
