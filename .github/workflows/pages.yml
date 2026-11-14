@@ -35,7 +35,7 @@ jobs:
         run: |
           node packages/cli/src/cli.js sync site/demo/openapi.json --hints site/demo/xoong.hints.json --out site/.xoong
           node packages/cli/src/cli.js build --root site --out _site --base "/${{ github.event.repository.name }}" --include img --include brand --include fonts --include reference.json --include search-index.json --include llms.txt
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
       - id: deployment
