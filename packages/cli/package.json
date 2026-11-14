@@ -15,7 +15,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "parse5": "^8.1.0",
+    "parse5": "^8.1.1",
     "yaml": "^2.8.0",
     "@xoong/server": "0.0.54",
     "@xoong/core": "0.0.54",
