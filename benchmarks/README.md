@@ -26,8 +26,9 @@ Regression tests: `packages/data/test/rerender.spec.mjs`, `packages/data/test/ro
 
 ## What is not done yet
 
-The richer nested "orders" screen, the written specification (`SPEC.md`) with a parity report across stacks, and the normalisation list (no icons, fonts, source maps; load average checks) were
-requested after the numbers above were taken and are not done: the committed numbers are of the flat screen only.
+The richer nested "orders" screen **for the other stacks**, the written specification (`SPEC.md`) with a parity report across stacks, and the normalisation list (no icons, fonts, source maps; load average checks) were
+requested after the numbers above were taken and are not done: the cross-stack numbers are of the flat screen only. A nested workload (accounts > orders > line items) exists for xoong alone in
+[`perf/`](perf) (see "xoong-only performance work" below); it has no counterpart in React, Vue or Angular, so it is not a comparison.
 
 ## What is measured
 
@@ -37,10 +38,31 @@ requested after the numbers above were taken and are not done: the committed num
 | `effort.mjs` | Files, lines of code (markup, script, style), direct dependencies, installed packages and the list of libraries (with versions and purpose) of the four screens. | `results/effort.json` |
 | `cli.mjs` | The `xoong` command: start-up, `sync` (against `openapi-typescript`), `check` on 1 / 100 / 1,000 screens, `build` (against `vite build` and `ng build`), dev server start (against `vite` and `ng serve`), `render`. | `results/cli.json` |
 | `mcp.mjs` | `xoong-mcp` over real stdio JSON-RPC: start-up, `tools/list`, latency per tool (p50 / p95), throughput, memory; against a one-tool server on the official TypeScript SDK. | `results/mcp.json` |
+| `rerender.mjs` | What the DOM does when one thing changes, on the 1,000-row screen, for all four stacks (see "Re-render probe" above). | `results/rerender.json` |
 | `install.mjs` | Cold-cache install time, packages and `node_modules` size. Needs the npm registry. | `results/install.json` |
 
 Not measured, and said so on the page: how long a person takes to learn xoong or to build the screen; how well an AI assistant writes xoong (the scoring
 harness in `tools/benchmark/` exists, no model was run, so there is no score); real devices, Firefox, Safari; other frameworks and component libraries; live updates.
+
+## xoong-only performance work (`perf/`)
+
+Not a comparison with other stacks: a profile of where xoong's own bytes and time go, so a change has to show on more than one workload. Nothing is tuned; the screens are the markup a user writes.
+
+| Script | Does | Output |
+|---|---|---|
+| `perf/profile.mjs` | A dissection of the flat screen, each instrument on a fresh page: bytes by package, JS coverage with call counts, a CPU profile, an allocation profile, a Chromium trace (layout, style, paint, GC), the load waterfall, and effect runs and DOM changes per update path. | `results/profile.json` (`profile-before-lazy.json` is the profile before the router and dialogs became lazy; `perf-baseline.json` the baseline) |
+| `perf/report.mjs` | Writes `perf/PROFILE.md` from `results/profile.json`, and reads `perf/ranking.md` (the ranked opportunities). | `perf/PROFILE.md` |
+| `perf/run.mjs` | The xoong-only suite on three workloads: the flat people screen, nested lists (`perf/nested`, 200 x 5 x 4 and 1,000 accounts), and other pages (`examples/admin`, pages of the documentation site). `--runs`, `--only flat,nested,admin,docs`. | `results/perf.json` (default; not committed) |
+
+`perf/CHANGES.md` is the log of changes, one revertable change set each, with the evidence, the measured effect (including the ones measured and rejected) and the risk. Run from the repository root:
+
+```bash
+node benchmarks/perf/profile.mjs && node benchmarks/perf/report.mjs
+node benchmarks/perf/run.mjs --runs 5
+```
+
+These scripts are not in `package.json`'s scripts and, like the rest, need the root `npm ci` and a Chromium Playwright can launch. Re-run `profile.mjs` and `report.mjs` after a change to the runtime and update
+`perf/CHANGES.md` with the numbers; `perf/PROFILE.md` is generated, do not edit it by hand.
 
 ## The screen and the rule that keeps it fair
 
