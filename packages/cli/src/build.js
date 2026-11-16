@@ -252,7 +252,7 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     let last = 0;
     for (const m of source.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)|@import\s+(['"])([^'"]+)\3/g)) {
       const spec = m[2] ?? m[4];
-      if (!isLocal(spec) || spec.startsWith('data:')) continue;
+      if (!isLocal(spec) || spec.startsWith('data:') || BINDING.test(spec)) continue;
       const at = (m.index ?? 0) + m[0].indexOf(spec);
       parts.push(source.slice(last, at), await rewrite(relativeUrl(spec), urlPath));
       last = at + spec.length;
@@ -314,13 +314,15 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
   }
 
   /** In HTML and CSS a URL without a leading slash or dot is relative to the file (only JavaScript imports have bare package names). */
+  const BINDING = /\{[^}]*\}/;
   const relativeUrl = (u) => (/^[./?#]/.test(u) ? u : `./${u}`);
 
   /** Links inside the page to other pages are left; files the page loads are queued and given the base. */
   async function rewriteHtmlUrl(rawUrl, fromUrl) {
+    if (BINDING.test(rawUrl)) return rawUrl; // src="{url}" is filled in at run time, not a file at build time
     const url = relativeUrl(rawUrl); // href="src/app.css" is relative to the page, not a package name
     const target = url.startsWith('/') ? url.split(/[?#]/)[0] : posix.normalize(posix.join(posix.dirname(fromUrl), url.split(/[?#]/)[0]));
-    if (!(await exists(fileFor(canon(target))))) return url; // not a file we can serve (a route): keep as written
+    if (!(await exists(fileFor(canon(target))))) return rawUrl; // not a file we can serve (a route): keep as written
     return rewrite(url, fromUrl);
   }
 

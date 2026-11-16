@@ -3,6 +3,10 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.55 (build keeps bindings in URL attributes)
+
+* Fixed (cli): `xoong build` no longer rewrites `src="{url}"` to `src="./{url}"` (also `srcset`, `poster`); a value with a `{binding}` is left as written. A URL that is not a file we can serve (a route) is returned as written, not with `./` added.
+
 ## 0.0.54 (attributes on template hosts, sticky columns, build budget)
 
 breaking: an attribute written on a template host (`<xo-table>`, `<xo-pager>`, `<xo-form>`, or a template registered with `defineTemplate`) lands on the element the template becomes. `class` is appended after the component's classes. `style` is the component's style, then `;`, then the author's, so the author wins per property. Any other attribute is the author's, copied as written, so `{path}` and `p-*` bind once, in the view. A template reads an attribute it handles with `take(name)`, and that attribute is not copied. `<xo-pager>` is the `<nav>` itself, so `<xo-pager hidden>` hides; it is no longer wrapped in `display: contents`. `<xo-form>` takes `op`, `submit` and `xo-submit` and forwards every other attribute (the fixed modifier list is gone). An author `xo-submit` is dropped so it cannot disagree with `op`. A third-party template uses the same `take`. `<xo-table>`, `<xo-pager>` and `<xo-form>` written outside a view are now `display: none`. They used to render their raw children.
