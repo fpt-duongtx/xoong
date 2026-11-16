@@ -278,6 +278,5 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
   .hero .actions { gap: 0.6rem; }
   .hero .actions .btn { flex: 1 1 auto; justify-content: center; text-align: center; }
   .window pre { padding: 1rem; font-size: 0.8rem; white-space: pre-wrap; overflow-wrap: anywhere; } /* wrap short snippets instead of clipping them */
-  table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .content, main .wrap { padding-inline: max(1rem, env(safe-area-inset-left)); }
 }
