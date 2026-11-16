@@ -354,3 +354,80 @@ describe('toolbar sizes, the More menu and expanding', () => {
     expect(seen.length).toBe(4);
   });
 });
+
+describe('<xo-richtext> profiles', () => {
+  const RICH = '<figure class="figure"><img src="/a.png" alt="A"><figcaption>Cap</figcaption></figure><aside class="note note--info"><p>Careful</p></aside><p>text</p>';
+
+  it('profile="rich" keeps figure/figcaption and aside.note; the default profile does not', async () => {
+    const el = await mount('profile="rich"');
+    el.value = RICH;
+    expect(el.value).toBe(RICH);
+    expect(editor().innerHTML).toBe(RICH);
+    const plain = await mount();
+    plain.value = RICH;
+    expect(plain.value).not.toContain('<aside');
+    expect(plain.value).not.toContain('<figure');
+  });
+
+  it('typing in the editor goes through the profile too', async () => {
+    const el = await mount('profile="rich"');
+    typeHtml('<aside class="note evil" onclick="x"><p>n</p></aside>');
+    expect(el.value).toBe('<aside class="note"><p>n</p></aside>');
+  });
+
+  it('the toolbar offers only what the profile allows; rich adds Note, and Image with caption needs media', async () => {
+    await mount('profile="rich" media');
+    expect(buttons().map((b) => b.dataset.tool)).toContain('note');
+    expect(buttons().map((b) => b.dataset.tool)).toContain('figure');
+    await mount('media');
+    expect(buttons().map((b) => b.dataset.tool)).not.toContain('note');
+    expect(buttons().map((b) => b.dataset.tool)).not.toContain('figure');
+    window.RT = undefined;
+    const { defineRichtextProfile } = await import('@xoong/richtext');
+    defineRichtextProfile('tiny', { tags: { p: {}, strong: {} } });
+    await mount('profile="tiny" media');
+    expect(buttons().map((b) => b.dataset.tool)).toEqual(['undo', 'redo', 'bold']);
+  });
+
+  it('.profile takes an object; a bad name falls back to the default and says so', async () => {
+    const el = document.createElement('xo-richtext');
+    el.profile = { tags: { p: {}, em: {} } };
+    document.body.append(el);
+    await wait();
+    el.value = '<p><strong>a</strong><em>b</em></p>';
+    expect(el.value).toBe('<p>a<em>b</em></p>');
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const other = await mount('profile="missing"');
+    other.value = '<aside class="note"><p>x</p></aside>';
+    expect(other.value).toBe('<p>x</p>');
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
+  });
+
+  it('`sanitize` runs first and the profile still has the last word', async () => {
+    const el = await mount('profile="rich"');
+    const seen = [];
+    el.sanitize = (html, { source, profile }) => { seen.push([source, profile]); return html.replace(/secret/g, 'removed') + '<script>x</script>'; };
+    el.value = '<p>a secret</p>';
+    expect(el.value).toBe('<p>a removed</p>');
+    typeHtml('<p>b secret</p>');
+    expect(el.value).toBe('<p>b removed</p>');
+    expect(seen).toEqual([['value', 'rich'], ['input', 'rich']]);
+    el.sanitize = () => { throw new Error('boom'); };
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    el.value = '<p>ok</p>';
+    expect(el.value).toBe('<p>ok</p>');
+    error.mockRestore();
+  });
+
+  it('insertFigure adds figure > img + figcaption with an editable caption, and refuses without a figure in the profile', async () => {
+    const el = await mount('profile="rich" media');
+    expect(el.insertFigure('/a.png', 'A', 'Cap')).toBe(true);
+    expect(el.value).toBe('<figure><img src="/a.png" alt="A"><figcaption>Cap</figcaption></figure>');
+    expect(el.insertFigure('/b.png')).toBe(true);
+    expect(editor().querySelectorAll('figcaption').length).toBe(2);
+    expect(el.insertFigure('javascript:1')).toBe(false);
+    const plain = await mount('media');
+    expect(plain.insertFigure('/a.png')).toBe(false);
+  });
+});

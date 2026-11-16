@@ -2,17 +2,30 @@
 // To add an element or event: an interface, a line in `XoRichtextTagMap` / `XoRichtextEventMap`.
 import type { XoControl } from '@xoong/core';
 
-export { sanitizeHtml, isSafeLink, isSafeImage, textOf } from './sanitize.js';
+import type { RichtextProfile } from './sanitize.js';
+
+export { sanitizeHtml, isSafeLink, isSafeImage, textOf, defineRichtextProfile, getRichtextProfile, profileAllows } from './sanitize.js';
+export type { RichtextProfile, RichtextTagSpec } from './sanitize.js';
 
 /** What `detail.insert` of `xo-pick-media` takes: a URL, or `{ src, alt }` (a string second argument is the alt text for a URL). */
-export type XoRichtextInsert = (media: { src: string; alt?: string } | string, alt?: string) => void;
+export type XoRichtextInsert = (media: { src: string; alt?: string; caption?: string } | string, alt?: string) => void;
 
 /** `<xo-richtext>`: a small rich text editor and a form control. Its value is sanitised HTML (p, h2, h3, strong, em, u, ul, ol, li, blockquote, br, a, img). */
 export interface XoRichtextElement extends XoControl {
   value: string;
   label: string;
   placeholder: string;
-  /** Space separated tools, in order: `undo redo style bold italic underline h2 ul ol quote link image`. `image` shows only with `media`. */
+  /**
+   * What the editor keeps: the name of a profile (`default`, `rich`, or one from `defineRichtextProfile`; the attribute `profile="rich"`) or a profile object.
+   * The toolbar offers only what the profile allows. Set it before the editor connects; a later change re-sanitises the value.
+   */
+  profile: string | RichtextProfile;
+  /**
+   * Your own step before the profile, for every string that enters the editor or the value: `source` is `value` (set from code or a form), `paste` or `input`
+   * (typing and the toolbar). Return the HTML to use. The profile still has the last word, so this cannot let through what the profile refuses.
+   */
+  sanitize: ((html: string, context: { source: 'value' | 'paste' | 'input'; profile: string | RichtextProfile }) => string) | null;
+  /** Space separated tools, in order: `undo redo style bold italic underline h2 ul ol quote link image note figure`. `image` and `figure` show only with `media`; a tool the profile does not allow is not shown. */
   tools: string;
   /** `full` or `compact` forces a toolbar size; by default the editor's own width decides. */
   toolbar: string;
@@ -28,6 +41,8 @@ export interface XoRichtextElement extends XoControl {
   collapse(): void;
   /** Insert an image (http, https or a relative URL) at the caret, or at the range `at`. Returns false when it was refused (read-only, disabled, unsafe URL). */
   insertImage(src: string, alt?: string, at?: Range | null): boolean;
+  /** Insert `figure > img + figcaption` after the block at the caret. Returns false when the profile has no figure, or it was refused. */
+  insertFigure(src: string, alt?: string, caption?: string, at?: Range | null): boolean;
 }
 
 /** The class behind `<xo-richtext>` (`customElements.get('xo-richtext')`). */

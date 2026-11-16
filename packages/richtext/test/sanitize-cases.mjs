@@ -1,0 +1,31 @@
+// Input -> expected pairs for sanitizeHtml, shared by the Node test and the browser test: both must give these exact bytes.
+// [name, profile, input, expected]
+export const CASES = [
+  ['figure keeps listed classes and drops the rest', 'rich', '<figure class="figure evil"><img src="/a.png" alt="A" onerror=x><figcaption id=z>Cap <b>b</b></figcaption></figure>', '<figure class="figure"><img src="/a.png" alt="A"><figcaption>Cap <strong>b</strong></figcaption></figure>'],
+  ['aside note keeps note classes, drops data-* and style', 'rich', '<aside class="note note--warning bogus" data-x=1 style="x"><p>Careful</p></aside>', '<aside class="note note--warning"><p>Careful</p></aside>'],
+  ['link keeps target, forces rel', 'rich', '<a href="https://x.test" target="_blank" rel="evil" onclick=x>go</a><a href="x" target="_top">y</a>', '<p><a href="https://x.test" target="_blank" rel="noopener noreferrer">go</a>y</p>'],
+  ['image keeps numeric width and height', 'rich', '<img src="/a.png" width="20" height="30">', '<p><img src="/a.png" alt="" width="20" height="30"></p>'],
+  ['figure without a usable image goes', 'rich', '<figure><img src=javascript:1><figcaption>c</figcaption></figure>', ''],
+  ['loose text in a figure becomes its caption', 'rich', '<figure><img src=/a.png>loose text</figure>', '<figure><img src="/a.png" alt=""><figcaption>loose text</figcaption></figure>'],
+  ['the default profile has no aside or figure', 'default', '<aside class="note"><p>x</p></aside><figure><img src="/a.png"><figcaption>c</figcaption></figure>', '<p>x</p><p><img src="/a.png" alt="">c</p>'],
+  ['javascript: with spaces, control characters, entities', 'rich', '<a href=" javascript:alert(1)">a</a><a href="\u0001javascript:x">b</a><a href="jav&#x61;script:x">c</a>', '<p>abc</p>'],
+  ['javascript: with tab, newline and zero-width characters', 'rich', '<a href="java\tscript:1">a</a><a href="java&#10;script:1">b</a><a href="\u200bjavascript:1">c</a>', '<p>abc</p>'],
+  ['data: URLs are refused', 'rich', '<a href="data:text/html,<script>1</script>">d</a><img src="data:image/png;base64,AAA">', '<p>d</p>'],
+  ['vbscript, protocol-relative and backslash URLs', 'rich', '<a href="vbscript:x">a</a><img src="//evil.test/a.png"><img src="\\\\evil.test/a.png"><img src="/\\evil.test/a.png">', '<p>a</p>'],
+  ['script, handlers and unclosed paragraphs', 'rich', '<p>a<script>x</script>b<p>c<p onclick=x>d', '<p>ab</p><p>c</p><p>d</p>'],
+  ['list items closed by the next item', 'rich', '<ul><li>a<li>b<ul><li>c</ul></ul>', '<ul><li>a</li><li>b<ul><li>c</li></ul></li></ul>'],
+  ['table and form shapes keep only text', 'rich', '<table><tr><td>cell</td></tr></table><form><select><option>x</select></form>', '<p>cell</p>'],
+  ['comments, CDATA, processing instructions and entities', 'rich', '<!-- c --><![CDATA[x]]><?php x?>t<!--> u <p>&lt;b&gt; &amp;amp; &copy &bogus; &#0; &#x1F600;', '<p>t u </p><p>&lt;b&gt; &amp;amp; © &amp;bogus; \ufffd 😀</p>'],
+  ['misnested inline tags', 'rich', '<p>unclosed <strong>bold <em>both</strong> after</em>', '<p>unclosed <strong>bold <em>both</em></strong> after</p>'],
+  ['a tag that never ends is dropped', 'rich', '<p title="a>b" ', ''],
+  ['unknown elements and handlers on them', 'rich', '<xss onmouseover=alert(1)>t</xss><IMG SRC=x onerror=alert(1)><img src=x onerror=alert(1)//>', '<p>t<img src="x" alt=""><img src="x" alt=""></p>'],
+  ['svg with a style inside', 'rich', '<svg><p><style><img src=x onerror=1></style></svg>after', '<p>after</p>'],
+  ['a link inside a link', 'rich', '<a href="https://x.test"><a href="https://y.test">n</a></a>', '<p><a href="https://x.test" rel="noopener noreferrer">n</a></p>'],
+  ['iframe, object, embed', 'rich', '<p>a</p><iframe src=x></iframe><object data=x></object><embed src=x>b', '<p>a</p><p>b</p>'],
+  ['noscript mutation', 'rich', '<noscript><p title="</noscript><img src=x onerror=alert(1)>">', '<p><img src="x" alt="">&quot;&gt;</p>'],
+  ['style and math mutation', 'rich', '<math><mtext><table><mglyph><style><!--</style><img title="--&gt;&lt;img src=1 onerror=alert(1)&gt;">', ''], // an unclosed <math> takes everything after it
+  ['escaped markup stays text', 'rich', '<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>', '<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>'],
+  ['style, class, id and data-* are removed from a paragraph', 'default', '<p style="color:red" class="x" id="y" onclick="a()" data-x="1">t</p>', '<p>t</p>'],
+  ['renamed tags', 'default', '<h1>A</h1><h5>B</h5><div>C <b>x</b> <i>y</i></div>', '<h2>A</h2><h3>B</h3><p>C <strong>x</strong> <em>y</em></p>'],
+  ['an uppercase tag and an unquoted attribute', 'default', '<P CLASS=x>T</P><A HREF=https://x.test>l</A>', '<p>T</p><p><a href="https://x.test" rel="noopener noreferrer">l</a></p>'],
+];

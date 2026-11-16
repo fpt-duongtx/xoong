@@ -73,7 +73,7 @@ import '@xoong/richtext';
 \`\`\`html
 <xo-richtext name="body" label="Body" media></xo-richtext>
 \`\`\`
-\`@xoong/richtext/sanitize\` exports the sanitiser, so your server can clean the HTML again on save.` },
+\`@xoong/richtext/sanitize\` exports the sanitiser (no DOM: the same code and the same output in a browser and in Node), so your server can clean the HTML again on save. What is kept is a profile: \`<xo-richtext profile="rich">\` keeps \`figure\`/\`figcaption\` and \`aside.note\`; \`defineRichtextProfile(name, profile)\` registers your own; \`el.sanitize\` is a step of your own before the profile.` },
   i18n: { intro: 'Internationalisation for xoong: JSON catalogs with an ICU subset, `xo-t` in markup, a locale signal and Intl formats. Built-in strings come with an English catalog and Vietnamese.', use: `
 \`\`\`js
 import { configureI18n, setLocale } from '@xoong/i18n';

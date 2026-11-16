@@ -31,6 +31,12 @@
   .xo-richtext-editable > :last-child { margin-bottom: 0; }
   .xo-richtext-editable blockquote { margin-inline: 0; padding-inline-start: 1rem; border-inline-start: 3px solid var(--xo-color-border, #d8dee4); }
   .xo-richtext-editable img { max-width: 100%; height: auto; }
+  .xo-richtext-editable aside.note { margin-block: 1em; padding: var(--xo-space-2, .5rem) var(--xo-space-3, .75rem); border-inline-start: 4px solid var(--xo-color-accent, #0969da); background: var(--xo-color-hover, rgb(127 127 127 / .12)); }
+  .xo-richtext-editable aside.note--warning { border-inline-start-color: var(--xo-color-warning, #9a6700); }
+  .xo-richtext-editable aside.note > :first-child { margin-top: 0; }
+  .xo-richtext-editable aside.note > :last-child { margin-bottom: 0; }
+  .xo-richtext-editable figure { margin: 1em 0; }
+  .xo-richtext-editable figcaption { font-size: .875em; opacity: .8; min-height: 1.25em; }
   xo-richtext[data-invalid] .xo-richtext-box { border-color: var(--xo-color-danger, #cf222e); }
 
   /* expanded: the same editor in a dialog, 960px wide, the whole screen on narrow ones */

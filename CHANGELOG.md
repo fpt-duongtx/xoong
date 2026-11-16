@@ -3,8 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
-## 0.0.55 (build keeps bindings in URL attributes)
+## 0.0.55 (build keeps bindings in URL attributes, richtext profiles)
 
+* Added (richtext): sanitiser **profiles**. `sanitizeHtml(html, profile)` keeps what a profile (plain data: tags, attributes with a type, class lists, renames, drops, URL schemes) lists. `default` is the old behaviour; `rich` adds `figure`/`figcaption`, `aside.note` (`note--info`, `note--warning`) and `target` on links. `defineRichtextProfile(name, profile)`, `getRichtextProfile(name)` and `profileAllows(profile, tag)` are exported. A profile that lists `style`, `on*`, `srcdoc`, a non-URL `href`/`src`, a free `id` or an always-removed tag throws when defined.
+* Added (richtext): `@xoong/richtext/sanitize` needs no DOM and no dependency: a parser of its own, the same code and the same bytes in a browser and in Node, stable when applied twice. A shared case list (OWASP-style XSS shapes, entity and control-character tricks, misnested tags, mutation shapes) runs in Node and in Chromium. `@xoong/server` is unchanged: the backend calls `sanitizeHtml` itself.
+* Added (richtext): `<xo-richtext profile="rich">` or `el.profile = {...}`; the toolbar shows only tools the profile allows; new tools **Note** and **Image with caption** (`el.insertFigure(src, alt, caption)`); notes and figures survive editing around them. `el.sanitize = (html, { source, profile }) => html` is your own step before the profile, which keeps the last word.
+* Migrating (richtext): no breaking change for the editor; `default` is the old behaviour and `{ images: false }` still works. The sanitiser no longer uses `<template>`, so a few inputs follow its own parser (an unclosed `<math>`, `<svg>` or `<template>` removes everything after it; `<noscript>` content is dropped). Projects that stored Markdown convert it to HTML once and run `sanitizeHtml(html, profile)` on the result. See docs/richtext.md.
 * Fixed (cli): `xoong build` no longer rewrites `src="{url}"` to `src="./{url}"` (also `srcset`, `poster`); a value with a `{binding}` is left as written. A URL that is not a file we can serve (a route) is returned as written, not with `./` added.
 
 ## 0.0.54 (attributes on template hosts, sticky columns, build budget)

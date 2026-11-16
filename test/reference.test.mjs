@@ -111,7 +111,7 @@ describe('reference.json', () => {
       i18n: ['directionOf', 'resetI18n', 'messageFor', 'formatMessage', 'parse', 'argsOf', 'apply', 'hasText', 'parseSpec', 'startEnhancer', 'builtin'],
       core: ['distance', 'nearest', 'TemplateResult', 'Signal', 'disposeComputed', 'setTextProvider', 'text', 'XO_ATTRIBUTES', 'XO_ELEMENTS', 'XO_UI_ATTRIBUTES', 'XO_UI_ELEMENTS', 'XO_CONTROL_ATTRIBUTES', 'XO_CONTROL_ELEMENTS'],
       forms: ['normalize', 'isoToLocal', 'localToIso', 'parsePath', 'pathKey', 'getAt', 'setAt', 'nodeAt', 'variant', 'coerce', 'defaults', 'validate', 'checkValue', 'resetMessages', 'message'],
-      richtext: ['isSafeLink', 'isSafeImage', 'textOf'],
+      richtext: ['isSafeLink', 'isSafeImage', 'textOf', 'getRichtextProfile', 'profileAllows'],
       ui: [],
     };
     const names = new Set(group('api').flatMap((e) => [e.name, e.name.split('.')[0]]));

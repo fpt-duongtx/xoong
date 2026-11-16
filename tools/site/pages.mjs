@@ -578,7 +578,8 @@ ${example({
 <tr><td><code>a</code> with <code>href</code></td><td>Only <code>http</code>, <code>https</code>, <code>mailto</code>, <code>tel</code>; <code>rel="noopener noreferrer"</code> is added</td></tr>
 <tr><td><code>img</code> with <code>src</code>, <code>alt</code></td><td><code>src</code> must be http(s) or a relative URL; no <code>data:</code>, no <code>javascript:</code></td></tr>
 </tbody></table>
-${callout('note', 'The client is never a trust boundary. The same function is exported as <code>@xoong/richtext/sanitize</code> so your <strong>server</strong> can sanitise on save as well.')}
+<p>This table is the <code>default</code> profile. <code>&lt;xo-richtext profile="rich"&gt;</code> also keeps <code>figure</code>/<code>figcaption</code> and <code>aside.note</code>, and <code>defineRichtextProfile(name, profile)</code> registers your own white-list (plain data: tags, typed attributes, class lists, renames, URL schemes). <code>el.sanitize</code> is a step of your own before the profile, which keeps the last word.</p>
+${callout('note', 'The client is never a trust boundary. <code>@xoong/richtext/sanitize</code> needs no DOM: the same code gives the same bytes in a browser and in Node, so your <strong>server</strong> can sanitise on save with the same profile.')}
 
 <h2>Media</h2>
 <p>The image tool fires a cancelable <code>xo-pick-media</code> event. Open your own library, then call <code>detail.insert({ src, alt })</code> now or later. With the caret in a heading the image goes in a paragraph after it, and nothing is written inline, so it works under a strict CSP.</p>

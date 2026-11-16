@@ -23,7 +23,7 @@
  * - It is an `XoControl`: `name`, `required` (an empty editor is empty), `disabled`, `readonly`, `dirty`, `touched`, validity. `maxlength` counts text characters.
  */
 import { XoControl, define, text } from '@xoong/core';
-import { sanitizeHtml, isSafeLink, textOf } from './sanitize.js';
+import { sanitizeHtml, isSafeLink, textOf, profileAllows } from './sanitize.js';
 
 let counter = 0;
 
@@ -39,12 +39,16 @@ const TOOLS = {
   quote: { label: () => text('xoong.richtext.quote', 'Quote'), face: '“', state: () => block() === 'blockquote' },
   link: { label: () => text('xoong.richtext.link', 'Link'), face: '🔗', state: () => !!anchorAtSelection() },
   image: { label: () => text('xoong.richtext.image', 'Image'), face: '🖼' },
+  note: { label: () => text('xoong.richtext.note', 'Note'), face: 'ℹ', state: () => !!selectionIn('aside') },
+  figure: { label: () => text('xoong.richtext.figure', 'Image with caption'), face: '🖼' },
   undo: { label: () => text('xoong.richtext.undo', 'Undo'), face: '↶' },
   redo: { label: () => text('xoong.richtext.redo', 'Redo'), face: '↷' },
 };
-const DEFAULT_TOOLS = 'undo redo style bold italic underline ul ol quote link image';
+const DEFAULT_TOOLS = 'undo redo style bold italic underline ul ol quote link image note figure';
+/** The tags a profile has to keep for a tool to be offered. */
+const NEEDS = /** @type {Record<string, string[]>} */ ({ bold: ['strong'], italic: ['em'], underline: ['u'], ul: ['ul', 'li'], ol: ['ol', 'li'], quote: ['blockquote'], link: ['a'], image: ['img'], h2: ['h2'], note: ['aside'], figure: ['figure', 'img'] });
 /** In the compact toolbar these tools move into the "More" menu (in this order). */
-const MORE_ITEMS = ['underline', 'ol', 'quote', 'undo', 'redo'];
+const MORE_ITEMS = ['underline', 'ol', 'quote', 'note', 'figure', 'undo', 'redo'];
 /** The editor is "full" from this width (its own width, not the viewport's). */
 const FULL_FROM = 580;
 const STYLE_OPTIONS = /** @type {[string, () => string, string][]} */ ([
@@ -61,6 +65,10 @@ const esc = (/** @type {string} */ s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&a
 /** The position of a node inside `root` as child indexes, and back: a selection that survives the editor being moved (a moved node loses its ranges). */
 const pathOf = (/** @type {Node} */ root, /** @type {Node | null} */ node) => { /** @type {number[]} */ const path = []; for (let n = node; n && n !== root; n = n.parentNode) path.unshift([.../** @type {Node} */ (n.parentNode).childNodes].indexOf(/** @type {ChildNode} */ (n))); return path; };
 const nodeAt = (/** @type {Node} */ root, /** @type {number[]} */ path) => path.reduce((/** @type {Node | undefined} */ n, i) => n?.childNodes[i], root);
+function selectionIn(/** @type {string} */ selector) {
+  const node = getSelection()?.anchorNode;
+  return (node instanceof Element ? node : node?.parentElement)?.closest(selector) ?? null;
+}
 function anchorAtSelection() {
   const node = getSelection()?.anchorNode;
   const el = node instanceof Element ? node : node?.parentElement;
@@ -68,7 +76,7 @@ function anchorAtSelection() {
 }
 
 class XoRichtext extends XoControl {
-  static props = { ...XoControl.props, label: String, placeholder: String, tools: String, toolbar: String, media: Boolean, maxlength: Number };
+  static props = { ...XoControl.props, label: String, placeholder: String, tools: String, toolbar: String, media: Boolean, maxlength: Number, profile: String };
 
   /** @type {HTMLElement | null} */ #editor = null;
   /** @type {HTMLElement | null} */ #toolbar = null;
@@ -91,6 +99,38 @@ class XoRichtext extends XoControl {
 
   get focusTarget() { return this.#editor; }
 
+  /**
+   * What the editor keeps: the name of a profile (`default`, `rich`, or one from `defineRichtextProfile`) or a profile object. The attribute `profile="rich"` sets a name.
+   * Read when the editor connects (the toolbar offers only what the profile allows); a later change re-sanitises the value.
+   * @type {string | import('./sanitize.js').RichtextProfile}
+   */
+  get profile() { return this._sig('profile').value; }
+  set profile(v) {
+    this._sig('profile').value = v ?? '';
+    if (this.#built) this.setValue(this.value);
+  }
+
+  /** The profile in force: a bad name or an invalid object is reported and the default is used instead, so a mistake cannot let more through. */
+  #profile() {
+    const p = this.profile;
+    const name = typeof p === 'string' ? p || 'default' : p;
+    try { sanitizeHtml('', name); return name; } catch (error) { console.error(`xo-richtext: ${/** @type {Error} */ (error).message}; using the default profile`); return 'default'; }
+  }
+
+  /**
+   * Every string that enters the editor or the value goes through here: the optional `sanitize(html, { source, profile })` function first (change, add, or
+   * remove things the profile cannot say), then the profile, which has the last word: the function cannot let through anything the profile refuses.
+   */
+  #clean(/** @type {string} */ html, /** @type {string} */ source) {
+    const profile = this.#profile();
+    const hook = /** @type {any} */ (this).sanitize;
+    let input = html;
+    if (typeof hook === 'function') {
+      try { const out = hook(html, { source, profile }); if (typeof out === 'string') input = out; } catch (error) { console.error('xo-richtext: sanitize() threw', error); }
+    }
+    return sanitizeHtml(input, profile);
+  }
+
   /** Moving the editor into or out of its dialog moves the focus too, which is not the person leaving the field. */
   markTouched() {
     if (this.#dialog || this.#moving) return;
@@ -98,7 +138,8 @@ class XoRichtext extends XoControl {
   }
 
   setValue(v) {
-    const clean = sanitizeHtml(typeof v === 'string' ? v : v == null ? '' : String(v));
+    const html = typeof v === 'string' ? v : v == null ? '' : String(v);
+    const clean = this.#fromUser ? sanitizeHtml(html, this.#profile()) : this.#clean(html, 'value'); // typed content already went through sanitize()
     super.setValue(clean);
     if (this.#built && !this.#fromUser && this.#editor) this.#show(clean);
   }
@@ -140,7 +181,9 @@ class XoRichtext extends XoControl {
     toolbar.setAttribute('role', 'toolbar');
     toolbar.setAttribute('aria-label', text('xoong.richtext.toolbar', 'Formatting'));
     toolbar.setAttribute('aria-controls', `${this.#id}-editor`);
-    const names = (this.tools || DEFAULT_TOOLS).split(/[\s,]+/).filter((n) => n in TOOLS && n !== 'more' && (n !== 'image' || this.media));
+    const profile = this.#profile();
+    const allowed = (/** @type {string} */ n) => n === 'style' ? profileAllows(profile, 'h2') || profileAllows(profile, 'h3') : (NEEDS[n] ?? []).every((tag) => profileAllows(profile, tag));
+    const names = (this.tools || DEFAULT_TOOLS).split(/[\s,]+/).filter((n) => n in TOOLS && n !== 'more' && ((n !== 'image' && n !== 'figure') || this.media) && allowed(n));
     names.forEach((name, i) => toolbar.append(this.#item(name, i === 0)));
     const moved = MORE_ITEMS.filter((n) => names.includes(n));
     if (moved.length) { // the compact toolbar keeps these in a menu
@@ -218,6 +261,7 @@ class XoRichtext extends XoControl {
       select.setAttribute('aria-label', caption);
       select.title = caption;
       for (const [value, label, short] of STYLE_OPTIONS) {
+        if ((value === 'h2' || value === 'h3') && !profileAllows(this.#profile(), value)) continue;
         const option = document.createElement('option');
         option.value = value;
         option.dataset.short = short;
@@ -282,7 +326,7 @@ class XoRichtext extends XoControl {
   #show(/** @type {string} */ html) {
     const editor = this.#editor;
     if (!editor) return;
-    if (sanitizeHtml(editor.innerHTML) !== html) editor.innerHTML = html; // rewriting the content moves the caret: only when it really differs
+    if (sanitizeHtml(editor.innerHTML, this.#profile()) !== html) editor.innerHTML = html; // rewriting the content moves the caret: only when it really differs
     editor.toggleAttribute('data-empty', this.isEmpty(html));
   }
 
@@ -392,7 +436,8 @@ class XoRichtext extends XoControl {
     const editor = this.#editor;
     if (!editor) return;
     if (name === 'link') { this.#openLink(); return; }
-    if (name === 'image') { this.#pickMedia(); return; }
+    if (name === 'image') { this.#pickMedia(false); return; }
+    if (name === 'figure') { this.#pickMedia(true); return; }
     editor.focus();
     if (name === 'bold') exec('bold');
     else if (name === 'italic') exec('italic');
@@ -403,6 +448,7 @@ class XoRichtext extends XoControl {
     else if (name === 'redo') exec('redo');
     else if (name === 'h2') exec('formatBlock', block() === 'h2' ? 'p' : 'h2');
     else if (name === 'quote') exec('formatBlock', block() === 'blockquote' ? 'p' : 'blockquote');
+    else if (name === 'note') this.#note();
     this.#commit();
     this.#refreshState();
   }
@@ -411,7 +457,7 @@ class XoRichtext extends XoControl {
   #commit() {
     const editor = this.#editor;
     if (!editor) return;
-    const clean = this.isEmpty(editor.innerHTML) ? '' : sanitizeHtml(editor.innerHTML);
+    const clean = this.isEmpty(editor.innerHTML) ? '' : this.#clean(editor.innerHTML, 'input');
     editor.toggleAttribute('data-empty', clean === '');
     if (clean === this.value) return;
     this.#fromUser = true;
@@ -525,7 +571,7 @@ class XoRichtext extends XoControl {
     const html = data.getData('text/html');
     const plain = data.getData('text/plain');
     this.#editor.focus();
-    if (html) { exec('insertHTML', sanitizeHtml(html)); }
+    if (html) { exec('insertHTML', this.#clean(html, 'paste')); }
     else if (plain) {
       const paragraphs = plain.replace(/\r\n?/g, '\n').split(/\n{2,}/);
       if (paragraphs.length === 1 && !plain.includes('\n')) exec('insertText', plain);
@@ -592,12 +638,12 @@ class XoRichtext extends XoControl {
 
   // ---- media ---------------------------------------------------------------------------------------------------------------
 
-  #pickMedia() {
+  #pickMedia(/** @type {boolean} */ withCaption) {
     const selection = getSelection();
     const saved = selection && selection.rangeCount && this.#editor?.contains(selection.anchorNode) ? selection.getRangeAt(0).cloneRange() : null;
-    const insert = (/** @type {{ src: string, alt?: string } | string} */ media, /** @type {string} */ alt = '') => {
-      const { src, alt: a = alt } = typeof media === 'string' ? { src: media, alt } : media;
-      this.insertImage(src, a, saved);
+    const insert = (/** @type {{ src: string, alt?: string, caption?: string } | string} */ media, /** @type {string} */ alt = '') => {
+      const { src, alt: a = alt, caption = '' } = typeof media === 'string' ? { src: media, alt } : media;
+      if (withCaption) this.insertFigure(src, a, caption, saved); else this.insertImage(src, a, saved);
     };
     this.dispatchEvent(new CustomEvent('xo-pick-media', { bubbles: true, cancelable: true, detail: { insert } }));
   }
@@ -605,7 +651,7 @@ class XoRichtext extends XoControl {
   /** Insert an image (http, https or a relative URL) at the caret. */
   insertImage(/** @type {string} */ src, alt = '', /** @type {Range | null} */ at = null) {
     if (!this.#editor || this.readonly || this.isDisabled) return false;
-    const html = sanitizeHtml(`<img src="${esc(src)}" alt="${esc(alt)}">`);
+    const html = sanitizeHtml(`<img src="${esc(src)}" alt="${esc(alt)}">`, this.#profile());
     if (!html.includes('<img')) return false;
     this.#editor.focus();
     const selection = getSelection();
@@ -630,6 +676,50 @@ class XoRichtext extends XoControl {
       range.setStartAfter(img);
     } else editor.append(img);
     if (selection && range) { range.collapse(true); selection.removeAllRanges(); selection.addRange(range); }
+    this.#commit();
+    return true;
+  }
+  /** The Note tool: no note here, make one around the paragraph; a note, info becomes warning (when the profile has it), warning becomes plain paragraphs again. */
+  #note() {
+    const editor = this.#editor;
+    if (!editor) return;
+    const profile = this.#profile();
+    const kinds = ['note--info', 'note--warning'].filter((k) => sanitizeHtml(`<aside class="${k}"><p>x</p></aside>`, profile).includes(k));
+    const existing = /** @type {HTMLElement | null} */ (selectionIn('aside'));
+    if (existing && editor.contains(existing)) {
+      const at = kinds.findIndex((k) => existing.classList.contains(k));
+      const next = kinds[at + 1];
+      if (next) { existing.classList.remove(...kinds); existing.classList.add('note', next); return; }
+      existing.replaceWith(...existing.childNodes);
+      return;
+    }
+    let top = getSelection()?.anchorNode ?? null;
+    while (top && top.parentNode !== editor) top = top.parentNode;
+    if (!(top instanceof HTMLElement) || !/^(P|H[1-6])$/.test(top.tagName)) return;
+    const aside = document.createElement('aside');
+    aside.className = ['note', kinds[0]].filter(Boolean).join(' ');
+    top.before(aside);
+    aside.append(top.tagName === 'P' ? top : Object.assign(document.createElement('p'), { textContent: top.textContent }));
+    if (top.tagName !== 'P') top.remove();
+  }
+
+  /** Insert an image with an editable caption (`figure > img + figcaption`) after the block at the caret. Returns false when the profile has no figure or the source is refused. */
+  insertFigure(/** @type {string} */ src, alt = '', caption = '', /** @type {Range | null} */ at = null) {
+    const editor = this.#editor;
+    if (!editor || this.readonly || this.isDisabled) return false;
+    const html = sanitizeHtml(`<figure><img src="${esc(src)}" alt="${esc(alt)}"><figcaption>${esc(caption) || '<br>'}</figcaption></figure>`, this.#profile());
+    if (!html.startsWith('<figure')) return false;
+    editor.focus();
+    const selection = getSelection();
+    if (at && selection) { selection.removeAllRanges(); selection.addRange(at); }
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    const figure = /** @type {HTMLElement | null} */ (template.content.firstElementChild);
+    if (!figure) return false;
+    if (!figure.querySelector('figcaption') && profileAllows(this.#profile(), 'figcaption')) figure.append(Object.assign(document.createElement('figcaption'), { innerHTML: '<br>' })); // an empty caption is not kept in the value, but the person needs a place to type
+    let top = selection && selection.rangeCount && editor.contains(selection.anchorNode) ? selection.anchorNode : null;
+    while (top && top.parentNode !== editor) top = top.parentNode;
+    if (top) /** @type {ChildNode} */ (top).after(figure); else editor.append(figure);
     this.#commit();
     return true;
   }
