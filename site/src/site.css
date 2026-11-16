@@ -268,3 +268,16 @@ xo-carousel > .xo-carousel-track > img { width: 100%; height: auto; border-radiu
 }
 @media print { .dg-player { display: none; } }
 }
+
+/* responsive polish: tablet and phone */
+@media (max-width: 62rem) { /* hero stacks: less air between the copy and the code window */
+  .stage { margin-top: 2rem; }
+  .hero { padding-block: 2.5rem 3rem; }
+}
+@media (max-width: 40rem) {
+  .hero .actions { gap: 0.6rem; }
+  .hero .actions .btn { flex: 1 1 auto; justify-content: center; text-align: center; }
+  .window pre { padding: 1rem; font-size: 0.8rem; white-space: pre-wrap; overflow-wrap: anywhere; } /* wrap short snippets instead of clipping them */
+  table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .content, main .wrap { padding-inline: max(1rem, env(safe-area-inset-left)); }
+}
