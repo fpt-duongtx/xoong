@@ -210,6 +210,27 @@
 
 <aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p><strong>Read this first.</strong> These are the results of one machine (Apple M5 Pro, 15 cores, 24 GB RAM, Darwin 27.2.0 (arm64), Chromium 158.0.8127.18, Node 26.13.0, 2026-11-17) with 5 runs per number after one warm-up run: the median is shown with the smallest and largest run in brackets. Numbers depend on the machine, so use them to compare the columns of one table, not to predict your users' devices. One screen, one team of one author: this is an honest comparison of this screen, not a verdict on the frameworks.</p></aside>
 
+<h2 id="at-a-glance">At a glance</h2>
+<h3>The screen</h3>
+<ul class="bench-list">
+<li>A <strong>people list</strong> from a mock API with <strong>10,000 seeded people</strong>; the page size can be 10, 100, 1,000 or 10,000 rows.</li>
+<li>Sort by name, search (250 ms debounce), paging, row selection, a <strong>bulk delete behind a confirm dialog</strong>, a disable action per row.</li>
+<li>An <strong>add dialog</strong> with a validated form (client rules and server field errors), and loading, empty and error states.</li>
+<li>A 15-check <strong>acceptance test</strong> (roles and accessible names, axe WCAG 2 A and AA) must pass for a stack to be measured at all.</li>
+</ul>
+<h3 id="how-it-was-measured">How it was measured</h3>
+<ul class="bench-list">
+<li><strong>Same build rules.</strong> Every stack ships a <em>minified bundle</em>: xoong with <code>xoong build --bundle --minify</code>, React and Vue with Vite, Angular with <code>ng build</code>. The esbuild that xoong's bundle needs is counted in its install numbers.</li>
+<li><strong>Same network.</strong> One server for all: HTTP/2 over TLS, brotli level 11, the same mock API and the same strict policy (<code>default-src 'none'; script-src 'self'; style-src 'self'; ...</code>), zero violations in every run.</li>
+<li><strong>Two profiles.</strong> Unthrottled on loopback, and <em>4x slower CPU with slow 4G</em> (150 ms round trip, 1.6 Mbit/s down, 0.75 Mbit/s up) while the page loads.</li>
+<li><strong>Cold cache every run</strong>, one warm-up run, then the median of <strong>5 runs</strong>; the smallest and largest are on the page.</li>
+<li><strong>Everything a stack needs is counted</strong>: each library's bytes, packages, install time and the lines written to use it. Nothing is hidden.</li>
+<li><strong>One machine</strong>: Apple M5 Pro, 15 cores, 24 GB RAM, Chromium 158.0.8127.18, Node 26.13.0, xoong 0.0.55, 2026-11-17.</li>
+</ul>
+<h3>Where xoong is well ahead</h3>
+<ul class="bench-tiles"><li><strong>1.9x</strong><span>less to download</span><small>31.6 kB against 59.0 kB for Angular, the smallest of the others (JS, CSS and HTML, brotli).</small></li><li><strong>4.6x</strong><span>fewer lines to write</span><small>39 lines against 180 for Vue, the shortest of the others, for the same screen.</small></li><li><strong>3.7x</strong><span>fewer packages to install</span><small>14 (esbuild included) against 52 for React; Angular installs 362.</small></li><li><strong>0</strong><span>third-party packages in the browser</span><small>The others ship 6 to 7 (framework, query, table, form and validation libraries).</small></li><li><strong>3.2x</strong><span>faster to generate types</span><small><code>xoong sync</code> 94.4 ms against <code>openapi-typescript</code> 301 ms on a 500-operation document.</small></li></ul>
+<p class="hint"><strong>Where xoong does not lead</strong> (the numbers are not left out): Screen usable, slow 4G and 4x slower CPU: Angular 836 ms, xoong 836 ms (level); Show 1,000 rows, unthrottled: Angular 49.4 ms, xoong 58.0 ms (17% behind).</p>
+
 <h2 id="what-was-compared">What was compared</h2>
 <p>One admin screen: a people list with server-side sort, search and paging, a rows-per-page choice up to 10,000, row selection with a bulk delete behind a confirm dialog, a disable action per row, an add dialog with a validated form (client rules and server field errors), and loading, error and empty states. All four implementations talk to the same mock API process and pass the same Playwright acceptance test, which uses only roles and accessible names and includes an axe-core check (WCAG 2 A and AA): 15 checks, run by <code>npm run accept</code>.</p>
 <ul>

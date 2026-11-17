@@ -132,6 +132,45 @@ ${table(['Tool', 'p50 / p95', 'Answer size'], toolRows)}`;
 
 // ---- the page -------------------------------------------------------------------------------------------------------------------
 const env = R?.environment;
+// ---- shared by the home page and the benchmarks page: the example, the conditions and the highlights --------------------------------
+/** What the user sees: the screen that every stack implements. */
+const exampleHtml = () => `<ul class="bench-list">
+<li>A <strong>people list</strong> from a mock API with <strong>${n(10000)} seeded people</strong>; the page size can be 10, 100, 1,000 or ${n(10000)} rows.</li>
+<li>Sort by name, search (250 ms debounce), paging, row selection, a <strong>bulk delete behind a confirm dialog</strong>, a disable action per row.</li>
+<li>An <strong>add dialog</strong> with a validated form (client rules and server field errors), and loading, empty and error states.</li>
+<li>A 15-check <strong>acceptance test</strong> (roles and accessible names, axe WCAG 2 A and AA) must pass for a stack to be measured at all.</li>
+</ul>`;
+/** The conditions that keep it fair, one line each. */
+const conditionsHtml = () => `<ul class="bench-list">
+<li><strong>Same build rules.</strong> Every stack ships a <em>minified bundle</em>: xoong with <code>xoong build --bundle --minify</code>, React and Vue with Vite, Angular with <code>ng build</code>. The esbuild that xoong's bundle needs is counted in its install numbers.</li>
+<li><strong>Same network.</strong> One server for all: HTTP/2 over TLS, brotli level 11, the same mock API and the same strict policy (<code>${esc(R.csp.split(';').slice(0, 3).join(';'))}; ...</code>), zero violations in every run.</li>
+<li><strong>Two profiles.</strong> Unthrottled on loopback, and <em>4x slower CPU with slow 4G</em> (150 ms round trip, 1.6 Mbit/s down, 0.75 Mbit/s up) while the page loads.</li>
+<li><strong>Cold cache every run</strong>, one warm-up run, then the median of <strong>${n(R.runs)} runs</strong>; the smallest and largest are on the page.</li>
+<li><strong>Everything a stack needs is counted</strong>: each library's bytes, packages, install time and the lines written to use it. Nothing is hidden.</li>
+<li><strong>One machine</strong>: ${esc(env.machine)}, ${esc(env.browser)}, Node ${esc(env.node.replace(/^v/, ''))}, xoong ${esc(env.xoong)}, ${esc(env.date)}.</li>
+</ul>`;
+/** Where xoong leads strongly (at least 1.5 times better than the best of the other three, or the others have to add something it does not need), and where it does not. */
+function leadership() {
+  const h = headlines();
+  const by = (what) => h.find((r) => r.what.startsWith(what));
+  const best = (r) => { const others = r.values.slice(1); const m = Math.min(...others); return { m, id: STACKS[1 + others.indexOf(m)] }; };
+  const name = (id) => VARIANT_NAMES[id].replace(' stack', '');
+  const tiles = [];
+  const bytes = by('Browser JS'), loc = by('Lines written'), pk = by('Packages npm'), deps = by('Third-party');
+  { const b = best(bytes); tiles.push({ big: `${n(b.m / bytes.values[0], 1)}x`, what: 'less to download', detail: `${kb(bytes.values[0])} against ${kb(b.m)} for ${name(b.id)}, the smallest of the others (JS, CSS and HTML, brotli).` }); }
+  { const b = best(loc); tiles.push({ big: `${n(b.m / loc.values[0], 1)}x`, what: 'fewer lines to write', detail: `${n(loc.values[0])} lines against ${n(b.m)} for ${name(b.id)}, the shortest of the others, for the same screen.` }); }
+  { const b = best(pk); tiles.push({ big: `${n(b.m / pk.values[0], 1)}x`, what: 'fewer packages to install', detail: `${n(pk.values[0])} (esbuild included) against ${n(b.m)} for ${name(b.id)}; Angular installs ${n(Math.max(...pk.values))}.` }); }
+  { const b = best(deps); tiles.push({ big: '0', what: 'third-party packages in the browser', detail: `The others ship ${n(b.m)} to ${n(Math.max(...deps.values))} (framework, query, table, form and validation libraries).` }); }
+  const sync = C.sync?.['generated, 500 operations'];
+  if (sync?.xoong && sync?.['openapi-typescript']) tiles.push({ big: `${n(sync['openapi-typescript'].median / sync.xoong.median, 1)}x`, what: 'faster to generate types', detail: `<code>xoong sync</code> ${ms(sync.xoong.median)} against <code>openapi-typescript</code> ${ms(sync['openapi-typescript'].median)} on a 500-operation document.` });
+  const behind = h.filter((r) => r.values[0] > Math.min(...r.values));
+  const notes = behind.map((r) => { const b = best(r); const x = r.values[0] / b.m; return `${r.what}: ${name(b.id)} ${r.fmt(b.m)}, xoong ${r.fmt(r.values[0])} (${x < 1.01 ? 'level' : x < 1.05 ? 'within 5%' : `${n((x - 1) * 100)}% behind`})`; });
+  const tied = h.filter((r) => r.values[0] === Math.min(...r.values) && r.values.filter((v) => v === r.values[0]).length > 1).map((r) => r.what.toLowerCase());
+  return { tiles, notes, tied };
+}
+const tilesHtml = (tiles) => `<ul class="bench-tiles">${tiles.map((t) => `<li><strong>${esc(t.big)}</strong><span>${esc(t.what)}</span><small>${t.detail}</small></li>`).join('')}</ul>`;
+const behindHtml = ({ notes }) => (notes.length ? `<p class="hint"><strong>Where xoong does not lead</strong> (the numbers are not left out): ${notes.join('; ')}.</p>` : '');
+
 /** The page as the generator writes it when published; `benchmarksPage` (what the site registers) is null while the switch is off. */
 export const benchmarksPageData = !dataOk ? null : {
   file: 'benchmarks.html', section: 'docs', group: 'Start', nav: 'Benchmarks', title: 'Benchmarks',
@@ -141,6 +180,15 @@ export const benchmarksPageData = !dataOk ? null : {
 <p class="lead">Measured, not promised. The same people screen built in xoong, in a React stack, a Vue stack and an Angular stack, run in real Chromium; plus the speed of the <code>xoong</code> command and of <code>xoong-mcp</code>. Every number below is generated from <a href="${BENCH_URL}/results">JSON files in the repository</a> by scripts you can run, and the page is rebuilt from that data, so the two cannot drift apart.</p>
 
 <aside class="notice warn"><span class="ic" data-ic="warning" aria-hidden="true"></span><p><strong>Read this first.</strong> These are the results of one machine (${esc(env.machine)}, ${esc(env.os)}, ${esc(env.browser)}, Node ${esc(env.node.replace(/^v/, ''))}, ${esc(env.date)}) with ${n(R.runs)} runs per number after one warm-up run: the median is shown with the smallest and largest run in brackets. Numbers depend on the machine, so use them to compare the columns of one table, not to predict your users' devices. One screen, one team of one author: this is an honest comparison of this screen, not a verdict on the frameworks.</p></aside>
+
+<h2 id="at-a-glance">At a glance</h2>
+<h3>The screen</h3>
+${exampleHtml()}
+<h3 id="how-it-was-measured">How it was measured</h3>
+${conditionsHtml()}
+<h3>Where xoong is well ahead</h3>
+${tilesHtml(leadership().tiles)}
+${behindHtml(leadership())}
 
 <h2>What was compared</h2>
 <p>One admin screen: a people list with server-side sort, search and paging, a rows-per-page choice up to 10,000, row selection with a bulk delete behind a confirm dialog, a disable action per row, an add dialog with a validated form (client rules and server field errors), and loading, error and empty states. All four implementations talk to the same mock API process and pass the same Playwright acceptance test, which uses only roles and accessible names and includes an axe-core check (WCAG 2 A and AA): ${n(15)} checks, run by <code>npm run accept</code>.</p>
@@ -234,17 +282,27 @@ const standing = () => { const h = headlines(); const lowest = (i) => h.filter((
 export function homeBenchmarks(on = hasBenchmarks) {
   if (!on || !dataOk) return '';
   const rows = headlines().map((r) => `<tr><th scope="row"><a href="benchmarks.html${r.href}">${esc(r.what)}</a></th>${r.cells.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('\n');
+  const L = leadership();
   return `
-  <section>
+  <section class="bench-home" id="benchmarks">
     <div class="wrap">
-      <div class="head"><span class="eyebrow">Measured, not promised</span><h2>The same screen, four ways.</h2><p>A people list with server-side sort, search and paging, bulk delete and an add dialog, built in xoong, React, Vue and Angular, run in real Chromium. Median of ${n(R.runs)} runs on one machine (${esc(env.machine.split(',')[0])}); the spread, the method and what was not measured are on the <a href="benchmarks.html">benchmarks page</a>, and every number comes from a script you can run.</p></div>
+      <div class="head"><span class="eyebrow">Measured, not promised</span><h2>The same screen, four ways.</h2><p>One people-list screen, built in xoong, React, Vue and Angular and run in real Chromium. Median of ${n(R.runs)} runs on one machine (${esc(env.machine.split(',')[0])}); every number comes from a script you can run.</p></div>
+      <div class="bench-cols">
+        <div><h3>The screen</h3>${exampleHtml()}</div>
+        <div><h3>How it was measured</h3>${conditionsHtml()}</div>
+      </div>
+      <h3 class="bench-h">Where xoong is well ahead</h3>
+      ${tilesHtml(L.tiles)}
+      <h3 class="bench-h">The measured output</h3>
       <div class="table-wrap" tabindex="0"><table aria-label="The same admin screen in xoong, a React stack, a Vue stack and an Angular stack">
         <thead><tr><th scope="col">Metric</th><th scope="col">xoong (bundled)</th><th scope="col">React stack</th><th scope="col">Vue stack</th><th scope="col">Angular stack</th></tr></thead>
         <tbody>
 ${rows}
         </tbody>
       </table></div>
-      <p class="hint">${standing()} Lines of code and packages are proxies for effort, not time, and xoong\'s screen assumes an OpenAPI document. <a href="benchmarks.html">All the numbers, the command line and the MCP server, and what was not measured</a>.</p>
+      <p class="hint">${standing()} ${L.tied.length ? `Tied with another stack: ${L.tied.join(', ')}. ` : ''}Lines of code and packages are proxies for effort, not time, and xoong's screen assumes an OpenAPI document.</p>
+      ${behindHtml(L)}
+      <p class="bench-cta"><a class="btn primary" href="benchmarks.html">See every number and the method</a> <a class="btn" href="benchmarks.html#what-was-not-measured">What it does not show</a></p>
     </div>
   </section>`;
 }
