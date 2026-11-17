@@ -646,6 +646,7 @@
     display: inline-flex;
     flex: none;
     align-items: center;
+    justify-content: flex-start; /* the knob sits at the left edge when off; a centred 22px knob in a 44px track was 11px in */
     width: 44px;
     height: 24px;
     min-height: 0;

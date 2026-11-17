@@ -690,7 +690,8 @@
 .xo-spinner--md { width: 24px; height: 24px; border-width: 3px; } .xo-spinner--lg { width: 32px; height: 32px; border-width: 3px; }
 .xo-progress--thin { height: 4px; }
 button[aria-pressed="true"]:not(.chip, [role="tab"], .xo-seg button) { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); border-color: var(--xo-color-accent); }
-.xo-split-button { display: inline-flex; } .xo-split-button > button:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; } .xo-split-button > button:last-child { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px; border-left-color: color-mix(in srgb, var(--xo-color-primary-text) 35%, transparent); }
+.xo-split-button { display: inline-flex; } .xo-split-button > button:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; } .xo-split-button > button:last-child, .xo-split-button > xo-menu:last-child > [xo-menu-trigger] { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px; border-left-color: color-mix(in srgb, var(--xo-color-primary-text) 35%, transparent); }
+.xo-split-button > xo-menu { display: inline-flex; } /* the arrow lives in a menu: the button is not a direct child, so it needs its own selector for the shared edge */
 .xo-inline-edit { display: inline-flex; align-items: center; gap: 6px; font: 600 18px/1.3 var(--xo-font); }
 .xo-textarea-meter { display: grid; } .xo-textarea-meter .xo-progress { border-radius: 0 0 var(--xo-radius) var(--xo-radius); margin-top: -3px; }
 .xo-label-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
