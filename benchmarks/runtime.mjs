@@ -18,10 +18,8 @@ const outFile = arg('out', join(root, 'results/runtime.json'));
 export const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'";
 
 const VARIANTS = [
-  { id: 'xoong', label: 'xoong (xoong build, modulepreload)', app: 'xoong', dist: 'dist', protocol: 'h2' },
-  { id: 'xoong-min', label: 'xoong, minified (xoong build --minify)', app: 'xoong', dist: 'dist-min', protocol: 'h2' },
-  { id: 'xoong-nopreload', label: 'xoong, no modulepreload', app: 'xoong', dist: 'dist-nopreload', protocol: 'h2' },
-  { id: 'xoong-http1', label: 'xoong over HTTP/1.1', app: 'xoong', dist: 'dist', protocol: 'http1' },
+  { id: 'xoong', label: 'xoong (xoong build --bundle --minify)', app: 'xoong', dist: 'dist-bundle', protocol: 'h2' },
+  { id: 'xoong-http1', label: 'xoong over HTTP/1.1', app: 'xoong', dist: 'dist-bundle', protocol: 'http1' },
   { id: 'react', label: 'React + TanStack + RHF + zod (vite build)', app: 'react', dist: 'dist', protocol: 'h2' },
   { id: 'vue', label: 'Vue + TanStack + vee-validate + zod (vite build)', app: 'vue', dist: 'dist', protocol: 'h2' },
   { id: 'angular', label: 'Angular, signals and reactive forms (ng build)', app: 'angular', dist: 'dist/browser', protocol: 'h2' },

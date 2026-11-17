@@ -17,18 +17,18 @@ More parts, installed separately: `@xoong/controls`, `@xoong/richtext`, `@xoong/
 
 ## Measured, not promised
 
-Median of 5 runs in real Chromium on Apple M5 Pro (2026-11-16); React stack = React + TanStack Query and Table + React Hook Form + zod, Vue stack = Vue + TanStack + vee-validate + zod, Angular stack = Angular with signals and reactive forms and no extra library; xoong has two columns because its default output is unminified and readable while the others ship minified bundles, and the --minify column counts esbuild too; every library a stack needs counts in full. The slow case is a 4x slower CPU and slow 4G. One machine, one screen: the spread, the method and what was not measured are on the [benchmarks page](https://fpt-duongtx.github.io/xoong/benchmarks.html) and in [benchmarks/](https://github.com/fpt-duongtx/xoong/tree/main/benchmarks).
+Median of 5 runs in real Chromium on Apple M5 Pro (2026-11-17); React stack = React + TanStack Query and Table + React Hook Form + zod, Vue stack = Vue + TanStack + vee-validate + zod, Angular stack = Angular with signals and reactive forms and no extra library; xoong has two columns because its default output is unminified and readable while the others ship minified bundles, and the --minify column counts esbuild too; every library a stack needs counts in full. The slow case is a 4x slower CPU and slow 4G. One machine, one screen: the spread, the method and what was not measured are on the [benchmarks page](https://fpt-duongtx.github.io/xoong/benchmarks.html) and in [benchmarks/](https://github.com/fpt-duongtx/xoong/tree/main/benchmarks).
 
-| The same people screen | xoong (default, readable) | xoong --minify (needs esbuild) | React stack | Vue stack | Angular stack |
-|---|---|---|---|---|---|
-| Browser JS, CSS and HTML, brotli | 74.4 kB | 40.0 kB | 102.2 kB | 64.0 kB | 59.0 kB |
-| Third-party packages in the browser build | 0 | 0 | 7 | 6 | 7 |
-| Screen usable, slow 4G and 4x slower CPU | 1,019 ms | 919 ms | 1,069 ms | 853 ms | 853 ms |
-| Show 1,000 rows, unthrottled | 57.0 ms | 58.9 ms | 58.3 ms | 80.7 ms | 49.5 ms |
-| Lines written for the same screen | 39 | 39 | 213 | 180 | 229 |
-| Packages npm installs for the screen | 12 | 14 | 52 | 83 | 362 |
+| The same people screen | xoong (bundled, minified) | React stack | Vue stack | Angular stack |
+|---|---|---|---|---|
+| Browser JS, CSS and HTML, brotli | 31.6 kB | 102.2 kB | 64.0 kB | 59.0 kB |
+| Third-party packages in the browser build | 0 | 7 | 6 | 7 |
+| Screen usable, slow 4G and 4x slower CPU | 836 ms | 1,069 ms | 852 ms | 836 ms |
+| Show 1,000 rows, unthrottled | 58.0 ms | 61.7 ms | 81.0 ms | 49.4 ms |
+| Lines written for the same screen | 39 | 213 | 180 | 229 |
+| Packages npm installs for the screen | 14 | 52 | 83 | 362 |
 
-xoong (default, readable) has the lowest number in 3 of 6 rows and xoong --minify (the like-for-like column: the others ship minified bundles, and esbuild is counted for it) in 3; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row. Lines of code and packages are proxies for effort, not time.
+xoong (bundled and minified like the others, with esbuild counted) has the lowest number in 4 of 6 rows; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row. Lines of code and packages are proxies for effort, not time.
 
 ## More
 

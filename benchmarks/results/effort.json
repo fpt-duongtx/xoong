@@ -1,11 +1,11 @@
 {
  "environment": {
-  "date": "2026-11-16",
+  "date": "2026-11-17",
   "machine": "Apple M5 Pro, 15 cores, 24 GB RAM",
   "os": "Darwin 27.2.0 (arm64)",
   "node": "v26.13.0",
   "xoong": "0.0.55",
-  "commit": "801ae86"
+  "commit": "1c657f9"
  },
  "method": "non-blank, non-comment lines of the files a developer writes (sources, markup, stylesheet); package.json, lockfiles, vite config and the OpenAPI document are not counted (config is listed apart); JSX is counted as script",
  "stacks": {
@@ -35,16 +35,25 @@
    },
    "dependencies": {
     "runtimeInBrowser": 0,
-    "direct": 1,
-    "installedTotal": 12,
+    "direct": 2,
+    "installedTotal": 14,
     "installedOwn": 8,
     "installedThirdParty": [
      "amaro",
      "parse5",
      "entities",
-     "yaml"
+     "yaml",
+     "@esbuild/darwin-arm64",
+     "esbuild"
     ],
-    "note": "@xoong/xoong plus everything it needs: the xoong command line (parse5, yaml) is the only third-party code, and it runs in Node, never in the browser"
+    "note": "@xoong/xoong plus everything it needs: the xoong command line (parse5, yaml) is the only third-party code, and it runs in Node, never in the browser; xoong build --minify also needs esbuild (a build tool, never in the browser), counted here with its platform package"
+   },
+   "libraries": {
+    "esbuild": {
+     "version": "0.28.2",
+     "for": "bundler and minifier used by xoong build --bundle --minify (and its platform binary)",
+     "shipped": false
+    }
    }
   },
   "react": {
@@ -394,53 +403,6 @@
     "vite": {
      "version": "8.3.6",
      "for": "dev server and bundler",
-     "shipped": false
-    }
-   }
-  },
-  "xoong-min": {
-   "files": 2,
-   "loc": {
-    "markup": 34,
-    "script": 5,
-    "style": 0,
-    "all": 39
-   },
-   "perFile": {
-    "index.html": {
-     "markup": 34,
-     "script": 0,
-     "style": 0
-    },
-    "src/main.ts": {
-     "markup": 0,
-     "script": 5,
-     "style": 0
-    }
-   },
-   "configLines": {
-    "package.json": 6,
-    "xoong.hints.json": 1
-   },
-   "dependencies": {
-    "runtimeInBrowser": 0,
-    "direct": 2,
-    "installedTotal": 14,
-    "installedOwn": 8,
-    "installedThirdParty": [
-     "amaro",
-     "parse5",
-     "entities",
-     "yaml",
-     "@esbuild/darwin-arm64",
-     "esbuild"
-    ],
-    "note": "@xoong/xoong plus everything it needs: the xoong command line (parse5, yaml) is the only third-party code, and it runs in Node, never in the browser; xoong build --minify also needs esbuild (a build tool, never in the browser), counted here with its platform package"
-   },
-   "libraries": {
-    "esbuild": {
-     "version": "0.28.2",
-     "for": "minifier used by xoong build --minify (and its platform binary)",
      "shipped": false
     }
    }

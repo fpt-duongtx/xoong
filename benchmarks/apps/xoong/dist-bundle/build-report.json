@@ -1,0 +1,71 @@
+{
+  "csp": "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'",
+  "minified": true,
+  "bundled": true,
+  "files": [
+    {
+      "path": "/.xoong/operations.json",
+      "bytes": 1442,
+      "gzip": 448
+    },
+    {
+      "path": "/@xoong/ui/src/xoong.css",
+      "bytes": 13316,
+      "gzip": 3007
+    },
+    {
+      "path": "/chunk-O4Y3K5ZP.js",
+      "bytes": 416,
+      "gzip": 294
+    },
+    {
+      "path": "/chunk-S6I5LLQQ.js",
+      "bytes": 46916,
+      "gzip": 17642
+    },
+    {
+      "path": "/chunk-UDHDFA7Z.js",
+      "bytes": 531,
+      "gzip": 349
+    },
+    {
+      "path": "/dialogs-Y2GTR4PI.js",
+      "bytes": 4021,
+      "gzip": 1584
+    },
+    {
+      "path": "/index.html",
+      "bytes": 1396,
+      "gzip": 701
+    },
+    {
+      "path": "/operations.json",
+      "bytes": 1442,
+      "gzip": 448
+    },
+    {
+      "path": "/router-2JA32CG5.js",
+      "bytes": 9715,
+      "gzip": 3699
+    },
+    {
+      "path": "/src/main.js",
+      "bytes": 37118,
+      "gzip": 13122
+    },
+    {
+      "path": "/stream-L2TWMHHU.js",
+      "bytes": 63,
+      "gzip": 79
+    }
+  ],
+  "firstLoad": [
+    {
+      "page": "/index.html",
+      "files": 3,
+      "bytes": 51830,
+      "gzip": 16830
+    }
+  ],
+  "warnings": []
+}

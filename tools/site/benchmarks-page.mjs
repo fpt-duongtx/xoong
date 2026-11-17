@@ -14,9 +14,9 @@ export const hasBenchmarks = dataOk && published;
 
 const REPO = 'https://github.com/fpt-duongtx/xoong';
 export const BENCH_URL = `${REPO}/tree/main/benchmarks`;
-const VARIANT_NAMES = { xoong: 'xoong (default, readable)', 'xoong-min': 'xoong --minify (needs esbuild)', 'xoong-nopreload': 'xoong, no modulepreload', 'xoong-http1': 'xoong, HTTP/1.1', react: 'React stack', vue: 'Vue stack', angular: 'Angular stack' };
-const IDS = ['xoong', 'xoong-min', 'xoong-nopreload', 'xoong-http1', 'react', 'vue', 'angular'];
-const STACKS = ['xoong', 'xoong-min', 'react', 'vue', 'angular'];
+const VARIANT_NAMES = { xoong: 'xoong (bundled, minified)', 'xoong-http1': 'xoong, HTTP/1.1', react: 'React stack', vue: 'Vue stack', angular: 'Angular stack' };
+const IDS = ['xoong', 'xoong-http1', 'react', 'vue', 'angular'];
+const STACKS = ['xoong', 'react', 'vue', 'angular'];
 
 // ---- formatting -----------------------------------------------------------------------------------------------------------------
 const n = (x, d = 0) => Number(x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -145,7 +145,7 @@ export const benchmarksPageData = !dataOk ? null : {
 <h2>What was compared</h2>
 <p>One admin screen: a people list with server-side sort, search and paging, a rows-per-page choice up to 10,000, row selection with a bulk delete behind a confirm dialog, a disable action per row, an add dialog with a validated form (client rules and server field errors), and loading, error and empty states. All four implementations talk to the same mock API process and pass the same Playwright acceptance test, which uses only roles and accessible names and includes an axe-core check (WCAG 2 A and AA): ${n(15)} checks, run by <code>npm run accept</code>.</p>
 <ul>
-<li><strong>xoong</strong> ${esc(env.xoong)}: <code>&lt;xo-view&gt;</code>, <code>&lt;xo-table&gt;</code>, <code>&lt;xo-form&gt;</code> and <code>&lt;xo-dialog&gt;</code> from the OpenAPI document, built with <code>xoong build</code> (not minified, not bundled, modulepreload links).</li>
+<li><strong>xoong</strong> ${esc(env.xoong)}: <code>&lt;xo-view&gt;</code>, <code>&lt;xo-table&gt;</code>, <code>&lt;xo-form&gt;</code> and <code>&lt;xo-dialog&gt;</code> from the OpenAPI document, built with <code>xoong build --bundle --minify</code> (the project's esbuild bundles and minifies; the router and the dialogs stay lazy chunks, as they are loaded on demand). Its esbuild counts in the install numbers.</li>
 <li><strong>React stack</strong>: written the way a React specialist would write it, with TanStack Table's own sorting, paging and selection state, React Hook Form with zod, TanStack Query, and the native <code>&lt;dialog&gt;</code> without a wrapper. Built with Vite ${esc(R.versions.react.vite)} (minified, one JS file).</li>
 <li><strong>Vue stack</strong>: Vue with TanStack Query and Table, vee-validate and zod, the native <code>&lt;dialog&gt;</code>, built with Vite ${esc(R.versions.vue.vite)}.</li>
 <li><strong>Angular stack</strong>: Angular ${esc(R.versions.angular['@angular/core'])}, standalone components, signals, <code>resource()</code>, new control flow and reactive forms, with no component or table library (an Angular developer could add Angular Material or the CDK; none was needed for this screen, so none is counted), built with <code>ng build</code> (esbuild). The Angular CLI needs Node 24.15 or newer, so every benchmark of every stack ran on Node ${esc(env.node.replace(/^v/, ''))}.</li>
@@ -155,7 +155,7 @@ export const benchmarksPageData = !dataOk ? null : {
 ${librariesTable()}
 
 <h2>What gets delivered</h2>
-<p>Sizes are of the files the first view loads, computed from the built files (gzip level 9, brotli level 11), so you can recompute them. xoong's output is not minified: its files are the ones you wrote. A bundler with minification and tree-shaking, applied to the same sources, would make the xoong column smaller; the page compares what <code>xoong build</code> produces today.</p>
+<p>Sizes are of the files the first view loads, computed from the built files (gzip level 9, brotli level 11), so you can recompute them. xoong is measured bundled and minified, like the other three: the unbundled, readable output of <code>xoong build</code> is not benchmarked here (it is 38 files and about 278 KB, and the build still produces it by default).</p>
 ${sizesTable()}
 
 <h2>Load and interaction, unthrottled</h2>
@@ -167,15 +167,15 @@ ${table(head('Median (smallest to largest of ' + R.runs + ' runs)'), [...runtime
 <p>The same runs with the CPU slowed 4 times and, while the page loads, a slow 4G network (150 ms round trip, 1.6 Mbit/s down, 0.75 Mbit/s up). The network is set back to normal before the interactions, because a 10,000-row answer is about a megabyte and would turn those rows into a download test. The CPU stays slowed.</p>
 ${table(head('Median (smallest to largest of ' + R.runs + ' runs)'), [...runtimeRows('mobile', loadKeys), ...runtimeRows('mobile', rowKeys)])}
 
-<h3>Unbundled modules: with and without the preload links</h3>
-<p><code>xoong build</code> does not bundle: the first view is ${n(prof('xoong', 'local').requests.median)} files. The build writes a <code>&lt;link rel="modulepreload"&gt;</code> for every module of the graph so the browser does not find them one import at a time. The first three columns are the same files: with the links, without them, and over HTTP/1.1 (the worst case for many small files). On the throttled profile the screen is usable after ${ms(prof('xoong', 'mobile').usable.median)} with the links, ${ms(prof('xoong-nopreload', 'mobile').usable.median)} without them and ${ms(prof('xoong-http1', 'mobile').usable.median)} over HTTP/1.1; unthrottled, on loopback, the three are within ${ms(Math.max(...['xoong', 'xoong-nopreload', 'xoong-http1'].map((id) => prof(id, 'local').usable.median)) - Math.min(...['xoong', 'xoong-nopreload', 'xoong-http1'].map((id) => prof(id, 'local').usable.median)))} of each other. First paint comes earlier without the links on the throttled profile (${ms(prof('xoong-nopreload', 'mobile').fcp.median)} against ${ms(prof('xoong', 'mobile').fcp.median)}); that was measured, not explained.</p>
+<h3>Over HTTP/1.1</h3>
+<p>The second xoong column is the same bundle served over HTTP/1.1 instead of HTTP/2. The first view is ${n(prof('xoong', 'local').requests.median)} requests. On the throttled profile the screen is usable after ${ms(prof('xoong', 'mobile').usable.median)} over HTTP/2 and ${ms(prof('xoong-http1', 'mobile').usable.median)} over HTTP/1.1.</p>
 
 <h2>Effort: the same screen, written four times</h2>
 <p>Lines of code are non-blank, non-comment lines of the files a developer writes (markup, script, stylesheet); JSX is counted as script, <code>.vue</code> files are split by block and Angular's component templates are markup. <code>package.json</code>, lockfiles and the build config are not counted. These are proxies for how much there is to write and read. They are not time: <strong>time to a passing screen was not measured</strong>, and nobody should infer it from line counts. Two things favour xoong in the table and should be said: its screen assumes an OpenAPI document exists (the other three have a hand-written 20-line API client instead, and would shrink with a code generator), and its look comes from the bundled stylesheet while the other three carry 18 lines of their own. What xoong gives up is control: a table or a form outside what <code>xo-table</code> and <code>xo-form</code> draw is yours to write.</p>
 ${effortTable()}
 
 <h2>Build, dev server and install</h2>
-<p>Build times are wall time of the whole process, Node start-up included. <code>vite build</code> and Angular's <code>ng build</code> bundle and minify; <code>xoong build</code> copies, rewrites imports and writes preload links, so the two do different work to reach the same goal: files a browser can run under a strict CSP.</p>
+<p>Build times are wall time of the whole process, Node start-up included. <code>vite build</code> and Angular's <code>ng build</code> bundle and minify; the timed <code>xoong build</code> is the default one, which copies, rewrites imports and writes preload links without bundling (<code>--bundle --minify</code> hands the same files to esbuild and is not timed here), so the two do different work to reach the same goal: files a browser can run under a strict CSP.</p>
 ${buildTable()}
 ${devTable()}
 ${B ? `<h3>Install</h3>
@@ -229,7 +229,7 @@ function headlines() {
   ].map((r) => ({ ...r, cells: r.values.map((v) => r.fmt(v)) }));
 }
 /** "xoong is lowest in 4 of 6 rows": said by the data, so it cannot flatter. */
-const standing = () => { const h = headlines(); const lowest = (i) => h.filter((r) => r.values[i] <= Math.min(...r.values)).length; return `xoong (default, readable) has the lowest number in ${lowest(0)} of ${h.length} rows and xoong --minify (the like-for-like column: the others ship minified bundles, and esbuild is counted for it) in ${lowest(1)}; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row.`; };
+const standing = () => { const h = headlines(); const lowest = (i) => h.filter((r) => r.values[i] <= Math.min(...r.values)).length; return `xoong (bundled and minified like the others, with esbuild counted) has the lowest number in ${lowest(0)} of ${h.length} rows; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row.`; };
 
 export function homeBenchmarks(on = hasBenchmarks) {
   if (!on || !dataOk) return '';
@@ -239,7 +239,7 @@ export function homeBenchmarks(on = hasBenchmarks) {
     <div class="wrap">
       <div class="head"><span class="eyebrow">Measured, not promised</span><h2>The same screen, four ways.</h2><p>A people list with server-side sort, search and paging, bulk delete and an add dialog, built in xoong, React, Vue and Angular, run in real Chromium. Median of ${n(R.runs)} runs on one machine (${esc(env.machine.split(',')[0])}); the spread, the method and what was not measured are on the <a href="benchmarks.html">benchmarks page</a>, and every number comes from a script you can run.</p></div>
       <div class="table-wrap" tabindex="0"><table aria-label="The same admin screen in xoong, a React stack, a Vue stack and an Angular stack">
-        <thead><tr><th scope="col">Metric</th><th scope="col">xoong (default)</th><th scope="col">xoong --minify</th><th scope="col">React stack</th><th scope="col">Vue stack</th><th scope="col">Angular stack</th></tr></thead>
+        <thead><tr><th scope="col">Metric</th><th scope="col">xoong (bundled)</th><th scope="col">React stack</th><th scope="col">Vue stack</th><th scope="col">Angular stack</th></tr></thead>
         <tbody>
 ${rows}
         </tbody>
@@ -254,8 +254,8 @@ export function readmeTable({ links = true, cli = false, on = hasBenchmarks } = 
   if (!on || !dataOk) return '';
   const h = headlines();
   const lines = [
-    '| The same people screen | xoong (default, readable) | xoong --minify (needs esbuild) | React stack | Vue stack | Angular stack |',
-    '|---|---|---|---|---|---|',
+    '| The same people screen | xoong (bundled, minified) | React stack | Vue stack | Angular stack |',
+    '|---|---|---|---|---|',
     ...h.map((r) => `| ${r.what} | ${r.cells.map(plain).join(' | ')} |`),
   ];
   const sync = C.sync['generated, 500 operations'];
