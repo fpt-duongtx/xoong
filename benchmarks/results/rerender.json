@@ -1,11 +1,11 @@
 {
  "environment": {
-  "date": "2026-11-09",
-  "machine": "Apple M1, 8 cores, 8 GB RAM",
-  "os": "Darwin 25.2.0 (arm64)",
-  "node": "v26.0.0",
-  "xoong": "0.0.49",
-  "commit": "7ea88dc",
+  "date": "2026-11-17",
+  "machine": "Apple M5 Pro, 15 cores, 24 GB RAM",
+  "os": "Darwin 27.2.0 (arm64)",
+  "node": "v26.13.0",
+  "xoong": "0.0.55",
+  "commit": "3cc9c94",
   "browser": "Chromium 158.0.8127.18"
  },
  "method": "MutationObserver on document.body (childList, attributes, characterData; nodes counted with their descendants); \"rows kept\" = rows that are the same element as before the action",
@@ -43,15 +43,6 @@
     "text": 1,
     "rows": 1000,
     "rowsSame": 1000
-   },
-   "xoongBefore": {
-    "added": 0,
-    "removed": 0,
-    "attributes": 6,
-    "text": 4005,
-    "rows": 1000,
-    "rowsSame": 1000,
-    "effectRuns": 5018
    }
   },
   "Tick one row": {
@@ -87,15 +78,6 @@
     "text": 1,
     "rows": 1000,
     "rowsSame": 1000
-   },
-   "xoongBefore": {
-    "added": 5,
-    "removed": 0,
-    "attributes": 0,
-    "text": 1,
-    "rows": 1000,
-    "rowsSame": 1000,
-    "effectRuns": 1003
    }
   },
   "Untick it again": {
@@ -131,15 +113,6 @@
     "text": 0,
     "rows": 1000,
     "rowsSame": 1000
-   },
-   "xoongBefore": {
-    "added": 0,
-    "removed": 5,
-    "attributes": 0,
-    "text": 0,
-    "rows": 1000,
-    "rowsSame": 1000,
-    "effectRuns": 1002
    }
   },
   "Sort by name": {
@@ -175,15 +148,6 @@
     "text": 0,
     "rows": 1000,
     "rowsSame": 1000
-   },
-   "xoongBefore": {
-    "added": 13062,
-    "removed": 13062,
-    "attributes": 7,
-    "text": 4002,
-    "rows": 1000,
-    "rowsSame": 1000,
-    "effectRuns": 5029
    }
   },
   "Type a letter in the add dialog (nothing else changes)": {
@@ -219,15 +183,6 @@
     "text": 0,
     "rows": 1000,
     "rowsSame": 1000
-   },
-   "xoongBefore": {
-    "added": 0,
-    "removed": 0,
-    "attributes": 1,
-    "text": 0,
-    "rows": 1000,
-    "rowsSame": 1000,
-    "effectRuns": 10
    }
   },
   "Add one person, who is not on this page (the list is fetched again)": {
@@ -263,15 +218,6 @@
     "text": 1,
     "rows": 1000,
     "rowsSame": 1000
-   },
-   "xoongBefore": {
-    "added": 12,
-    "removed": 6,
-    "attributes": 19,
-    "text": 4001,
-    "rows": 1000,
-    "rowsSame": 1000,
-    "effectRuns": 5037
    }
   },
   "Delete one person (the next one moves up into the page)": {
@@ -307,15 +253,6 @@
     "text": 2,
     "rows": 999,
     "rowsSame": 999
-   },
-   "xoongBefore": {
-    "added": 13959,
-    "removed": 13973,
-    "attributes": 8,
-    "text": 3998,
-    "rows": 999,
-    "rowsSame": 999,
-    "effectRuns": 7014
    }
   },
   "Search \"person99\" (11 of the 1,000 match)": {
@@ -351,15 +288,6 @@
     "text": 1,
     "rows": 11,
     "rowsSame": 11
-   },
-   "xoongBefore": {
-    "added": 154,
-    "removed": 14000,
-    "attributes": 4,
-    "text": 46,
-    "rows": 11,
-    "rowsSame": 11,
-    "effectRuns": 84
    }
   },
   "Clear the search (back to 1,000)": {
@@ -395,15 +323,6 @@
     "text": 3957,
     "rows": 1000,
     "rowsSame": 11
-   },
-   "xoongBefore": {
-    "added": 13846,
-    "removed": 0,
-    "attributes": 0,
-    "text": 45,
-    "rows": 1000,
-    "rowsSame": 11,
-    "effectRuns": 5019
    }
   },
   "Rows per page 1,000 to 100": {
@@ -439,15 +358,6 @@
     "text": 1,
     "rows": 100,
     "rowsSame": 100
-   },
-   "xoongBefore": {
-    "added": 3,
-    "removed": 12600,
-    "attributes": 4,
-    "text": 402,
-    "rows": 100,
-    "rowsSame": 100,
-    "effectRuns": 531
    }
   },
   "Next page (100 rows, all different)": {
@@ -483,17 +393,7 @@
     "text": 401,
     "rows": 100,
     "rowsSame": 0
-   },
-   "xoongBefore": {
-    "added": 1403,
-    "removed": 1400,
-    "attributes": 4,
-    "text": 2,
-    "rows": 100,
-    "rowsSame": 0,
-    "effectRuns": 534
    }
   }
- },
- "note": "xoongBefore: the same probe before the re-render fixes of packages/data/src/view.js (unchanged answers rewrote every row, deleting a row moved the rows after it, a tick re-ran every checkbox)"
+ }
 }

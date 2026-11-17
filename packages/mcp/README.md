@@ -17,15 +17,15 @@ Add it to your assistant's MCP configuration as a stdio server running `xoong-mc
 
 ## Measured, not promised
 
-Real stdio JSON-RPC, 200 sequential calls per tool, 10 start-ups, on Apple M1 (2026-11-09). The reference is a one-tool server on the official TypeScript SDK 1.32.2 answering the same call: it shows what the protocol layer costs, it is not a product comparison. Every tool and the method: [benchmarks/](https://github.com/fpt-duongtx/xoong/tree/main/benchmarks).
+Real stdio JSON-RPC, 200 sequential calls per tool, 10 start-ups, on Apple M5 Pro (2026-11-17). The reference is a one-tool server on the official TypeScript SDK 1.32.2 answering the same call: it shows what the protocol layer costs, it is not a product comparison. Every tool and the method: [benchmarks/](https://github.com/fpt-duongtx/xoong/tree/main/benchmarks).
 
 | | xoong-mcp (no SDK) | SDK reference |
 |---|---|---|
-| Start to `initialize` answer | 40.8 ms | 85.8 ms |
-| `tools/list`, p50 / p95 | 0.10 / 0.15 ms | 0.16 / 0.23 ms |
-| `explain_error`, p50 / p95 | 0.02 / 0.03 ms | 0.09 / 0.13 ms |
-| Throughput, back-to-back requests | 259,826 per second | 33,111 per second |
-| Memory (RSS), idle / after 1,000 calls | 58.2 / 64.0 MB | 82.3 / 112.4 MB |
+| Start to `initialize` answer | 82.1 ms | 155 ms |
+| `tools/list`, p50 / p95 | 0.03 / 0.07 ms | 0.21 / 0.63 ms |
+| `explain_error`, p50 / p95 | 0.01 / 0.02 ms | 0.11 / 0.99 ms |
+| Throughput, back-to-back requests | 447,099 per second | 21,310 per second |
+| Memory (RSS), idle / after 1,000 calls | 48.2 / 53.1 MB | 70.8 / 98.2 MB |
 
 ## More
 

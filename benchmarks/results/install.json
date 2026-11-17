@@ -1,98 +1,98 @@
 {
  "environment": {
-  "date": "2026-11-09",
-  "machine": "Apple M1, 8 cores, 8 GB RAM",
-  "os": "Darwin 25.2.0 (arm64)",
-  "node": "v26.0.0",
-  "xoong": "0.0.51",
-  "commit": "d8ff461"
+  "date": "2026-11-17",
+  "machine": "Apple M5 Pro, 15 cores, 24 GB RAM",
+  "os": "Darwin 27.2.0 (arm64)",
+  "node": "v26.13.0",
+  "xoong": "0.0.55",
+  "commit": "3cc9c94"
  },
  "runs": 3,
  "install": {
   "React stack (npm ci)": {
    "time": {
     "n": 3,
-    "median": 2418,
-    "min": 2242,
-    "max": 4190,
-    "q1": 2330,
-    "q3": 3304,
+    "median": 4826,
+    "min": 3320,
+    "max": 5208,
+    "q1": 4073,
+    "q3": 5017,
     "runs": [
-     4190,
-     2418,
-     2242
+     4826,
+     5208,
+     3320
     ]
    },
-   "packages": 52,
-   "bytes": 55757514
+   "packages": 28,
+   "bytes": 55742935
   },
   "Vue stack (npm ci)": {
    "time": {
     "n": 3,
-    "median": 3098,
-    "min": 3081,
-    "max": 3252,
-    "q1": 3090,
-    "q3": 3175,
+    "median": 3755,
+    "min": 2930,
+    "max": 7505,
+    "q1": 3342,
+    "q3": 5630,
     "runs": [
-     3098,
-     3252,
-     3081
+     7505,
+     3755,
+     2930
     ]
    },
-   "packages": 83,
-   "bytes": 63683383
+   "packages": 59,
+   "bytes": 63668804
   },
   "Angular stack (npm ci)": {
    "time": {
     "n": 3,
-    "median": 8345,
-    "min": 7775,
-    "max": 10317,
-    "q1": 8060,
-    "q3": 9331,
+    "median": 12728,
+    "min": 9095,
+    "max": 13357,
+    "q1": 10912,
+    "q3": 13042,
     "runs": [
-     8345,
-     7775,
-     10317
+     9095,
+     12728,
+     13357
     ]
    },
-   "packages": 362,
-   "bytes": 204814672
+   "packages": 240,
+   "bytes": 204746334
   },
   "xoong (npm install @xoong/xoong, from tarballs)": {
    "time": {
     "n": 3,
-    "median": 998,
-    "min": 779,
-    "max": 1097,
-    "q1": 888,
-    "q3": 1047,
+    "median": 1253,
+    "min": 1070,
+    "max": 1293,
+    "q1": 1161,
+    "q3": 1273,
     "runs": [
-     998,
-     779,
-     1097
+     1293,
+     1070,
+     1253
     ]
    },
    "packages": 12,
-   "bytes": 8160457
+   "bytes": 8190928
   },
   "xoong + esbuild (npm install @xoong/xoong esbuild, for --minify)": {
    "time": {
     "n": 3,
-    "median": 2709,
-    "min": 2431,
-    "max": 2727,
-    "q1": 2570,
-    "q3": 2718,
+    "median": 2707,
+    "min": 2592,
+    "max": 2850,
+    "q1": 2649,
+    "q3": 2778,
     "runs": [
-     2709,
-     2727,
-     2431
+     2592,
+     2707,
+     2850
     ]
    },
-   "packages": 39,
-   "bytes": 29495681
+   "packages": 14,
+   "bytes": 29513303
   }
  }
 }
