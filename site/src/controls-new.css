@@ -57,6 +57,7 @@
   display: inline-flex;
   flex: none;
   align-items: center;
+  justify-content: flex-start; /* a button centres its content: the knob (with its margin) sat in the middle of the track when off */
   width: 44px;
   height: 24px;
   min-height: 0;
