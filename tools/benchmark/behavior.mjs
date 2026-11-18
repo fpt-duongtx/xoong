@@ -14,11 +14,12 @@ async function boot() {
   const { Window } = await import('happy-dom');
   const window = new Window({ url: 'http://xoong.local/', settings: { disableJavaScriptFileLoading: true, disableCSSFileLoading: true, handleDisabledFileLoadingAsSuccess: true } });
   const g = /** @type {any} */ (globalThis);
-  for (const name of ['window', 'document', 'customElements', 'HTMLElement', 'Element', 'Node', 'DocumentFragment', 'Text', 'Comment', 'Event', 'CustomEvent', 'HTMLTemplateElement', 'DOMParser', 'HTMLInputElement', 'HTMLFormElement', 'HTMLSelectElement', 'MutationObserver', 'NodeFilter', 'getComputedStyle']) {
+  for (const name of ['window', 'document', 'customElements', 'HTMLElement', 'Element', 'Node', 'DocumentFragment', 'Text', 'Comment', 'Event', 'CustomEvent', 'HTMLTemplateElement', 'DOMParser', 'HTMLInputElement', 'HTMLFormElement', 'HTMLSelectElement', 'MutationObserver', 'NodeFilter', 'getComputedStyle', 'history', 'localStorage', 'sessionStorage']) {
     if (name === 'window') g.window = window;
     else Object.defineProperty(g, name, { value: /** @type {any} */ (window)[name], configurable: true, writable: true });
   }
   Object.defineProperty(g, 'location', { get: () => window.location, configurable: true });
+  for (const m of ['addEventListener', 'removeEventListener', 'dispatchEvent']) g[m] = /** @type {any} */ (window)[m].bind(window); // url-params listens for popstate
   await import('@xoong/data/view');
   await import('@xoong/ui');
   return { window, test: await import('@xoong/test') };
@@ -42,6 +43,17 @@ function helpers(screen, failures) {
     check: (ok, message) => { if (!ok) failures.push(message); return ok; },
     /** Buttons whose label matches. */
     buttonsLike: (re) => buttons().filter((b) => re.test(label(b))),
+    /** Click like a person: when the click asks "are you sure?" (xo-confirm), say yes. */
+    async act(s, el) {
+      await s.click(el);
+      for (let i = 0; i < 3; i++) {
+        const ok = /** @type {any} */ (globalThis).document.querySelector('.xo-confirm-ok');
+        if (!ok) break;
+        ok.click();
+        await new Promise((r) => setTimeout(r, 10));
+        await s.settle();
+      }
+    },
     label,
     /** Fill a form by field name (or by the label/placeholder when there is no such name): returns the names it could not fill. */
     fill(form, values) {
@@ -86,7 +98,7 @@ const BEHAVIOURS = {
     }
   },
 
-  'crud-admin': async ({ mount, api, files, check, text, buttonsLike, fill, win }) => {
+  'crud-admin': async ({ mount, api, files, check, text, buttonsLike, fill, act, win }) => {
     const s = await mount(files['index.html']);
     check(api.callsOf('listUsers').length >= 1, 'the page never asked for the users (listUsers)');
     check(/Ada Lovelace/.test(text()) && /grace@example\.test/.test(text()) && /member/.test(text()), 'the table does not show name, email and role of each user');
@@ -94,8 +106,8 @@ const BEHAVIOURS = {
     const del = buttonsLike(/delete/i);
     check(disable.length >= 2, `expected a Disable button on every row (found ${disable.length})`);
     check(del.length >= 2, `expected a Delete button on every row (found ${del.length})`);
-    if (disable[0]) { await s.click(disable[0]); check(api.callsOf('disableUser').some((c) => c.params.id === '1'), 'Disable on the first row did not call disableUser with id 1'); }
-    if (del[0]) { await s.click(del[0]); check(api.callsOf('deleteUser').some((c) => c.params.id === '1'), 'Delete on the first row did not call deleteUser with id 1'); }
+    if (disable[0]) { await act(s, disable[0]); check(api.callsOf('disableUser').some((c) => c.params.id === '1'), 'Disable on the first row did not call disableUser with id 1'); }
+    if (del[0]) { await act(s, del[0]); check(api.callsOf('deleteUser').some((c) => c.params.id === '1'), 'Delete on the first row did not call deleteUser with id 1'); }
     const form = s.$('form');
     if (check(!!form, 'there is no form to add a user')) {
       const missing = fill(form, { name: 'Cy Young', email: 'cy@example.test', role: 'admin' });
@@ -241,11 +253,17 @@ export async function behave(taskName, files, table, extra = {}) {
   if (!run) return [];
   booted ??= boot();
   const { window, test } = await booted;
+  const clean = () => { window.happyDOM.setURL('http://xoong.local/'); window.document.body.innerHTML = ''; }; // every attempt starts from a clean page and URL (url-params writes to the history)
+  clean();
   /** @type {string[]} */ const failures = [];
   const make = () => test.mockApi(table, handlersOf(taskName, test.respond));
   const api = make();
   const bodies = Object.fromEntries(Object.entries(files).map(([k, v]) => [k, bodyOf(v, window)]));
   const help = helpers({ container: /** @type {any} */ (globalThis).document.body }, failures);
+  // an exception thrown later by an effect or a timer of the attempt's page is a finding about the page, not a crash of the scorer
+  const thrown = (error) => failures.push(`the page threw an error while it ran: ${String(error?.message ?? error).slice(0, 160)}`);
+  process.on('uncaughtException', thrown);
+  process.on('unhandledRejection', thrown);
   try {
     await run({
       mount: (html, opts = {}) => test.mount(html, { api: opts.api ?? api }),
@@ -256,7 +274,11 @@ export async function behave(taskName, files, table, extra = {}) {
   } catch (error) {
     failures.push(`the page could not be exercised: ${/** @type {Error} */ (error).message}`);
   }
-  return failures;
+  await new Promise((r) => setTimeout(r, 20)); // let a late error land before the handlers go
+  process.off('uncaughtException', thrown);
+  process.off('unhandledRejection', thrown);
+  clean();
+  return [...new Set(failures)];
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

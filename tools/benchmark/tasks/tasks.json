@@ -27,8 +27,8 @@
       "deleteUser"
     ],
     "mustContain": [
-      "xo-each",
-      "xo-submit",
+      "xo-each|xo-table",
+      "xo-submit|xo-form",
       "xo-click"
     ]
   },
@@ -43,7 +43,7 @@
       "listCustomers"
     ],
     "mustContain": [
-      "xo-each",
+      "xo-each|xo-table",
       "customer.name"
     ]
   },
@@ -58,7 +58,7 @@
     ],
     "mustContain": [
       "live",
-      "xo-each",
+      "xo-each|xo-table",
       "xo-click"
     ]
   },

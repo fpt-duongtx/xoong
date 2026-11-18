@@ -5,7 +5,7 @@
 // <attempts folder>/<task>/<run>/<files>    e.g. attempts/crud-admin/run1/index.html (one folder per attempt; a single attempt may also sit directly in <task>/)
 // The result is appended to the results file as one run: the model, the date, the hashes of llms.txt and the prompts, every attempt (static stage, behaviour stage,
 // the failures) and the rates. Re-scoring the same attempts later (after a scorer change) is `node tools/benchmark/record.mjs <folder> --model ... --rescore <id>`.
-import { readdir, readFile, writeFile, stat, mkdir, mkdtemp } from 'node:fs/promises';
+import { readdir, readFile, writeFile, stat, mkdir, mkdtemp, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
 import { score } from './score.mjs';
@@ -25,6 +25,7 @@ for (const task of Object.keys(tasks)) {
   const dir = join(folder, task);
   if (!(await isDir(dir))) continue;
   const entries = (await readdir(dir)).filter((n) => !n.startsWith('.')).sort();
+  if (entries.length === 0) continue; // a task nobody answered is not an attempt
   const subdirs = [];
   for (const r of entries) if (await isDir(join(dir, r))) subdirs.push(r);
   // raw answers of a model (<task>/run1.md, ...): the files are taken out of them in the form the instructions asked for
@@ -63,6 +64,12 @@ const run = {
   protocol: 'single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once',
   ...fp, perTask, total, attempts: results,
 };
+// keep the raw answers next to the result: a later change of the scorer can then be applied to exactly what the model wrote
+const answersDir = resolve(opt('answers', 'benchmarks/ai/answers'), run.id);
+if (attempts.some((a) => a.dir.startsWith(scratch))) {
+  await cp(folder, answersDir, { recursive: true, filter: async (src) => (await isDir(src)) || src.endsWith('.md') });
+  run.answers = answersDir.replace(`${process.cwd()}/`, '');
+}
 let file = { suiteVersion: SUITE_VERSION, runs: [] };
 try { file = JSON.parse(await readFile(resultsPath, 'utf8')); } catch { /* first result */ }
 file.suiteVersion = SUITE_VERSION;

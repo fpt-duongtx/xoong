@@ -49,7 +49,7 @@ describe('benchmark scorer', () => {
 
   it('requires the operations and constructs of the task', async () => {
     const r = await score('crud-admin', await attempt('crud-admin', { 'index.html': '<xo-view get="/users"><tr xo-each="items"><td>{name}</td></tr></xo-view>' }));
-    expect(r.failures).toEqual(expect.arrayContaining(['does not use createUser', 'does not use deleteUser', 'does not contain "xo-submit"']));
+    expect(r.failures).toEqual(expect.arrayContaining(['does not use createUser', 'does not use deleteUser', 'does not contain "xo-submit|xo-form"']));
   });
 });
 

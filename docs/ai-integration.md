@@ -112,7 +112,7 @@ The expected loop: read spec, write code, `check`, fix from the error message.
 Success metric: **first-attempt correctness**: the share of tasks an assistant solves in **one attempt**, with only `llms.txt` and the
 list of the API's operations, that pass the scorer without human edits.
 
-The harness is in [`tools/benchmark`](../tools/benchmark): four tasks (small site, CRUD admin, shared-data dashboard, live updates),
+The harness is in [`tools/benchmark`](../tools/benchmark) (how to run it again: its README): six tasks (small site, CRUD admin, shared-data dashboard, live updates, admin table, paging and filters),
 each with an OpenAPI file, a task text and a reference solution. `node tools/benchmark/score.mjs <task> <folder>` and
 `node tools/benchmark/run.mjs <attempts folder>` score what an assistant wrote. A task passes when all expected files exist,
 `xoong check` reports no errors, the required operations and constructs are used, and nothing forbidden appears (hand-written
@@ -145,6 +145,39 @@ What this does and does not show:
 
 To repeat it: give an assistant `llms.txt`, a task from `tools/benchmark/tasks/*/task.md` and the matching operations list
 (`list_operations` of `@xoong/mcp` prints it), collect the files in `<folder>/<task>/`, run `run.mjs`.
+
+### Second measurement (2026-11-18): suite 2, two models, a page that has to work
+
+The suite was rebuilt so the number can be repeated and compared ([tools/benchmark/README.md](../tools/benchmark/README.md)): six tasks (two new: an admin table with a dialog, and paging with
+filters), a **behaviour stage** that mounts the page in happy-dom against a mock of the API and exercises it (data shows, buttons call the right operation with the right id, a form sends
+what was typed, Next asks for the next page), one fixed prompt with hashes, and every result stored in [`benchmarks/results/ai.json`](../benchmarks/results/ai.json) with the raw answers in
+`benchmarks/ai/answers/`. Protocol: single turn, no feedback loop, the model reads one prompt (instructions, `llms.txt`, the operations, the task) and answers once. 3 attempts per task, a fresh
+agent for each, `llms.txt` hash `729349`, xoong 0.0.57.
+
+| Task | Sonnet 5.5 | Haiku 5.5 | What went wrong |
+|---|---|---|---|
+| `live-updates` | 3/3 | 3/3 | |
+| `paging-filter` | 2/3 | 2/3 | `hidden="{!$hasPrev}"` (no operators there); the status buttons put outside the `<xo-view>` they drive |
+| `crud-admin` | 0/3 | 1/3 | `<xo-form>` outside `<xo-view>`: draws nothing, no error (Haiku once also used a table filter the API has no parameter for: `XO253`) |
+| `admin-table` | 0/3 | 0/3 | the same: `<xo-form>` outside `<xo-view>`, in all six |
+| `small-site` | 0/3 | 0/3 | `xo-each="items"` on a response that is an array (it is `xo-each="."`) |
+| `shared-data` | 0/3 | 0/3 | the same, on `listCustomers` |
+| **Passed** | **5/18** | **6/18** | static stage alone: 18/18 and 17/18 |
+
+What it shows:
+
+* **"Looks right" is far from "works".** Every attempt passed the static stage (`xoong check`, the right operations, no forbidden patterns) bar one, and only five or six in eighteen worked. The first
+  measurement (2026-11-08) only had the static stage, and its 4/4 said much less than it seemed to.
+* **The failures are not random: they are three gaps, repeated across both models and every attempt of a task.** (1) An example in `llms.txt` puts `<xo-form>` beside, not inside, an `<xo-view>`, and
+  the runtime expands it only inside one (checked in Chromium: no form, no error), and `xoong check` does not say so. (2) The operations list does not say whether a response is an array or `{ items }`,
+  the example uses `items`, and `xoong check` does not check an `xo-each` path against the response. (3) `{...}` in an attribute takes a path, not an expression, and nothing says so. These are the
+  findings the benchmark is for: they point at `llms.txt`, at `list_operations` and at `xoong check`, not at the models.
+* **A stronger model did not do better here** (28% and 33%, within the noise of 18 attempts each): the gaps are in what the models are given.
+
+What it does not show: n is 3 per task and two models; the scorer is a mock in happy-dom, not a browser against a real backend; the agents had tools only to read the prompt file and write the answer
+(their reports of what they read are self-reported); the scorer was corrected once after the first pilot attempt (it rejected `xo-table`/`xo-form` as constructs, did not answer an `xo-confirm`
+dialog, and leaked the URL between pages that use `url-params`), and all 36 attempts were scored with the corrected scorer, which is said in the notes of the result.
+Compare a new run with these only when the hashes in the result match.
 
 ## 6. Fine-tuning (later)
 

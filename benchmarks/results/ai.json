@@ -1,0 +1,478 @@
+{
+ "suiteVersion": 2,
+ "runs": [
+  {
+   "id": "2026-11-18-claude-sonnet-5-5-729349",
+   "date": "2026-11-18",
+   "model": "claude-sonnet-5-5",
+   "note": "baseline: llms.txt before any fix; one fresh-context agent per attempt, 3 attempts per task. The pilot attempt (crud-admin run1) came first; after it the scorer was corrected (xo-table/xo-form accepted as alternatives, xo-confirm answered, url-params isolation) and every attempt re-scored with the corrected scorer. Each agent read only its prompt file (self-reported).",
+   "commit": "ce0d7bd",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 2,
+   "xoong": "0.0.57",
+   "llmsSha256": "72934988081d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "12076b6ece43",
+    "crud-admin": "92cf05e11c2e",
+    "shared-data": "814816749aba",
+    "live-updates": "34d12465c260",
+    "admin-table": "cb1029cb6d7a",
+    "paging-filter": "ef931c083119"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 3,
+     "passed": 0,
+     "staticPassed": 3
+    },
+    "crud-admin": {
+     "attempts": 3,
+     "passed": 0,
+     "staticPassed": 3
+    },
+    "shared-data": {
+     "attempts": 3,
+     "passed": 0,
+     "staticPassed": 3
+    },
+    "live-updates": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "admin-table": {
+     "attempts": 3,
+     "passed": 0,
+     "staticPassed": 3
+    },
+    "paging-filter": {
+     "attempts": 3,
+     "passed": 2,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 18,
+    "passed": 5,
+    "staticPassed": 18
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "index.html does not show the post titles from listPosts",
+      "the titles do not link to post.html?id=<id> (links: none)"
+     ]
+    },
+    {
+     "task": "small-site",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "index.html does not show the post titles from listPosts",
+      "the titles do not link to post.html?id=<id> (links: none)"
+     ]
+    },
+    {
+     "task": "small-site",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "index.html does not show the post titles from listPosts",
+      "the titles do not link to post.html?id=<id> (links: none)"
+     ]
+    },
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a user"
+     ]
+    },
+    {
+     "task": "crud-admin",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a user"
+     ]
+    },
+    {
+     "task": "crud-admin",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a user"
+     ]
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "the customer's name should appear in the orders list and in the customers list (found 1 time(s))",
+      "the customers list does not show the email"
+     ]
+    },
+    {
+     "task": "shared-data",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "the customer's name should appear in the orders list and in the customers list (found 1 time(s))",
+      "the customers list does not show the email"
+     ]
+    },
+    {
+     "task": "shared-data",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "the customer's name should appear in the orders list and in the customers list (found 1 time(s))",
+      "the customers list does not show the email"
+     ]
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a person"
+     ]
+    },
+    {
+     "task": "admin-table",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a person"
+     ]
+    },
+    {
+     "task": "admin-table",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a person"
+     ]
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "Next must be shown when there is a later page"
+     ]
+    },
+    {
+     "task": "paging-filter",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-18-claude-sonnet-5-5-729349"
+  },
+  {
+   "id": "2026-11-18-claude-haiku-5-5-729349",
+   "date": "2026-11-18",
+   "model": "claude-haiku-5-5",
+   "note": "baseline: llms.txt before any fix; same protocol and scorer as the Sonnet run. One agent also made two denied calls to a session-handoff tool and read nothing else.",
+   "commit": "ce0d7bd",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 2,
+   "xoong": "0.0.57",
+   "llmsSha256": "72934988081d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "12076b6ece43",
+    "crud-admin": "92cf05e11c2e",
+    "shared-data": "814816749aba",
+    "live-updates": "34d12465c260",
+    "admin-table": "cb1029cb6d7a",
+    "paging-filter": "ef931c083119"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 3,
+     "passed": 0,
+     "staticPassed": 3
+    },
+    "crud-admin": {
+     "attempts": 3,
+     "passed": 1,
+     "staticPassed": 2
+    },
+    "shared-data": {
+     "attempts": 3,
+     "passed": 0,
+     "staticPassed": 3
+    },
+    "live-updates": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "admin-table": {
+     "attempts": 3,
+     "passed": 0,
+     "staticPassed": 3
+    },
+    "paging-filter": {
+     "attempts": 3,
+     "passed": 2,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 18,
+    "passed": 6,
+    "staticPassed": 17
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "index.html does not show the post titles from listPosts",
+      "the titles do not link to post.html?id=<id> (links: none)"
+     ]
+    },
+    {
+     "task": "small-site",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "index.html does not show the post titles from listPosts",
+      "the titles do not link to post.html?id=<id> (links: none)"
+     ]
+    },
+    {
+     "task": "small-site",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "index.html does not show the post titles from listPosts",
+      "the titles do not link to post.html?id=<id> (links: none)"
+     ]
+    },
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a user"
+     ]
+    },
+    {
+     "task": "crud-admin",
+     "run": "run3",
+     "pass": false,
+     "staticPass": false,
+     "failures": [
+      "index.html:21 XO253 GET /users has no query parameter \"name\", which the filter box for \"name\" sets"
+     ],
+     "behaviour": [
+      "there is no form to add a user"
+     ]
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "the customer's name should appear in the orders list and in the customers list (found 1 time(s))",
+      "the customers list does not show the email"
+     ]
+    },
+    {
+     "task": "shared-data",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "the customer's name should appear in the orders list and in the customers list (found 1 time(s))",
+      "the customers list does not show the email"
+     ]
+    },
+    {
+     "task": "shared-data",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "the customer's name should appear in the orders list and in the customers list (found 1 time(s))",
+      "the customers list does not show the email"
+     ]
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a person"
+     ]
+    },
+    {
+     "task": "admin-table",
+     "run": "run2",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a person"
+     ]
+    },
+    {
+     "task": "admin-table",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "there is no form to add a person"
+     ]
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "Draft did not ask for the draft articles",
+      "Published did not ask for the published articles"
+     ]
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-18-claude-haiku-5-5-729349"
+  }
+ ]
+}
