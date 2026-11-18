@@ -62,15 +62,15 @@ describe('sanitizeHtml: what goes', () => {
     expect(clean('<img src="/a.png" onerror="alert(1)" style="x">')).toBe('<p><img src="/a.png" alt=""></p>');
   });
 
-  it('unsafe link targets lose the link and keep the text: javascript:, data:, vbscript:, obfuscated forms, protocol-relative', () => {
-    for (const href of ['javascript:alert(1)', 'JaVaScRiPt:alert(1)', ' javascript:alert(1)', 'java\tscript:alert(1)', 'java&#x0A;script:alert(1)', 'data:text/html,<script>1</script>', 'vbscript:x', '//evil.test/x', '/relative', 'ftp://x.test']) {
+  it('unsafe link targets lose the link and keep the text: javascript:, data:, vbscript:, obfuscated forms, backslash hosts', () => {
+    for (const href of ['javascript:alert(1)', 'JaVaScRiPt:alert(1)', ' javascript:alert(1)', 'java\tscript:alert(1)', 'java&#x0A;script:alert(1)', 'data:text/html,<script>1</script>', 'vbscript:x', '\\\\evil.test/x', '/\\evil.test/x', '/relative', 'ftp://x.test']) {
       const out = clean(`<a href="${href}">text</a>`);
       expect(out, href).toBe('<p>text</p>');
     }
   });
 
   it('unsafe image sources are removed', () => {
-    for (const src of ['javascript:alert(1)', 'data:image/svg+xml,<svg onload=alert(1)>', '//evil.test/a.png', 'blob:x', 'ftp://x/a.png']) expect(clean(`<img src="${src}">`), src).toBe('');
+    for (const src of ['javascript:alert(1)', 'data:image/svg+xml,<svg onload=alert(1)>', '\\\\evil.test/a.png', 'blob:x', 'ftp://x/a.png']) expect(clean(`<img src="${src}">`), src).toBe('');
   });
 
   it('unwraps unknown elements, flattens blocks inside inline content, and keeps blocks inside an unknown wrapper', () => {

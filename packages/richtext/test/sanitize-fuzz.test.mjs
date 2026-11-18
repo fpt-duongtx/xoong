@@ -79,7 +79,7 @@ const judge = (outputs) => page.evaluate((list) => {
           const relative = !/^[a-z][a-z0-9+.-]*:/i.test(a.value.trim());
           if (!relative && !OK_SCHEME.test(u.protocol)) why.push(`${a.name} scheme ${u.protocol}`);
           if (a.name === 'src' && !relative && !/^https?:$/.test(u.protocol)) why.push('img src scheme');
-          if (/^(\/\/|\\)/.test(a.value.trim()) || /^\/\\/.test(a.value.trim())) why.push(`${a.name} protocol-relative ${a.value}`);
+          if (/^\\/.test(a.value.trim()) || /^\/\\/.test(a.value.trim())) why.push(`${a.name} backslash host ${a.value}`); // //host is as safe as https (allowed); a backslash host is read differently by browsers
         }
       }
     }

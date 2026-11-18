@@ -14,6 +14,7 @@
  *
  * Whatever the profile says: script, style, iframe, object, embed, svg, math, template, noscript, textarea, title and similar go with their content;
  * a link keeps rel="noopener noreferrer"; URL schemes are checked after control characters and spaces are removed.
+ * Basic on purpose (see docs/richtext.md): the strong option is DOMPurify in front of it, through `el.sanitize`.
  * Non-breaking spaces become plain spaces; empty paragraphs at the very start or end are removed; a line break at the very end of a block
  * (a browser's placeholder) is removed.
  */
@@ -30,16 +31,32 @@ const CONTAINER = new Set(['blockquote', 'aside', 'div', 'section']);
 const KNOWN = new Set([...PHRASING, ...TEXT_BLOCK, ...LIST, ...CONTAINER, 'li', 'figure']);
 /** A start tag of these closes an open <p>. */
 const CLOSES_P = new Set([...TEXT_BLOCK, ...LIST, ...CONTAINER, 'li', 'figure', 'hr', 'table']);
+/** Elements that are blocks in a browser: when they are flattened into inline text, their text must not run into the neighbours' (a table becomes "A B 1 2", not "AB12"). */
+const BLOCKISH = new Set([...TEXT_BLOCK, ...LIST, ...CONTAINER, 'li', 'figure', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th', 'caption', 'dl', 'dt', 'dd', 'details', 'summary', 'article', 'header', 'footer', 'nav', 'main', 'address', 'hr', 'form', 'fieldset', 'center']);
 const MAX_DEPTH = 100;
 const LEGACY_ENTITY = new Set(['amp', 'lt', 'gt', 'quot', 'nbsp', 'copy', 'reg']);
 const ENTITIES = /** @type {Record<string, string>} */ ({
-  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0', copy: '©', reg: '®', trade: '™', hellip: '…', mdash: '—', ndash: '–', lsquo: '‘', rsquo: '’',
-  ldquo: '“', rdquo: '”', laquo: '«', raquo: '»', bull: '•', middot: '·', deg: '°', plusmn: '±', times: '×', divide: '÷', euro: '€', pound: '£', yen: '¥', cent: '¢',
-  sect: '§', para: '¶', larr: '←', rarr: '→', uarr: '↑', darr: '↓', check: '✓', szlig: 'ß', shy: '\u00ad', ensp: '\u2002', emsp: '\u2003', thinsp: '\u2009', zwnj: '\u200c', zwj: '\u200d',
-  agrave: 'à', aacute: 'á', acirc: 'â', atilde: 'ã', auml: 'ä', aring: 'å', egrave: 'è', eacute: 'é', ecirc: 'ê', euml: 'ë', igrave: 'ì', iacute: 'í', icirc: 'î', iuml: 'ï',
-  ograve: 'ò', oacute: 'ó', ocirc: 'ô', otilde: 'õ', ouml: 'ö', ugrave: 'ù', uacute: 'ú', ucirc: 'û', uuml: 'ü', yacute: 'ý', ccedil: 'ç', ntilde: 'ñ',
-  Agrave: 'À', Aacute: 'Á', Acirc: 'Â', Atilde: 'Ã', Auml: 'Ä', Aring: 'Å', Egrave: 'È', Eacute: 'É', Ecirc: 'Ê', Euml: 'Ë', Igrave: 'Ì', Iacute: 'Í', Icirc: 'Î', Iuml: 'Ï',
-  Ograve: 'Ò', Oacute: 'Ó', Ocirc: 'Ô', Otilde: 'Õ', Ouml: 'Ö', Ugrave: 'Ù', Uacute: 'Ú', Ucirc: 'Û', Uuml: 'Ü', Yacute: 'Ý', Ccedil: 'Ç', Ntilde: 'Ñ',
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00a0', copy: '©', reg: '®', trade: '™', hellip: '…', mdash: '—', ndash: '–', lsquo: '‘',
+  rsquo: '’', ldquo: '“', rdquo: '”', laquo: '«', raquo: '»', bull: '•', middot: '·', deg: '°', plusmn: '±', times: '×', divide: '÷', euro: '€',
+  pound: '£', yen: '¥', cent: '¢', sect: '§', para: '¶', larr: '←', rarr: '→', uarr: '↑', darr: '↓', check: '✓', szlig: 'ß', shy: '\u00ad',
+  ensp: '\u2002', emsp: '\u2003', thinsp: '\u2009', zwnj: '\u200c', zwj: '\u200d', agrave: 'à', aacute: 'á', acirc: 'â', atilde: 'ã', auml: 'ä',
+  aring: 'å', egrave: 'è', eacute: 'é', ecirc: 'ê', euml: 'ë', igrave: 'ì', iacute: 'í', icirc: 'î', iuml: 'ï', ograve: 'ò', oacute: 'ó', ocirc: 'ô',
+  otilde: 'õ', ouml: 'ö', ugrave: 'ù', uacute: 'ú', ucirc: 'û', uuml: 'ü', yacute: 'ý', ccedil: 'ç', ntilde: 'ñ', Agrave: 'À', Aacute: 'Á',
+  Acirc: 'Â', Atilde: 'Ã', Auml: 'Ä', Aring: 'Å', Egrave: 'È', Eacute: 'É', Ecirc: 'Ê', Euml: 'Ë', Igrave: 'Ì', Iacute: 'Í', Icirc: 'Î', Iuml: 'Ï',
+  Ograve: 'Ò', Oacute: 'Ó', Ocirc: 'Ô', Otilde: 'Õ', Ouml: 'Ö', Ugrave: 'Ù', Uacute: 'Ú', Ucirc: 'Û', Uuml: 'Ü', Yacute: 'Ý', Ccedil: 'Ç',
+  Ntilde: 'Ñ', AElig: 'Æ', Alpha: 'Α', Beta: 'Β', Chi: 'Χ', Dagger: '‡', Delta: 'Δ', ETH: 'Ð', Epsilon: 'Ε', Eta: 'Η', Gamma: 'Γ', Iota: 'Ι',
+  Kappa: 'Κ', Lambda: 'Λ', Mu: 'Μ', Nu: 'Ν', OElig: 'Œ', Omega: 'Ω', Omicron: 'Ο', Oslash: 'Ø', Phi: 'Φ', Pi: 'Π', Prime: '″', Psi: 'Ψ', Rho: 'Ρ',
+  Scaron: 'Š', Sigma: 'Σ', THORN: 'Þ', Tau: 'Τ', Theta: 'Θ', Upsilon: 'Υ', Xi: 'Ξ', Yuml: 'Ÿ', Zeta: 'Ζ', acute: '´', aelig: 'æ', alefsym: 'ℵ',
+  alpha: 'α', and: '∧', ang: '∠', asymp: '≈', bdquo: '„', beta: 'β', brvbar: '¦', cap: '∩', cedil: '¸', chi: 'χ', circ: 'ˆ', clubs: '♣', cong: '≅',
+  crarr: '↵', cup: '∪', curren: '¤', dArr: '⇓', dagger: '†', delta: 'δ', diams: '♦', empty: '∅', epsilon: 'ε', equiv: '≡', eta: 'η', eth: 'ð',
+  exist: '∃', fnof: 'ƒ', forall: '∀', frac12: '½', frac14: '¼', frac34: '¾', frasl: '⁄', gamma: 'γ', ge: '≥', hArr: '⇔', harr: '↔', hearts: '♥',
+  iexcl: '¡', image: 'ℑ', infin: '∞', int: '∫', iota: 'ι', iquest: '¿', isin: '∈', kappa: 'κ', lArr: '⇐', lambda: 'λ', lang: '〈', lceil: '⌈',
+  le: '≤', lfloor: '⌊', lowast: '∗', loz: '◊', lrm: '\u200e', lsaquo: '‹', macr: '¯', micro: 'µ', minus: '−', mu: 'μ', nabla: '∇', ne: '≠', ni: '∋',
+  not: '¬', notin: '∉', nsub: '⊄', nu: 'ν', oelig: 'œ', oline: '‾', omega: 'ω', omicron: 'ο', oplus: '⊕', or: '∨', ordf: 'ª', ordm: 'º', oslash: 'ø',
+  otimes: '⊗', part: '∂', permil: '‰', perp: '⊥', phi: 'φ', pi: 'π', piv: 'ϖ', prime: '′', prod: '∏', prop: '∝', psi: 'ψ', rArr: '⇒', radic: '√',
+  rang: '〉', rceil: '⌉', real: 'ℜ', rfloor: '⌋', rho: 'ρ', rlm: '\u200f', rsaquo: '›', sbquo: '‚', scaron: 'š', sdot: '⋅', sigma: 'σ', sigmaf: 'ς',
+  sim: '∼', spades: '♠', sub: '⊂', sube: '⊆', sum: '∑', sup: '⊃', sup1: '¹', sup2: '²', sup3: '³', supe: '⊇', tau: 'τ', there4: '∴', theta: 'θ',
+  thetasym: 'ϑ', thorn: 'þ', tilde: '˜', uArr: '⇑', uml: '¨', upsih: 'ϒ', upsilon: 'υ', weierp: '℘', xi: 'ξ', yuml: 'ÿ', zeta: 'ζ',
 });
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/g;
 
@@ -166,7 +183,8 @@ function urlAllowed(url, allowed) {
     if (name === 'data') return allowed.has('data:image') && /^data:image\/(png|jpe?g|gif|webp|avif)[;,]/i.test(u);
     return allowed.has(name);
   }
-  return allowed.has('relative') && !/^[/\\]{2}|^\\/.test(u);
+  if (/^[/\\]{2}|^\\/.test(u)) return u.startsWith('//') && (allowed.has('https') || allowed.has('http')); // `//host/x` loads from another host with the page's scheme: allowed when https is; `\\host` and `/\host` never
+  return allowed.has('relative');
 }
 
 /** A link target the editor allows by default: http, https, mailto or tel. */
@@ -346,7 +364,15 @@ function render(/** @type {string} */ html, /** @type {any} */ P) {
 
   function inlineKids(/** @type {Node[]} */ kids, /** @type {boolean} */ inA) {
     let out = '';
-    for (const k of kids) out += inline(k, inA);
+    let gap = false; // the previous piece was a flattened block: a space goes before the next one
+    for (const k of kids) {
+      const block = k.t === 'el' && BLOCKISH.has(k.tag);
+      const piece = inline(k, inA);
+      if (!piece) continue;
+      if (out && (gap || block) && !/\s$/.test(out) && !/^\s/.test(piece)) out += ' ';
+      out += piece;
+      gap = block;
+    }
     return out;
   }
 
@@ -397,9 +423,16 @@ function render(/** @type {string} */ html, /** @type {any} */ P) {
 
   function item(/** @type {Extract<Node, { t: 'el' }>} */ li) {
     let out = '';
+    let gap = false;
     for (const c of li.kids) {
       const tag = c.t === 'el' ? nameOf(c) : '';
-      out += c.t === 'el' && LIST.has(tag) && P.tags.has(tag) ? block(c, tag, P.tags.get(tag)) : inline(c, false); // nested lists stay; other blocks flatten to text
+      const list = c.t === 'el' && LIST.has(tag) && P.tags.has(tag);
+      const blockish = list || (c.t === 'el' && BLOCKISH.has(c.tag));
+      const piece = list ? block(c, tag, P.tags.get(tag)) : inline(c, false); // nested lists stay; other blocks flatten to text, with a space around them
+      if (!piece) continue;
+      if (out && !list && (gap || blockish) && !/\s$/.test(out) && !/^\s/.test(piece)) out += ' ';
+      out += piece;
+      gap = blockish;
     }
     return `<li${attrsOf(li, 'li', P.tags.get('li'))}>${trimBreak(out)}</li>`;
   }
@@ -439,6 +472,7 @@ function render(/** @type {string} */ html, /** @type {any} */ P) {
       const spec = P.tags.get(tag);
       if (spec && tag !== 'figcaption' && tag !== 'li' && !PHRASING.has(tag)) { flush(); out += block(c, tag, spec); }
       else if (!PHRASING.has(tag) || !spec) { if (hasBlock(c.kids)) { flush(); out += blocks(c.kids); } else run += inline(c, false); }
+      else if (tag !== 'a' && hasBlock(c.kids)) { flush(); out += blocks(c.kids); } // <b><p>..</p><ul>..</ul></b> (Google Docs): the wrapper goes, the blocks stay
       else run += inline(c, false);
     }
     flush();
