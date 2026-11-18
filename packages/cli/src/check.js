@@ -33,6 +33,9 @@
  *   XO274 xo-with / xo-selected names a field the request body of the operation does not have
  *   XO275 xo-param sets a parameter the view's operation does not take (it will not filter the data)
  *   XO276 an attribute outside the element that gives it meaning (xo-route/xo-layout off a router template, xo-tab, xo-menu-trigger, xo-guard, the array buttons)
+ *   XO277 <xo-form>, xo-click, xo-param or xo-refresh outside an <xo-view>: nothing handles it, and nothing says so at run time
+ *   XO278 xo-each (the first of a view) does not match the response of the view's operation: an array is repeated with ".", an object's array field by its name
+ *   XO279 {...} in an attribute holds an expression (`hidden="{!flag}"`), not a path: it stays as written
  *   (XO250 and XO251 apply to <xo-pager> as they do to <xo-table>)
  */
 import { readFile, readdir, stat } from 'node:fs/promises';
@@ -66,7 +69,27 @@ function operationIndex(table) {
   return byRef;
 }
 
+/**
+ * The shape of an operation's response in a few words, for an assistant that has to write `xo-each`: "Post[]" (the response is an array: xo-each="."),
+ * "{ items: User[], total: number }" (an object: xo-each="items"), "User" (one record). Empty when the response is unknown or empty.
+ * @param {any} node the `response` of an operation in operations.json
+ * @returns {string}
+ */
+export function describeResponse(node, depth = 0) {
+  if (!node || typeof node !== 'object') return '';
+  if (node.t === 'entity') return String(node.name ?? 'record');
+  if (node.t === 'array') return `${describeResponse(node.items, depth + 1) || 'item'}[]`;
+  if (node.t === 'object') {
+    const entries = Object.entries(node.props ?? {});
+    if (!entries.length || depth > 1) return 'object';
+    return `{ ${entries.slice(0, 8).map(([k, v]) => `${k}: ${describeResponse(v, depth + 1) || 'any'}`).join(', ')}${entries.length > 8 ? ', ...' : ''} }`;
+  }
+  return typeof node.t === 'string' ? node.t : '';
+}
+
 const attr = (node, name) => node.attrs?.find((a) => a.name === name);
+/** A path as `{...}` and `xo-each` read it: `name`, `a.b`, `$loading`, `items[0].x`, `.`, with an optional `| format`. */
+const PATH_ONLY = /^(\.|\$?[A-Za-z_][\w.[\]-]*(\s*\|\s*[A-Za-z]+(:[\w-]+)?)?)$/;
 /** The text a screen reader would announce for an element: its text, plus alt/aria-label of descendants. */
 const text = (node) => (node.childNodes ?? []).map((c) => {
   if (c.nodeName === '#text') return c.value;
@@ -227,6 +250,13 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           if (lacking.length) report('error', 'XO250', node, attr(node, 'sortable') && lacking.includes('sort') ? 'sortable' : 'page-size', `${op.method} ${op.path} has no query parameter ${lacking.map((q) => `"${q}"`).join(', ')}, which <${tag}> needs for ${attr(node, 'sortable') && lacking.includes('sort') ? 'sorting' : 'paging'}`, `Add ${lacking.join(', ')} to the operation's parameters, or remove ${tag === 'xo-pager' ? 'the pager' : lacking.includes('sort') ? 'sortable' : 'page-size'}`);
         }
       }
+      // XO277: what reads or writes through a view only works inside one. Outside, the element stays as written: no form, no click, no parameter, and no error at run time.
+      if (!fragment && !view) {
+        if (tag === 'xo-form') report('error', 'XO277', node, undefined, '<xo-form> is not inside an <xo-view>, so it is never expanded: the page shows no form and no error', 'Wrap it: <xo-view><xo-form op="POST /things" submit="Add"></xo-form></xo-view> (an <xo-view> without get is fine for a form)');
+        for (const n of ['xo-click', 'xo-param', 'xo-refresh']) {
+          if (attr(node, n) !== undefined) report('error', 'XO277', node, n, `${n} is not inside an <xo-view>, so nothing handles it: the element does nothing`, 'Put it inside the <xo-view> whose data it acts on (a button that sets xo-param or calls an operation lives in that view)');
+        }
+      }
       if (tag === 'xo-form') {
         const ref = attr(node, 'op');
         const op = ref ? lookup(node, 'op', ref.value) : undefined;
@@ -245,6 +275,30 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           report('error', 'XO221', node, a.name, `${a.name} is empty`, a.name === 'xo-confirm' ? 'Write the question: xo-confirm="Delete {title}?"' : a.name === 'xo-then' ? 'Write the path to go to: xo-then="/articles/{id}"' : a.name === 'xo-open' ? 'Name the dialog: xo-open="#add"' : `Give ${a.name} a value, for example ${a.name}="${a.name === 'xo-with' || a.name === 'xo-optimistic' ? 'status=done' : 'items'}"`);
         }
         attributeRules(node, tag, a, view, ctx);
+        // XO278: the first xo-each of a view repeats the response of the view's operation: an array response is repeated with ".", an object's array field by its name
+        if (a.name === 'xo-each' && view && !ctx.each && a.value.trim() && !a.value.trim().startsWith('$')) {
+          const viewOp = attr(view, 'get') ? opOf(attr(view, 'get').value) : undefined;
+          const resp = viewOp?.response;
+          const path = a.value.trim();
+          const shape = viewOp ? describeResponse(resp) : '';
+          if (resp?.t === 'array' && path !== '.') report('error', 'XO278', node, a.name, `${viewOp.method} ${viewOp.path} returns an array (${shape}), so xo-each="${path}" finds nothing`, 'Repeat the response itself: xo-each="."');
+          else if (resp?.t === 'object' && resp.props && Object.keys(resp.props).length) {
+            const first = path.split(/[.[]/)[0];
+            const arrays = Object.entries(resp.props).filter(([, v]) => /** @type {any} */ (v)?.t === 'array').map(([k]) => k);
+            if (path === '.') report('error', 'XO278', node, a.name, `${viewOp.method} ${viewOp.path} returns an object (${shape}), not an array, so xo-each="." finds nothing`, arrays.length ? `Repeat its array field: xo-each="${arrays[0]}"` : 'Use a path to an array field of the response');
+            else if (!Object.hasOwn(resp.props, first)) {
+              const hint = nearest(first, Object.keys(resp.props));
+              report('error', 'XO278', node, a.name, `${viewOp.method} ${viewOp.path} returns ${shape}, which has no field "${first}"${hint ? ` (closest: "${hint}")` : ''}`, arrays.length ? `Repeat an array field: xo-each="${arrays[0]}"` : 'Use a path to an array field of the response');
+            }
+          }
+        }
+        // XO279: {...} reads a path, optionally with a format: it is not an expression. Anything else stays as written, so `hidden="{!flag}"` is a hidden element, always.
+        if (view && !a.name.startsWith('xo-') && /^\{[^{}]*\}$/.test(a.value.trim())) {
+          const inner = a.value.trim().slice(1, -1).trim();
+          if (inner && !PATH_ONLY.test(inner) && !/["':]/.test(inner) && /[!&|?=<>+*/(]/.test(inner)) {
+            report('warn', 'XO279', node, a.name, `${a.name}="${a.value}": {...} reads a path (optionally "| format"), not an expression, so it stays as written and the attribute is always set`, 'Bind a path that holds the boolean; to show or hide an element use xo-if="path" or xo-if="!path"');
+          }
+        }
         if (a.name === 'xo-click' || a.name === 'xo-submit') {
           const op = lookup(node, a.name, a.value);
           if (op && op.method === 'GET' && a.name === 'xo-click') report('warn', 'XO202', node, a.name, `${a.name} calls the GET operation ${op.path}`, 'Reads are declared with <xo-view get="...">; xo-click is for mutations');
@@ -298,7 +352,7 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           }
         }
       }
-      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog' || tag === 'xo-drawer', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined) };
+      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog' || tag === 'xo-drawer', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined), each: (ctx.each && tag !== 'xo-view') || attr(node, 'xo-each') !== undefined };
     }
     for (const child of children) walk(child, ctx);
   }

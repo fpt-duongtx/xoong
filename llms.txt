@@ -11,6 +11,7 @@ no virtual DOM, JSX, hooks or required build.
 4. Use native elements (`<button>`, `<form>`, `<dialog>`, `<details>`). Buttons need text or `aria-label`.
 5. Run `xoong check <html files>` and fix every error; messages contain the fix.
 6. Never invent attributes or operations; use the `xo-*` attributes below.
+7. Everything that reads or writes data lives INSIDE an `<xo-view>`: `xo-click`, `xo-submit`, `xo-param`, `<xo-form>`, `<xo-table>`, `<xo-pager>` do nothing outside one (no error either). A view without `get` is fine around a form.
 
 ## Project setup
     xoong new my-app --spec openapi.json      # scaffold + first list screen
@@ -43,10 +44,10 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
 
 - `get`: "/path" (GET /path), "GET /path", or an operationId. Path params come from `p-<name>` attributes:
   `<xo-view get="/users/{id}" p-id="42">`; `p-id="?id"` reads ?id= from the page URL. JS: `view.params = { id: 7 }`.
-- `{path}` reads a field of the current item (`.` = the item, `a.b` nested), then the view's `p-*` params.
+- `{path}` reads a field of the current item (`.` = the item, `a.b` nested), then the view's `p-*` params. A path only, no operators: `{!x}` is not a binding (use `xo-if="!x"`).
   Variables: `$loading`, `$refreshing`, `$error` (`status`, `code`, `detail`), `$index`, `$stream`/`$streaming`. Text is escaped;
   `javascript:` URLs become about:blank; `on*`, `srcdoc` are not interpolated.
-- `xo-each="path"` repeats the element per item (keyed by entity id); on a `<template>` it repeats its children. `xo-if="path"` / `xo-if="!path"` (empty array: false). `hidden="{flag}"`, `disabled="{flag}"`: booleans follow the data.
+- `xo-each="path"` repeats the element per item of an array: `.` when the response is itself an array (the operations list says `Post[]`), `items` for `{ items: User[] }`; keyed by entity id; on a `<template>` it repeats its children. `xo-if="path"` / `xo-if="!path"` (empty array: false). `hidden="{flag}"`, `disabled="{flag}"`: booleans follow the data.
 - `xo-click="OP"` calls one; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; `xo-keep` keeps them). `xo-body="path"`: a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each applies at once; undone on failure.
@@ -90,8 +91,8 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
         <button slot="bulk" xo-click="DELETE /users/{id}" xo-selected>Delete ticked</button>
       </xo-table>   (needs query params sort, limit, offset, filter fields; `total` in the response)
     </xo-view>
-    <xo-form op="POST /users" submit="Add"></xo-form>
-    <xo-dialog id="add"> ...content, e.g. <xo-form> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
+    <xo-view><xo-form op="POST /users" submit="Add"></xo-form></xo-view>   (inside an xo-view; also in a dialog)
+    <xo-dialog id="add"> ...content, e.g. <xo-view><xo-form ...></xo-form></xo-view> </xo-dialog>  <button xo-open="#add">Add</button>  <button xo-close>Cancel</button>
     <xo-dialog heading="Edit" size="wide" dismiss> titled modal (slot="footer" buttons). JS: await confirm|alert|prompt|ask(msg, { kind: danger|warning|info|success, title }) from @xoong/ui
   <xo-toast></xo-toast> shows errors and xo-notice; detail.action is {label, run}. Style: xoong.css. Layout: `<body class="xo-admin">` + header, nav, main.
   Attributes a template does not take() land on the element it becomes; class and style merge.

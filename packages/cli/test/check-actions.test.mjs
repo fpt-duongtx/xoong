@@ -225,7 +225,7 @@ describe('what already worked keeps working', () => {
           </xo-view>
         </template>
       </xo-router>
-      <xo-dialog id="add" heading="Add" size="wide" dismiss><xo-form op="createUser"></xo-form><button slot="footer" type="button" xo-close>Cancel</button></xo-dialog>`;
+      <xo-dialog id="add" heading="Add" size="wide" dismiss><xo-view><xo-form op="createUser"></xo-form></xo-view><button slot="footer" type="button" xo-close>Cancel</button></xo-dialog>`;
     expect(found(page)).toEqual([]);
   });
 });

@@ -105,7 +105,7 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
   const llms = readFileSync('llms.txt', 'utf8');
 
   it('stays within the ~3,000 token budget', () => {
-    expect(llms.length / 3.8).toBeLessThan(3250); // raised from 3000 for the list of the new controls, then 3150 -> 3200 for the built-in dialogs, then 3200 -> 3220 for handling xo-error on a screen, then 3220 -> 3250 for the two xo-tooltip attributes
+    expect(llms.length / 3.8).toBeLessThan(3400); // raised from 3000 for the list of the new controls, then 3150 -> 3200 for the built-in dialogs, then 3200 -> 3220 for handling xo-error on a screen, then 3220 -> 3250 for the two xo-tooltip attributes, then 3250 -> 3400 for what the AI benchmark found models get wrong without it (rule 7: reads and writes live inside an xo-view; xo-each follows the shape of the response; {..} is a path)
   });
 
   it('only mentions CLI commands that exist', () => {
@@ -174,7 +174,7 @@ describe('the tooling cannot drift from the syntax lists (docs/ai-integration.md
   const syntax = async () => (await import('../packages/cli/src/html-data.js')).SYNTAX;
 
   /** Elements that llms.txt (~3,000 tokens) does not name. Each is documented in docs/ and reachable through the MCP tool `explain_syntax`; remove an entry when llms.txt gains it. */
-  const NOT_IN_LLMS = ['xo-pager', 'xo-range-slider', 'xo-segmented', 'xo-split-button', 'xo-textarea', 'xo-stat', 'xo-otp', 'xo-avatar', 'xo-avatars', 'xo-progress', 'xo-spinner', 'xo-steps', 'xo-inline-edit', 'xo-drawer', 'xo-breadcrumb', 'xo-alert', 'xo-skeleton', 'xo-tree', 'xo-color', 'xo-rating'];
+  const NOT_IN_LLMS = ['xo-range-slider', 'xo-segmented', 'xo-split-button', 'xo-textarea', 'xo-stat', 'xo-otp', 'xo-avatar', 'xo-avatars', 'xo-progress', 'xo-spinner', 'xo-steps', 'xo-inline-edit', 'xo-drawer', 'xo-breadcrumb', 'xo-alert', 'xo-skeleton', 'xo-tree', 'xo-color', 'xo-rating'];
 
   it('html-data.js has a real description for every element and attribute (editor completion and hover, the MCP server, the language server)', async () => {
     const { SYNTAX, ELEMENT_DOCS, ATTRIBUTE_DOCS, htmlData } = await import('../packages/cli/src/html-data.js');

@@ -45,7 +45,7 @@ describe('xoong check', () => {
   });
 
   it('XO202 warns when xo-click calls a GET; XO220 requires a form for xo-submit', () => {
-    expect(codes('<button xo-click="GET /users">Load</button>')).toEqual(['XO202']);
+    expect(codes('<xo-view><button xo-click="GET /users">Load</button></xo-view>')).toEqual(['XO202']);
     expect(codes('<div xo-submit="createUser"></div>')).toContain('XO220');
   });
 
@@ -58,10 +58,10 @@ describe('xoong check', () => {
   });
 
   it('accessibility: XO240 unnamed button, XO241 click on a non-interactive element', () => {
-    expect(codes('<button xo-click="createUser"></button>')).toEqual(['XO240']);
-    expect(codes('<button xo-click="createUser" aria-label="Add"></button>')).toEqual([]);
-    expect(codes('<span xo-click="createUser">add</span>')).toEqual(['XO241']);
-    expect(codes('<span xo-click="createUser" role="button" tabindex="0">add</span>')).toEqual([]);
+    expect(codes('<xo-view><button xo-click="createUser"></button></xo-view>')).toEqual(['XO240']);
+    expect(codes('<xo-view><button xo-click="createUser" aria-label="Add"></button></xo-view>')).toEqual([]);
+    expect(codes('<xo-view><span xo-click="createUser">add</span></xo-view>')).toEqual(['XO241']);
+    expect(codes('<xo-view><span xo-click="createUser" role="button" tabindex="0">add</span></xo-view>')).toEqual([]);
   });
 
   it('looks inside <template> and nested elements', () => {
@@ -99,10 +99,10 @@ describe('xoong check', () => {
 describe('review fixes', () => {
   it('XO240: an icon-only button named by an img alt or a nested aria-label is accessible', () => {
     const c = (html) => checkHtml(html, table).map((f) => f.code);
-    expect(c('<button xo-click="createUser"><img src="a.svg" alt="Add"></button>')).toEqual([]);
-    expect(c('<button xo-click="createUser"><svg aria-label="Add"></svg></button>')).toEqual([]);
-    expect(c('<button xo-click="createUser"><img src="a.svg" alt=""></button>')).toEqual(['XO240']);
-    expect(c('<button xo-click="createUser"><span></span></button>')).toEqual(['XO240']);
+    expect(c('<xo-view><button xo-click="createUser"><img src="a.svg" alt="Add"></button></xo-view>')).toEqual([]);
+    expect(c('<xo-view><button xo-click="createUser"><svg aria-label="Add"></svg></button></xo-view>')).toEqual([]);
+    expect(c('<xo-view><button xo-click="createUser"><img src="a.svg" alt=""></button></xo-view>')).toEqual(['XO240']);
+    expect(c('<xo-view><button xo-click="createUser"><span></span></button></xo-view>')).toEqual(['XO240']);
   });
 });
 
@@ -117,7 +117,7 @@ describe('xoong check: admin set', () => {
 
   it('accepts a table, a form, a dialog and the new attributes', () => {
     expect(found(`<xo-view get="/users"><xo-table columns="name" sortable page-size="10"><button xo-param="sort=name" xo-open="#d">x</button></xo-table></xo-view>
-      <xo-dialog id="d"><xo-form op="POST /users"></xo-form><button xo-close>Cancel</button></xo-dialog>`)).toEqual([]);
+      <xo-dialog id="d"><xo-view><xo-form op="POST /users"></xo-form></xo-view><button xo-close>Cancel</button></xo-dialog>`)).toEqual([]);
   });
 
   it('XO250: sortable or page-size needs the query parameters on the operation', () => {
@@ -150,8 +150,8 @@ describe('xoong check: admin set', () => {
   });
 
   it('XO201 for an unknown form operation, XO252 when there are no simple fields', () => {
-    expect(found('<xo-form op="POST /user"></xo-form>')).toEqual(['XO201']);
-    expect(found('<xo-form op="POST /users/import"></xo-form>')).toEqual(['XO252']);
+    expect(found('<xo-view><xo-form op="POST /user"></xo-form></xo-view>')).toEqual(['XO201']);
+    expect(found('<xo-view><xo-form op="POST /users/import"></xo-form></xo-view>')).toEqual(['XO252']);
   });
 
   it('XO230 still catches a typo in the new names', () => {

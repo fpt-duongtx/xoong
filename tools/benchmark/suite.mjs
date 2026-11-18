@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { sync } from '../../packages/cli/src/commands.js';
+import { describeResponse } from '../../packages/cli/src/check.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '../..');
@@ -32,7 +33,7 @@ export async function operationsOf(taskName) {
   const out = await mkdtemp(join(tmpdir(), 'xoong-ops-'));
   await sync(join(here, 'tasks', task.spec), { out, hints: task.hints ? join(here, 'tasks', task.hints) : undefined });
   const table = JSON.parse(await readFile(join(out, 'operations.json'), 'utf8'));
-  const rows = Object.values(table.operations).map((o) => ({ id: o.id, call: `${o.method} ${o.path}`, ...(o.query ? { query: o.query } : {}), ...(o.bodyFields ? { bodyFields: o.bodyFields.map((b) => b.name + (b.required ? '*' : '')) } : {}), ...(o.stream ? { stream: true } : {}), ...(o.multipart ? { multipart: true } : {}) }));
+  const rows = Object.values(table.operations).map((o) => ({ id: o.id, call: `${o.method} ${o.path}`, ...(o.query ? { query: o.query } : {}), ...(describeResponse(o.response) ? { response: describeResponse(o.response) } : {}), ...(o.bodyFields ? { bodyFields: o.bodyFields.map((b) => b.name + (b.required ? '*' : '')) } : {}), ...(o.stream ? { stream: true } : {}), ...(o.multipart ? { multipart: true } : {}) }));
   return { table, text: JSON.stringify(rows, null, 2) };
 }
 

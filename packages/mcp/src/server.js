@@ -14,7 +14,7 @@
 import { readFileSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { checkHtml, checkScript } from '@xoong/cli/check';
+import { checkHtml, checkScript, describeResponse } from '@xoong/cli/check';
 import { SYNTAX, explainSyntax } from '@xoong/cli/html-data';
 
 export const PROTOCOL_VERSION = '2024-11-05';
@@ -53,6 +53,9 @@ export const EXPLANATIONS = {
   XO273: 'xo-open="#id" must name an <xo-dialog> (the id is not in this file, or it is on another element), and xo-close only closes the <xo-dialog> it is inside. Put the id on the <xo-dialog>, and the close button inside it.',
   XO274: 'xo-with (and the field name of xo-selected="ids") adds a field to the request body, and the operation has no such field (or no request body at all). Use list_operations to see the body fields; the message names the closest one.',
   XO275: 'xo-param sets a view parameter, and the view\'s operation does not take it as a path or query parameter, so the request does not change (the value is still available as {name} in the view). Add the parameter to the API, or remove xo-param.',
+  XO277: '<xo-form>, xo-click, xo-param and xo-refresh act through the nearest <xo-view>. Outside one, the element stays as written: an <xo-form> is never expanded (no form, no error), a button with xo-click or xo-param does nothing. Put it inside the <xo-view> whose data it acts on; a form can sit in an <xo-view> without get: <xo-view><xo-form op="POST /things" submit="Add"></xo-form></xo-view>.',
+  XO278: 'xo-each repeats a path of the view\'s data. When the operation\'s response is an array (list_operations shows "Post[]"), the path is "." (xo-each="."); when it is an object with an array field (shown as "{ items: User[], total: number }"), the path is the field (xo-each="items"). A path that is not in the response repeats nothing, and nothing says so at run time.',
+  XO279: '{...} reads a path of the data (optionally with a format: {date | datetime}); it is not an expression. A value such as {!$hasPrev}, {a && b} or {n > 1} is not a path, so it stays as written, and a boolean attribute holding any text is set: hidden="{!$hasPrev}" is always hidden. Bind a path that holds the boolean, or show and hide with xo-if="$hasPrev" and xo-if="!path".',
   XO276: 'An attribute outside the element that gives it meaning: xo-route and xo-layout belong on a <template> that is a direct child of <xo-router>; xo-tab inside <xo-tabs>; xo-menu-trigger inside <xo-menu>; xo-guard on a <form xo-submit>; xo-add, xo-remove, xo-move and xo-drag inside a <form xo-submit>.',
   // `xoong doctor` and `xoong sync` (the API document and the hints file)
   XO100: 'The OpenAPI document has no "paths". Add a paths object (or declare webhooks/components only if that is intended).',
@@ -77,7 +80,7 @@ export const EXPLANATIONS = {
 /** The tools, as `tools/list` returns them (the documentation site builds its table of tools from this list). */
 export const TOOLS = [
   { name: 'get_spec', description: 'Return xoong\'s whole public API as one short document (llms.txt). Read it before writing xoong code.', inputSchema: { type: 'object', properties: {} } },
-  { name: 'list_operations', description: 'List the operations of the synced API: id, method, path, query parameters and request body fields. Use these exact names in xo-click, xo-submit and <xo-view get>.', inputSchema: { type: 'object', properties: { filter: { type: 'string', description: 'Only operations whose id or path contains this text.' } } } },
+  { name: 'list_operations', description: 'List the operations of the synced API: id, method, path, query parameters, the shape of the response and request body fields. Use these exact names in xo-click, xo-submit and <xo-view get>; the response tells what xo-each repeats ("Post[]" is an array: xo-each="."; "{ items: User[] }" is an object: xo-each="items").', inputSchema: { type: 'object', properties: { filter: { type: 'string', description: 'Only operations whose id or path contains this text.' } } } },
   { name: 'check', description: 'Run `xoong check` on HTML source text and return findings with line, column, message and fix. Fix every error before showing code to the user.', inputSchema: { type: 'object', properties: { html: { type: 'string', description: 'The HTML source of a screen.' }, script: { type: 'string', description: 'JavaScript or TypeScript source instead of html: checks html`...` templates and client.load/query/mutate/stream calls.' } } } },
   { name: 'explain_error', description: 'Explain an XO error code and how to fix it: XO2xx from `check`, XO1xx from `xoong doctor` and `xoong sync` (for example XO201, XO110).', inputSchema: { type: 'object', properties: { code: { type: 'string' } }, required: ['code'] } },
   { name: 'explain_syntax', description: 'Explain an xo-* element (<xo-dialog>) or attribute (xo-confirm-kind, or "xo-dialog size"): what it does, its attributes and the values it takes. Never invent an attribute: ask here first. Without a name it lists every element and attribute.', inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'An element (xo-table or <xo-table>), an attribute (xo-then), or an attribute of an element ("xo-table page-size").' } } } },
@@ -99,7 +102,7 @@ export function createServer(ctx) {
         const table = await ctx.operations();
         const f = String(args.filter ?? '').toLowerCase();
         const rows = Object.values(table.operations).filter((o) => !f || o.id.toLowerCase().includes(f) || o.path.toLowerCase().includes(f))
-          .map((o) => ({ id: o.id, call: `${o.method} ${o.path}`, ...(o.query ? { query: o.query } : {}), ...(o.bodyFields ? { bodyFields: o.bodyFields.map((b) => b.name + (b.required ? '*' : '')) } : {}), ...(o.stream ? { stream: true } : {}), ...(o.multipart ? { multipart: true } : {}) }));
+          .map((o) => ({ id: o.id, call: `${o.method} ${o.path}`, ...(o.query ? { query: o.query } : {}), ...(describeResponse(o.response) ? { response: describeResponse(o.response) } : {}), ...(o.bodyFields ? { bodyFields: o.bodyFields.map((b) => b.name + (b.required ? '*' : '')) } : {}), ...(o.stream ? { stream: true } : {}), ...(o.multipart ? { multipart: true } : {}) }));
         return text(JSON.stringify(rows, null, 2));
       }
       case 'check': {

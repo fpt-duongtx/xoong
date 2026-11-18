@@ -54,6 +54,9 @@ Codes (every one has a message that names the fix, and the MCP tool `explain_err
 | XO274 | `xo-with` (or the field of `xo-selected="ids"`) names a field the request body of the operation does not have |
 | XO275 | `xo-param` sets a parameter the view's operation does not take (it will not filter) |
 | XO276 | an attribute outside the element that gives it meaning: `xo-route`/`xo-layout` off a router template, `xo-tab`, `xo-menu-trigger`, `xo-guard`, the array buttons |
+| XO277 | `<xo-form>`, `xo-click`, `xo-param` or `xo-refresh` outside an `<xo-view>`: nothing handles it (an `<xo-form>` is never expanded) |
+| XO278 | the first `xo-each` of a view does not match the response of its operation: an array is repeated with `.`, an object's array field by its name |
+| XO279 | `{...}` in an attribute holds an expression (`hidden="{!flag}"`), not a path: it stays as written |
 
 Locations are line:column. `--format json` prints the findings as a list. The exit code is 1 when there is an error (warnings do not fail
 it), 0 otherwise. Options that do not exist are refused for every command (`xoong check --exclud` is an error, not a silent no-op), and
