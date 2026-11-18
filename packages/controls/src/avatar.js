@@ -79,7 +79,7 @@ class XoAvatar extends XoElement {
     const name = (this.name ?? '').trim();
     const initials = initialsOf(name);
     if (initials) el.textContent = initials;
-    else el.innerHTML = '<span class="ic" data-ic="user" aria-hidden="true"></span>';
+    else el.innerHTML = '<i class="xi xi-user" aria-hidden="true"></i>';
     const cls = this.classList;
     cls.add('xo-avatar');
     for (const s of SIZE) cls.toggle(`xo-avatar--${s}`, this.size === s);

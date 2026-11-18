@@ -37,7 +37,7 @@ class XoInlineEdit extends XoControl {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'ghost icon-only sm';
-    button.innerHTML = '<span class="ic" data-ic="edit" aria-hidden="true"></span>';
+    button.innerHTML = '<i class="xi xi-edit" aria-hidden="true"></i>';
     button.addEventListener('click', () => this.edit());
     root.append(label, button);
     this.#root = root; this.#text = label; this.#button = button;

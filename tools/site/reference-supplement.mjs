@@ -642,7 +642,18 @@ export const DIRECTIVES = {
     category: 'Controls', package: '@xoong/controls', guide: 'menu.html', keywords: 'hint hover description help title',
     applies: 'Any element.', value: 'The text of the tooltip.',
     example: `<button xo-tooltip="Copy the link" aria-label="Copy link">Copy</button>`,
-    notes: ['It describes the element; it is not its accessible name, so a button without text still needs `aria-label`.'],
+    notes: ['It describes the element; it is not its accessible name, so a button without text still needs `aria-label`.', 'The element is not changed: the hint is one shared element drawn fixed in the top layer, also inside a modal `<dialog>`.'],
+  },
+  'xo-tooltip-delay': {
+    category: 'Controls', package: '@xoong/controls', guide: 'menu.html#tooltip', keywords: 'hint hover delay wait milliseconds',
+    applies: 'An element with `xo-tooltip`, or any ancestor of it (the `<body>` for the whole page); the nearest one wins.', value: 'Milliseconds, `0` to show at once. Default `400`.',
+    example: `<body xo-tooltip-delay="700"><button xo-tooltip="Save" xo-tooltip-delay="0">Save</button></body>`,
+    notes: ['From script: `tooltip.delay = 700` (`import { tooltip } from \'@xoong/controls\'`). Keyboard focus always shows the hint at once.'],
+  },
+  'xo-tooltip-placement': {
+    category: 'Controls', package: '@xoong/controls', guide: 'menu.html#tooltip', keywords: 'hint hover position side top bottom left right',
+    applies: 'An element with `xo-tooltip`, or any ancestor of it.', value: '`top` (default), `bottom`, `left` or `right`. It flips to the other side when there is no room.',
+    example: `<button xo-tooltip="Delete" xo-tooltip-placement="right" aria-label="Delete">Delete</button>`,
   },
   'xo-consent-open': {
     category: 'Controls', package: '@xoong/controls', guide: 'more-controls.html#page', keywords: 'cookies settings privacy reopen banner',
@@ -939,12 +950,18 @@ import { setMessages } from '@xoong/forms';
 
 setMessages({ required: () => 'Bắt buộc', minLength: ({ min }) => \`Ít nhất \${min} ký tự\` });` },
   // @xoong/richtext
-  { id: 'sanitize-html', name: 'sanitizeHtml', package: '@xoong/richtext', from: ['richtext', 'sanitizeHtml'], sig: 'sanitizeHtml(html, { images? }?)', returns: 'string', guide: 'richtext.html',
-    summary: 'Reduce HTML to the editor\'s safe subset.', description: 'Keeps p, h2, h3, strong, em, u, ul, ol, li, blockquote, br, a (safe links only) and img (safe sources only). `images: false` removes `<img>`. It needs a DOM.', keywords: 'security xss clean html sanitize editor',
+  { id: 'sanitize-html', name: 'sanitizeHtml', package: '@xoong/richtext', from: ['richtext', 'sanitizeHtml'], sig: 'sanitizeHtml(html, profile?)', returns: 'string', guide: 'richtext.html',
+    summary: 'Reduce HTML to the editor\'s safe subset.', description: 'Keeps what a profile lists (default: p, h2, h3, strong, em, u, ul, ol, li, blockquote, br, a with safe links, img with safe sources; `rich` adds figure, figcaption and aside notes). `profile` is an object, a registered name or nothing; `{ images: false }` is the default without `<img>`. It needs no DOM: the same output in a browser and in Node.', keywords: 'security xss clean html sanitize editor',
     example: `
 import { sanitizeHtml } from '@xoong/richtext';
 
-const clean = sanitizeHtml(untrusted, { images: false });` },
+const clean = sanitizeHtml(untrusted, 'rich');` },
+  { id: 'define-richtext-profile', name: 'defineRichtextProfile', package: '@xoong/richtext', from: ['richtext', 'defineRichtextProfile'], sig: 'defineRichtextProfile(name, profile)', returns: 'void', guide: 'richtext.html',
+    summary: 'Register a named white-list for <xo-richtext> and sanitizeHtml.', description: 'A profile is plain data: `tags` (each with typed `attrs` and `classes`), `rename`, `drop` and `schemes`. `<xo-richtext profile="name">` and `sanitizeHtml(html, "name")` use it, in the browser and in Node. It throws for style, on*, srcdoc, a non-URL href or src, a free id, an always-removed tag or an unknown tag. `default` and `rich` are built in.', keywords: 'richtext profile whitelist allow list sanitize figure note',
+    example: `
+import { defineRichtextProfile } from '@xoong/richtext';
+
+defineRichtextProfile('notes', { tags: { p: {}, strong: {}, aside: { classes: ['note', 'note--warning'] } } });` },
 ];
 
 // ---- template syntax --------------------------------------------------------------------------------------------------------------

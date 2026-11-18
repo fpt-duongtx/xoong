@@ -16,7 +16,7 @@ describe('<xo-theme-toggle>', () => {
     expect(document.documentElement.dataset.theme).toBe('dark');
     expect(localStorage.getItem('xoong-theme')).toBe('dark');
     expect(b.getAttribute('aria-pressed')).toBe('true');
-    expect(b.firstElementChild.dataset.ic).toBe('sun');
+    expect(b.firstElementChild.classList.contains('xi-sun')).toBe(true);
     b.click();
     expect(document.documentElement.dataset.theme).toBe('light');
     expect(b.getAttribute('aria-pressed')).toBe('false');

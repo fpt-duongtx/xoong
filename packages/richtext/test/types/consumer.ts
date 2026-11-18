@@ -1,5 +1,6 @@
 import '@xoong/richtext';
-import { sanitizeHtml, isSafeLink, isSafeImage, textOf } from '@xoong/richtext';
+import { sanitizeHtml, isSafeLink, isSafeImage, textOf, defineRichtextProfile } from '@xoong/richtext';
+import type { RichtextProfile } from '@xoong/richtext';
 import * as sanitizer from '@xoong/richtext/sanitize';
 import type { XoRichtextElement, XoRichtextConstructor } from '@xoong/richtext';
 import type { XoControl } from '@xoong/core';
@@ -45,3 +46,17 @@ editor.expanded = true;
 editor.addEventListener('xo-pick-media', (event) => { event.detail.insert({ alt: 'x' }); });
 // @ts-expect-error images is a boolean
 sanitizeHtml('x', { images: 'no' });
+
+const profile: RichtextProfile = { tags: { p: {}, aside: { classes: ['note'] }, a: { attrs: { href: 'url', target: ['_blank'] } } }, rename: { div: 'p' }, schemes: { url: ['https'] } };
+defineRichtextProfile('mine', profile);
+const cleaned: string = sanitizeHtml('<p>x</p>', profile);
+sanitizeHtml('<p>x</p>', 'rich');
+editor.profile = 'rich';
+editor.profile = profile;
+editor.sanitize = (html, { source }) => html + source;
+editor.sanitize = null;
+const figure: boolean = editor.insertFigure('/a.png', 'A', 'Caption');
+// @ts-expect-error a profile needs tags
+const noTags: RichtextProfile = {};
+// @ts-expect-error an attribute type is text, url, imgurl, int or a list
+const badType: RichtextProfile = { tags: { a: { attrs: { href: 'link' } } } };

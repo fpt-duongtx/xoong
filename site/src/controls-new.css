@@ -731,7 +731,7 @@ button[aria-pressed="true"]:not(.chip, [role="tab"], .xo-seg button) { backgroun
 .xo-input-wrap--end .xo-date-open { position: absolute; right: 4px; top: 50%; translate: 0 -50%; width: 32px; height: 32px; min-height: 0; padding: 0; display: inline-grid; place-items: center; color: var(--xo-color-muted); background: transparent; border: 0; border-radius: var(--xo-radius); }
 .xo-date-open:hover { color: var(--xo-color-text); background: var(--xo-color-subtle); }
 .xo-date-open[aria-expanded="true"] { color: var(--xo-color-accent-strong); background: var(--xo-color-accent-soft); }
-.xo-date-open .ic { --xo-icon: 18px; }
+.xo-date-open :is(.ic, .xi) { --xo-icon: 18px; font-size: 18px; }
 .xo-date-panel { overflow: auto; position: absolute; z-index: 20; box-sizing: border-box; width: calc(7 * 36px + 6 * 2px + 32px + 2px); max-width: calc(100vw - 16px); padding: 16px; }
 .xo-date-panel[hidden] { display: none; }
 .xo-date-head { display: grid; grid-template-columns: 32px 1fr 32px; align-items: center; gap: 8px; margin-bottom: 8px; }
@@ -765,7 +765,7 @@ xo-slider > .xo-range { display: block; }
 .xo-range:disabled::-webkit-slider-runnable-track { background: var(--xo-color-border); }
 
 xo-stepper > .xo-stepper { display: inline-flex; }
-.xo-stepper button .ic { --xo-icon: 18px; }
+.xo-stepper button :is(.ic, .xi) { --xo-icon: 18px; font-size: 18px; }
 .xo-stepper button { display: inline-grid; place-items: center; padding: 0; min-height: 0; border-radius: 0; }
 .xo-stepper input { min-height: 0; border-radius: 0; box-shadow: none; }
 .xo-stepper:focus-within { border-color: var(--xo-color-accent); outline: var(--xo-focus); outline-offset: 0; }
@@ -774,15 +774,14 @@ xo-stepper > .xo-stepper { display: inline-flex; }
 xo-password .xo-input-wrap--end { display: flex; }
 xo-password .xo-input-end { position: absolute; right: 4px; top: 50%; translate: 0 -50%; display: inline-grid; place-items: center; color: var(--xo-color-muted); }
 xo-password .xo-input-end:hover { color: var(--xo-color-text); }
-xo-password .xo-input-end .ic { --xo-icon: 18px; }
+xo-password .xo-input-end :is(.ic, .xi) { --xo-icon: 18px; font-size: 18px; }
 xo-password .xo-input-end[aria-pressed="true"] { color: var(--xo-color-accent-strong); background: var(--xo-color-accent-soft); border-color: transparent; }
-xo-password .xo-input-end[aria-pressed="true"] .ic[data-ic="eye"] { --ic: var(--ic-eye-off); }
 xo-password .xo-input-wrap--end input { padding-right: 44px; }
 
 xo-copy > .xo-copyfield { display: flex; }
 .xo-copyfield input { flex: 1; min-width: 0; }
 .xo-copyfield button { display: inline-flex; align-items: center; gap: 8px; flex: none; white-space: nowrap; }
-.xo-copyfield button .ic { --xo-icon: 18px; }
+.xo-copyfield button :is(.ic, .xi) { --xo-icon: 18px; font-size: 18px; }
 .xo-copyfield button[data-state="copied"] { color: color-mix(in srgb, var(--xo-color-success) 55%, var(--xo-color-text)); background: color-mix(in srgb, var(--xo-color-success) 12%, var(--xo-color-surface)); border-color: var(--xo-color-success); }
 
 /* fixes found on the real elements */
@@ -887,10 +886,10 @@ dialog.xo-command-dialog .xo-listbox { max-height: min(50vh, 360px); overflow: a
 button.xo-option { width: 100%; border: 0; background: transparent; color: var(--xo-color-text); font: inherit; text-align: left; justify-content: flex-start; box-shadow: none; }
 button.xo-option:hover, button.xo-option.xo-option--active { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); }
 button.xo-option[aria-selected="true"] { background: var(--xo-color-accent-soft); color: var(--xo-color-accent-strong); }
-.xo-command .xo-command__input .ic { color: var(--xo-color-text-2); }
+.xo-command .xo-command__input :is(.ic, .xi) { color: var(--xo-color-text-2); }
 
 xo-file { display: grid; gap: 8px; }
-xo-file .xo-dropzone .ic { width: 24px; height: 24px; }
+xo-file .xo-dropzone :is(.ic, .xi) { width: 24px; height: 24px; font-size: 24px; }
 xo-file .error { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 13px; color: var(--xo-color-danger); }
 xo-file progress { width: 100%; height: 6px; border: 0; border-radius: 999px; overflow: hidden; background: var(--xo-color-subtle); accent-color: var(--xo-color-accent); }
 xo-file progress::-webkit-progress-bar { background: var(--xo-color-subtle); }
@@ -1066,9 +1065,9 @@ xo-popover.xo-color__panel[hidden] { display: none; }
 /* rating: stars drawn by ::before, the radio inputs sit on top and are invisible */
 .xo-rating { --xo-color-rating: light-dark(#c2410c, #fbbf24); display: inline-flex; align-items: center; gap: 2px; }
 .xo-rating__star { position: relative; display: inline-block; width: 26px; height: 26px; font-size: 24px; line-height: 26px; text-align: center; }
-.xo-rating__star::before { content: "\2605"; display: block; color: color-mix(in srgb, var(--xo-color-text) 28%, var(--xo-color-surface)); }
-.xo-rating__star[data-state="full"]::before { color: var(--xo-color-rating); }
-.xo-rating__star[data-state="half"]::before { color: transparent; background: linear-gradient(to right, var(--xo-color-rating) 50%, color-mix(in srgb, var(--xo-color-text) 28%, var(--xo-color-surface)) 50%); -webkit-background-clip: text; background-clip: text; }
+.xo-rating__star::before { content: ""; display: block; width: 100%; height: 100%; background: color-mix(in srgb, var(--xo-color-text) 28%, var(--xo-color-surface)); -webkit-mask: var(--icf-star) center / contain no-repeat; mask: var(--icf-star) center / contain no-repeat; }
+.xo-rating__star[data-state="full"]::before { background: var(--xo-color-rating); }
+.xo-rating__star[data-state="half"]::before { background: linear-gradient(to right, var(--xo-color-rating) 50%, color-mix(in srgb, var(--xo-color-text) 28%, var(--xo-color-surface)) 50%); }
 .xo-rating__star[data-state="half"]:dir(rtl)::before { background-image: linear-gradient(to left, var(--xo-color-rating) 50%, color-mix(in srgb, var(--xo-color-text) 28%, var(--xo-color-surface)) 50%); }
 .xo-rating__input { position: absolute; inset-block: 0; inset-inline: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
 .xo-rating__input--half { inset-inline-end: 50%; width: 50%; }

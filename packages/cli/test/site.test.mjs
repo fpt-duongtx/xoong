@@ -70,6 +70,55 @@ describe('documentation site', () => {
     }
   }, 240000);
 
+  it('icons: the library filters by word and group, previews weight and size, copies the class and downloads the SVG, and passes axe in both backgrounds at 390px', async () => {
+    await open('icons');
+    const visible = () => page.$$eval('.icon-pick', (els) => els.filter((e) => e.closest('li').offsetParent !== null).map((e) => e.dataset.icon));
+    const all = await visible();
+    expect(all.length).toBeGreaterThan(80);
+    expect(await page.$eval('#icon-count', (el) => el.textContent)).toBe(`${all.length} icons`);
+    await page.fill('#icon-q', 'delete'); // a tag, not the name: trash
+    expect(await visible()).toContain('trash');
+    expect((await visible()).length).toBeLessThan(6);
+    await page.fill('#icon-q', 'zzzz');
+    expect(await visible()).toEqual([]);
+    expect(await page.isVisible('.icon-none')).toBe(true);
+    await page.fill('#icon-q', '');
+    await page.click('.icon-cat button[data-cat="arrows"]');
+    expect(await page.getAttribute('.icon-cat button[data-cat="arrows"]', 'aria-pressed')).toBe('true');
+    expect((await visible()).every((n) => /arrow|chevron|sort|expand|external|log-out|menu|more|grip|home/.test(n))).toBe(true);
+    await page.click('.icon-cat button[data-cat=""]');
+    // the icon is drawn (a mask), at the size of the text, not a character
+    const box = await page.$eval('.icon-pick[data-icon="edit"] .xi', (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return { w: r.width, h: r.height, mask: cs.maskImage || cs.webkitMaskImage, text: el.textContent }; });
+    expect(box.w).toBe(24); expect(box.h).toBe(24); expect(box.mask).toContain('data:image/svg+xml'); expect(box.text).toBe('');
+    await page.check('input[name=size][value="48"]');
+    expect(await page.$eval('.icon-pick[data-icon="edit"] .xi', (el) => el.getBoundingClientRect().width)).toBe(48);
+    await page.check('input[name=weight][value="fill"]');
+    expect((await page.$eval('.icon-pick[data-icon="edit"] .xi', (el) => el.className)).split(' ').sort()).toEqual(['xi', 'xi-edit', 'xi-fill']);
+    expect(await page.$eval('.icon-pick[data-icon="edit"] .xi', (el) => getComputedStyle(el).maskImage)).not.toBe(await page.$eval('.icon-pick[data-icon="plus"] .xi', (el) => getComputedStyle(el).maskImage));
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {});
+    await page.click('.icon-pick[data-icon="edit"]');
+    expect(await page.isVisible('#icon-detail')).toBe(true);
+    expect(await text('#icon-detail-name')).toBe('edit');
+    expect(await text('#icon-detail-code')).toBe('<i class="xi xi-fill xi-edit" aria-hidden="true"></i>');
+    expect(await page.getAttribute('.icon-pick[data-icon="edit"]', 'aria-pressed')).toBe('true');
+    const [download] = await Promise.all([page.waitForEvent('download'), page.click('#icon-dl')]);
+    expect(download.suggestedFilename()).toBe('edit-fill.svg');
+    expect(await readFile(await download.path(), 'utf8')).toContain('viewBox="0 0 24 24"');
+    for (const scheme of ['light', 'dark']) {
+      await page.check(`input[name=scheme][value="${scheme}"]`);
+      expect(await axe(page), `axe, ${scheme} background`).toEqual([]);
+    }
+    const small = await (await browser.newContext({ viewport: { width: 390, height: 800 } })).newPage();
+    await small.goto(`${base}icons.html`);
+    await small.waitForLoadState('networkidle');
+    expect(await small.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'no sideways scroll at 390px').toBe(true);
+    await small.check('input[name=scheme][value="dark"]');
+    await small.click('.icon-pick[data-icon="star"]');
+    expect(await axe(small), 'axe at 390px, dark background, an icon selected').toEqual([]);
+    await small.context().close();
+    clean();
+  }, 120000);
+
   it('the palette menu is a choice menu: Ember sets the palette on the page, it is remembered, and the logo follows', async () => {
     await open('index');
     const accent = () => page.evaluate(() => getComputedStyle(document.querySelector('.hero h1 em')).color);

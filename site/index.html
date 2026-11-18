@@ -143,6 +143,44 @@
   </section>
 
 
+  <section class="bench-home" id="benchmarks">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Measured, not promised</span><h2>The same screen, four ways.</h2><p>One people-list screen, built in xoong, React, Vue and Angular and run in real Chromium. Median of 5 runs on one machine (Apple M5 Pro); every number comes from a script you can run.</p></div>
+      <div class="bench-cols">
+        <div><h3>The screen</h3><ul class="bench-list">
+<li>A <strong>people list</strong> from a mock API with <strong>10,000 seeded people</strong>; the page size can be 10, 100, 1,000 or 10,000 rows.</li>
+<li>Sort by name, search (250 ms debounce), paging, row selection, a <strong>bulk delete behind a confirm dialog</strong>, a disable action per row.</li>
+<li>An <strong>add dialog</strong> with a validated form (client rules and server field errors), and loading, empty and error states.</li>
+<li>A 15-check <strong>acceptance test</strong> (roles and accessible names, axe WCAG 2 A and AA) must pass for a stack to be measured at all.</li>
+</ul></div>
+        <div><h3>How it was measured</h3><ul class="bench-list">
+<li><strong>Same build rules.</strong> Every stack ships a <em>minified bundle</em>: xoong with <code>xoong build --bundle --minify</code>, React and Vue with Vite, Angular with <code>ng build</code>. The esbuild that xoong's bundle needs is counted in its install numbers.</li>
+<li><strong>Same network.</strong> One server for all: HTTP/2 over TLS, brotli level 11, the same mock API and the same strict policy (<code>default-src 'none'; script-src 'self'; style-src 'self'; ...</code>), zero violations in every run.</li>
+<li><strong>Two profiles.</strong> Unthrottled on loopback, and <em>4x slower CPU with slow 4G</em> (150 ms round trip, 1.6 Mbit/s down, 0.75 Mbit/s up) while the page loads.</li>
+<li><strong>Cold cache every run</strong>, one warm-up run, then the median of <strong>5 runs</strong>; the smallest and largest are on the page.</li>
+<li><strong>Everything a stack needs is counted</strong>: each library's bytes, packages, install time and the lines written to use it. Nothing is hidden.</li>
+<li><strong>One machine</strong>: Apple M5 Pro, 15 cores, 24 GB RAM, Chromium 158.0.8127.18, Node 26.13.0, xoong 0.0.55, 2026-11-17.</li>
+</ul></div>
+      </div>
+      <h3 class="bench-h">Where xoong is well ahead</h3>
+      <ul class="bench-tiles"><li><strong>1.9x</strong><span>less to download</span><small>31.6 kB against 59.0 kB for Angular, the smallest of the others (JS, CSS and HTML, brotli).</small></li><li><strong>4.6x</strong><span>fewer lines to write</span><small>39 lines against 180 for Vue, the shortest of the others, for the same screen.</small></li><li><strong>3.7x</strong><span>fewer packages to install</span><small>14 (esbuild included) against 52 for React; Angular installs 362.</small></li><li><strong>0</strong><span>third-party packages in the browser</span><small>The others ship 6 to 7 (framework, query, table, form and validation libraries).</small></li><li><strong>3.2x</strong><span>faster to generate types</span><small><code>xoong sync</code> 94.4 ms against <code>openapi-typescript</code> 301 ms on a 500-operation document.</small></li></ul>
+      <h3 class="bench-h">The measured output</h3>
+      <div class="table-wrap" tabindex="0"><table aria-label="The same admin screen in xoong, a React stack, a Vue stack and an Angular stack">
+        <thead><tr><th scope="col">Metric</th><th scope="col">xoong (bundled)</th><th scope="col">React stack</th><th scope="col">Vue stack</th><th scope="col">Angular stack</th></tr></thead>
+        <tbody>
+<tr><th scope="row"><a href="benchmarks.html#what-gets-delivered">Browser JS, CSS and HTML, brotli</a></th><td>31.6 kB</td><td>102.2 kB</td><td>64.0 kB</td><td>59.0 kB</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#what-gets-delivered">Third-party packages in the browser build</a></th><td>0</td><td>7</td><td>6</td><td>7</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#load-and-interaction-throttled">Screen usable, slow 4G and 4x slower CPU</a></th><td>836 ms</td><td>1,069 ms</td><td>852 ms</td><td>836 ms</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#load-and-interaction-unthrottled">Show 1,000 rows, unthrottled</a></th><td>58.0 ms</td><td>61.7 ms</td><td>81.0 ms</td><td>49.4 ms</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#effort-the-same-screen-written-four-times">Lines written for the same screen</a></th><td>39</td><td>213</td><td>180</td><td>229</td></tr>
+<tr><th scope="row"><a href="benchmarks.html#build-dev-server-and-install">Packages npm installs for the screen</a></th><td>14</td><td>52</td><td>83</td><td>362</td></tr>
+        </tbody>
+      </table></div>
+      <p class="hint">xoong (bundled and minified like the others, with esbuild counted) has the lowest number in 4 of 6 rows; by median; where another column wins, it wins, and some medians are within the spread. Lower is better in every row. Lines of code and packages are proxies for effort, not time, and xoong's screen assumes an OpenAPI document.</p>
+      <p class="hint"><strong>Where xoong does not lead</strong> (the numbers are not left out): Screen usable, slow 4G and 4x slower CPU: Angular 836 ms, xoong 836 ms (level); Show 1,000 rows, unthrottled: Angular 49.4 ms, xoong 58.0 ms (17% behind).</p>
+      <p class="bench-cta"><a class="btn primary" href="benchmarks.html">See every number and the method</a> <a class="btn" href="benchmarks.html#what-was-not-measured">What it does not show</a></p>
+    </div>
+  </section>
 
   <section>
     <div class="wrap">

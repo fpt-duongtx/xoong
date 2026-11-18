@@ -1,0 +1,55 @@
+/* The icon library page. The preview stage has its own light and dark, so the choice is the person's, not the page's. */
+.icon-tool { display: grid; gap: 1rem; margin: 1.5rem 0 1rem; }
+.icon-find label { display: block; font-weight: 600; margin-bottom: .35rem; }
+.icon-find input { width: 100%; max-width: 32rem; }
+.icon-find .hint { margin: .4rem 0 0; }
+.icon-opts { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; }
+.icon-opt { border: 0; margin: 0; padding: 0; min-width: 0; }
+.icon-opt legend { font-weight: 600; font-size: .875rem; padding: 0; margin-bottom: .25rem; }
+.icon-opt label { display: inline-flex; align-items: center; gap: .3rem; margin-inline-end: .75rem; min-height: 1.75rem; cursor: pointer; }
+.icon-cat { display: flex; flex-wrap: wrap; gap: .5rem; }
+.icon-cat button[aria-pressed="true"] { background: var(--xo-color-accent-soft, #e8f0fe); color: var(--xo-color-accent-strong, #0b57d0); border-color: var(--xo-color-accent, #0b57d0); }
+
+.icon-stage { --ic-fg: #1b1f24; --ic-bg: #fff; --ic-muted: #55606e; --ic-line: #d8dee4; --tone-text: #1b1f24; --tone-accent: #0b57d0; --tone-success: #146c2e; --tone-warning: #8a5300; --tone-danger: #b3261e;
+  padding: 1rem; border: 1px solid var(--ic-line); border-radius: 12px; background: var(--ic-bg); color: var(--ic-fg); }
+.icon-stage[data-scheme="dark"] { --ic-bg: #14171c; --ic-fg: #e8edf2; --ic-muted: #a7b0bc; --ic-line: #343b45; --tone-text: #e8edf2; --tone-accent: #8ab4ff; --tone-success: #6dd58c; --tone-warning: #f2b45a; --tone-danger: #ff8a80; }
+.icon-stage[data-tone="text"] { --tone: var(--tone-text); }
+.icon-stage[data-tone="accent"] { --tone: var(--tone-accent); }
+.icon-stage[data-tone="success"] { --tone: var(--tone-success); }
+.icon-stage[data-tone="warning"] { --tone: var(--tone-warning); }
+.icon-stage[data-tone="danger"] { --tone: var(--tone-danger); }
+.icon-group + .icon-group { margin-top: 1.5rem; }
+.content .icon-stage .icon-group > h2 { margin: 0 0 .5rem; padding: 0; border: 0; font-size: 1.05rem; color: var(--ic-fg); border: 0; padding: 0; }
+.content .icon-stage .icon-group > h2 small { font-weight: 400; color: var(--ic-muted); }
+.icon-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: .5rem; }
+.icon-list li[hidden], .icon-group[hidden] { display: none; }
+.icon-pick { display: grid; justify-items: center; align-content: center; gap: .5rem; width: 100%; min-height: 5.5rem; padding: .75rem .25rem .6rem; background: transparent; color: var(--ic-fg); border: 1px solid transparent; border-radius: 10px; cursor: pointer; font: inherit; }
+.icon-pick:hover { background: color-mix(in srgb, var(--ic-fg) 8%, transparent); border-color: var(--ic-line); }
+.icon-pick[aria-pressed="true"] { border-color: var(--tone, var(--ic-fg)); background: color-mix(in srgb, var(--tone, var(--ic-fg)) 10%, transparent); }
+.icon-pick .xi { color: var(--tone, var(--ic-fg)); }
+.icon-name { font-size: .78rem; line-height: 1.2; color: var(--ic-fg); overflow-wrap: anywhere; text-align: center; }
+.icon-stage[data-size="16"] .icon-pick .xi { font-size: 16px; }
+.icon-stage[data-size="24"] .icon-pick .xi { font-size: 24px; }
+.icon-stage[data-size="32"] .icon-pick .xi { font-size: 32px; }
+.icon-stage[data-size="48"] .icon-pick .xi { font-size: 48px; }
+.icon-none { margin: 0; color: var(--ic-muted); }
+
+.icon-detail { margin: 1rem 0 2rem; padding: 1rem; border: 1px solid var(--xo-color-border, #d8dee4); border-radius: 12px; background: var(--xo-color-surface, #fff); }
+.icon-detail[hidden] { display: none; }
+.icon-detail__head { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.content .icon-detail .icon-detail__head h2 { margin: 0; font-size: 1.15rem; border: 0; padding: 0; }
+.icon-detail__head .hint { margin: .15rem 0 0; }
+.icon-detail__show { display: grid; place-items: center; width: 4.5rem; height: 4.5rem; border-radius: 12px; border: 1px solid #d8dee4; background: #fff; color: #1b1f24; }
+.icon-detail__show[data-scheme="dark"] { background: #14171c; color: #e8edf2; border-color: #343b45; }
+.icon-detail__show[data-tone="accent"] { color: #0b57d0; }
+.icon-detail__show[data-scheme="dark"][data-tone="accent"] { color: #8ab4ff; }
+.icon-detail__show[data-tone="success"] { color: #146c2e; }
+.icon-detail__show[data-scheme="dark"][data-tone="success"] { color: #6dd58c; }
+.icon-detail__show[data-tone="warning"] { color: #8a5300; }
+.icon-detail__show[data-scheme="dark"][data-tone="warning"] { color: #f2b45a; }
+.icon-detail__show[data-tone="danger"] { color: #b3261e; }
+.icon-detail__show[data-scheme="dark"][data-tone="danger"] { color: #ff8a80; }
+.icon-detail__code { margin: .75rem 0; }
+.icon-detail__actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; }
+.icon-detail .hint[role="status"] { min-height: 1.25rem; margin: .5rem 0 0; }
+@media (max-width: 480px) { .icon-list { grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); } }

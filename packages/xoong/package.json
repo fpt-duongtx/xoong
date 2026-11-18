@@ -1,6 +1,6 @@
 {
   "name": "@xoong/xoong",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "description": "xoong: a small, standards-first web framework. One install for the runtime (signals, templates, OpenAPI data layer), the admin set and the `xoong` command.",
   "type": "module",
   "main": "src/index.js",
@@ -39,11 +39,11 @@
   },
   "homepage": "https://fpt-duongtx.github.io/xoong/",
   "dependencies": {
-    "@xoong/cli": "0.0.55",
-    "@xoong/core": "0.0.55",
-    "@xoong/data": "0.0.55",
-    "@xoong/forms": "0.0.55",
-    "@xoong/ui": "0.0.55"
+    "@xoong/cli": "0.0.56",
+    "@xoong/core": "0.0.56",
+    "@xoong/data": "0.0.56",
+    "@xoong/forms": "0.0.56",
+    "@xoong/ui": "0.0.56"
   },
   "publishConfig": {
     "access": "public"

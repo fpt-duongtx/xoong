@@ -6,6 +6,7 @@ import * as figures from './figures.mjs';
 import { dialogsPage } from './dialogs-page.mjs';
 import { recipesPage } from './recipes-page.mjs';
 import { benchmarksPage, homeBenchmarks } from './benchmarks-page.mjs';
+import { iconsPage } from './icons-page.mjs';
 import { cliPage, mcpPage, editorPage, codesPage } from './tooling-pages.mjs';
 import { referencePage } from './reference-page.mjs';
 
@@ -578,7 +579,8 @@ ${example({
 <tr><td><code>a</code> with <code>href</code></td><td>Only <code>http</code>, <code>https</code>, <code>mailto</code>, <code>tel</code>; <code>rel="noopener noreferrer"</code> is added</td></tr>
 <tr><td><code>img</code> with <code>src</code>, <code>alt</code></td><td><code>src</code> must be http(s) or a relative URL; no <code>data:</code>, no <code>javascript:</code></td></tr>
 </tbody></table>
-${callout('note', 'The client is never a trust boundary. The same function is exported as <code>@xoong/richtext/sanitize</code> so your <strong>server</strong> can sanitise on save as well.')}
+<p>This table is the <code>default</code> profile. <code>&lt;xo-richtext profile="rich"&gt;</code> also keeps <code>figure</code>/<code>figcaption</code> and <code>aside.note</code>, and <code>defineRichtextProfile(name, profile)</code> registers your own white-list (plain data: tags, typed attributes, class lists, renames, URL schemes). <code>el.sanitize</code> is a step of your own before the profile, which keeps the last word.</p>
+${callout('note', 'The client is never a trust boundary. <code>@xoong/richtext/sanitize</code> needs no DOM: the same code gives the same bytes in a browser and in Node, so your <strong>server</strong> can sanitise on save with the same profile.')}
 
 <h2>Media</h2>
 <p>The image tool fires a cancelable <code>xo-pick-media</code> event. Open your own library, then call <code>detail.insert({ src, alt })</code> now or later. With the caret in a heading the image goes in a paragraph after it, and nothing is written inline, so it works under a strict CSP.</p>
@@ -732,6 +734,23 @@ ${example({
 </p>
 <p class="hint">Chosen: <output id="menu-out">nothing yet</output></p>`,
   extra: [['JavaScript', 'js', { file: 'site/src/page-menu.js' }]],
+})}
+<h2 id="tooltip">Tooltip</h2>
+<p><code>xo-tooltip="text"</code> on any element is all it takes. The element is not changed (no wrapper, no child, no class): the hint is one shared element drawn <code>position: fixed</code> in the top layer, so an <code>overflow: hidden</code> parent does not clip it. Hover shows it after a delay; keyboard focus shows it at once (a click does not); Escape, leaving, blur, a press, or the element going away closes it, and the pointer may move onto it (WCAG 1.4.13). It flips to the other side at the edge of the viewport and follows a scroll. Touch has no hover, so a tap shows nothing. The hint is a description, not the name: an icon-only button still needs <code>aria-label</code>.</p>
+<p>The delay is <code>400</code> ms. Change it for the page with <code>xo-tooltip-delay="700"</code> on the <code>&lt;body&gt;</code> (or any container, for the toolbar in it), for one element on the element, or from script with <code>tooltip.delay</code>; <code>0</code> shows at once. Moving from one hinted element to the next within 300 ms of a hint closing shows the next one at once, so a toolbar does not wait on every button. <code>xo-tooltip-placement</code> is <code>top</code> (default), <code>bottom</code>, <code>left</code> or <code>right</code>.</p>
+<p><strong>Inside a modal dialog.</strong> A modal <code>&lt;dialog&gt;</code> is in the top layer and makes the rest of the page inert, so a hint kept in <code>&lt;body&gt;</code> would be covered, or visible but unreachable. While the hint describes an element in an open dialog, the shared hint element is placed in that dialog (the hinted element is still untouched), and goes back to the body for any other element. Escape then closes the hint first and the dialog on the second press.</p>
+${example({
+  label: 'Tooltip delay, placement and a dialog',
+  preview: `
+<p class="toolbar" xo-tooltip-delay="150">
+  <button xo-tooltip="Shows after 150 ms (set on the toolbar)">Fast</button>
+  <button xo-tooltip="Shows after 900 ms" xo-tooltip-delay="900">Slow</button>
+  <button xo-tooltip="At once" xo-tooltip-delay="0">None</button>
+  <button xo-tooltip="On the right" xo-tooltip-placement="right">Right</button>
+  <button xo-tooltip="Below" xo-tooltip-placement="bottom">Below</button>
+  <button xo-open="#tip-dialog">Open a dialog</button>
+</p>
+<xo-dialog id="tip-dialog" heading="A dialog with a hint"><p>The hint is drawn above this dialog.</p><button xo-tooltip="Inside the modal dialog; Escape closes this hint first" xo-tooltip-delay="0">Hover or focus me</button> <button xo-close>Close</button></xo-dialog>`,
 })}
 `,
   },
@@ -1069,11 +1088,7 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
     body: kit('focus-audit.html'),
   },
   // ------------------------------------------------------------------------------------------------------------------------------
-  {
-    file: 'icons.html', section: 'docs', group: 'Design', nav: 'Icons', title: 'Icons',
-    description: 'The icon set: 24px grid, 1.75 stroke, currentColor.',
-    body: kit('icons.html'),
-  },
+  iconsPage,
   // ------------------------------------------------------------------------------------------------------------------------------
   {
     file: 'demo.html', section: 'demo', group: 'Live demos', nav: 'All demos', title: 'Live demos', demo: true, richtext: true,

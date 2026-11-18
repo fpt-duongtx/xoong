@@ -2,6 +2,7 @@
 import './tabs.js';
 import './menu.js';
 import './tooltip.js';
+export { tooltip } from './tooltip.js';
 import './combobox.js';
 import './carousel.js';
 import './switch.js';

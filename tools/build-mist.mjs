@@ -106,23 +106,6 @@ function themeMixes(css) {
   return out;
 }
 
-/** Same stroke as the kit's masks (1.75, round caps, 24 viewBox). */
-function iconUrl(inner) {
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'>${inner}</svg>`;
-  return `url("data:image/svg+xml,${svg.replace(/[<>#]/g, (c) => ({ '<': '%3C', '>': '%3E', '#': '%23' }[c]))}")`;
-}
-const EXTRA_ICONS = `
-:root {
-  --ic-grid: ${iconUrl("<rect x='3.5' y='3.5' width='7' height='7' rx='1.5'/><rect x='13.5' y='3.5' width='7' height='7' rx='1.5'/><rect x='3.5' y='13.5' width='7' height='7' rx='1.5'/><rect x='13.5' y='13.5' width='7' height='7' rx='1.5'/>")};
-  --ic-file: ${iconUrl("<path d='M14 3.5H7.2A1.7 1.7 0 0 0 5.5 5.2v13.6A1.7 1.7 0 0 0 7.2 20.5h9.6a1.7 1.7 0 0 0 1.7-1.7V8z'/><path d='M14 3.5V8h4.5'/><path d='M8.5 12.5h7M8.5 16h4.5'/>")};
-  --ic-layers: ${iconUrl("<path d='m12 3.5 8.5 4.25L12 12 3.5 7.75z'/><path d='m3.5 12 8.5 4.25L20.5 12'/><path d='m3.5 16.25 8.5 4.25 8.5-4.25'/>")};
-  --ic-sliders: ${iconUrl("<path d='M4 7h2.5M11 7h9M4 12h7.5M16 12h4M4 17h4.5M13 17h7'/><circle cx='8.5' cy='7' r='2'/><circle cx='14' cy='12' r='2'/><circle cx='10.5' cy='17' r='2'/>")};
-}
-.ic[data-ic="grid"] { --ic: var(--ic-grid); }
-.ic[data-ic="file"] { --ic: var(--ic-file); }
-.ic[data-ic="layers"] { --ic: var(--ic-layers); }
-.ic[data-ic="sliders"] { --ic: var(--ic-sliders); }`;
-
 /** The sidebar is 264px from 768px up. A 560px flex-basis wraps the main column under it until the row is about 824px. */
 const SHELL_FIX = `
 /* one row whenever the sidebar is showing: the main column takes whatever width is left (below 768px the sidebar is hidden) */
@@ -163,7 +146,7 @@ const parts = [
   ['tokens', read('mist-tokens.css').replace(/^\/\*[\s\S]*?\*\/\n/, '')],
   ['map', MAP],
   ['standard', relaxButtons(filter(read('controls.css')))],
-  ['icons', filter(read('icons.css')) + EXTRA_ICONS],
+  ['icons', filter(read('icons.css'))],
   ['components', filter(read('components.css'))],
   ['states', filter(read('states.css'))],
   ['new controls', filter(read('controls-new.css'))],

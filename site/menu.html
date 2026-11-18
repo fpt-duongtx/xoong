@@ -66,6 +66,7 @@
     <a href="overview.html">Overview</a>
     <a href="install.html">Install</a>
     <a href="how-it-works.html">How it works</a>
+    <a href="benchmarks.html">Benchmarks</a>
     </div>
     <div class="grp">
     <h2>Guides</h2>
@@ -137,6 +138,7 @@
       <a href="overview.html">Overview</a>
       <a href="install.html">Install</a>
       <a href="how-it-works.html">How it works</a>
+      <a href="benchmarks.html">Benchmarks</a>
       </div>
       <div class="grp">
       <h2>Guides</h2>
@@ -236,6 +238,33 @@ document.querySelector(<span class="tok-s">'#demo-menu'</span>).addEventListener
   <span class="tok-k">const</span> item = e.target.closest(<span class="tok-s">'button:not([xo-menu-trigger]), a'</span>);
   <span class="tok-k">if</span> (item) document.querySelector(<span class="tok-s">'#menu-out'</span>).textContent = item.textContent;
 });</code></pre></section>
+</xo-tabs>
+<h2 id="tooltip">Tooltip</h2>
+<p><code>xo-tooltip="text"</code> on any element is all it takes. The element is not changed (no wrapper, no child, no class): the hint is one shared element drawn <code>position: fixed</code> in the top layer, so an <code>overflow: hidden</code> parent does not clip it. Hover shows it after a delay; keyboard focus shows it at once (a click does not); Escape, leaving, blur, a press, or the element going away closes it, and the pointer may move onto it (WCAG 1.4.13). It flips to the other side at the edge of the viewport and follows a scroll. Touch has no hover, so a tap shows nothing. The hint is a description, not the name: an icon-only button still needs <code>aria-label</code>.</p>
+<p>The delay is <code>400</code> ms. Change it for the page with <code>xo-tooltip-delay="700"</code> on the <code>&lt;body&gt;</code> (or any container, for the toolbar in it), for one element on the element, or from script with <code>tooltip.delay</code>; <code>0</code> shows at once. Moving from one hinted element to the next within 300 ms of a hint closing shows the next one at once, so a toolbar does not wait on every button. <code>xo-tooltip-placement</code> is <code>top</code> (default), <code>bottom</code>, <code>left</code> or <code>right</code>.</p>
+<p><strong>Inside a modal dialog.</strong> A modal <code>&lt;dialog&gt;</code> is in the top layer and makes the rest of the page inert, so a hint kept in <code>&lt;body&gt;</code> would be covered, or visible but unreachable. While the hint describes an element in an open dialog, the shared hint element is placed in that dialog (the hinted element is still untouched), and goes back to the body for any other element. Escape then closes the hint first and the dialog on the second press.</p>
+<xo-tabs label="Tooltip delay, placement and a dialog" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <p class="toolbar" xo-tooltip-delay="150">
+      <button xo-tooltip="Shows after 150 ms (set on the toolbar)">Fast</button>
+      <button xo-tooltip="Shows after 900 ms" xo-tooltip-delay="900">Slow</button>
+      <button xo-tooltip="At once" xo-tooltip-delay="0">None</button>
+      <button xo-tooltip="On the right" xo-tooltip-placement="right">Right</button>
+      <button xo-tooltip="Below" xo-tooltip-placement="bottom">Below</button>
+      <button xo-open="#tip-dialog">Open a dialog</button>
+    </p>
+    <xo-dialog id="tip-dialog" heading="A dialog with a hint"><p>The hint is drawn above this dialog.</p><button xo-tooltip="Inside the modal dialog; Escape closes this hint first" xo-tooltip-delay="0">Hover or focus me</button> <button xo-close>Close</button></xo-dialog>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">p</span> <span class="tok-a">class</span>=<span class="tok-s">"toolbar"</span> <span class="tok-a">xo-tooltip-delay</span>=<span class="tok-s">"150"</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Shows after 150 ms (set on the toolbar)"</span>&gt;Fast&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Shows after 900 ms"</span> <span class="tok-a">xo-tooltip-delay</span>=<span class="tok-s">"900"</span>&gt;Slow&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"At once"</span> <span class="tok-a">xo-tooltip-delay</span>=<span class="tok-s">"0"</span>&gt;None&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"On the right"</span> <span class="tok-a">xo-tooltip-placement</span>=<span class="tok-s">"right"</span>&gt;Right&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Below"</span> <span class="tok-a">xo-tooltip-placement</span>=<span class="tok-s">"bottom"</span>&gt;Below&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">xo-open</span>=<span class="tok-s">"#tip-dialog"</span>&gt;Open a dialog&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">p</span>&gt;
+&lt;<span class="tok-t">xo-dialog</span> <span class="tok-a">id</span>=<span class="tok-s">"tip-dialog"</span> <span class="tok-a">heading</span>=<span class="tok-s">"A dialog with a hint"</span>&gt;&lt;<span class="tok-t">p</span>&gt;The hint is drawn above this dialog.&lt;/<span class="tok-t">p</span>&gt;&lt;<span class="tok-t">button</span> <span class="tok-a">xo-tooltip</span>=<span class="tok-s">"Inside the modal dialog; Escape closes this hint first"</span> <span class="tok-a">xo-tooltip-delay</span>=<span class="tok-s">"0"</span>&gt;Hover or focus me&lt;/<span class="tok-t">button</span>&gt; &lt;<span class="tok-t">button</span> <span class="tok-a">xo-close</span>&gt;Close&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">xo-dialog</span>&gt;</code></pre></section>
+
 </xo-tabs>
 
 <nav class="pager" aria-label="Pages"><a rel="prev" href="dialogs.html"><small>Previous</small><span>Dialogs and modals</span></a><a rel="next" href="overlays.html"><small>Next</small><span>All overlays</span></a></nav>

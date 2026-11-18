@@ -205,7 +205,7 @@ class XoCombobox extends XoControl {
       remove.type = 'button';
       remove.tabIndex = -1;
       remove.dataset.value = value;
-      remove.textContent = '×';
+      remove.innerHTML = '<i class="xi xi-close" aria-hidden="true"></i>';
       remove.setAttribute('aria-label', text('xoong.controls.remove', 'Remove {label}', { label }));
       chip.append(remove);
       box.insertBefore(chip, this.#input);

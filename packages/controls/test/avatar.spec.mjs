@@ -39,7 +39,7 @@ describe('<xo-avatar>', () => {
     expect(el.textContent).toBe('MP');
     expect(el.getAttribute('aria-label')).toBe('Mai Pham, inactive');
     el.removeAttribute('name');
-    expect(el.querySelector('.ic[data-ic=user]')).toBeTruthy();
+    expect(el.querySelector('.xi.xi-user')).toBeTruthy();
     expect(el.getAttribute('aria-label')).toBe('Unknown user');
   });
   it('keeps an aria-label the author wrote, including after the name changes', async () => {

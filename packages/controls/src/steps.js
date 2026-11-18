@@ -59,7 +59,7 @@ class XoSteps extends XoElement {
       if (done) {
         n.setAttribute('role', 'img');
         n.setAttribute('aria-label', text('xoong.steps.done', 'Completed'));
-        n.innerHTML = '<span class="ic" data-ic="check" aria-hidden="true"></span>';
+        n.innerHTML = '<i class="xi xi-check" aria-hidden="true"></i>';
       } else n.textContent = String(i + 1);
       const name = document.createElement(here ? 'b' : 'span');
       if (!done && !here) name.className = 'muted';

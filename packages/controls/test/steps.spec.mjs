@@ -15,7 +15,7 @@ describe('<xo-steps>', () => {
     expect(root.querySelectorAll('.xo-steps__line').length).toBe(2);
     expect(steps.map((s) => s.classList.contains('xo-step--done'))).toEqual([true, false, false]);
     expect(steps.map((s) => s.getAttribute('aria-current'))).toEqual([null, 'step', null]);
-    expect(steps[0].querySelector('.ic[data-ic=check]')).toBeTruthy();
+    expect(steps[0].querySelector('.xi.xi-check')).toBeTruthy();
     expect(steps[0].querySelector('.xo-step__n').getAttribute('aria-label')).toBe('Completed');
     expect(steps[1].querySelector('.xo-step__n').textContent).toBe('2');
     expect(steps[1].querySelector('.xo-step__n').classList.contains('is-current')).toBe(true);

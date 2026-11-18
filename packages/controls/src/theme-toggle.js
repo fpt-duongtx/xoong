@@ -32,7 +32,7 @@ class XoThemeToggle extends XoElement {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'icon-only ghost';
-    b.innerHTML = '<span class="ic" aria-hidden="true"></span>';
+    b.innerHTML = '<i class="xi" aria-hidden="true"></i>';
     b.addEventListener('click', () => this.#set(this.theme === 'dark' ? 'light' : 'dark'));
     this.#button = b;
     this.replaceChildren(b);
@@ -62,7 +62,7 @@ class XoThemeToggle extends XoElement {
     const dark = this.theme === 'dark';
     b.setAttribute('aria-pressed', String(dark));
     b.setAttribute('aria-label', text('xoong.controls.darkTheme', 'Dark theme'));
-    /** @type {HTMLElement} */ (b.firstElementChild).dataset.ic = dark ? 'sun' : 'moon';
+    /** @type {HTMLElement} */ (b.firstElementChild).className = dark ? 'xi xi-sun' : 'xi xi-moon';
   }
 }
 define('xo-theme-toggle', XoThemeToggle);

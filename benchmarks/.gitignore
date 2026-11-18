@@ -6,3 +6,4 @@ dist-min
 .cache
 .competitors
 .angular
+dist-bundle
