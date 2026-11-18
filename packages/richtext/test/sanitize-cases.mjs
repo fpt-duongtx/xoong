@@ -28,4 +28,7 @@ export const CASES = [
   ['style, class, id and data-* are removed from a paragraph', 'default', '<p style="color:red" class="x" id="y" onclick="a()" data-x="1">t</p>', '<p>t</p>'],
   ['renamed tags', 'default', '<h1>A</h1><h5>B</h5><div>C <b>x</b> <i>y</i></div>', '<h2>A</h2><h3>B</h3><p>C <strong>x</strong> <em>y</em></p>'],
   ['an uppercase tag and an unquoted attribute', 'default', '<P CLASS=x>T</P><A HREF=https://x.test>l</A>', '<p>T</p><p><a href="https://x.test" rel="noopener noreferrer">l</a></p>'],
+  ['trailing line breaks of a paragraph all go, so a second pass changes nothing', 'rich', '<p>a<br><br></p>', '<p>a</p>'],
+  ['a loose run ends without a placeholder break (found by the fuzz: it used to lose it on the second pass)', 'rich', 'a<br>', '<p>a</p>'],
+  ['a loose run after stray tags (fuzz)', 'default', '</a>>x<br>', '<p>&gt;x</p>'],
 ];

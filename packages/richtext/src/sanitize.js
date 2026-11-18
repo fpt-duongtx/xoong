@@ -314,7 +314,8 @@ function render(/** @type {string} */ html, /** @type {any} */ P) {
 
   /** The tag name after renames; '' for a dropped element. */
   const nameOf = (/** @type {Extract<Node, { t: 'el' }>} */ el) => (P.drop.has(el.tag) ? '' : P.rename.get(el.tag) ?? el.tag);
-  const trimBreak = (/** @type {string} */ body) => (body.endsWith('<br>') && body !== '<br>' ? body.slice(0, -4) : body);
+  /** Trailing line breaks of a block are a browser's placeholders: all of them go (one pass is enough, so a second pass changes nothing); a block of breaks only keeps one. */
+  const trimBreak = (/** @type {string} */ body) => { const t = body.replace(/(?:<br>)+$/, ''); return t === '' ? (body ? '<br>' : '') : t; };
 
   function attrsOf(/** @type {Extract<Node, { t: 'el' }>} */ el, /** @type {string} */ tag, /** @type {any} */ spec) {
     let out = '';
@@ -430,7 +431,7 @@ function render(/** @type {string} */ html, /** @type {any} */ P) {
   function blocks(/** @type {Node[]} */ kids) {
     let out = '';
     let run = '';
-    const flush = () => { if (run.replace(/<br>/g, '').trim() !== '' || run.includes('<img')) out += P.tags.has('p') ? `<p>${run}</p>` : run; run = ''; };
+    const flush = () => { if (run.replace(/<br>/g, '').trim() !== '' || run.includes('<img')) out += P.tags.has('p') ? `<p>${trimBreak(run)}</p>` : run; run = ''; };
     for (const c of kids) {
       if (c.t === 'text') { run += inline(c, false); continue; }
       const tag = nameOf(c);
