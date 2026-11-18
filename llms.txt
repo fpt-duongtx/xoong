@@ -119,7 +119,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   Also: xo-switch, xo-date, xo-time, xo-slider, xo-stepper, xo-password, xo-copy, xo-file, xo-image, xo-chart, xo-accordion, xo-popover, xo-command,
   xo-theme-toggle, xo-consent (`xo-consent-open` on a button shows it again): `docs/controls.md`.
   Panels stay in the DOM; `xo-reveal` selects the invalid field's tab. Combobox/tags: string or array (`multiple`);
-  `remote` + `xo-search`, `el.options = [...]`, or `options-op` (+ `option-value`/`option-label`). `xo-tooltip="text"` describes any element.
+  `remote` + `xo-search`, `el.options = [...]`, or `options-op` (+ `option-value`/`option-label`). `xo-tooltip="text"` describes any element (`xo-tooltip-delay` ms, `xo-tooltip-placement`).
 
 ## Live updates (server-sent events)
 JSON per message: {type:"patch", entity:"User", id:42, path:"/status", value:"x", version:7} | {type:"upsert", entity, id, value, version} |

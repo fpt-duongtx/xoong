@@ -642,7 +642,18 @@ export const DIRECTIVES = {
     category: 'Controls', package: '@xoong/controls', guide: 'menu.html', keywords: 'hint hover description help title',
     applies: 'Any element.', value: 'The text of the tooltip.',
     example: `<button xo-tooltip="Copy the link" aria-label="Copy link">Copy</button>`,
-    notes: ['It describes the element; it is not its accessible name, so a button without text still needs `aria-label`.'],
+    notes: ['It describes the element; it is not its accessible name, so a button without text still needs `aria-label`.', 'The element is not changed: the hint is one shared element drawn fixed in the top layer, also inside a modal `<dialog>`.'],
+  },
+  'xo-tooltip-delay': {
+    category: 'Controls', package: '@xoong/controls', guide: 'menu.html#tooltip', keywords: 'hint hover delay wait milliseconds',
+    applies: 'An element with `xo-tooltip`, or any ancestor of it (the `<body>` for the whole page); the nearest one wins.', value: 'Milliseconds, `0` to show at once. Default `400`.',
+    example: `<body xo-tooltip-delay="700"><button xo-tooltip="Save" xo-tooltip-delay="0">Save</button></body>`,
+    notes: ['From script: `tooltip.delay = 700` (`import { tooltip } from \'@xoong/controls\'`). Keyboard focus always shows the hint at once.'],
+  },
+  'xo-tooltip-placement': {
+    category: 'Controls', package: '@xoong/controls', guide: 'menu.html#tooltip', keywords: 'hint hover position side top bottom left right',
+    applies: 'An element with `xo-tooltip`, or any ancestor of it.', value: '`top` (default), `bottom`, `left` or `right`. It flips to the other side when there is no room.',
+    example: `<button xo-tooltip="Delete" xo-tooltip-placement="right" aria-label="Delete">Delete</button>`,
   },
   'xo-consent-open': {
     category: 'Controls', package: '@xoong/controls', guide: 'more-controls.html#page', keywords: 'cookies settings privacy reopen banner',

@@ -15,5 +15,5 @@ export const XO_UI_ATTRIBUTES = ['xo-open', 'xo-close', 'xo-confirm-title', 'xo-
 export const XO_UI_ELEMENTS = ['xo-table', 'xo-form', 'xo-dialog', 'xo-toast', 'xo-router', 'xo-pager'];
 
 /** Attributes and elements of @xoong/controls and @xoong/richtext. */
-export const XO_CONTROL_ATTRIBUTES = ['xo-tab', 'xo-menu-trigger', 'xo-tooltip', 'xo-consent-open'];
+export const XO_CONTROL_ATTRIBUTES = ['xo-tab', 'xo-menu-trigger', 'xo-tooltip', 'xo-tooltip-delay', 'xo-tooltip-placement', 'xo-consent-open'];
 export const XO_CONTROL_ELEMENTS = ['xo-tabs', 'xo-menu', 'xo-combobox', 'xo-tags', 'xo-richtext', 'xo-carousel', 'xo-switch', 'xo-date', 'xo-time', 'xo-slider', 'xo-stepper', 'xo-password', 'xo-copy', 'xo-image', 'xo-theme-toggle', 'xo-accordion', 'xo-popover', 'xo-consent', 'xo-file', 'xo-command', 'xo-chart', 'xo-range-slider', 'xo-segmented', 'xo-split-button', 'xo-textarea', 'xo-stat', 'xo-otp', 'xo-avatar', 'xo-avatars', 'xo-progress', 'xo-spinner', 'xo-steps', 'xo-inline-edit', 'xo-drawer', 'xo-breadcrumb', 'xo-alert', 'xo-skeleton', 'xo-tree', 'xo-color', 'xo-rating'];

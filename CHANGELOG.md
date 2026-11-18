@@ -3,7 +3,7 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
-## Unreleased (xi icons)
+## 0.0.56 (xi icons, tooltip delay, placement and dialogs)
 
 * Added (icons): **`@xoong/icons`**, a new package: 84 icons drawn for xoong on a 24px grid (rounded caps and joins, one 1.75 stroke), as SVG files (`packages/icons/src/svg`, plus a `fill/` drawing where a filled form makes sense). The class API is `<i class="xi xi-edit" aria-hidden="true"></i>`: the size follows `font-size` (`xi-sm`, `xi-lg`, `xi-xl`, `xi-2x`, `xi-3x`), the colour is `currentColor`, `xi-fw` fixes the width, `xi-spin` turns it, `xi-fill` and `xi-bold` choose the weight. The CSS is a mask generated from the SVG (`node tools/build-icons.mjs`; a test fails when it drifts), so it needs only `img-src data:` under a strict CSP.
 * Added (icons): `npx xoong-icons --scan src --out icons.css` writes a stylesheet with only the icons a project uses (it reads `xi-<name>`, `data-ic` and `var(--ic-<name>)`; `--include` names the ones built at run time), so a large set costs a few kilobytes.
@@ -11,6 +11,11 @@ projects run xoong in production. The `@xoong/*` packages are published to npm u
 * Compatible: `<span class="ic" data-ic="edit">` still works in the Mist stylesheet and in `@xoong/icons/icons.css` (`--ic-<name>` variables too). Three names changed because `xi-bold` is the weight: the icons `bold`, `italic`, `underline` are `text-bold`, `text-italic`, `text-underline` (the old `data-ic` names are mapped), and `file` is `page`. A test that looked for `.ic[data-ic=…]` inside a control now looks for `.xi.xi-…`.
 * Added (site): the **Icons** page is a library: search by name or synonym, groups, preview by weight, size, colour and light or dark background, click to copy the class, download the SVG; it passes axe in both backgrounds at 390px.
 * Added: `.claude/agents/icon-designer.md` and four skills for drawing icons in the house style (original drawings only; never SF Symbols or another library's paths).
+* Added (controls): **`xo-tooltip-delay`** (ms, on the element or any ancestor, nearest wins; `0` at once) and `tooltip.delay` from script (`import { tooltip } from '@xoong/controls'`); the default stays 400 ms. A hover within 300 ms of a hint closing shows the next one at once.
+* Added (controls): **`xo-tooltip-placement`** (`top` default, `bottom`, `left`, `right`); the hint flips to the other side when there is no room, stays inside the viewport and follows a scroll.
+* Fixed (controls): `xo-tooltip` **inside a modal `<dialog>`**. The page behind a modal is inert and the dialog is in the top layer; a hint in `<body>` could not be hovered. The shared hint element is now placed in the open dialog while it describes an element in it, and returns to `<body>` for others. The hinted element is never changed. The first Escape closes the hint and leaves the dialog open.
+* Fixed (controls): focus that follows a click or a tap no longer shows the hint (only keyboard focus does); touch does not show hints; the hint closes when its element is removed, disabled or scrolled out of view, and follows a changed `xo-tooltip` text; the author's own `aria-describedby` ids are kept (the hint used to remove the attribute).
+* Migrating: nothing breaks. A page that relied on the hint staying in `<body>` inside a dialog should read `[role=tooltip]` by role, not by position.
 
 ## 0.0.55 (build keeps bindings in URL attributes, richtext profiles)
 

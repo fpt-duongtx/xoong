@@ -444,7 +444,10 @@ export interface XoRatingElement extends XoControl {
   clearable: boolean;
 }
 
-// `xo-tooltip="text"` is an attribute on any element, not an element: it has no interface.
+// `xo-tooltip="text"` is an attribute on any element, not an element: it has no interface. Its delay and placement are attributes too
+// (`xo-tooltip-delay`, `xo-tooltip-placement`, on the element or an ancestor); the default delay is this object:
+/** Defaults for `xo-tooltip`. `tooltip.delay` is the hover delay in milliseconds (400); an `xo-tooltip-delay` attribute wins. */
+export const tooltip: { delay: number };
 
 // ---- registries ---------------------------------------------------------------------------------------------------------------
 

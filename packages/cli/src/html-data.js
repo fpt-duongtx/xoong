@@ -42,7 +42,9 @@ export const ATTRIBUTE_DOCS = {
   'xo-close': 'Close the <xo-dialog> this element is in.',
   'xo-menu-trigger': 'On the button of <xo-menu> that opens it (the first button when none is marked).',
   'xo-consent-open': 'On any element: a click shows the <xo-consent> bar again (cookie settings).',
-  'xo-tooltip': 'On any element: a short description shown on hover and focus (and hidden on Escape). It is a description, not the accessible name.',
+  'xo-tooltip': 'On any element: a short description shown on hover and on keyboard focus (hidden on leave, blur, Escape or a press). It is a description, not the accessible name. The element is not changed; the tip is drawn fixed in the top layer, also inside a modal <dialog>.',
+  'xo-tooltip-delay': 'On an element with xo-tooltip, or on any ancestor (the body for the whole page): the hover delay in milliseconds, 0 to show at once. Default 400.',
+  'xo-tooltip-placement': 'On an element with xo-tooltip, or on any ancestor: top (default), bottom, left or right. It flips to the other side when there is no room.',
   'xo-tab': 'On a section inside <xo-tabs>: the tab label. The section id is the tab key (its position when it has none).',
 };
 export const ELEMENT_DOCS = {

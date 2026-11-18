@@ -54,8 +54,25 @@ An `<hr>` between items is a divider (`role="separator"`, skipped by the arrow k
 </xo-menu>
 ```
 
-`xo-tooltip` shows a short description after a delay on hover and at once on keyboard focus; it hides on leave, blur, Escape or a press, and the pointer may move onto it
-(WCAG 1.4.13). It sets `aria-describedby` while shown. It is a description, not the accessible name: an icon-only button still needs `aria-label`.
+`xo-tooltip` shows a short description after a delay on hover and at once on keyboard focus; it hides on leave, blur, Escape, a press, or when its element is removed,
+disabled or scrolled out of view, and the pointer may move onto it (WCAG 1.4.13). It adds its id to `aria-describedby` while shown (an author's own ids stay). It is a
+description, not the accessible name: an icon-only button still needs `aria-label`.
+
+```html
+<body xo-tooltip-delay="600">                                   <!-- the delay for the page; on a container for what is in it; on one element for it -->
+  <button xo-tooltip="Delete" aria-label="Delete">Delete</button>
+  <button xo-tooltip="Save" xo-tooltip-placement="bottom" xo-tooltip-delay="0">Save</button>
+```
+
+* **The element is not changed.** No wrapper, no child, no class. One shared `<div role="tooltip" class="xo-tooltip">` is drawn `position: fixed` in the top layer
+  (Popover API), so an `overflow: hidden` ancestor does not clip it. It flips to the other side at the edge of the viewport and follows a scroll.
+* **Delay.** 400 ms by default; `0` shows at once. `xo-tooltip-delay="ms"` on the element or on any ancestor (the nearest wins), or `tooltip.delay = ms` from script
+  (`import { tooltip } from '@xoong/controls'`). Moving to the next hinted element within 300 ms of a hint closing shows it at once. Keyboard focus is always at once.
+* **Placement.** `xo-tooltip-placement` (element or ancestor): `top` (default), `bottom`, `left`, `right`.
+* **Focus from a click or a tap does not show it** (only keyboard focus does), and touch has no hover: a tap shows nothing.
+* **Inside a modal `<dialog>`.** A modal is in the top layer and the page behind it is inert, so a hint kept in `<body>` would be covered or unreachable. While the hint
+  describes an element in an open dialog, the shared hint element is placed in that dialog (the hinted element is untouched) and returns to `<body>` for any other element.
+  The first Escape closes the hint only; the second closes the dialog.
 
 ## `<xo-combobox>` and `<xo-tags>`
 
