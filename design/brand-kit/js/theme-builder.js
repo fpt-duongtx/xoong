@@ -57,6 +57,28 @@
       { bg: '#fff4cf', surface: '#ffffff', text: '#000000', accent: '#c4001d', success: '#006b2b', warning: '#8a5a00', danger: '#c4001d' },
       { bg: '#0b0b0b', surface: '#161616', text: '#ffffff', accent: '#ffe14d', success: '#5ee38b', warning: '#ffd166', danger: '#ff6b6b' },
       { radius: 0, height: 42, border: 2, focus: 4, shadow: 'hard', strength: 100, font: 'mono', size: 15, schemes: 'both' }),
+    // Starting points from named palettes. Borders, muted text and tints stay derived. An accent that misses 4.5:1
+    // is a lighter or darker shade of the same hue (the contrast table below is the gate).
+    apple: P('Apple Modern', 'Soft grey, white cards, near-black ink and one blue.',
+      { bg: '#f5f5f7', surface: '#ffffff', text: '#1d1d1f', accent: '#0063ce', success: '#1d7648', warning: '#c25000', danger: '#d70015' },
+      { bg: '#1c1c1e', surface: '#2c2c2e', text: '#f5f5f7', accent: '#5cadff', success: '#30d158', warning: '#ffd60a', danger: '#ff6b62' },
+      { radius: 12, height: 40, border: 1, focus: 3, shadow: 'soft', strength: 40, font: 'system', size: 16, schemes: 'both' }),
+    sunset: P('Vibrant Sunset', 'Plum ink and magenta on warm blush. Bold and playful.',
+      { bg: '#eadada', surface: '#fff8f8', text: '#4d3a4d', accent: '#993d86', success: '#2f6b45', warning: '#8a5a00', danger: '#9c2f3a' },
+      { bg: '#241820', surface: '#322430', text: '#f6ecec', accent: '#d28fc4', success: '#7dcea0', warning: '#e9cf8e', danger: '#ff9aa8' },
+      { radius: 18, height: 44, border: 1, focus: 3, shadow: 'soft', strength: 80, font: 'geometric', size: 16, schemes: 'both' }),
+    ocean: P('Ocean Breeze', 'Navy ink and a deep sea blue on a pale sky. Calm and fresh.',
+      { bg: '#e8f6ff', surface: '#ffffff', text: '#0b3d91', accent: '#0b6bad', success: '#0e7460', warning: '#8a5a00', danger: '#b42318' },
+      { bg: '#071833', surface: '#0e2a52', text: '#e8f6ff', accent: '#4aaef3', success: '#7fe7d6', warning: '#f5c26b', danger: '#ff9d94' },
+      { radius: 16, height: 40, border: 1, focus: 3, shadow: 'soft', strength: 50, font: 'humanist', size: 16, schemes: 'both' }),
+    earthy: P('Earthy Minimal', 'Forest ink and clay on warm paper. Quiet and natural.',
+      { bg: '#f8f6ee', surface: '#fffdf8', text: '#2e3a2f', accent: '#a14f31', success: '#4e6846', warning: '#8a5a00', danger: '#9c3418' },
+      { bg: '#1c241e', surface: '#2a332b', text: '#f8f6ee', accent: '#dca18c', success: '#9aaf8c', warning: '#e9cf8e', danger: '#e8a090' },
+      { radius: 10, height: 40, border: 1, focus: 3, shadow: 'soft', strength: 40, font: 'serif', size: 16, schemes: 'both' }),
+    midnight: P('Midnight Neon', 'Navy and violet, with a cyan accent. Dark is its home.',
+      { bg: '#ede9fe', surface: '#fbfaff', text: '#0f172a', accent: '#0a6e7e', success: '#067a52', warning: '#8a5a00', danger: '#b42318' },
+      { bg: '#0f172a', surface: '#1c1b41', text: '#ede9fe', accent: '#22d3ee', success: '#34d399', warning: '#f5c26b', danger: '#fb7185' },
+      { radius: 12, height: 40, border: 1, focus: 3, shadow: 'soft', strength: 70, font: 'geometric', size: 15, schemes: 'both' }),
   };
   const SWATCH_KEYS = ['bg', 'surface', 'text', 'accent'];
 
