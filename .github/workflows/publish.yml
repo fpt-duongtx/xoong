@@ -4,6 +4,10 @@
 # A real run needs `dry_run` switched off. It publishes with npm Trusted Publishing (OIDC): each package has this repository and
 # workflow registered as a trusted publisher on npmjs.com, so no token is stored (see docs/publishing.md).
 # The packages are published in dependency order, with provenance (npm shows that they were built from this repository).
+#
+# `dist_tag_only` does not publish: it moves the dist-tag `tag` of every package to the already published `version` (for example to promote
+# `next` to `latest`, or to bring `next` up to date). It runs in this file on purpose: on npmjs.com the trusted publisher of each package is this
+# workflow file, with "Allow npm dist-tag" ticked, and npm only accepts a dist-tag from OIDC with npm 11.21.0 or later (the job upgrades npm).
 name: publish
 on:
   workflow_dispatch:
@@ -16,6 +20,14 @@ on:
         description: 'npm dist-tag to publish under (next while xoong is 0.0.x; promote to latest later)'
         type: string
         default: next
+      dist_tag_only:
+        description: 'Do not publish: move the dist-tag "tag" of every package to "version" (already published)'
+        type: boolean
+        default: false
+      version:
+        description: 'With dist_tag_only: the published version the tag should point at (for example 0.0.57)'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -23,6 +35,7 @@ permissions:
 
 jobs:
   publish:
+    if: ${{ !inputs.dist_tag_only }}
     runs-on: ubuntu-latest # npm Trusted Publishing (OIDC) needs a GitHub-hosted runner; CI and Pages run on the home server
     steps:
       - uses: actions/checkout@v7
@@ -53,6 +66,43 @@ jobs:
               echo "$name@$version is already published, skipping"
             else
               npm publish -w "packages/$p" --provenance --access public --tag "$TAG" $flag
+            fi
+            echo "::endgroup::"
+          done
+
+  dist-tag:
+    if: ${{ inputs.dist_tag_only }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: A dist-tag from OIDC needs npm 11.21.0 or later
+        run: |
+          npm install -g npm@latest
+          npm --version
+      - name: Move the tag
+        env:
+          VERSION: ${{ inputs.version }}
+          TAG: ${{ inputs.tag }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          case "$VERSION" in (*[!0-9A-Za-z.+-]*|"") echo "bad version: $VERSION"; exit 1;; esac
+          case "$TAG" in (*[!0-9A-Za-z._-]*|"") echo "bad tag: $TAG"; exit 1;; esac
+          for dir in packages/*/; do
+            name=$(node -p "require('./${dir}package.json').name")
+            echo "::group::$name"
+            if [ -z "$(npm view "$name@$VERSION" version 2>/dev/null)" ]; then
+              echo "$name@$VERSION is not published: stopping, nothing is moved for the packages after this one"
+              exit 1
+            fi
+            echo "now: $(npm view "$name" dist-tags --json | tr -d '\n ')"
+            if [ "$DRY" = "true" ]; then
+              echo "(dry run) npm dist-tag add $name@$VERSION $TAG"
+            else
+              npm dist-tag add "$name@$VERSION" "$TAG"
             fi
             echo "::endgroup::"
           done

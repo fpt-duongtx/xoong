@@ -35,6 +35,8 @@ git commit, push, wait for CI, tag v0.0.31
 # Actions → publish → dry run, then the real run
 ```
 
+**Moving a dist-tag** (for example `next` up to the new version, or promoting to `latest`) goes through the same workflow: Actions → *publish* → *Run workflow* with `dist_tag_only` on, the `version` and the `tag` (dry run first). It needs "Allow npm dist-tag" ticked in the trusted publisher of each package on npmjs.com, and npm 11.21.0 or later, which the job installs. The trusted publisher is the workflow file `publish.yml`, so the job lives there and not in a file of its own.
+
 A published version cannot be changed or reused: fix forward with the next number (`npm deprecate` marks a bad one; unpublishing is only possible within 72 hours and is discouraged).
 
 ## Decisions that are yours
