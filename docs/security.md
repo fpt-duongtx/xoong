@@ -38,7 +38,8 @@ Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'
 * The server's own checks: authentication, authorisation, CSRF, validation. The client-side schema rules are for the person's convenience,
   never a control.
 * Sanitising HTML that people write (rich text): the editor sanitises what it emits and what is pasted, and the server must sanitise
-  again on write.
+  again on write. The built-in filter is a basic allow-list filter (fine for your own users under a strict CSP); for untrusted authors, or content shown
+  outside an xoong app, put DOMPurify in front of it: [richtext.md](richtext.md#how-strong-is-the-built-in-filter-and-when-to-add-dompurify).
 * Cookies and tokens: `configure({ headers, credentials })` sends what you give it; xoong stores nothing.
 
 Report a vulnerability as described in [SECURITY.md](../SECURITY.md).

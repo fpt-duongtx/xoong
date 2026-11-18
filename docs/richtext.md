@@ -58,7 +58,7 @@ defineRichtextProfile('article', {
 * An attribute has a **type**: `text`, `url` (checked against `schemes.url`), `imgurl` (`schemes.imgurl`), `int` (up to five digits), or a **list** of allowed values (`target: ['_blank']`). `class` is never an attribute: `classes: [...]` keeps only those class names of that tag and drops the other tokens. A `data-*` attribute is kept only when it is declared by its full name (`'data-kind': 'text'`).
 * There is no "allow everything". A profile that lists `style`, `srcdoc`, `srcset`, `on*`, a `href`/`src` that is not `url`/`imgurl`, an `id` that is not a list, a tag in the always-removed list, or an unknown tag **throws when it is defined**.
 * `schemes` takes scheme names, `relative` (a URL without a scheme; never `//host` or a backslash host) and, for images only, `data:image` (raster `png`, `jpeg`, `gif`, `webp`, `avif`; never SVG). Schemes are read after spaces, control characters and zero-width characters are removed, so a tab inside `java	script:` or an entity trick is still `javascript:`.
-* Structure follows the tag: `li` only inside `ul`/`ol`; `figure` holds `img` and `figcaption` (loose text in a figure becomes its caption; a figure without a usable image is removed); a block inside inline content, or a link inside a link, is flattened to its text. Unknown or unlisted wrappers are unwrapped and their text stays.
+* Structure follows the tag: `li` only inside `ul`/`ol`; `figure` holds `img` and `figcaption` (loose text in a figure becomes its caption; a figure without a usable image is removed); a phrasing element that holds blocks (`<b><p>..</p></b>`) is unwrapped so the blocks stay; a block inside a link or a list item, and a link inside a link, is flattened to its text with a space around each block. Unknown or unlisted wrappers are unwrapped and their text stays.
 * Known tags: `p h1-h6 pre figcaption ul ol li blockquote aside div section figure strong em u s code sub sup mark small span abbr kbd a br img`.
 * The toolbar offers a tool only when the profile keeps the tags it makes (no `blockquote`, no Quote button). `rich` also shows **Note** (an `aside`: the first press makes a note around the paragraph, the next turns info into warning, the next removes it) and, with `media`, **Image with caption** (`figure > img + figcaption`, the caption is edited in place). A note or figure already in the value is kept while people edit around it, and Backspace or Delete removes it like any block.
 
@@ -81,6 +81,73 @@ const safe = sanitizeHtml(body.html, 'rich');               // a registered name
 `el.sanitize = (html, { source, profile }) => html` runs on every string that enters the editor or the value (`source` is `value`, `paste` or `input`) **before** the profile. Use it to
 rewrite what a profile cannot say (turn Word's `<p class="MsoNormal">` into a note, replace an image host, strip a tracking parameter). The profile still has the last word, so the function can never let through what the profile
 refuses; if it throws, the error is logged and the string goes on to the profile unchanged.
+
+### How strong is the built-in filter, and when to add DOMPurify
+
+The built-in `sanitizeHtml` is a **basic** filter, on purpose: it keeps a small allow-list of tags and attributes, checks URL schemes after removing the tricks that hide them, refuses
+`on*`, `style` and `srcdoc`, drops `script`, `style`, `iframe`, `svg`, `math` and similar with their content, escapes everything it writes, and writes only a canonical shape. It needs no DOM, so the same
+code runs in a browser and in Node and gives the same bytes. It is tested against a seeded fuzz judged in Chromium (no script-capable element, no event handler, no `style`, no URL outside the allow-list, and a
+second pass changes nothing) and against the shared cases. It is **not** a general-purpose HTML sanitiser: it has a parser of its own (not a browser's), no SVG or MathML, no hooks, and no
+years of attacks behind it. For the content of an xoong app that runs under a strict CSP (`script-src 'self'`), where an author is one of your own users, that is the right amount.
+
+Add [DOMPurify](https://github.com/cure53/DOMPurify) in front of it when any of these is true:
+
+* the content is shown **outside** an xoong app or without a strict CSP (an email, a mobile app, another site, a PDF);
+* the authors are **untrusted** (public comments, user profiles, anything an attacker can post);
+* a security review or a compliance rule asks for a sanitiser with a track record.
+
+DOMPurify parses with the browser's own parser, so it is the better judge of what the input *means*. Use it as the **first** step and keep the built-in filter as the **last** one: the profile still decides what the editor
+may keep, and the result is always in the canonical shape. The same two steps on the client and on the server give the same value.
+
+**In the browser.** Install it and tell `xoong dev` and `xoong build` to serve it (a package that is not an `@xoong/*` one is named in `xoong.config.json`, see [server.md](server.md)):
+
+```bash
+npm install dompurify
+```
+```json
+{ "packages": ["dompurify"] }
+```
+```js
+// main.js
+import '@xoong/richtext';
+import DOMPurify from 'dompurify';
+
+const editor = document.querySelector('xo-richtext');
+editor.sanitize = (html) => DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+```
+
+`sanitize` runs on every string that enters the editor or the value (`value`, `paste` and `input`), **before** the profile (see above). `USE_PROFILES: { html: true }` keeps HTML and removes SVG and MathML; the profile
+then removes what the editor does not keep, so you do not need to list tags again. `sanitize` is a property of one editor: set it on each `xo-richtext` on the page, and on the ones that are added later when they are
+created. It is a normal `import`, so if the file cannot be loaded the module fails as a whole; serve it from your own origin, as above, and not from a third-party CDN (a strict CSP refuses one anyway).
+
+**On the server** (a client is never a trust boundary). DOMPurify needs a DOM in Node; `jsdom` is the usual one:
+
+```bash
+npm install dompurify jsdom @xoong/richtext
+```
+```js
+import { JSDOM } from 'jsdom';
+import createDOMPurify from 'dompurify';
+import { sanitizeHtml } from '@xoong/richtext/sanitize';
+
+const purify = createDOMPurify(new JSDOM('').window);
+
+// DOMPurify first, then the same profile the editor uses, so what you store is what the editor would have produced
+export const clean = (html, profile = 'rich') =>
+  sanitizeHtml(purify.sanitize(html, { USE_PROFILES: { html: true } }), profile);
+```
+
+Create the `JSDOM` and the `DOMPurify` instance once, not per request. In the cases tried, cleaning twice gives the same string as once (the built-in filter is stable by design), so cleaning on read as well as on write is safe.
+
+Things to know:
+
+* **Under a strict CSP the browser console shows messages** such as "Executing inline event handler violates the following Content Security Policy directive" when hostile input is cleaned. They come from DOMPurify's inert
+  parse (DOMPurify alone logs them too), they are blocked and harmless, and they do not appear with the built-in filter alone.
+* **What the editor can keep is still set by the profile**, not by DOMPurify. DOMPurify keeps tables, `<hr>` and `<h4>`, then the profile unwraps them (a table becomes spaced text). To keep more, define a richer profile
+  with `defineRichtextProfile`, or for a read-only display (not the editor) show the DOMPurify output directly.
+* **Keep both packages up to date.** DOMPurify has had bypasses fixed over the years; this guide was checked with DOMPurify 3.4.18 and jsdom 31 on Node 26 in Chromium (a set of mutation-XSS shapes: SVG with a style,
+  MathML with `mglyph`, `noscript`, obfuscated `javascript:`), and the result was safe and stable in both places.
+* `sanitize` is the supported hook; if you replace the filter on the server too, keep the built-in `sanitizeHtml` as the last step so the shape matches.
 
 ### Migrating from 0.0.54
 
