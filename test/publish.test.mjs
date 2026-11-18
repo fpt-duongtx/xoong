@@ -25,6 +25,13 @@ describe('packages are ready for npm', () => {
     }
   });
 
+  it('the publish workflow lists every package, once, and nothing else', () => {
+    const yml = readFileSync(join(root, '.github/workflows/publish.yml'), 'utf8');
+    const listed = yml.match(/for p in ([a-z0-9 -]+); do/)?.[1].trim().split(/\s+/) ?? [];
+    expect([...listed].sort()).toEqual(dirs);
+    expect(new Set(listed).size).toBe(listed.length);
+  });
+
   for (const dir of dirs) {
     it(`${dir}: metadata, LICENSE, README, exports and a tarball with only src`, () => {
       const m = manifest(dir);

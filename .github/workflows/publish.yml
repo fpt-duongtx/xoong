@@ -44,7 +44,7 @@ jobs:
         run: |
           flag=""
           if [ "$DRY" = "true" ]; then flag="--dry-run"; fi
-          for p in core data forms i18n ui controls richtext server cli test ssr mcp lsp xoong; do
+          for p in core icons data forms i18n ui controls richtext server cli test ssr mcp lsp xoong; do
             echo "::group::$p"
             npm publish -w "packages/$p" --provenance --access public --tag "$TAG" $flag
             echo "::endgroup::"
