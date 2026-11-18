@@ -41,5 +41,8 @@
   "homepage": "https://fpt-duongtx.github.io/xoong/",
   "publishConfig": {
     "access": "public"
+  },
+  "xoong": {
+    "stability": "experimental"
   }
 }

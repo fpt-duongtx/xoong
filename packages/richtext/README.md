@@ -2,6 +2,8 @@
 
 A small rich text editor for xoong forms: sanitised HTML in and out, an accessible toolbar in two sizes, a media hook. Only depends on `@xoong/core`.
 
+Stability: **experimental**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

@@ -169,7 +169,10 @@ for (const dir of readdirSync(new URL('packages/', root)).sort()) {
   const install = dir === 'xoong' ? '' : `\n## Install\n\n\`\`\`bash\nnpm install ${pkg.name}\n\`\`\`\n`;
   const measuredText = { xoong: readmeTable(), cli: readmeCli(), mcp: readmeMcp() }[dir]; // numbers come from benchmarks/results/*.json
   const measured = measuredText ? `\n## Measured, not promised\n\n${measuredText}` : '';
-  writeFileSync(new URL(`packages/${dir}/README.md`, root), `# ${pkg.name}\n\n${t.intro}\n${install}\n## Use\n${t.use}\n${measured}\n## More\n\n* Documentation, guides and live demos: https://fpt-duongtx.github.io/xoong/\n* Source: ${REPO}/tree/main/packages/${dir}\n* All packages share one version number and are released together: ${REPO}/releases\n* xoong is a working prototype (0.0.x): the HTML syntax is still Draft.\n\nMIT licence.\n`);
+  const stability = pkg.xoong?.stability;
+  if (!['core', 'evolving', 'experimental'].includes(stability)) throw new Error(`packages/${dir}/package.json needs "xoong": { "stability": "core" | "evolving" | "experimental" }`);
+  const stabilityLine = `\nStability: **${stability}**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).\n`;
+  writeFileSync(new URL(`packages/${dir}/README.md`, root), `# ${pkg.name}\n\n${t.intro}\n${stabilityLine}${install}\n## Use\n${t.use}\n${measured}\n## More\n\n* Documentation, guides and live demos: https://fpt-duongtx.github.io/xoong/\n* Source: ${REPO}/tree/main/packages/${dir}\n* All packages share one version number and are released together: ${REPO}/releases\n* xoong is a working prototype (0.0.x): the HTML syntax is still Draft.\n\nMIT licence.\n`);
 }
 // the root README: the same headline table between two markers (and none while the switch in benchmarks/results/publish.json is off)
 {

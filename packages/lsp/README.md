@@ -2,6 +2,8 @@
 
 A language server for xoong screens: the diagnostics of `xoong check`, completion of operation names, `xo-*` attributes and the attributes and values of each element, hover documentation and quick fixes, in any editor that speaks LSP.
 
+Stability: **experimental**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

@@ -2,6 +2,8 @@
 
 Internationalisation for xoong: JSON catalogs with an ICU subset, `xo-t` in markup, a locale signal and Intl formats. Built-in strings come with an English catalog and Vietnamese.
 
+Stability: **evolving**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

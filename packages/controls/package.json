@@ -191,5 +191,8 @@
   },
   "engines": {
     "node": ">=22.12"
+  },
+  "xoong": {
+    "stability": "evolving"
   }
 }

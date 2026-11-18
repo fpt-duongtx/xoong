@@ -2,6 +2,8 @@
 
 The xoong icon set: rounded icons on a 24px grid in three weights (regular, fill, bold), used as `<i class="xi xi-edit">` through CSS masks. Size follows `font-size`, colour follows `currentColor`, nothing is text. A small tool writes the stylesheet for only the icons a project uses. No dependencies.
 
+Stability: **experimental**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

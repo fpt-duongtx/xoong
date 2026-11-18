@@ -2,6 +2,8 @@
 
 Test helpers for xoong screens: mount markup with a mocked API generated from `operations.json`, click, submit and push live events. Runs on Vitest.
 
+Stability: **evolving**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

@@ -2,6 +2,8 @@
 
 The data layer of xoong: a typed client generated from your OpenAPI document, a query cache keyed by operation and parameters, a shared entity store, `<xo-view>` and live updates over server-sent events.
 
+Stability: **core**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

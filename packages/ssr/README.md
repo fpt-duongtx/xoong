@@ -2,6 +2,8 @@
 
 Prerender xoong pages: runs the real `<xo-view>` runtime in Node (happy-dom), waits for the data and writes HTML. There is no hydration step: the browser re-renders from the saved template.
 
+Stability: **evolving**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

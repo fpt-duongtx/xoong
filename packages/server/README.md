@@ -2,6 +2,8 @@
 
 The server behind `xoong dev` and `xoong build`: one `(Request) => Response` handler for static files, an API proxy and TypeScript type stripping, with a Node adapter. Never shipped to the browser.
 
+Stability: **evolving**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

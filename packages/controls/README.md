@@ -2,6 +2,8 @@
 
 Accessible controls for xoong as Light DOM custom elements: tabs, menu, tooltip, combobox, tags and carousel. Only depends on `@xoong/core`.
 
+Stability: **evolving**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

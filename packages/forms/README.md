@@ -2,6 +2,8 @@
 
 Forms for xoong: a draft model with per-field state, validation from the OpenAPI request schema, your own rules, payload normalisation and dirty tracking, bound to plain `<form xo-submit>` markup.
 
+Stability: **core**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

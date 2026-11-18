@@ -2,6 +2,8 @@
 
 The admin set of xoong: design tokens in cascade layers, `<xo-table>`, a form generated from the request schema, `<xo-dialog>`, toasts, confirm dialogs and `<xo-router>`.
 
+Stability: **core**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash

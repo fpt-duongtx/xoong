@@ -2,6 +2,8 @@
 
 The reactive base of xoong: signals, `html` templates and Light DOM custom elements. No dependencies.
 
+Stability: **core**, see [docs/stability.md](https://github.com/fpt-duongtx/xoong/blob/main/docs/stability.md).
+
 ## Install
 
 ```bash
