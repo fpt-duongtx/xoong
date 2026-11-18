@@ -1,6 +1,6 @@
 # Security policy
 
-xoong is a prototype (0.0.x) and is not published yet. Its dev server, proxy and HTML interpolation are
+xoong is a prototype (0.0.x), published to npm with provenance. Its dev server, proxy, HTML interpolation and HTML sanitiser are
 security-sensitive, so please report problems privately.
 
 ## Reporting
@@ -20,6 +20,9 @@ Do not open a public issue for a vulnerability. Include the version or commit, a
 
 Vulnerabilities in your own backend, or in dependencies of the tooling that are not reachable through xoong.
 
+Known and accepted: `npm audit` reports a ReDoS in `picomatch` (reached through `vitest`/`vite`, which only run our tests). It is not in any published
+package, and the fix on offer is a downgrade of `@vitest/coverage-v8`. It is revisited when `picomatch` or `vitest` ships a fix.
+
 ## Supported versions
 
-Only the latest commit on `main` until a first release exists.
+The latest published 0.0.x version (the npm tags `latest` and `next`) and the latest commit on `main`. While xoong is 0.0.x a fix ships as the next version, not as a patch to an older one.

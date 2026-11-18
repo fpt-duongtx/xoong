@@ -5,14 +5,15 @@
 
 **Documentation, guides, live demos and the reference: <https://fpt-duongtx.github.io/xoong/>**
 
-**Status: working prototype (0.0.x), published to npm under the tag `next`** (`npm install @xoong/xoong@next`). The core, data layer, CLI, dev server and test
-helpers exist and are tested (150+ tests, including a real-browser end-to-end run of
-[`examples/admin`](examples/admin)). The HTML syntax is still **Draft** and may change before 0.1.
-Parts that are still planned (stream gateway, VS Code extension, lint presets) are marked as such in
+**Status: working prototype (0.0.x), on npm** (`npm install @xoong/xoong`; the `latest` and `next` tags move together). The core, data layer, controls, CLI, dev
+server, SSR, language server and MCP server exist and are tested in Chromium, Firefox and WebKit (the test suite runs on every push, including a real-browser
+end-to-end run of [`examples/admin`](examples/admin)). The HTML syntax is still **Draft**: it can change in any 0.0.x release, and each change is listed in
+[`CHANGELOG.md`](CHANGELOG.md) with a `breaking:` line. Which packages are meant to settle first is in [docs/stability.md](docs/stability.md). Not for every project:
+[docs/when-not-to-use.md](docs/when-not-to-use.md). Parts that are still planned (stream gateway, VS Code extension, lint presets) are marked as such in
 [`docs/`](docs). Picking this project up? Read [HANDOVER.md](HANDOVER.md) first. Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
-# from npm (tag next): npm install @xoong/xoong@next     (the `xoong` command and `import { configure, signal } from '@xoong/xoong'`); docs: https://fpt-duongtx.github.io/xoong/
+# from npm: npm install @xoong/xoong     (the `xoong` command and `import { configure, signal } from '@xoong/xoong'`); docs: https://fpt-duongtx.github.io/xoong/
 npm install
 npm test                         # everything
 node packages/cli/src/cli.js new /tmp/demo --spec examples/admin/openapi.json --link $(pwd)   # a project using these packages
