@@ -3,6 +3,13 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+* Fixed (richtext): `sanitizeHtml` was not stable on a second pass for a paragraph that ends in line breaks: `<p>a<br><br></p>` became `<p>a<br></p>` and then `<p>a</p>`, and a loose run such as `a<br>` was wrapped in a `<p>` that kept its last `<br>` until the next pass. All trailing line breaks of a block now go in one pass, and a block of breaks only keeps one. Found by the new fuzz (below); nothing dangerous was found. Client-then-server sanitising, and comparing a stored value with a re-sanitised one, now agree.
+* Added (richtext, tests): a seeded fuzz of the sanitiser (`packages/richtext/test/sanitize-fuzz.test.mjs`): thousands of inputs built from the shapes that break sanitisers (raw-text and foreign elements, misnesting, comments, entities, obfuscated URL schemes), judged in Chromium: no script-capable element, no event handler, no `style`, no URL outside the allow-list, and a second pass changes nothing. 120,000 more inputs over three other seeds passed. `FUZZ_SEED` and `FUZZ_RUNS` look further.
+* Added: **stability tiers**. Each package declares `"xoong": { "stability": "core" | "evolving" | "experimental" }` in `package.json`, its README says so, and `docs/stability.md` lists them (a test keeps the three in step). It says which packages are meant to settle first, since every 0.0.x release can break.
+* Documented: `docs/when-not-to-use.md` (where xoong fits badly, and what you give up even in a good fit); README and SECURITY.md brought up to date (published, supported versions, and the accepted `picomatch` dev-tooling advisory).
+
 ## 0.0.57 (build ships @xoong/icons when a page only links it)
 
 * Fixed (cli, server): a page that only `<link>`s `@xoong/icons` (`/@xoong/icons/icons.css` or `/src/icons.css`) now gets the stylesheet in `dist` and in the dev server. `@xoong/icons` was missing from the packages the build and the dev server look for by default, so the link was written but the file was reported as not found, and a project had to list `"packages": ["@xoong/icons"]` in `xoong.config.json`. In 0.0.56 that entry in `xoong.config.json` is the workaround; from 0.0.57 it is not needed.
