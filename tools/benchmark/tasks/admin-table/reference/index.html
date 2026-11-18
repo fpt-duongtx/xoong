@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Staff</title><link rel="stylesheet" href="/@xoong/ui/src/xoong.css"></head>
+<body><main><h1>Staff</h1>
+<xo-view get="/staff"><xo-table columns="name,email:E-mail,role" sortable filters="name:Search" page-size="10" empty="No staff"></xo-table></xo-view>
+<button xo-open="#add">Add staff</button>
+<xo-dialog id="add" heading="Add staff"><xo-view><xo-form op="POST /staff" submit="Add"></xo-form></xo-view></xo-dialog>
+</main></body></html>

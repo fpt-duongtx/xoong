@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { sync } from '../../packages/cli/src/commands.js';
 import { checkHtml } from '../../packages/cli/src/check.js';
+import { behave } from './behavior.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 export const tasks = JSON.parse(await readFile(join(here, 'tasks/tasks.json'), 'utf8'));
@@ -27,10 +28,12 @@ export async function score(taskName, dir) {
   const table = JSON.parse(await readFile(join(out, 'operations.json'), 'utf8'));
   const findings = [];
   let all = '';
+  const texts = {};
   for (const file of task.files) {
     let text;
     try { text = await readFile(join(dir, file), 'utf8'); } catch { failures.push(`missing file ${file}`); continue; }
     all += text + '\n';
+    texts[file] = text;
     for (const f of checkHtml(text, table, file)) { findings.push(f); if (f.level === 'error') failures.push(`${f.file}:${f.line} ${f.code} ${f.message}`); }
   }
   const css = []; // stylesheets next to the page count for the forbidden-pattern scan too
@@ -44,7 +47,9 @@ export async function score(taskName, dir) {
   for (const needle of task.mustContain) if (!needle.split('|').some((n) => all.includes(n))) failures.push(`does not contain "${needle}"`); // "a|b": either is fine
   for (const [re, what] of FORBIDDEN) if (re.test(all)) failures.push(what);
   void css;
-  return { task: taskName, pass: failures.length === 0, failures, findings };
+  // stage two: does the page work? (only when the files exist and the static stage found no missing file)
+  const behaviour = Object.keys(texts).length === task.files.length ? await behave(taskName, texts, table) : [];
+  return { task: taskName, pass: failures.length === 0 && behaviour.length === 0, staticPass: failures.length === 0, failures, behaviour, findings };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

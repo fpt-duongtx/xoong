@@ -1,0 +1,1 @@
+Using xoong's admin components, build `index.html` for the staff API: a table of staff with the columns name, email and role that can be sorted and searched by name, shows 10 rows per page, and has an "Add staff" button that opens a dialog with a form to create a person. Use only what the xoong spec allows.

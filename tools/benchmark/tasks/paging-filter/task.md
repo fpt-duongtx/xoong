@@ -1,0 +1,1 @@
+Build `index.html` that lists the titles of the articles, 5 per page, with a Previous and a Next button (Previous only when there is an earlier page, Next only when there is a later page) and two filter buttons, Draft and Published, that show only the articles with that status. Use only what the xoong spec allows.
