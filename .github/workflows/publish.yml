@@ -46,6 +46,13 @@ jobs:
           if [ "$DRY" = "true" ]; then flag="--dry-run"; fi
           for p in core icons data forms i18n ui controls richtext server cli test ssr mcp lsp xoong; do
             echo "::group::$p"
-            npm publish -w "packages/$p" --provenance --access public --tag "$TAG" $flag
+            # a run that stopped half way can be started again: a package already on npm at this version is skipped (npm never accepts the same version twice)
+            name=$(node -p "require('./packages/$p/package.json').name")
+            version=$(node -p "require('./packages/$p/package.json').version")
+            if [ -z "$flag" ] && [ -n "$(npm view "$name@$version" version 2>/dev/null)" ]; then
+              echo "$name@$version is already published, skipping"
+            else
+              npm publish -w "packages/$p" --provenance --access public --tag "$TAG" $flag
+            fi
             echo "::endgroup::"
           done
