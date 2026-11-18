@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+* Fixed (cli, server): a page that only `<link>`s `@xoong/icons` (`/@xoong/icons/icons.css` or `/src/icons.css`) now gets the stylesheet in `dist` and in the dev server. `@xoong/icons` was missing from the packages the build and the dev server look for by default, so the link was written but the file was reported as not found, and a project had to list `"packages": ["@xoong/icons"]` in `xoong.config.json`. Until the release that has this, that entry in `xoong.config.json` is the workaround.
+* Added (cli): `xoong build` warns when a page uses `xi` icon classes and no stylesheet in the build defines `.xi`, and names the `<link>` to add. A project's own subset written by `npx xoong-icons --out` counts as a definition.
+* Documented (server): the installed `@xoong/*` packages are copied on demand, so a package nothing imports (such as `@xoong/i18n` in an app that does not use it) is not in `dist`.
+
 ## 0.0.56 (xi icons, tooltip delay, placement and dialogs)
 
 * Added (icons): **`@xoong/icons`**, a new package: 84 icons drawn for xoong on a 24px grid (rounded caps and joins, one 1.75 stroke), as SVG files (`packages/icons/src/svg`, plus a `fill/` drawing where a filled form makes sense). The class API is `<i class="xi xi-edit" aria-hidden="true"></i>`: the size follows `font-size` (`xi-sm`, `xi-lg`, `xi-xl`, `xi-2x`, `xi-3x`), the colour is `currentColor`, `xi-fw` fixes the width, `xi-spin` turns it, `xi-fill` and `xi-bold` choose the weight. The CSS is a mask generated from the SVG (`node tools/build-icons.mjs`; a test fails when it drifts), so it needs only `img-src data:` under a strict CSP.

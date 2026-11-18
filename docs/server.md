@@ -50,6 +50,8 @@ and resolve `import 'rainlet'` and `import 'rainlet/widgets/slug'` through its `
 subpaths such as `"./theme.css"` (usable as `<link href="/@rainlet/theme.css">`), and wildcards (`"./widgets/*": "./src/widgets/*.js"`, so import `rainlet/widgets/slug`
 without the extension). Entries under `./server` are Node-only and never served. The package must be installed (`node_modules`) and import only relative files or xoong packages.
 
+The installed `@xoong/*` packages (core, data, forms, i18n, icons, controls, richtext, ui, xoong) need no entry: they are served under `/@xoong/<name>/...` and the build copies only the files a page reaches. A `<link rel="stylesheet" href="/@xoong/icons/icons.css">` is enough to ship the icon stylesheet; a package nothing imports or links (for example `@xoong/i18n` in an app that never imports it) is not in `dist`, which is as it should be. When a page uses `xi` classes and the build contains no stylesheet that defines `.xi`, it warns and names the `<link>` to add.
+
 ## 2. Proxy
 
 * Removes CORS pain in development and production.

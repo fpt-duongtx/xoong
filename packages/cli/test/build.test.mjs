@@ -143,6 +143,35 @@ describe('xoong build: options and warnings', () => {
     expect((await files(join(root, 'dist'))).sort()).toEqual(['/a.js', '/b.js', '/build-report.json', '/index.html']);
   });
 
+  it('a page that only <link>s @xoong/icons ships its stylesheet (nothing imports the package), under the real file URL, and a page using xi with no icons stylesheet is warned about', async () => {
+    const mk = async (name, html, css) => {
+      const root = await mkdtemp(join(tmpdir(), `xoong-build-${name}-`));
+      await mkdir(join(root, 'node_modules/@xoong'), { recursive: true });
+      await symlink(join(repo, 'packages/icons'), join(root, 'node_modules/@xoong/icons'));
+      await writeFile(join(root, 'index.html'), html);
+      if (css) await writeFile(join(root, 'mine.css'), css);
+      return { root, r: await build({ root, out: join(root, 'dist') }) };
+    };
+    const used = '<i class="xi xi-edit" aria-hidden="true"></i>';
+    // linked by its export name: the file is copied and the link points at the real file
+    const linked = await mk('icons-link', `<!doctype html><html><head><link rel="stylesheet" href="/@xoong/icons/icons.css"></head><body>${used}</body></html>`);
+    expect((await files(join(linked.root, 'dist'))).sort()).toEqual(['/@xoong/icons/src/icons.css', '/build-report.json', '/index.html']);
+    expect(await readFile(join(linked.root, 'dist/index.html'), 'utf8')).toContain('href="/@xoong/icons/src/icons.css"');
+    expect(linked.r.warnings.join('\n')).not.toMatch(/xi icon classes|referenced but not found/);
+    // by the file path
+    const direct = await mk('icons-direct', `<!doctype html><html><head><link rel="stylesheet" href="/@xoong/icons/src/icons.css"></head><body>${used}</body></html>`);
+    expect((await files(join(direct.root, 'dist'))).sort()).toContain('/@xoong/icons/src/icons.css');
+    // xi classes and no stylesheet that defines them: said out loud, with the fix
+    const bare = await mk('icons-bare', `<!doctype html><html><head></head><body>${used}</body></html>`);
+    expect(bare.r.warnings.join('\n')).toMatch(/index\.html: uses the xi icon classes but no stylesheet in the build defines them; add <link rel="stylesheet" href="\/@xoong\/icons\/icons\.css">/);
+    // a project's own subset (npx xoong-icons --out) defines .xi, so there is nothing to warn about
+    const own = await mk('icons-own', `<!doctype html><html><head><link rel="stylesheet" href="/mine.css"></head><body>${used}</body></html>`, '.xi{display:inline-block}.xi-edit{--ic:none}');
+    expect(own.r.warnings.join('\n')).not.toMatch(/xi icon classes/);
+    // a page without xi classes is not warned
+    const none = await mk('icons-none', '<!doctype html><html><head></head><body><p class="lexi not-xi">x</p></body></html>');
+    expect(none.r.warnings.join('\n')).not.toMatch(/xi icon classes/);
+  });
+
   it('--base prefixes URLs; --include adds files the build cannot see; TypeScript is stripped; relative imports and CSS urls are followed', async () => {
     const root = await mkdtemp(join(tmpdir(), 'xoong-build-base-'));
     await mkdir(join(root, 'src'));

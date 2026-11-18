@@ -479,6 +479,17 @@ export async function build({ root = '.', out = 'dist', base = '', include = [],
     }
   }
 
+  // class="xi xi-edit" in a page, and no stylesheet in the build that defines `.xi`: the icons would draw as nothing, silently
+  const text = (c) => (typeof c === 'string' ? c : c.toString('utf8'));
+  const defines = [...written].some(([k, c]) => /\.css$/i.test(k) && /\.xi[\s{,:.[>+~]/.test(text(c)));
+  if (!defines) {
+    for (const [k, c] of written) {
+      if (!/\.html?$/i.test(k)) continue;
+      const used = [...text(c).matchAll(/\bclass\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)].some((m) => (m[1] ?? m[2]).split(/\s+/).some((t) => t === 'xi' || t.startsWith('xi-')));
+      if (used) warnings.push(`${k}: uses the xi icon classes but no stylesheet in the build defines them; add <link rel="stylesheet" href="/@xoong/icons/icons.css"> (or write a smaller one with npx xoong-icons --scan)`);
+    }
+  }
+
   const preloads = (preload ?? config.build?.preload ?? true) ? preloadModules(written, basePath) : null;
 
   const limitKb = budget ?? config.build?.budget;

@@ -40,6 +40,15 @@ describe('packages named in xoong.config.json', () => {
     expect(Object.keys(found['@xoong/xoong'].exports)).toEqual(expect.arrayContaining(['.', './view', './ui']));
   });
 
+  it('@xoong/icons is one of the installed xoong packages: its stylesheet is served by the dev handler under /@xoong/icons without a "packages" entry', async () => {
+    const found = await findPackages(process.cwd());
+    expect(found['@xoong/icons'].prefix).toBe('/@xoong/icons');
+    const handler = await createDevHandler({ root: process.cwd() });
+    const res = await handler(new Request('http://localhost/@xoong/icons/icons.css'));
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain('.xi');
+  });
+
   it('the dev handler serves an exports subpath as its file', async () => {
     const root = await project();
     const handler = await createDevHandler({ root, packages: ['rainlet'] });
