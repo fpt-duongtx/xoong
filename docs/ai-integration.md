@@ -182,6 +182,23 @@ What it does not show: n is 3 per task and two models; the scorer is a mock in h
 dialog, and leaked the URL between pages that use `url-params`), and all 36 attempts were scored with the corrected scorer, which is said in the notes of the result.
 Compare a new run with these only when the hashes in the result match.
 
+### After the three fixes (2026-11-18, same suite, same tasks)
+
+The three gaps were fixed and the same suite was run again (3 attempts per task, a fresh agent each, `llms.txt` hash `836ea5`):
+
+* `xoong check` **XO277** (error): `<xo-form>`, `xo-click`, `xo-param` or `xo-refresh` outside an `<xo-view>`. **XO278** (error): the first `xo-each` of a view does not match the response of its operation (`.` for an array, the field name for `{ items }`, with a hint). **XO279** (warning): an expression such as `{!$hasPrev}` in an attribute.
+* The operations list (`list_operations` in `@xoong/mcp`, and the list in the benchmark prompt) now says what each response is: `Post[]`, `{ items: User[], total: integer }`, `User`.
+* `llms.txt`: a rule that reads and writes live inside `<xo-view>`, "a path only, no operators" for `{...}`, and what `xo-each` takes for an array and for `{ items }`; the `<xo-form>` example is wrapped in `<xo-view>`.
+
+| | Before | After |
+|---|---|---|
+| Sonnet 5.5 | 5/18 | **18/18** |
+| Haiku 5.5 | 6/18 | **18/18** |
+
+Read this with care. The tasks are the ones the gaps were found on, so the fixes were written for exactly these failures: the 36 passes show the gaps are closed, not that an assistant will do as well on a screen it
+has not seen. The next step for the number to mean more is new tasks the fixes were not made for (a second suite version), and attempts where the assistant can run `xoong check` (the loop with feedback). Two models and 18 attempts each is
+still a small sample.
+
 ## 6. Fine-tuning (later)
 
 A small assistant model is considered only after the CLI and MCP have

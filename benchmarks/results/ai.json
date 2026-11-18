@@ -473,6 +473,414 @@
     }
    ],
    "answers": "benchmarks/ai/answers/2026-11-18-claude-haiku-5-5-729349"
+  },
+  {
+   "id": "2026-11-18-claude-sonnet-5-5-836ea5",
+   "date": "2026-11-18",
+   "model": "claude-sonnet-5-5",
+   "note": "after fixes: XO277-279, response shape in operations list, llms.txt rule 7 (commit 95b893d)",
+   "commit": "95b893d",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 2,
+   "xoong": "0.0.57",
+   "llmsSha256": "836ea54c1996",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "41cf440f6fa7",
+    "crud-admin": "c6117aa15d5f",
+    "shared-data": "fce8bf5d3a31",
+    "live-updates": "272563a9ef8c",
+    "admin-table": "79a4921516a2",
+    "paging-filter": "8d72310218cd"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "crud-admin": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "shared-data": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "live-updates": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "admin-table": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "paging-filter": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 18,
+    "passed": 18,
+    "staticPassed": 18
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-18-claude-sonnet-5-5-836ea5"
+  },
+  {
+   "id": "2026-11-18-claude-haiku-5-5-836ea5",
+   "date": "2026-11-18",
+   "model": "claude-haiku-5-5",
+   "note": "after fixes: XO277-279, response shape in operations list, llms.txt rule 7 (commit 95b893d)",
+   "commit": "95b893d",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 2,
+   "xoong": "0.0.57",
+   "llmsSha256": "836ea54c1996",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "41cf440f6fa7",
+    "crud-admin": "c6117aa15d5f",
+    "shared-data": "fce8bf5d3a31",
+    "live-updates": "272563a9ef8c",
+    "admin-table": "79a4921516a2",
+    "paging-filter": "8d72310218cd"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "crud-admin": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "shared-data": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "live-updates": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "admin-table": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "paging-filter": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 18,
+    "passed": 18,
+    "staticPassed": 18
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-18-claude-haiku-5-5-836ea5"
   }
  ]
 }
