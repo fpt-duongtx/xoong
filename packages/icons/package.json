@@ -1,0 +1,42 @@
+{
+  "name": "@xoong/icons",
+  "version": "0.0.55",
+  "description": "The xoong icon set: rounded 24px SVG icons in regular, fill and bold, used as <i class=\"xi xi-edit\"> through CSS masks, with a tool that keeps only the icons a project uses.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./icons.css": "./src/icons.css",
+    "./icons.json": "./src/icons.json"
+  },
+  "bin": {
+    "xoong-icons": "src/cli.js"
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "xoong",
+    "icons",
+    "svg",
+    "css-mask"
+  ],
+  "author": "Duong Tran Xuan <duongtx1505@icloud.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpt-duongtx/xoong.git",
+    "directory": "packages/icons"
+  },
+  "bugs": {
+    "url": "https://github.com/fpt-duongtx/xoong/issues"
+  },
+  "homepage": "https://fpt-duongtx.github.io/xoong/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}

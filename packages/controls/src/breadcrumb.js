@@ -105,7 +105,7 @@ class XoBreadcrumb extends XoElement {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'ghost sm';
-    b.textContent = '…';
+    b.innerHTML = '<i class="xi xi-more" aria-hidden="true"></i>';
     b.setAttribute('aria-label', text('xoong.breadcrumb.more', 'Show hidden pages'));
     b.setAttribute('aria-haspopup', 'true');
     b.setAttribute('aria-expanded', 'false');

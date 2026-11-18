@@ -29,7 +29,7 @@ class XoStepper extends XoControl {
     const button = (/** @type {number} */ dir, /** @type {string} */ label, /** @type {string} */ icon) => {
       const b = document.createElement('button');
       b.type = 'button'; b.setAttribute('aria-label', label); b.tabIndex = -1;
-      b.innerHTML = `<span class="ic" data-ic="${icon}" aria-hidden="true"></span>`;
+      b.innerHTML = `<i class="xi ${icon}" aria-hidden="true"></i>`;
       b.addEventListener('click', () => this.#move(dir));
       return b;
     };
@@ -48,7 +48,7 @@ class XoStepper extends XoControl {
       else if ((k === 'Home' && this.hasAttribute('min')) || (k === 'End' && this.hasAttribute('max'))) { e.preventDefault(); this.#set(k === 'Home' ? /** @type {number} */ (this.min) : /** @type {number} */ (this.max)); }
     });
     this.#input = input;
-    this.#buttons = [button(-1, text('xoong.controls.decrease', 'Decrease'), 'minus'), button(1, text('xoong.controls.increase', 'Increase'), 'plus')];
+    this.#buttons = [button(-1, text('xoong.controls.decrease', 'Decrease'), 'xi-minus'), button(1, text('xoong.controls.increase', 'Increase'), 'xi-plus')];
     wrap.append(this.#buttons[0], input, this.#buttons[1]);
     this.replaceChildren(wrap);
     if (this.hasAttribute('value')) this.setValue(this.getAttribute('value')); // the base class would keep the attribute text: a number control holds a number

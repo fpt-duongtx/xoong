@@ -28,7 +28,7 @@ class XoPassword extends XoControl {
     const eye = document.createElement('button');
     eye.type = 'button';
     eye.className = 'ghost icon-only sm xo-input-end';
-    eye.innerHTML = '<span class="ic" data-ic="eye" aria-hidden="true"></span>';
+    eye.innerHTML = '<i class="xi xi-eye" aria-hidden="true"></i>';
     eye.addEventListener('click', () => { input.type = input.type === 'password' ? 'text' : 'password'; this.#paint(); });
     wrap.append(input, eye);
     this.#input = input; this.#eye = eye;
@@ -42,6 +42,7 @@ class XoPassword extends XoControl {
     if (!i || !e) return;
     const shown = i.type === 'text';
     e.setAttribute('aria-pressed', String(shown));
+    /** @type {HTMLElement} */ (e.firstElementChild).className = shown ? 'xi xi-eye-off' : 'xi xi-eye';
     e.setAttribute('aria-label', shown ? text('xoong.controls.hidePassword', 'Hide password') : text('xoong.controls.showPassword', 'Show password'));
     i.setAttribute('aria-label', this.label || this.name || text('xoong.controls.password', 'Password'));
     i.placeholder = this.placeholder || '';

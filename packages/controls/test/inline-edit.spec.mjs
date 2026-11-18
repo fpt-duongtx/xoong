@@ -18,7 +18,7 @@ describe('<xo-inline-edit>', () => {
     const b = el.querySelector('button');
     expect(b.getAttribute('aria-label')).toBe('Rename');
     expect(b.classList.contains('ghost')).toBe(true);
-    expect(b.querySelector('.ic[data-ic=edit]')).toBeTruthy();
+    expect(b.querySelector('.xi.xi-edit')).toBeTruthy();
     const l = await mount('label="Rename title"');
     expect(l.querySelector('button').getAttribute('aria-label')).toBe('Rename title');
   });

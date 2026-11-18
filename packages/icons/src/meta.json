@@ -1,0 +1,697 @@
+{
+  "chevron-up": {
+    "category": "arrows",
+    "tags": [
+      "caret",
+      "up",
+      "collapse"
+    ]
+  },
+  "chevron-down": {
+    "category": "arrows",
+    "tags": [
+      "caret",
+      "down",
+      "expand",
+      "dropdown"
+    ]
+  },
+  "chevron-left": {
+    "category": "arrows",
+    "tags": [
+      "caret",
+      "left",
+      "back",
+      "previous"
+    ]
+  },
+  "chevron-right": {
+    "category": "arrows",
+    "tags": [
+      "caret",
+      "right",
+      "next",
+      "forward"
+    ]
+  },
+  "arrow-up": {
+    "category": "arrows",
+    "tags": [
+      "up",
+      "north"
+    ]
+  },
+  "arrow-down": {
+    "category": "arrows",
+    "tags": [
+      "down",
+      "south"
+    ]
+  },
+  "arrow-left": {
+    "category": "arrows",
+    "tags": [
+      "left",
+      "back",
+      "west"
+    ]
+  },
+  "arrow-right": {
+    "category": "arrows",
+    "tags": [
+      "right",
+      "forward",
+      "east"
+    ]
+  },
+  "sort": {
+    "category": "arrows",
+    "tags": [
+      "order",
+      "up",
+      "down",
+      "arrows"
+    ]
+  },
+  "expand": {
+    "category": "arrows",
+    "tags": [
+      "fullscreen",
+      "maximize",
+      "enlarge"
+    ]
+  },
+  "external-link": {
+    "category": "arrows",
+    "tags": [
+      "open",
+      "new",
+      "tab",
+      "outside"
+    ]
+  },
+  "log-out": {
+    "category": "arrows",
+    "tags": [
+      "sign",
+      "out",
+      "exit",
+      "leave"
+    ]
+  },
+  "menu": {
+    "category": "arrows",
+    "tags": [
+      "hamburger",
+      "navigation",
+      "lines"
+    ]
+  },
+  "more": {
+    "category": "arrows",
+    "tags": [
+      "dots",
+      "ellipsis",
+      "overflow"
+    ]
+  },
+  "grip": {
+    "category": "arrows",
+    "tags": [
+      "drag",
+      "handle",
+      "reorder",
+      "dots"
+    ]
+  },
+  "home": {
+    "category": "arrows",
+    "tags": [
+      "house",
+      "start",
+      "dashboard"
+    ]
+  },
+  "plus": {
+    "category": "actions",
+    "tags": [
+      "add",
+      "new",
+      "create"
+    ]
+  },
+  "minus": {
+    "category": "actions",
+    "tags": [
+      "remove",
+      "subtract",
+      "less"
+    ]
+  },
+  "check": {
+    "category": "actions",
+    "tags": [
+      "tick",
+      "done",
+      "ok"
+    ]
+  },
+  "close": {
+    "category": "actions",
+    "tags": [
+      "x",
+      "cancel",
+      "dismiss",
+      "cross"
+    ]
+  },
+  "search": {
+    "category": "actions",
+    "tags": [
+      "find",
+      "magnifier",
+      "lookup"
+    ]
+  },
+  "edit": {
+    "category": "actions",
+    "tags": [
+      "pencil",
+      "write",
+      "modify"
+    ]
+  },
+  "trash": {
+    "category": "actions",
+    "tags": [
+      "delete",
+      "remove",
+      "bin"
+    ]
+  },
+  "copy": {
+    "category": "actions",
+    "tags": [
+      "clipboard",
+      "duplicate"
+    ]
+  },
+  "duplicate": {
+    "category": "actions",
+    "tags": [
+      "copy",
+      "clone",
+      "plus"
+    ]
+  },
+  "download": {
+    "category": "actions",
+    "tags": [
+      "save",
+      "arrow",
+      "down",
+      "get"
+    ]
+  },
+  "upload": {
+    "category": "actions",
+    "tags": [
+      "send",
+      "arrow",
+      "up",
+      "put"
+    ]
+  },
+  "undo": {
+    "category": "actions",
+    "tags": [
+      "back",
+      "revert"
+    ]
+  },
+  "redo": {
+    "category": "actions",
+    "tags": [
+      "forward",
+      "repeat"
+    ]
+  },
+  "filter": {
+    "category": "actions",
+    "tags": [
+      "funnel",
+      "narrow",
+      "refine"
+    ]
+  },
+  "link": {
+    "category": "actions",
+    "tags": [
+      "chain",
+      "url",
+      "anchor"
+    ]
+  },
+  "publish": {
+    "category": "actions",
+    "tags": [
+      "cloud",
+      "upload",
+      "go",
+      "live",
+      "release"
+    ]
+  },
+  "unpublish": {
+    "category": "actions",
+    "tags": [
+      "cloud",
+      "off",
+      "offline",
+      "take",
+      "down"
+    ]
+  },
+  "preview": {
+    "category": "actions",
+    "tags": [
+      "monitor",
+      "screen",
+      "eye",
+      "look"
+    ]
+  },
+  "info": {
+    "category": "status",
+    "tags": [
+      "about",
+      "help",
+      "circle"
+    ]
+  },
+  "warning": {
+    "category": "status",
+    "tags": [
+      "alert",
+      "caution",
+      "triangle",
+      "attention"
+    ]
+  },
+  "error": {
+    "category": "status",
+    "tags": [
+      "danger",
+      "fail",
+      "wrong",
+      "circle",
+      "cross"
+    ]
+  },
+  "success": {
+    "category": "status",
+    "tags": [
+      "ok",
+      "done",
+      "complete",
+      "circle",
+      "tick"
+    ]
+  },
+  "bell": {
+    "category": "status",
+    "tags": [
+      "notification",
+      "alarm",
+      "alert"
+    ]
+  },
+  "lock": {
+    "category": "status",
+    "tags": [
+      "secure",
+      "private",
+      "password"
+    ]
+  },
+  "user": {
+    "category": "people",
+    "tags": [
+      "person",
+      "account",
+      "profile"
+    ]
+  },
+  "users": {
+    "category": "people",
+    "tags": [
+      "group",
+      "team",
+      "people"
+    ]
+  },
+  "sliders": {
+    "category": "interface",
+    "tags": [
+      "settings",
+      "adjust",
+      "controls",
+      "tune"
+    ]
+  },
+  "settings": {
+    "category": "interface",
+    "tags": [
+      "gear",
+      "cog",
+      "preferences",
+      "configure"
+    ]
+  },
+  "layers": {
+    "category": "interface",
+    "tags": [
+      "stack",
+      "levels"
+    ]
+  },
+  "grid": {
+    "category": "interface",
+    "tags": [
+      "tiles",
+      "apps",
+      "squares",
+      "dashboard"
+    ]
+  },
+  "list-bullet": {
+    "category": "interface",
+    "tags": [
+      "list",
+      "unordered",
+      "items"
+    ]
+  },
+  "list-number": {
+    "category": "interface",
+    "tags": [
+      "list",
+      "ordered",
+      "numbered",
+      "items"
+    ]
+  },
+  "eye": {
+    "category": "interface",
+    "tags": [
+      "view",
+      "show",
+      "visible"
+    ]
+  },
+  "eye-off": {
+    "category": "interface",
+    "tags": [
+      "hide",
+      "hidden",
+      "invisible"
+    ]
+  },
+  "palette": {
+    "category": "interface",
+    "tags": [
+      "colour",
+      "color",
+      "paint",
+      "theme"
+    ]
+  },
+  "droplet": {
+    "category": "interface",
+    "tags": [
+      "water",
+      "drop",
+      "colour"
+    ]
+  },
+  "sun": {
+    "category": "interface",
+    "tags": [
+      "light",
+      "day",
+      "brightness"
+    ]
+  },
+  "moon": {
+    "category": "interface",
+    "tags": [
+      "dark",
+      "night"
+    ]
+  },
+  "star": {
+    "category": "interface",
+    "tags": [
+      "favourite",
+      "rating",
+      "bookmark"
+    ]
+  },
+  "zap": {
+    "category": "interface",
+    "tags": [
+      "bolt",
+      "lightning",
+      "fast",
+      "power"
+    ]
+  },
+  "shield": {
+    "category": "interface",
+    "tags": [
+      "security",
+      "protect",
+      "safe"
+    ]
+  },
+  "chart": {
+    "category": "interface",
+    "tags": [
+      "bars",
+      "analytics",
+      "statistics",
+      "graph"
+    ]
+  },
+  "pause": {
+    "category": "interface",
+    "tags": [
+      "stop",
+      "media"
+    ]
+  },
+  "play": {
+    "category": "interface",
+    "tags": [
+      "start",
+      "media",
+      "triangle"
+    ]
+  },
+  "image": {
+    "category": "content",
+    "tags": [
+      "photo",
+      "picture",
+      "gallery"
+    ]
+  },
+  "page": {
+    "category": "content",
+    "tags": [
+      "file",
+      "document",
+      "sheet"
+    ]
+  },
+  "article": {
+    "category": "content",
+    "tags": [
+      "post",
+      "blog",
+      "text",
+      "news"
+    ]
+  },
+  "tag": {
+    "category": "content",
+    "tags": [
+      "label",
+      "category",
+      "price"
+    ]
+  },
+  "folder": {
+    "category": "content",
+    "tags": [
+      "directory",
+      "files"
+    ]
+  },
+  "language": {
+    "category": "content",
+    "tags": [
+      "translate",
+      "locale",
+      "i18n"
+    ]
+  },
+  "quote": {
+    "category": "content",
+    "tags": [
+      "blockquote",
+      "citation"
+    ]
+  },
+  "code": {
+    "category": "content",
+    "tags": [
+      "developer",
+      "source",
+      "markup"
+    ]
+  },
+  "heading": {
+    "category": "content",
+    "tags": [
+      "title",
+      "h1",
+      "text"
+    ]
+  },
+  "paragraph": {
+    "category": "content",
+    "tags": [
+      "pilcrow",
+      "text",
+      "block"
+    ]
+  },
+  "text-bold": {
+    "category": "content",
+    "tags": [
+      "bold",
+      "strong",
+      "format"
+    ]
+  },
+  "text-italic": {
+    "category": "content",
+    "tags": [
+      "italic",
+      "emphasis",
+      "format"
+    ]
+  },
+  "text-underline": {
+    "category": "content",
+    "tags": [
+      "underline",
+      "format"
+    ]
+  },
+  "guide": {
+    "category": "content",
+    "tags": [
+      "book",
+      "help",
+      "manual",
+      "docs"
+    ]
+  },
+  "preset": {
+    "category": "content",
+    "tags": [
+      "template",
+      "layout",
+      "design"
+    ]
+  },
+  "seo": {
+    "category": "content",
+    "tags": [
+      "search",
+      "engine",
+      "ranking",
+      "optimisation"
+    ]
+  },
+  "mail": {
+    "category": "communication",
+    "tags": [
+      "email",
+      "envelope",
+      "message"
+    ]
+  },
+  "message": {
+    "category": "communication",
+    "tags": [
+      "chat",
+      "comment",
+      "bubble",
+      "talk"
+    ]
+  },
+  "phone": {
+    "category": "communication",
+    "tags": [
+      "call",
+      "telephone",
+      "contact"
+    ]
+  },
+  "map-pin": {
+    "category": "communication",
+    "tags": [
+      "location",
+      "place",
+      "marker",
+      "address"
+    ]
+  },
+  "globe": {
+    "category": "communication",
+    "tags": [
+      "world",
+      "web",
+      "internet",
+      "language"
+    ]
+  },
+  "calendar": {
+    "category": "communication",
+    "tags": [
+      "date",
+      "schedule",
+      "event"
+    ]
+  },
+  "clock": {
+    "category": "communication",
+    "tags": [
+      "time",
+      "hour",
+      "watch"
+    ]
+  },
+  "history": {
+    "category": "communication",
+    "tags": [
+      "recent",
+      "past",
+      "restore",
+      "revisions"
+    ]
+  }
+}

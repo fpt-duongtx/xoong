@@ -49,7 +49,7 @@ class XoFile extends XoControl {
     input.accept = this.accept ?? '';
     input.multiple = this.multiple;
     input.setAttribute('aria-label', this.label || this.name || text('xoong.controls.file', 'File'));
-    zone.innerHTML = `<span class="ic" data-ic="upload" aria-hidden="true"></span><span><b>${this.multiple ? text('xoong.file.dropMany', 'Drop files') : text('xoong.file.drop', 'Drop a file')}</b> ${text('xoong.file.browse', 'or click to browse')}</span>`;
+    zone.innerHTML = `<i class="xi xi-upload" aria-hidden="true"></i><span><b>${this.multiple ? text('xoong.file.dropMany', 'Drop files') : text('xoong.file.drop', 'Drop a file')}</b> ${text('xoong.file.browse', 'or click to browse')}</span>`;
     if (this.hint) { const h = document.createElement('span'); h.textContent = this.hint; zone.append(h); }
     zone.append(input);
     input.addEventListener('change', () => { this.#take([...(input.files ?? [])]); input.value = ''; });

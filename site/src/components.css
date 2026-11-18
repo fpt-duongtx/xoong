@@ -38,8 +38,7 @@ xo-menu [role="menu"] hr { margin: .3rem .4rem; border: 0; border-top: 1px solid
 .xo-combobox-input { min-height: 0 !important; width: auto !important; padding: 0 !important; border: 0 !important; box-shadow: none !important; background: transparent !important; font: 400 1rem/1.4 var(--xo-font); }
 .xo-combobox-input:focus-visible { box-shadow: none !important; }
 .xo-chip { gap: .2rem; min-height: 1.6rem; padding: 0 .2rem 0 .65rem; font: 600 .8rem/1 var(--xo-font); color: var(--xo-color-accent); background: var(--xo-color-accent-soft); }
-.xo-chip button { display: inline-flex; align-items: center; justify-content: center; gap: 0; min-height: 0; width: 1.3rem; height: 1.3rem; padding: 0; border: 0; font-size: 0; color: inherit; background: none; border-radius: 50%; }
-.xo-chip button::before { content: ""; width: .85rem; height: .85rem; background: currentColor; -webkit-mask: var(--ic-close) center / contain no-repeat; mask: var(--ic-close) center / contain no-repeat; }
+.xo-chip button { display: inline-flex; align-items: center; justify-content: center; gap: 0; min-height: 0; width: 1.3rem; height: 1.3rem; padding: 0; border: 0; font-size: .85rem; color: inherit; background: none; border-radius: 50%; }
 .xo-chip button:hover { background: color-mix(in srgb, var(--xo-color-accent) 18%, transparent); transform: none; }
 .xo-combobox-list { padding: .35rem; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: calc(var(--xo-radius) + 2px); box-shadow: var(--xo-shadow-pop); }
 .xo-combobox-list [role="option"], .xo-combobox-list .xo-empty { display: flex; align-items: center; min-height: 2.25rem; padding: 0 .65rem; border-radius: 8px; font-size: .95rem; }
@@ -59,9 +58,7 @@ xo-combobox[data-invalid] .xo-combobox-box, xo-tags[data-invalid] .xo-combobox-b
 .xo-carousel-nav button:active:not(:disabled) { background: var(--xo-color-border); transform: none; box-shadow: none; }
 .xo-carousel-nav button:disabled { opacity: 1; color: var(--xo-color-muted); background: var(--xo-color-subtle); border-color: var(--xo-color-border); box-shadow: none; }
 .xo-carousel-nav button:is(.xo-carousel-toggle, :not(.xo-carousel-prev, .xo-carousel-next)) { font-size: .8rem; }
-.xo-carousel-prev span, .xo-carousel-next span { display: block; width: 1.25rem; height: 1.25rem; font-size: 0; background: currentColor; }
-.xo-carousel-prev span { -webkit-mask: var(--ic-chevron-left) center / contain no-repeat; mask: var(--ic-chevron-left) center / contain no-repeat; }
-.xo-carousel-next span { -webkit-mask: var(--ic-chevron-right) center / contain no-repeat; mask: var(--ic-chevron-right) center / contain no-repeat; }
+.xo-carousel-prev .xi, .xo-carousel-next .xi { font-size: 1.25rem; }
 .xo-carousel-dots { gap: 8px; }
 .xo-carousel-dots button { width: 8px; height: 8px; min-height: 0; padding: 0; border: 0; border-radius: 99px; background: var(--xo-color-control-border); transition: width .2s ease, background .2s ease; position: relative; }
 .xo-carousel-dots button::after { content: ""; position: absolute; inset: -18px -6px; }
@@ -117,8 +114,7 @@ xo-combobox[data-invalid] .xo-combobox-box, xo-tags[data-invalid] .xo-combobox-b
 .xo-row-title { grid-column: 2; }
 .xo-row-actions { gap: .25rem; flex-wrap: nowrap; }
 .xo-row-actions button, .xo-array-add button { min-height: var(--xo-control-height-sm); font-size: .875rem; }
-.xo-handle { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; font-size: 0; opacity: 1; color: var(--xo-color-muted); touch-action: none; }
-.xo-handle::before { content: ""; width: 1.1rem; height: 1.1rem; background: currentColor; -webkit-mask: var(--ic-grip) center / contain no-repeat; mask: var(--ic-grip) center / contain no-repeat; }
+.xo-handle { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; font-size: 1.1rem; opacity: 1; color: var(--xo-color-muted); touch-action: none; }
 .xo-handle:hover { color: var(--xo-color-text); }
 .xo-row.xo-drop { outline: 2px dashed var(--xo-color-accent); background: var(--xo-color-accent-soft); }
 .xo-form > .xo-submit, button.xo-submit { min-height: var(--xo-control-height); padding: 0 1.3rem; font-weight: 700; color: var(--xo-color-accent-text); background: var(--xo-color-accent); border-color: transparent; }
@@ -145,19 +141,6 @@ xo-dialog > dialog > h2, .xo-confirm h2 { margin: 0 0 .5rem; font-size: 1.3rem; 
 .xo-richtext-toolbar button[aria-pressed="true"] { background: var(--xo-color-accent-soft); color: var(--xo-color-accent); }
 .xo-richtext-toolbar button:disabled { opacity: .4; }
 .xo-richtext-toolbar select { min-height: 2rem; width: auto; font-size: .9rem; border-color: transparent; background-color: transparent; }
-/* the toolbar faces become icons (the framework draws a text face in ::before; the accessible name stays the caption) */
-.xo-richtext-toolbar button[data-face]:is([data-face="B"],[data-face="I"],[data-face="U"],[data-face="•"],[data-face="1."],[data-face="“"],[data-face="🔗"],[data-face="🖼"],[data-face="↶"],[data-face="↷"],[data-face="⋯"])::before { content: ""; display: block; width: 1.15rem; height: 1.15rem; background: currentColor; }
-.xo-richtext-toolbar button[data-face="B"]::before { -webkit-mask: var(--ic-bold) center / contain no-repeat; mask: var(--ic-bold) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="I"]::before { -webkit-mask: var(--ic-italic) center / contain no-repeat; mask: var(--ic-italic) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="U"]::before { -webkit-mask: var(--ic-underline) center / contain no-repeat; mask: var(--ic-underline) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="•"]::before { -webkit-mask: var(--ic-list-bullet) center / contain no-repeat; mask: var(--ic-list-bullet) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="1."]::before { -webkit-mask: var(--ic-list-number) center / contain no-repeat; mask: var(--ic-list-number) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="“"]::before { -webkit-mask: var(--ic-quote) center / contain no-repeat; mask: var(--ic-quote) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="🔗"]::before { -webkit-mask: var(--ic-link) center / contain no-repeat; mask: var(--ic-link) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="🖼"]::before { -webkit-mask: var(--ic-image) center / contain no-repeat; mask: var(--ic-image) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="↶"]::before { -webkit-mask: var(--ic-undo) center / contain no-repeat; mask: var(--ic-undo) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="↷"]::before { -webkit-mask: var(--ic-redo) center / contain no-repeat; mask: var(--ic-redo) center / contain no-repeat; }
-.xo-richtext-toolbar button[data-face="⋯"]::before { -webkit-mask: var(--ic-more) center / contain no-repeat; mask: var(--ic-more) center / contain no-repeat; }
 .xo-richtext-more { padding: .35rem; background: var(--xo-color-surface); border: 1px solid var(--xo-color-border); border-radius: calc(var(--xo-radius) + 2px); box-shadow: var(--xo-shadow-pop); }
 .xo-richtext-more [role^="menuitem"] { display: flex; align-items: center; gap: .6rem; min-height: 2.25rem; padding: 0 .65rem; border: 0; border-radius: 8px; font: 500 .95rem/1 var(--xo-font); }
 .xo-richtext-more [role^="menuitem"]:hover { background: var(--xo-color-accent-soft); }

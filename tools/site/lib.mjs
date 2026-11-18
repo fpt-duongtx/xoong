@@ -186,7 +186,7 @@ ${page.body}
   <link rel="stylesheet" href="src/mist.css">
   <link rel="stylesheet" href="src/site.css">
   <link rel="stylesheet" href="src/reference.css">
-  <link rel="stylesheet" href="src/print.css" media="print">
+${(page.css ?? []).map((f) => `  <link rel="stylesheet" href="src/${f}">\n`).join('')}  <link rel="stylesheet" href="src/print.css" media="print">
   <script type="module" src="src/site.js"></script>
   <script type="module" src="src/reference-menu.js"></script>
   <script type="module" src="src/search.js"></script>${page.demo ? '\n  <script type="module" src="src/demo.js"></script>' : ''}${page.body.includes('dg-anim') ? '\n  <script type="module" src="src/diagrams.js"></script>' : ''}${page.script ? `\n  <script type="module" src="src/${page.script}"></script>` : ''}${page.classic ? `\n  <script src="src/${page.classic}" defer></script>` : ''}

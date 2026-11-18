@@ -28,21 +28,21 @@ import { sanitizeHtml, isSafeLink, textOf, profileAllows } from './sanitize.js';
 let counter = 0;
 
 const TOOLS = {
-  bold: { label: () => text('xoong.richtext.bold', 'Bold'), face: 'B', state: () => query('bold') },
-  italic: { label: () => text('xoong.richtext.italic', 'Italic'), face: 'I', state: () => query('italic') },
-  underline: { label: () => text('xoong.richtext.underline', 'Underline'), face: 'U', state: () => query('underline') },
+  bold: { label: () => text('xoong.richtext.bold', 'Bold'), icon: 'xi-text-bold', state: () => query('bold') },
+  italic: { label: () => text('xoong.richtext.italic', 'Italic'), icon: 'xi-text-italic', state: () => query('italic') },
+  underline: { label: () => text('xoong.richtext.underline', 'Underline'), icon: 'xi-text-underline', state: () => query('underline') },
   style: { label: () => text('xoong.richtext.style', 'Text style') },
-  more: { label: () => text('xoong.richtext.more', 'More'), face: '⋯' },
-  h2: { label: () => text('xoong.richtext.h2', 'Heading'), face: 'H2', state: () => block() === 'h2' },
-  ul: { label: () => text('xoong.richtext.ul', 'Bulleted list'), face: '•', state: () => query('insertUnorderedList') },
-  ol: { label: () => text('xoong.richtext.ol', 'Numbered list'), face: '1.', state: () => query('insertOrderedList') },
-  quote: { label: () => text('xoong.richtext.quote', 'Quote'), face: '“', state: () => block() === 'blockquote' },
-  link: { label: () => text('xoong.richtext.link', 'Link'), face: '🔗', state: () => !!anchorAtSelection() },
-  image: { label: () => text('xoong.richtext.image', 'Image'), face: '🖼' },
-  note: { label: () => text('xoong.richtext.note', 'Note'), face: 'ℹ', state: () => !!selectionIn('aside') },
-  figure: { label: () => text('xoong.richtext.figure', 'Image with caption'), face: '🖼' },
-  undo: { label: () => text('xoong.richtext.undo', 'Undo'), face: '↶' },
-  redo: { label: () => text('xoong.richtext.redo', 'Redo'), face: '↷' },
+  more: { label: () => text('xoong.richtext.more', 'More'), icon: 'xi-more' },
+  h2: { label: () => text('xoong.richtext.h2', 'Heading'), icon: 'xi-heading', state: () => block() === 'h2' },
+  ul: { label: () => text('xoong.richtext.ul', 'Bulleted list'), icon: 'xi-list-bullet', state: () => query('insertUnorderedList') },
+  ol: { label: () => text('xoong.richtext.ol', 'Numbered list'), icon: 'xi-list-number', state: () => query('insertOrderedList') },
+  quote: { label: () => text('xoong.richtext.quote', 'Quote'), icon: 'xi-quote', state: () => block() === 'blockquote' },
+  link: { label: () => text('xoong.richtext.link', 'Link'), icon: 'xi-link', state: () => !!anchorAtSelection() },
+  image: { label: () => text('xoong.richtext.image', 'Image'), icon: 'xi-image' },
+  note: { label: () => text('xoong.richtext.note', 'Note'), icon: 'xi-info', state: () => !!selectionIn('aside') },
+  figure: { label: () => text('xoong.richtext.figure', 'Image with caption'), icon: 'xi-image' },
+  undo: { label: () => text('xoong.richtext.undo', 'Undo'), icon: 'xi-undo' },
+  redo: { label: () => text('xoong.richtext.redo', 'Redo'), icon: 'xi-redo' },
 };
 const DEFAULT_TOOLS = 'undo redo style bold italic underline ul ol quote link image note figure';
 /** The tags a profile has to keep for a tool to be offered. */
@@ -275,10 +275,12 @@ class XoRichtext extends XoControl {
     button.type = 'button';
     button.dataset.tool = name;
     button.tabIndex = first ? 0 : -1;
-    button.dataset.face = tool.face; // drawn by CSS (::before): the symbol is not text, so the accessible name is the caption alone (WCAG 2.5.3)
     button.setAttribute('aria-label', caption);
     button.title = caption;
     if (inMenu) { button.setAttribute('role', tool.state ? 'menuitemcheckbox' : 'menuitem'); button.tabIndex = -1; button.textContent = caption; } // a menu item is checked, a toolbar button is pressed
+    const icon = document.createElement('i'); // an icon, not a character: the accessible name is the caption alone (WCAG 2.5.3)
+    icon.className = `xi ${tool.icon}`; icon.setAttribute('aria-hidden', 'true');
+    button.prepend(icon);
     if (tool.state) button.setAttribute(inMenu ? 'aria-checked' : 'aria-pressed', 'false');
     return button;
   }

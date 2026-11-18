@@ -6,6 +6,7 @@ import * as figures from './figures.mjs';
 import { dialogsPage } from './dialogs-page.mjs';
 import { recipesPage } from './recipes-page.mjs';
 import { benchmarksPage, homeBenchmarks } from './benchmarks-page.mjs';
+import { iconsPage } from './icons-page.mjs';
 import { cliPage, mcpPage, editorPage, codesPage } from './tooling-pages.mjs';
 import { referencePage } from './reference-page.mjs';
 
@@ -1070,11 +1071,7 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
     body: kit('focus-audit.html'),
   },
   // ------------------------------------------------------------------------------------------------------------------------------
-  {
-    file: 'icons.html', section: 'docs', group: 'Design', nav: 'Icons', title: 'Icons',
-    description: 'The icon set: 24px grid, 1.75 stroke, currentColor.',
-    body: kit('icons.html'),
-  },
+  iconsPage,
   // ------------------------------------------------------------------------------------------------------------------------------
   {
     file: 'demo.html', section: 'demo', group: 'Live demos', nav: 'All demos', title: 'Live demos', demo: true, richtext: true,

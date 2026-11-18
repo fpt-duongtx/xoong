@@ -31,7 +31,7 @@ class XoSplitButton extends XoElement {
     arrow.setAttribute('xo-menu-trigger', '');
     arrow.setAttribute('aria-haspopup', 'menu');
     arrow.setAttribute('aria-label', this.more || text('xoong.controls.moreOptions', 'More options'));
-    arrow.innerHTML = '<span class="ic" data-ic="chevron-down" aria-hidden="true"></span>';
+    arrow.innerHTML = '<i class="xi xi-chevron-down" aria-hidden="true"></i>';
     const menu = document.createElement('xo-menu');
     menu.setAttribute('label', arrow.getAttribute('aria-label') ?? '');
     menu.append(arrow, ...items);

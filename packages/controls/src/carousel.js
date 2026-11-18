@@ -60,14 +60,14 @@ class XoCarousel extends XoElement {
     this.#size?.disconnect();
   }
 
-  #button(/** @type {string} */ cls, /** @type {string} */ glyph, /** @type {string} */ label, /** @type {() => void} */ run) {
+  #button(/** @type {string} */ cls, /** @type {string} */ icon, /** @type {string} */ label, /** @type {() => void} */ run) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = cls;
     b.setAttribute('aria-label', label);
-    const g = document.createElement('span');
+    const g = document.createElement('i');
     g.setAttribute('aria-hidden', 'true');
-    g.textContent = glyph;
+    g.className = `xi ${icon}`;
     b.append(g);
     b.addEventListener('click', run);
     return b;
@@ -89,9 +89,9 @@ class XoCarousel extends XoElement {
     controls.className = 'xo-carousel-controls';
     const nav = document.createElement('div');
     nav.className = 'xo-carousel-nav';
-    this.#toggle = this.#button('xo-carousel-toggle', '', '', () => { this.#stopped = !this.#stopped; this.#refresh(true); });
-    this.#prev = this.#button('xo-carousel-prev', '←', text('xoong.carousel.previous', 'Previous slide'), () => this.prev());
-    this.#next = this.#button('xo-carousel-next', '→', text('xoong.carousel.next', 'Next slide'), () => this.next());
+    this.#toggle = this.#button('xo-carousel-toggle', 'xi-pause', '', () => { this.#stopped = !this.#stopped; this.#refresh(true); });
+    this.#prev = this.#button('xo-carousel-prev', 'xi-chevron-left', text('xoong.carousel.previous', 'Previous slide'), () => this.prev());
+    this.#next = this.#button('xo-carousel-next', 'xi-chevron-right', text('xoong.carousel.next', 'Next slide'), () => this.next());
     nav.append(this.#toggle, this.#prev, this.#next);
     this.#dots = document.createElement('div');
     this.#dots.className = 'xo-carousel-dots';
@@ -191,7 +191,7 @@ class XoCarousel extends XoElement {
     const label = this.#stopped ? text('xoong.carousel.play', 'Start automatic slide show') : text('xoong.carousel.pause', 'Pause automatic slide show');
     toggle.setAttribute('aria-label', label);
     toggle.dataset.state = this.#stopped ? 'paused' : 'playing'; // a theme can draw its own icons from this
-    /** @type {HTMLElement} */ (toggle.firstElementChild).textContent = this.#stopped ? '▶' : '❚❚';
+    /** @type {HTMLElement} */ (toggle.firstElementChild).className = this.#stopped ? 'xi xi-play' : 'xi xi-pause';
     track.setAttribute('aria-live', this.autoplay > 0 && playing ? 'off' : 'polite');
     this.#announce();
     this.#schedule();

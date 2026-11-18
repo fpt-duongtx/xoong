@@ -39,7 +39,7 @@ class XoCommand extends XoElement {
     const dialog = document.createElement('dialog');
     dialog.className = 'xo-command-dialog';
     dialog.setAttribute('aria-label', this.label || text('xoong.command.label', 'Search commands'));
-    dialog.innerHTML = `<div class="xo-float xo-command"><div class="xo-command__input"><span class="ic" data-ic="search" aria-hidden="true"></span><input role="combobox" aria-expanded="true" aria-autocomplete="list" autocomplete="off"><span class="xo-kbd" aria-hidden="true">Esc</span></div><div class="xo-listbox" role="listbox"></div></div>`;
+    dialog.innerHTML = `<div class="xo-float xo-command"><div class="xo-command__input"><i class="xi xi-search" aria-hidden="true"></i><input role="combobox" aria-expanded="true" aria-autocomplete="list" autocomplete="off"><span class="xo-kbd" aria-hidden="true">Esc</span></div><div class="xo-listbox" role="listbox"></div></div>`;
     const input = /** @type {HTMLInputElement} */ (dialog.querySelector('input'));
     const list = /** @type {HTMLElement} */ (dialog.querySelector('.xo-listbox'));
     list.id = `${this.#id}-list`; list.setAttribute('aria-label', text('xoong.command.results', 'Results'));

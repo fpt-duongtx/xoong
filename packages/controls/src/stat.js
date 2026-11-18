@@ -35,8 +35,8 @@ class XoStat extends XoElement {
       const good = this.trend === 'down-is-good' ? d <= 0 : d >= 0;
       el.dataset.good = String(good);
       el.dataset.direction = d > 0 ? 'up' : d < 0 ? 'down' : 'flat';
-      const icon = document.createElement('span');
-      icon.className = 'ic'; icon.dataset.ic = d >= 0 ? 'arrow-up' : 'arrow-down'; icon.setAttribute('aria-hidden', 'true');
+      const icon = document.createElement('i');
+      icon.className = d >= 0 ? 'xi xi-arrow-up' : 'xi xi-arrow-down'; icon.setAttribute('aria-hidden', 'true');
       const sign = d > 0 ? '+' : d < 0 ? '−' : '';
       el.append(icon, `${sign}${Math.abs(d)}%${this.deltaLabel ? ` ${this.deltaLabel}` : ''}`);
       el.setAttribute('aria-label', (good ? text('xoong.stat.better', '{change} better', { change: `${sign}${Math.abs(d)}%` }) : text('xoong.stat.worse', '{change} worse', { change: `${sign}${Math.abs(d)}%` })) + (this.deltaLabel ? ` ${this.deltaLabel}` : ''));

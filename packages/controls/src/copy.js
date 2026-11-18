@@ -52,7 +52,7 @@ class XoCopy extends XoControl {
   #paint(done) {
     const b = this.#button;
     if (!b) return;
-    b.innerHTML = `<span class="ic" data-ic="${done ? 'check' : 'copy'}" aria-hidden="true"></span>`;
+    b.innerHTML = `<i class="xi ${done ? 'xi-check' : 'xi-copy'}" aria-hidden="true"></i>`;
     b.append(done ? text('xoong.controls.copied', 'Copied') : text('xoong.controls.copy', 'Copy'));
     if (done) b.dataset.state = 'copied'; else delete b.dataset.state;
   }

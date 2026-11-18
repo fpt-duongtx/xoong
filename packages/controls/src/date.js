@@ -66,7 +66,7 @@ class XoDate extends XoControl {
     opener.setAttribute('aria-label', text('xoong.controls.chooseDate', 'Choose date'));
     opener.setAttribute('aria-haspopup', 'dialog'); // on the button: a text input may not carry aria-expanded (axe aria-allowed-attr)
     opener.setAttribute('aria-expanded', 'false');
-    opener.innerHTML = '<span class="ic" data-ic="calendar" aria-hidden="true"></span>';
+    opener.innerHTML = '<i class="xi xi-calendar" aria-hidden="true"></i>';
     opener.addEventListener('click', () => (this.#open ? this.#close(true) : this.#openCalendar()));
     wrap.append(input, opener);
     const panel = document.createElement('div');
@@ -165,16 +165,16 @@ class XoDate extends XoControl {
     const y = this.#cursor.getFullYear(), m = this.#cursor.getMonth();
     const head = document.createElement('div');
     head.className = 'xo-date-head';
-    const nav = (/** @type {number} */ n, /** @type {string} */ label, /** @type {string} */ glyph) => {
+    const nav = (/** @type {number} */ n, /** @type {string} */ label, /** @type {string} */ icon) => {
       const b = document.createElement('button');
-      b.type = 'button'; b.className = 'icon-only sm ghost'; b.setAttribute('aria-label', label); b.textContent = glyph;
+      b.type = 'button'; b.className = 'icon-only sm ghost'; b.setAttribute('aria-label', label); b.innerHTML = `<i class="xi ${icon}" aria-hidden="true"></i>`;
       b.addEventListener('click', () => { this.#cursor = months(this.#cursor, n); this.#draw(); this.#focusDay(); });
       return b;
     };
     const title = document.createElement('b');
     title.setAttribute('aria-live', 'polite');
     title.textContent = new Intl.DateTimeFormat(loc, { month: 'long', year: 'numeric' }).format(new Date(y, m, 1, 12));
-    head.append(nav(-1, text('xoong.controls.prevMonth', 'Previous month'), '‹'), title, nav(1, text('xoong.controls.nextMonth', 'Next month'), '›'));
+    head.append(nav(-1, text('xoong.controls.prevMonth', 'Previous month'), 'xi-chevron-left'), title, nav(1, text('xoong.controls.nextMonth', 'Next month'), 'xi-chevron-right'));
 
     const grid = document.createElement('div');
     grid.className = 'xo-calendar';

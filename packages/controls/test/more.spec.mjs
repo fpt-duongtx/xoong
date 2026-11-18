@@ -95,7 +95,7 @@ describe('<xo-stat>', () => {
     expect(d.textContent).toContain('+12.4%');
     expect(d.textContent).toContain('vs last week');
     expect(d.dataset.good).toBe('true');
-    expect(d.querySelector('.ic').dataset.ic).toBe('arrow-up');
+    expect(d.querySelector('.xi').classList.contains('xi-arrow-up')).toBe(true);
     expect(el.querySelector('svg.xo-kpi__spark').getAttribute('aria-hidden')).toBe('true');
     expect(el.querySelector('svg path').getAttribute('d')).toMatch(/^M0\.0 /);
   });
