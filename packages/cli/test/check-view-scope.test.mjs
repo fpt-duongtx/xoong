@@ -110,3 +110,32 @@ describe('XO280: a form that edits a record is not nested in a view that does no
     expect(c2('<xo-view get="listUsers"><li xo-each="items"><form xo-submit="updateUser"><input name="name"><button>Save</button></form></li></xo-view>')).toEqual([]);
   });
 });
+
+describe('XO281 / XO282: named templates', () => {
+  const tpl = '<template xo-define="node"><span>{label}</span><ul><li xo-each="children" xo-use="node"></li></ul></template>';
+  it('a fixed name with no template of that name is a warning with the closest name; a name that exists, a name with data and a fallback are fine', () => {
+    const f = checkHtml(`<xo-view get="ping">${tpl}<div xo-use="nodes"></div></xo-view>`, table, 'a.html').find((x) => x.code === 'XO281');
+    expect(f).toMatchObject({ code: 'XO281', level: 'warn' });
+    expect(f.fix).toContain('xo-use="node"');
+    expect(codes(`<xo-view get="ping">${tpl}<div xo-use="node"></div></xo-view>`)).toEqual([]);
+    expect(codes(`<xo-view get="ping">${tpl}<div xo-use="block-{type}"></div></xo-view>`)).toEqual([]); // known only when the page runs
+    expect(codes('<xo-view get="ping"><div xo-use="missing"><i>fallback</i></div></xo-view>')).toEqual([]);
+    expect(codes('<xo-view get="ping"><div xo-use="missing"></div></xo-view>', { fragment: true })).toEqual([]); // the name may be defined in another file
+  });
+
+  it('a template of the page can be used by a view, and its own xo-use is not a stray one', () => {
+    expect(codes(`${tpl}<xo-view get="ping"><div xo-use="node"></div></xo-view>`)).toEqual([]);
+  });
+
+  it('xo-use outside a view does nothing and says so (XO277); an empty xo-use or xo-define is XO221', () => {
+    expect(codes(`${tpl}<div xo-use="node"></div>`)).toEqual(['XO277']);
+    expect(codes('<xo-view get="ping"><div xo-use=""></div></xo-view>')).toContain('XO221');
+  });
+
+  it('xo-define on something that is not a <template> is an error; a name defined twice is a warning', () => {
+    expect(codes('<xo-view get="ping"><div xo-define="a"></div></xo-view>')).toContain('XO282');
+    const twice = checkHtml('<xo-view get="ping"><template xo-define="a"><i></i></template><template xo-define="a"><b></b></template></xo-view>', table, 'a.html').filter((x) => x.code === 'XO282');
+    expect(twice.length).toBe(2);
+    expect(twice[0].level).toBe('warn');
+  });
+});

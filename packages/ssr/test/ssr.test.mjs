@@ -75,3 +75,13 @@ test('root attributes keep their entities, failed API calls can fail the render'
   assert.deepEqual(seen, [500]); // ... and the caller can see that it happened
   await assert.rejects(() => renderPage(page('<xo-view get="/users"><p>x</p></xo-view>'), { operations, fetch: failing, failOnError: true }), (e) => /1 API call\(s\) failed: listUsers/.test(e.message) && e.errors.length === 1);
 });
+
+test('a tree drawn by a template that uses itself (xo-define, xo-use) is prerendered, and the original markup stays for the browser', async () => {
+  const ops = { version: 1, entities: {}, operations: { getMenu: { id: 'getMenu', method: 'GET', path: '/menu', response: { t: 'object', props: {} } } } };
+  const menu = { label: 'Home', children: [{ label: 'Docs', children: [{ label: 'Guide', children: [] }] }, { label: 'Blog', children: [] }] };
+  const fetch = async () => new Response(JSON.stringify(menu), { status: 200 });
+  const html = await renderPage(page('<xo-view get="/menu"><template xo-define="node"><span>{label}</span><ul><li xo-each="children" xo-use="node"></li></ul></template><nav xo-use="node"></nav></xo-view>'), { operations: ops, fetch });
+  const shown = html.slice(html.lastIndexOf('<nav xo-use')); // the prerendered tree; before it the view keeps its own markup in a template
+  assert.deepEqual([...shown.matchAll(/<span>([^<]*)<\/span>/g)].map((m) => m[1]), ['Home', 'Docs', 'Guide', 'Blog']);
+  assert.match(html, /<template data-xo-template[^>]*>[\s\S]*xo-define="node"[\s\S]*xo-use="node"/); // the browser renders it again from this
+});

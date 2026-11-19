@@ -418,9 +418,11 @@ function bindNode(node, scope, ctx, disposers) {
     disposers.push(effect(() => t.apply(el, (name) => ctx.lookup(scope, name))));
   }
   let childScope = scope;
+  /** @type {string | null} */ let useSpec = null;
   // getAttributeNames(), not `attributes`: iterating `attributes` makes the browser create an Attr node for every attribute of every row and keep it as long as the row lives
   for (const name of el.getAttributeNames()) {
     const value = el.getAttribute(name) ?? '';
+    if (name === 'xo-use') { useSpec = value; continue; }
     if (name === 'xo-click' || name === 'xo-submit') {
       const engine = bindAction(el, name === 'xo-click' ? 'click' : 'submit', value, scope, ctx, disposers);
       if (engine) childScope = { value: () => engine.model.value, parent: scope, vars: { $form: () => engine.model } }; // `$form.dirty`, `$form.errors['title.vi']` ... inside the form
@@ -474,7 +476,53 @@ function bindNode(node, scope, ctx, disposers) {
     }
   }
   if (el.localName === 'xo-view') return; // a nested view binds its own children against its own data when it starts; the outer pass must not touch them (its `p-*` attributes above are bound to the outer scope)
+  if (useSpec !== null) return bindUse(el, useSpec, childScope, ctx, disposers);
   if (!translated) for (const child of [...el.childNodes]) bindNode(child, childScope, ctx, disposers); // a translated element's text is the message, not markup
+}
+
+/** How deep `xo-use` may nest (a template that names itself ends when its list is empty; this stops one that never does). */
+const MAX_USE_DEPTH = 32;
+const warnedUse = new Set();
+
+/** `<template xo-define="name">` of this view, then of the page. A name that is not a plain word is not a name (it may come from data). */
+function findTemplate(host, name) {
+  if (!/^[\w:.-]+$/.test(name)) return null;
+  const sel = `template[xo-define="${name}"]`;
+  return /** @type {HTMLTemplateElement | null} */ (host.querySelector(sel) ?? document.querySelector(sel));
+}
+
+/**
+ * `xo-use="name"` (or `xo-use="block-{type}"`): the element's content is the template of that name, bound against the current item, so a template can
+ * show a list of items that each name a template, itself included (a tree). On a `<template xo-use>` the content stands with no element around it.
+ * What the element holds itself is shown when no template has the name.
+ */
+function bindUse(el, spec, scope, ctx, disposers) {
+  const bare = el.localName === 'template';
+  const own = document.createDocumentFragment();
+  own.append(.../** @type {Node[]} */ ([...(bare ? /** @type {HTMLTemplateElement} */ (el).content.childNodes : el.childNodes)]));
+  const parts = parseInterpolation(spec);
+  /** @type {Comment} */ let end;
+  if (bare) { end = document.createComment('/xo-use'); el.replaceWith(document.createComment('xo-use'), end); }
+  let name = /** @type {string | null} */ (null), stops = /** @type {(() => void)[]} */ ([]), shown = /** @type {Node[]} */ ([]);
+  const clear = () => { stops.forEach((s) => s()); stops = []; for (const n of shown) n.remove(); shown = []; };
+  disposers.push(effect(() => {
+    const next = (parts ? evalParts(parts, scope, ctx.lookup) : spec).trim();
+    if (next === name) return;
+    name = next;
+    untracked(() => {
+      clear();
+      const depth = /** @type {any} */ (scope).useDepth + 1 || 1;
+      if (depth > MAX_USE_DEPTH) { console.error(`xoong: xo-use="${spec}" nests more than ${MAX_USE_DEPTH} deep: a template that uses itself needs a list that ends`); return; }
+      const def = findTemplate(ctx.host, next);
+      if (!def && !own.childNodes.length && !warnedUse.has(next)) { warnedUse.add(next); console.warn(`xoong: no <template xo-define="${next}"> for xo-use="${spec}"`); }
+      const frag = (def ? def.content : own).cloneNode(true);
+      shown = [...frag.childNodes];
+      if (bare) end.before(frag); else el.append(frag);
+      const inner = { ...scope, useDepth: depth };
+      batch(() => { for (const n of shown) bindNode(n, inner, ctx, stops); });
+    });
+  }));
+  disposers.push(clear);
 }
 
 /** Boolean attributes: `{flag}` as the whole value turns them on and off (an attribute with the value "false" would still count as set). */

@@ -58,6 +58,8 @@ Codes (every one has a message that names the fix, and the MCP tool `explain_err
 | XO278 | the first `xo-each` of a view does not match the response of its operation: an array is repeated with `.`, an object's array field by its name |
 | XO279 | `{...}` in an attribute holds an expression (`hidden="{!flag}"`), not a path: it stays as written |
 | XO280 | a form that edits a record (`{id}` in its operation) nested in an `<xo-view>` that has no `get` and no `p-id`: it has neither the record nor the id |
+| XO281 | `xo-use="name"` (a fixed name) with no `<template xo-define="name">` in the file and nothing inside to show instead |
+| XO282 | `xo-define` not on a `<template>`, or the same template name defined twice in one file |
 
 Locations are line:column. `--format json` prints the findings as a list. The exit code is 1 when there is an error (warnings do not fail
 it), 0 otherwise. Options that do not exist are refused for every command (`xoong check --exclud` is an error, not a silent no-op), and

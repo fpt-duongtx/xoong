@@ -308,11 +308,13 @@
 <tr><td><span id="xo279"><code>XO279</code></span></td><td>{...} reads a path of the data (optionally with a format: {date | datetime}); it is not an expression. A value such as {!$hasPrev}, {a &amp;&amp; b} or {n &gt; 1} is not a path, so it stays as written, and a boolean attribute holding any text is set: hidden="{!$hasPrev}" is always hidden. Bind a path that holds the boolean, or show and hide with xo-if="$hasPrev" and xo-if="!path".</td></tr>
 </tbody></table></div>
 <h3>Where the data of a screen reaches</h3>
-<p>A form that edits a record but sits in a view that does not load it, so it has neither the record nor the id.</p>
+<p>A form that edits a record but sits in a view that does not load it, so it has neither the record nor the id; xo-use naming a template that does not exist, and xo-define in the wrong place or twice.</p>
 <div class="table-wrap" tabindex="0"><table class="names">
 <thead><tr><th>Code</th><th>What it means and how to fix it</th></tr></thead>
 <tbody>
 <tr><td><span id="xo280"><code>XO280</code></span></td><td>A form that edits a record (its operation has a path parameter such as {id}) needs the &lt;xo-view get="..."&gt; that loads the record: the view fills the fields and gives the id. An &lt;xo-view&gt; without get nested around the form has neither, so the form is empty and the call has no id. Put the form directly inside the view that loads the record, or give its own view p-id="?id".</td></tr>
+<tr><td><span id="xo281"><code>XO281</code></span></td><td>xo-use="name" draws the template &lt;template xo-define="name"&gt;, but the file has none with that name, and the element holds nothing to show instead, so nothing is drawn. Add the template (in the view, or once in the page), or fix the name. A name with data in it (xo-use="block-{type}") is not checked: it is only known when the page runs.</td></tr>
+<tr><td><span id="xo282"><code>XO282</code></span></td><td>xo-define names the content of a &lt;template&gt; so that xo-use can draw it. It must be on a &lt;template&gt;, and a name should be defined once: with the same name twice in a file the first one in the view wins.</td></tr>
 </tbody></table></div>
 
 <h2 id="xoong-doctor-and-xoong-sync-xo1xx">xoong doctor and xoong sync (XO1xx)</h2>

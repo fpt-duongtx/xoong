@@ -2920,7 +2920,7 @@
    "id": "directives",
    "label": "Directives",
    "summary": "The xo-* attributes you put on your own markup: data, actions, form rows, routing, dialogs.",
-   "count": 37,
+   "count": 39,
    "entries": [
     {
      "id": "xo-each",
@@ -3002,6 +3002,51 @@
      },
      "guide": "data-states.html",
      "keywords": "reload retry try again refetch update"
+    },
+    {
+     "id": "xo-define",
+     "name": "xo-define",
+     "kind": "directive",
+     "category": "Read data",
+     "package": "@xoong/data",
+     "summary": "On a <template>: give its content a name.",
+     "description": "On a <template>: give its content a name. `xo-use=\"name\"` draws it, against the current item, anywhere in the view or the page. A template may use itself (a tree).",
+     "applies": "A `<template>` in a `<xo-view>`, or anywhere in the page (then every view can use it).",
+     "value": "A name: letters, digits, `-`, `_`, `.` or `:`.",
+     "values": null,
+     "notes": [
+      "The template is not drawn where it is written; `xo-use` draws it.",
+      "A name used twice in one view: the first one in the view wins; a view looks in itself, then in the page."
+     ],
+     "example": {
+      "lang": "html",
+      "code": "<xo-view get=\"listPeople\">\n  <template xo-define=\"person\"><b>{name}</b> <small>{role}</small></template>\n  <ul><li xo-each=\"items\" xo-use=\"person\"></li></ul>\n</xo-view>"
+     },
+     "guide": "data.html",
+     "keywords": "template name partial component include recursive tree"
+    },
+    {
+     "id": "xo-use",
+     "name": "xo-use",
+     "kind": "directive",
+     "category": "Read data",
+     "package": "@xoong/data",
+     "summary": "Draw the template named by this value (`<template xo-define=\"name\">`) as the content of this element, against the current item.",
+     "description": "Draw the template named by this value (`<template xo-define=\"name\">`) as the content of this element, against the current item. The name may hold data: `xo-use=\"block-{type}\"`. On a `<template xo-use>` the content stands with no element around it. What the element holds is shown when no template has the name.",
+     "applies": "Any element inside `<xo-view>`; on a `<template>` the content stands with no element around it.",
+     "value": "The name of a `<template xo-define>`, or a name with data in it: `block-{type}`.",
+     "values": null,
+     "notes": [
+      "The template is bound against the current item, so `{path}` inside it reads that item.",
+      "A template may use itself: a tree is one template with `xo-each=\"children\" xo-use=\"node\"`. It nests at most 32 deep.",
+      "When no template has the name, the element shows what it holds itself (the fallback); with nothing to show the console says so once per name."
+     ],
+     "example": {
+      "lang": "html",
+      "code": "<xo-view get=\"listPeople\">\n  <template xo-define=\"admin\"><b>{name}</b> is an admin</template>\n  <template xo-define=\"editor\"><i>{name}</i> edits</template>\n  <ul><li xo-each=\"items\" xo-use=\"{role}\"><small>{name}</small></li></ul>\n</xo-view>"
+     },
+     "guide": "data.html",
+     "keywords": "template include recursive tree polymorphic type block switch partial"
     },
     {
      "id": "xo-click",

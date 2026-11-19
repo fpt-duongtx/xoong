@@ -293,6 +293,36 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
 
 </xo-tabs>
 
+<h2 id="named-templates-and-trees">Named templates and trees</h2>
+<p><code>&lt;template xo-define="name"&gt;</code> gives markup a name and draws nothing where it is written. <code>xo-use="name"</code> draws it as the content of an element, against the
+current item. The name can hold data, so each item picks its template; what the element holds is the fallback when no template has that name (below, a viewer has none).</p>
+<xo-tabs label="xo-use" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-view get="listPeople">
+      <template xo-define="admin"><b>{name}</b> is an admin</template>
+      <template xo-define="editor"><i>{name}</i> edits</template>
+      <ul><li xo-each="items" xo-use="{role}"><small>{name}</small></li></ul>
+    </xo-view>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-define</span>=<span class="tok-s">"admin"</span>&gt;&lt;<span class="tok-t">b</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">b</span>&gt; is an admin&lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-define</span>=<span class="tok-s">"editor"</span>&gt;&lt;<span class="tok-t">i</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">i</span>&gt; edits&lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">ul</span>&gt;&lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span> <span class="tok-a">xo-use</span>=<span class="tok-s">"<span class="tok-i">{role}</span>"</span>&gt;&lt;<span class="tok-t">small</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">small</span>&gt;&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<p>A template may use itself. A menu, a comment thread or a page of nested blocks is one template instead of one per level; the recursion ends where <code>children</code> is
+empty, and a template that would never end is stopped at 32 levels. On a <code>&lt;template xo-use&gt;</code> the content stands with no element around it.</p>
+<xo-tabs label="A tree" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getMenu"</span>&gt;
+  &lt;<span class="tok-t">template</span> <span class="tok-a">xo-define</span>=<span class="tok-s">"node"</span>&gt;
+    &lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"<span class="tok-i">{url}</span>"</span>&gt;<span class="tok-i">{label}</span>&lt;/<span class="tok-t">a</span>&gt;
+    &lt;<span class="tok-t">ul</span>&gt;&lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"children"</span> <span class="tok-a">xo-use</span>=<span class="tok-s">"node"</span>&gt;&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;
+  &lt;/<span class="tok-t">template</span>&gt;
+  &lt;<span class="tok-t">nav</span> <span class="tok-a">xo-use</span>=<span class="tok-s">"node"</span>&gt;&lt;/<span class="tok-t">nav</span>&gt;
+&lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>
+</xo-tabs>
+
 <h2 id="loading-empty-and-error">Loading, empty and error</h2>
 <p>A view tells you in which state it is: <code>$loading</code> while a request runs, <code>$error</code> when it failed, and an empty list otherwise. <code>&lt;xo-table&gt;</code> shows its <code>empty</code> content only when the list is really empty (not while loading, not after an error); a <code>&lt;template slot="empty"&gt;</code> gives it any markup. <code>xo-refresh</code> on a button fetches the view's data again: a "Try again". Say what happened, what to do, and offer one action.</p>
 <p>Try it: type <strong>zzz</strong> for an empty list, or <strong>fail</strong>: the first request with it fails, and Try again then succeeds.</p>
@@ -359,7 +389,7 @@ configure({ api: operations, baseUrl: <span class="tok-s">'/api'</span> });</cod
     </main>
     <aside class="rail" aria-label="On this page">
       <h2>On this page</h2>
-      <ol><li><a href="#start-up" aria-current="true">Start-up</a></li><li><a href="#a-table-in-one-element">A table in one element</a></li><li><a href="#your-own-markup">Your own markup</a></li><li><a href="#loading-empty-and-error">Loading, empty and error</a></li><li><a href="#actions">Actions</a></li><li><a href="#errors-and-loading">Errors and loading</a></li></ol>
+      <ol><li><a href="#start-up" aria-current="true">Start-up</a></li><li><a href="#a-table-in-one-element">A table in one element</a></li><li><a href="#your-own-markup">Your own markup</a></li><li><a href="#named-templates-and-trees">Named templates and trees</a></li><li><a href="#loading-empty-and-error">Loading, empty and error</a></li><li><a href="#actions">Actions</a></li><li><a href="#errors-and-loading">Errors and loading</a></li></ol>
     </aside>
   </div>
   <footer class="foot">

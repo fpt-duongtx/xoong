@@ -348,6 +348,27 @@ export const DIRECTIVES = {
 </xo-view>`,
     notes: ['Inside it `{path}` reads the current item, `$index` is its position from 0 and `$n` from 1.', 'Rows are keyed by entity id, so a changed list updates the rows that changed.'],
   },
+  'xo-define': {
+    category: 'Read data', package: '@xoong/data', guide: 'data.html', keywords: 'template name partial component include recursive tree',
+    applies: 'A `<template>` in a `<xo-view>`, or anywhere in the page (then every view can use it).', value: 'A name: letters, digits, `-`, `_`, `.` or `:`.',
+    example: `
+<xo-view get="listPeople">
+  <template xo-define="person"><b>{name}</b> <small>{role}</small></template>
+  <ul><li xo-each="items" xo-use="person"></li></ul>
+</xo-view>`,
+    notes: ['The template is not drawn where it is written; `xo-use` draws it.', 'A name used twice in one view: the first one in the view wins; a view looks in itself, then in the page.'],
+  },
+  'xo-use': {
+    category: 'Read data', package: '@xoong/data', guide: 'data.html', keywords: 'template include recursive tree polymorphic type block switch partial',
+    applies: 'Any element inside `<xo-view>`; on a `<template>` the content stands with no element around it.', value: 'The name of a `<template xo-define>`, or a name with data in it: `block-{type}`.',
+    example: `
+<xo-view get="listPeople">
+  <template xo-define="admin"><b>{name}</b> is an admin</template>
+  <template xo-define="editor"><i>{name}</i> edits</template>
+  <ul><li xo-each="items" xo-use="{role}"><small>{name}</small></li></ul>
+</xo-view>`,
+    notes: ['The template is bound against the current item, so `{path}` inside it reads that item.', 'A template may use itself: a tree is one template with `xo-each="children" xo-use="node"`. It nests at most 32 deep.', 'When no template has the name, the element shows what it holds itself (the fallback); with nothing to show the console says so once per name.'],
+  },
   'xo-if': {
     category: 'Read data', package: '@xoong/data', guide: 'data-states.html', keywords: 'condition show hide when conditional loading empty error',
     applies: 'Any element inside `<xo-view>`.', value: 'A path (`$loading`, `items`), `!path` to negate, or a comparison with a text: `type=image`, `status!=draft`.',

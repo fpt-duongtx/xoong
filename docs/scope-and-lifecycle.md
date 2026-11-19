@@ -41,6 +41,45 @@ that row's id:
 </xo-view>
 ```
 
+## Named templates: a tree, or a template chosen by the data
+
+`<template xo-define="name">` gives markup a name and draws nothing where it is written. `xo-use="name"` draws it as the content of that element, **bound against the
+current item**, so `{path}` inside the template reads the item the element stands for. A view looks for the name among its own templates, then in the page (a
+template written once in the page is there for every view).
+
+A template may use itself, which is how a tree (a menu, a comment thread, a page made of nested blocks) is one template instead of one per level:
+
+```html
+<xo-view get="getMenu">
+  <template xo-define="node">
+    <a href="{url}">{label}</a>
+    <ul><li xo-each="children" xo-use="node"></li></ul>
+  </template>
+  <nav xo-use="node"></nav>
+</xo-view>
+```
+
+The recursion ends where `children` is empty or missing (an `xo-each` over nothing draws nothing). A template that would never end is stopped at **32** nested
+uses, with one message in the console.
+
+The name may hold data, so the item chooses its template (a page made of blocks of different types):
+
+```html
+<template xo-define="text"><p>{text}</p></template>
+<template xo-define="image"><figure><img src="{src}" alt="{alt}"></figure></template>
+<article><template xo-each="blocks"><template xo-use="{type}"></template></template></article>
+<!-- or with a prefix: xo-use="block-{type}" -->
+```
+
+* On a `<template xo-use>` the content stands **with no element around it** (an `<h2>`, a `<p>` and a `<figure>` side by side, valid inside an `<article>`).
+  On any other element, the template is its content.
+* **What the element holds is the fallback**: `<div xo-use="block-{type}"><i>unknown block</i></div>` shows the note when no template has that name. With nothing to
+  show, the console says `no <template xo-define="...">` once per name, and nothing is drawn.
+* A name is letters, digits, `-`, `_`, `.` or `:`. Anything else (it may come from data) never selects a template.
+* The name is read again when its data changes: the content is redrawn with the other template.
+* `xoong check`: XO281 (a fixed `xo-use` name that no template defines, with the closest name), XO282 (`xo-define` away from a `<template>`, or a name defined twice).
+  `xo-each` inside a named template is not compared with the view's response (XO278): the template is drawn against another item.
+
 ## Repeating several elements, and boolean attributes
 
 `xo-each` repeats the element it is on. To repeat a group of children with no wrapper (an article body of mixed blocks), put it on a `<template>`:

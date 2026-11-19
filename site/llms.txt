@@ -48,6 +48,7 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   Variables: `$loading`, `$refreshing`, `$error` (`status`, `code`, `detail`), `$index`, `$stream`/`$streaming`. Text is escaped;
   `javascript:` URLs become about:blank; `on*`, `srcdoc` are not interpolated.
 - `xo-each="path"` repeats the element per item of an array: `.` when the response is itself an array (the operations list says `Post[]`), `items` for `{ items: User[] }`; keyed by entity id; on a `<template>` it repeats its children. `xo-if="path"` / `xo-if="!path"` (empty array: false). `hidden="{flag}"`, `disabled="{flag}"`: booleans follow the data.
+- `<template xo-define="n">` names markup; `xo-use="n"` (or `"{type}"`) draws it against the current item. A template may use itself (a tree: `<li xo-each="children" xo-use="n">`); what the element holds shows if no template has the name.
 - `xo-click="OP"` calls one; `xo-submit="OP"` on a `<form>` sends its fields as JSON (see Forms; `xo-keep` keeps them). `xo-body="path"`: a click's body from the scope.
   OP = "METHOD /path/{param}" or an operationId; `{param}` comes from the item, then the view's `p-*`.
 - `xo-optimistic="status=disabled"` on an xo-click in xo-each applies at once; undone on failure.

@@ -42,6 +42,21 @@ const kitWide = (file) => {
 
 const VERSION = JSON.parse(readFileSync(new URL('../../packages/xoong/package.json', import.meta.url), 'utf8')).version; // the release the install page names
 
+const USE = `
+<xo-view get="listPeople">
+  <template xo-define="admin"><b>{name}</b> is an admin</template>
+  <template xo-define="editor"><i>{name}</i> edits</template>
+  <ul><li xo-each="items" xo-use="{role}"><small>{name}</small></li></ul>
+</xo-view>`;
+
+const TREE = `<xo-view get="getMenu">
+  <template xo-define="node">
+    <a href="{url}">{label}</a>
+    <ul><li xo-each="children" xo-use="node"></li></ul>
+  </template>
+  <nav xo-use="node"></nav>
+</xo-view>`;
+
 const TABLE = `
 <xo-view get="listPeople">
   <xo-table columns="name,email:E-mail,role" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
@@ -383,6 +398,14 @@ ${example({
   </ul>
 </xo-view>`,
 })}
+
+<h2>Named templates and trees</h2>
+<p><code>&lt;template xo-define="name"&gt;</code> gives markup a name and draws nothing where it is written. <code>xo-use="name"</code> draws it as the content of an element, against the
+current item. The name can hold data, so each item picks its template; what the element holds is the fallback when no template has that name (below, a viewer has none).</p>
+${example({ label: 'xo-use', preview: USE })}
+<p>A template may use itself. A menu, a comment thread or a page of nested blocks is one template instead of one per level; the recursion ends where <code>children</code> is
+empty, and a template that would never end is stopped at 32 levels. On a <code>&lt;template xo-use&gt;</code> the content stands with no element around it.</p>
+${tabs('A tree', [['HTML', 'html', TREE]])}
 
 <h2>Loading, empty and error</h2>
 <p>A view tells you in which state it is: <code>$loading</code> while a request runs, <code>$error</code> when it failed, and an empty list otherwise. <code>&lt;xo-table&gt;</code> shows its <code>empty</code> content only when the list is really empty (not while loading, not after an error); a <code>&lt;template slot="empty"&gt;</code> gives it any markup. <code>xo-refresh</code> on a button fetches the view's data again: a "Try again". Say what happened, what to do, and offer one action.</p>
@@ -1074,7 +1097,7 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
   {
     file: 'controls-demo.html', section: 'docs', group: 'Controls', nav: 'All controls', title: 'All controls', demo: true, richtext: true,
     description: 'Every control with realistic content, in one place.',
-    body: kit('controls-demo.html'),
+    body: kit('controls-demo.html').replace(/<xo-view get="listPeople">[\s\S]*?<\/xo-view>/, TABLE.trim()), // the kit holds the table as drawn (static rows); the page runs the real elements, so the view holds the markup that draws it
   },
   {
     file: 'overlays.html', section: 'docs', group: 'Overlays', nav: 'All overlays', title: 'Overlays and copy feedback',

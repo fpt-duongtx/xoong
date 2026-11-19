@@ -36,6 +36,8 @@
  *   XO277 <xo-form>, xo-click, xo-param or xo-refresh outside an <xo-view>: nothing handles it, and nothing says so at run time
  *   XO278 xo-each (the first of a view) does not match the response of the view's operation: an array is repeated with ".", an object's array field by its name
  *   XO279 {...} in an attribute holds an expression (`hidden="{!flag}"`), not a path: it stays as written
+ *   XO281 xo-use="name" (a fixed name) with no <template xo-define="name"> in the file and nothing inside to show instead
+ *   XO282 xo-define not on a <template>, or the same template name defined twice in one file
  *   XO280 a form that edits a record ({id} in its operation) inside an <xo-view> that has no get and no p-id: nested around the form, that view has neither the record nor the id
  *   (XO250 and XO251 apply to <xo-pager> as they do to <xo-table>)
  */
@@ -54,7 +56,7 @@ const INTERACTIVE = new Set(['button', 'a', 'input', 'select', 'textarea', 'summ
 const NEEDS_ACTION = ['xo-then', 'xo-notice', 'xo-confirm', 'xo-body', 'xo-optimistic'];
 const CONFIRM_DETAILS = ['xo-confirm-title', 'xo-confirm-ok', 'xo-confirm-cancel', 'xo-confirm-kind'];
 /** A value is required (an empty one is a mistake). `xo-keep`, `xo-close`, `xo-selected` and the like are fine without one. */
-const NEEDS_VALUE = ['xo-each', 'xo-if', 'xo-body', 'xo-then', 'xo-confirm', 'xo-with', 'xo-optimistic', 'xo-open', 'xo-add', 'xo-remove', 'xo-move', 'xo-drag'];
+const NEEDS_VALUE = ['xo-each', 'xo-if', 'xo-use', 'xo-define', 'xo-body', 'xo-then', 'xo-confirm', 'xo-with', 'xo-optimistic', 'xo-open', 'xo-add', 'xo-remove', 'xo-move', 'xo-drag'];
 /** Values the runtime also accepts, but the documentation does not offer. */
 const VALUE_ALIASES = { 'xo-confirm-kind': ['error'] };
 
@@ -122,6 +124,15 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
       const id = attr(child, 'id')?.value;
       if (id && !ids.has(id)) ids.set(id, child.tagName);
       collect(child);
+    }
+  })(document);
+  /** name -> how many `<template xo-define="name">` the file has (what xo-use="name" can find). */
+  const defined = new Map();
+  (function collectDefs(node) {
+    for (const child of node.nodeName === 'template' ? node.content?.childNodes ?? [] : node.childNodes ?? []) {
+      const name = child.tagName === 'template' ? attr(child, 'xo-define')?.value.trim() : undefined;
+      if (name) defined.set(name, (defined.get(name) ?? 0) + 1);
+      collectDefs(child);
     }
   })(document);
 
@@ -254,9 +265,20 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
       // XO277: what reads or writes through a view only works inside one. Outside, the element stays as written: no form, no click, no parameter, and no error at run time.
       if (!fragment && !view) {
         if (tag === 'xo-form') report('error', 'XO277', node, undefined, '<xo-form> is not inside an <xo-view>, so it is never expanded: the page shows no form and no error', 'Wrap it: <xo-view><xo-form op="POST /things" submit="Add"></xo-form></xo-view> (an <xo-view> without get is fine for a form)');
-        for (const n of ['xo-click', 'xo-param', 'xo-refresh']) {
+        for (const n of ctx.define ? ['xo-click', 'xo-param', 'xo-refresh'] : ['xo-click', 'xo-param', 'xo-refresh', 'xo-use']) {
           if (attr(node, n) !== undefined) report('error', 'XO277', node, n, `${n} is not inside an <xo-view>, so nothing handles it: the element does nothing`, 'Put it inside the <xo-view> whose data it acts on (a button that sets xo-param or calls an operation lives in that view)');
         }
+      }
+      // XO281 / XO282: a template is defined once, on a <template>, and xo-use names one that exists
+      const defName = attr(node, 'xo-define');
+      if (defName) {
+        if (tag !== 'template') report('error', 'XO282', node, 'xo-define', `xo-define must be on a <template>, found <${tag}>`, 'Move xo-define to a <template> that holds the markup to reuse');
+        else if (defined.get(defName.value.trim()) > 1) report('warn', 'XO282', node, 'xo-define', `the template name "${defName.value.trim()}" is defined ${defined.get(defName.value.trim())} times in this file: the first one in the view wins`, 'Give each template its own name');
+      }
+      const useName = attr(node, 'xo-use');
+      if (useName && !fragment && useName.value.trim() && !/[{}]/.test(useName.value) && !defined.has(useName.value.trim()) && !node.childNodes?.length && !node.content?.childNodes?.length) {
+        const hint = nearest(useName.value.trim(), [...defined.keys()]);
+        report('warn', 'XO281', node, 'xo-use', `no <template xo-define="${useName.value.trim()}"> in this file${hint ? ` (closest: "${hint}")` : ''}, and the element holds nothing to show instead`, hint ? `Use xo-use="${hint}"` : 'Add <template xo-define="' + useName.value.trim() + '">...</template> (in the view, or once in the page), or fix the name');
       }
       if (tag === 'xo-form') {
         const ref = attr(node, 'op');
@@ -276,8 +298,8 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           report('error', 'XO221', node, a.name, `${a.name} is empty`, a.name === 'xo-confirm' ? 'Write the question: xo-confirm="Delete {title}?"' : a.name === 'xo-then' ? 'Write the path to go to: xo-then="/articles/{id}"' : a.name === 'xo-open' ? 'Name the dialog: xo-open="#add"' : `Give ${a.name} a value, for example ${a.name}="${a.name === 'xo-with' || a.name === 'xo-optimistic' ? 'status=done' : 'items'}"`);
         }
         attributeRules(node, tag, a, view, ctx);
-        // XO278: the first xo-each of a view repeats the response of the view's operation: an array response is repeated with ".", an object's array field by its name
-        if (a.name === 'xo-each' && view && !ctx.each && a.value.trim() && !a.value.trim().startsWith('$')) {
+        // XO278 (not inside a named template: it is drawn against another item): the first xo-each of a view repeats the response of the view's operation: an array response is repeated with ".", an object's array field by its name
+        if (a.name === 'xo-each' && view && !ctx.each && !ctx.define && a.value.trim() && !a.value.trim().startsWith('$')) {
           const viewOp = attr(view, 'get') ? opOf(attr(view, 'get').value) : undefined;
           const resp = viewOp?.response;
           const path = a.value.trim();
@@ -359,7 +381,7 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           }
         }
       }
-      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog' || tag === 'xo-drawer', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined), each: (ctx.each && tag !== 'xo-view') || attr(node, 'xo-each') !== undefined };
+      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog' || tag === 'xo-drawer', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined), define: ctx.define || (tag === 'template' && attr(node, 'xo-define') !== undefined), each: (ctx.each && tag !== 'xo-view') || attr(node, 'xo-each') !== undefined };
     }
     for (const child of children) walk(child, ctx);
   }
