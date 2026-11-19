@@ -1,0 +1,1 @@
+Build `index.html`: the list of notes (their text). While the notes load show "Loading…"; when loading fails show the error message the server sent and a Retry button that asks again; when it works show the notes. Use only what the xoong spec allows.

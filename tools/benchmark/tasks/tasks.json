@@ -90,5 +90,47 @@
       "xo-param",
       "$hasNext|offset"
     ]
+  },
+  "edit-article": {
+    "spec": "edit-article/openapi.json",
+    "files": [
+      "edit.html"
+    ],
+    "mustUse": [
+      "getArticle",
+      "updateArticle"
+    ],
+    "mustContain": [
+      "xo-submit|xo-form",
+      "p-id"
+    ]
+  },
+  "bulk-delete": {
+    "spec": "bulk-delete/openapi.json",
+    "files": [
+      "index.html"
+    ],
+    "mustUse": [
+      "listTasks",
+      "deleteTasks"
+    ],
+    "mustContain": [
+      "xo-table|xo-select",
+      "xo-selected"
+    ]
+  },
+  "error-retry": {
+    "spec": "error-retry/openapi.json",
+    "files": [
+      "index.html"
+    ],
+    "mustUse": [
+      "listNotes"
+    ],
+    "mustContain": [
+      "$loading",
+      "$error",
+      "xo-refresh|xo-param"
+    ]
   }
 }

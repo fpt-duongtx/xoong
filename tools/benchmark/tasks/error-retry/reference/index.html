@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Notes</title></head>
+<body><main><h1>Notes</h1>
+<xo-view get="listNotes">
+<p xo-if="$loading">Loading…</p>
+<p xo-if="$error">{$error.detail} <button xo-refresh>Retry</button></p>
+<ul><li xo-each=".">{text}</li></ul>
+</xo-view></main></body></html>

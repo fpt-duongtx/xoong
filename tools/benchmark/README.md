@@ -6,7 +6,9 @@ repeated later (a new model, a changed `llms.txt`, a new xoong version) and the 
 
 ## What is measured
 
-Six tasks (`tasks/tasks.json`), from a public blog to an admin table with a dialog, each with an OpenAPI file, a task text and a reference solution:
+Nine tasks (`tasks/tasks.json`), from a public blog to an admin table with a dialog, each with an OpenAPI file, a task text and a reference solution. The last three were added in suite
+version 3 and were **not** used to find the gaps that `llms.txt`, `xoong check` and the operations list were fixed for (the first six were), so they are the check that those fixes are not only
+tuned to their own tasks:
 
 | Task | What it asks for | Tests |
 |---|---|---|
@@ -16,6 +18,9 @@ Six tasks (`tasks/tasks.json`), from a public blog to an admin table with a dial
 | `live-updates` | a list that updates when the server pushes | `live`, stream events |
 | `admin-table` | sortable, searchable table, 10 per page, an Add dialog with a form | the admin set: `xo-table`, `xo-dialog`, `xo-form` |
 | `paging-filter` | 5 per page, Previous/Next, Draft/Published filters | `xo-param`, `$hasPrev`, `$hasNext` |
+| `edit-article` | edit the article whose id is in `?id=`, a filled form, Save | `p-id="?id"`, a form filled from the record, `PUT` with the id |
+| `bulk-delete` | a table with a checkbox per row and Delete selected, one request | `xo-table selectable`, `xo-selected`, a body with `ids` |
+| `error-retry` | Loading…, the server's error message and Retry, then the notes | `$loading`, `$error`, `xo-refresh` |
 
 An attempt passes when **both** stages pass:
 

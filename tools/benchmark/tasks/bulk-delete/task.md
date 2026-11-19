@@ -1,0 +1,1 @@
+Build `index.html`: a table of the tasks (title and whether it is done), 10 per page, with a checkbox on every row and a "Delete selected" button that deletes all the ticked rows with a single request. Use only what the xoong spec allows.

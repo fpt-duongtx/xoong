@@ -205,6 +205,65 @@ const BEHAVIOURS = {
     check(api.unhandled.length === 0, `calls to operations that are not in the API: ${api.unhandled.join(', ')}`);
     s.unmount();
   },
+  'edit-article': async ({ mount, api, files, check, fill, win }) => {
+    win.happyDOM.setURL('http://xoong.local/edit.html?id=7'); // not the 3 of the task's example: a page that writes the id in cannot pass
+    const s = await mount(files['edit.html']);
+    check(api.callsOf('getArticle').some((c) => c.params.id === '7'), 'the page does not ask getArticle for the id in the page address (?id=7)');
+    const form = s.$('form');
+    if (check(!!form, 'there is no form')) {
+      const title = form.querySelector('[name=title]');
+      const body = form.querySelector('[name=body]');
+      check(title?.value === 'Hello xoong', `the title field is not filled with the article's title (it holds "${title?.value ?? 'no field'}")`);
+      check(body?.value === 'Body three', `the body field is not filled with the article's body (it holds "${body?.value ?? 'no field'}")`);
+      const missing = fill(form, { title: 'New title' });
+      check(missing.length === 0, `the form has no field for: ${missing.join(', ')}`);
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await s.settle();
+      const call = api.callsOf('updateArticle')[0];
+      check(!!call, 'Save did not call updateArticle');
+      if (call) check(call.params.id === '7' && call.body?.title === 'New title' && call.body?.body === 'Body three', `updateArticle got id ${call.params.id} and ${JSON.stringify(call.body)} (expected id 7, the new title and the unchanged body)`);
+    }
+    check(api.unhandled.length === 0, `calls to operations that are not in the API: ${api.unhandled.join(', ')}`);
+    s.unmount();
+    win.happyDOM.setURL('http://xoong.local/');
+  },
+
+  'bulk-delete': async ({ mount, api, files, check, text, buttonsLike }) => {
+    const s = await mount(files['index.html']);
+    check(/Write tests/.test(text()) && /Ship it/.test(text()), 'the table does not show the task titles');
+    const first = api.callsOf('listTasks')[0];
+    check(first?.query?.limit === '10', `the table should ask for 10 rows per page (limit=${first?.query?.limit ?? 'none'})`);
+    const boxes = s.$$('tbody input[type=checkbox]');
+    check(boxes.length >= 3, `expected a checkbox on every row (found ${boxes.length})`);
+    for (const b of boxes.slice(0, 2)) { b.checked = true; b.dispatchEvent(new Event('change', { bubbles: true })); b.dispatchEvent(new Event('input', { bubbles: true })); }
+    await s.settle();
+    const del = buttonsLike(/delete selected/i)[0]; // a table shows its bulk buttons only while rows are ticked
+    if (check(!!del, 'there is no "Delete selected" button (to be shown once rows are ticked)')) {
+      await s.click(del);
+      const calls = api.callsOf('deleteTasks');
+      check(calls.length === 1, `deleting the ticked rows should send one request (it sent ${calls.length})`);
+      if (calls[0]) check(JSON.stringify([...(calls[0].body?.ids ?? [])].sort()) === '[1,2]', `deleteTasks got ${JSON.stringify(calls[0].body)} instead of the ids of the two ticked rows [1,2]`);
+    }
+    check(api.unhandled.length === 0, `calls to operations that are not in the API: ${api.unhandled.join(', ')}`);
+    s.unmount();
+  },
+
+  'error-retry': async ({ mount, api, files, check, text, buttonsLike }) => {
+    const s = await mount(files['index.html']);
+    await s.settle();
+    check(/Try again later/.test(text()), 'when loading fails the page does not show the message the server sent');
+    check(!/Buy milk/.test(text()), 'the notes must not show while loading failed');
+    const retry = buttonsLike(/retry/i)[0];
+    if (check(!!retry, 'there is no Retry button when loading fails')) {
+      await s.click(retry);
+      await s.settle();
+      check(api.callsOf('listNotes').length >= 2, 'Retry did not ask for the notes again');
+      check(/Buy milk/.test(text()) && /Call Ada/.test(text()), 'after Retry works the notes are not shown');
+      check(!/Try again later/.test(text()), 'the error message is still shown after Retry worked');
+    }
+    check(api.unhandled.length === 0, `calls to operations that are not in the API: ${api.unhandled.join(', ')}`);
+    s.unmount();
+  },
 };
 
 /** The mock handlers of every task, in one place. */
@@ -233,6 +292,15 @@ function handlersOf(task, respond) {
         return { items: rows.slice(offset, offset + limit), total: rows.length };
       },
     },
+    'edit-article': {
+      getArticle: ({ params }) => ({ id: Number(params.id), title: 'Hello xoong', body: 'Body three' }),
+      updateArticle: ({ params, body }) => ({ id: Number(params.id), ...body }),
+    },
+    'bulk-delete': {
+      listTasks: ({ query }) => { const all = [{ id: 1, title: 'Write tests', done: true }, { id: 2, title: 'Ship it', done: false }, { id: 3, title: 'Rest', done: false }]; return { items: all.slice(Number(query.offset ?? 0), Number(query.offset ?? 0) + Number(query.limit ?? 10)), total: all.length }; },
+      deleteTasks: () => respond(204, null),
+    },
+    'error-retry': (() => { let n = 0; return { listNotes: () => (n++ === 0 ? respond(503, { error: { code: 'unavailable', message: 'Try again later' } }) : [{ id: 1, text: 'Buy milk' }, { id: 2, text: 'Call Ada' }]) }; })(),
     'shared-data': {
       listOrders: () => ({ items: [{ id: 1, total: 30, customer: { id: 7, name: 'Ada Lovelace', email: 'ada@example.test' } }, { id: 2, total: 45, customer: { id: 8, name: 'Grace Hopper', email: 'grace@example.test' } }] }),
       listCustomers: () => [{ id: 7, name: 'Ada Lovelace', email: 'ada@example.test' }, { id: 8, name: 'Grace Hopper', email: 'grace@example.test' }],

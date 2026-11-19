@@ -12,8 +12,12 @@ import { describeResponse } from '../../packages/cli/src/check.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '../..');
 
-/** Bump when the protocol or the way a task is scored changes in a way that makes old results incomparable. */
-export const SUITE_VERSION = 2;
+/**
+ * Bump when the protocol or the way a task is scored changes in a way that makes old results incomparable.
+ * 3 = 2 plus three tasks the first six were never tuned on (`edit-article`, `bulk-delete`, `error-retry`); the scoring of the six is unchanged,
+ * so a per-task result of version 2 can be compared with one of version 3 when the prompt hashes match.
+ */
+export const SUITE_VERSION = 3;
 
 export const tasks = JSON.parse(await readFile(join(here, 'tasks/tasks.json'), 'utf8'));
 

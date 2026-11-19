@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Tasks</title></head>
+<body><main><h1>Tasks</h1>
+<xo-view get="listTasks">
+<xo-table columns="title:Title,done:Done" selectable page-size="10" empty="No tasks"><button slot="bulk" xo-click="deleteTasks" xo-selected="ids">Delete selected</button></xo-table>
+</xo-view></main></body></html>

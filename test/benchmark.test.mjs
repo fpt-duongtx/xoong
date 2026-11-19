@@ -41,6 +41,21 @@ describe('benchmark scorer', () => {
     expect(r.behaviour.join('\n')).toMatch(/the form has no field for: name, role/);
   });
 
+  it('the three later tasks reject their typical mistakes', async () => {
+    // edit-article: the id is written into the page, not read from the page address
+    const noFill = await score('edit-article', await attempt('edit-article', { 'edit.html': '<xo-view get="getArticle" p-id="3"><form xo-submit="updateArticle"><input name="title"><textarea name="body"></textarea><button>Save</button></form></xo-view>' }));
+    expect(noFill.pass).toBe(false);
+    expect(noFill.behaviour.join('\n')).toMatch(/ask getArticle for the id in the page address/);
+    // bulk-delete: one Delete per row instead of one request for the ticked rows
+    const perRow = await score('bulk-delete', await attempt('bulk-delete', { 'index.html': '<xo-view get="listTasks"><table><tr xo-each="items"><td><input type="checkbox" xo-select></td><td>{title}</td><td><button xo-click="deleteTasks" xo-selected="ids">Delete selected</button></td></tr></table></xo-view>' }));
+    expect(perRow.pass).toBe(false);
+    // error-retry: no Retry button, and the error never shown
+    const silent = await score('error-retry', await attempt('error-retry', { 'index.html': '<xo-view get="listNotes"><p xo-if="$loading">Loading…</p><p xo-if="$error">Something went wrong</p><ul><li xo-each=".">{text}</li></ul></xo-view>' }));
+    expect(silent.pass).toBe(false);
+    expect(silent.behaviour.join('\n')).toMatch(/does not show the message the server sent/);
+    expect(silent.behaviour.join('\n')).toMatch(/no Retry button/);
+  });
+
   it('an empty page and a hard-coded table fail with reasons a person can act on', async () => {
     const hard = await score('crud-admin', await attempt('crud-admin', { 'index.html': '<table><tr><td>Ada Lovelace</td><td><button>Disable</button><button>Delete</button></td></tr></table>' }));
     expect(hard.pass).toBe(false);

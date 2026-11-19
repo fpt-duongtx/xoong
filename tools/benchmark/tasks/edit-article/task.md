@@ -1,0 +1,1 @@
+Build `edit.html`: a page that edits the article whose id is in the page address (`edit.html?id=3`). Show the article's title and body in a form, filled in, with a Save button that sends the changes. Use only what the xoong spec allows.
