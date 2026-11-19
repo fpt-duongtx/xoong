@@ -1,0 +1,303 @@
+{
+ "suiteVersion": 3,
+ "runs": [
+  {
+   "id": "2026-11-19-claude-sonnet-5-5-096088",
+   "date": "2026-11-19",
+   "model": "claude-sonnet-5-5",
+   "note": "WITH a feedback loop: the assistant wrote the files, ran xoong check (at most 3 times) and fixed what it reported; 1 attempt per task, suite 3, llms.txt after XO280. All 18 ran the check once and had nothing to fix, except Sonnet on paging-filter (2 rounds: XO279 in the first)",
+   "commit": "14cd383",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.57",
+   "llmsSha256": "09608804431d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "db51455ced5c",
+    "crud-admin": "1ded55131f49",
+    "shared-data": "4a7f811b47fd",
+    "live-updates": "850a72c6aca6",
+    "admin-table": "63d0cf47ebcf",
+    "paging-filter": "bd94b32302b8",
+    "edit-article": "a719bd698841",
+    "bulk-delete": "0d2108ca69cb",
+    "error-retry": "bf1b688d508c"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "crud-admin": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "shared-data": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "live-updates": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "admin-table": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "paging-filter": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "edit-article": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "bulk-delete": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "error-retry": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    }
+   },
+   "total": {
+    "attempts": 9,
+    "passed": 9,
+    "staticPassed": 9
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ]
+  },
+  {
+   "id": "2026-11-19-claude-haiku-5-5-096088",
+   "date": "2026-11-19",
+   "model": "claude-haiku-5-5",
+   "note": "WITH a feedback loop: the assistant wrote the files, ran xoong check (at most 3 times) and fixed what it reported; 1 attempt per task, suite 3, llms.txt after XO280. All 18 ran the check once and had nothing to fix, except Sonnet on paging-filter (2 rounds: XO279 in the first)",
+   "commit": "14cd383",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.57",
+   "llmsSha256": "09608804431d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "db51455ced5c",
+    "crud-admin": "1ded55131f49",
+    "shared-data": "4a7f811b47fd",
+    "live-updates": "850a72c6aca6",
+    "admin-table": "63d0cf47ebcf",
+    "paging-filter": "bd94b32302b8",
+    "edit-article": "a719bd698841",
+    "bulk-delete": "0d2108ca69cb",
+    "error-retry": "bf1b688d508c"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "crud-admin": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "shared-data": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "live-updates": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "admin-table": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "paging-filter": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "edit-article": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "bulk-delete": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    },
+    "error-retry": {
+     "attempts": 1,
+     "passed": 1,
+     "staticPassed": 1
+    }
+   },
+   "total": {
+    "attempts": 9,
+    "passed": 9,
+    "staticPassed": 9
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ]
+  }
+ ]
+}

@@ -1125,6 +1125,248 @@
     }
    ],
    "answers": "benchmarks/ai/answers/2026-11-19-claude-haiku-5-5-836ea5"
+  },
+  {
+   "id": "2026-11-19-claude-sonnet-5-5-096088",
+   "date": "2026-11-19",
+   "model": "claude-sonnet-5-5",
+   "note": "single turn on the final llms.txt (XO280 sentence in rule 7), only the three tasks with a form (crud-admin, admin-table, edit-article); the other six tasks were not re-run for this wording. The one failure (Haiku, edit-article) put xo-notice on the button instead of the form, which xoong check reports (XO270)",
+   "commit": "14cd383",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.57",
+   "llmsSha256": "09608804431d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "db51455ced5c",
+    "crud-admin": "1ded55131f49",
+    "shared-data": "4a7f811b47fd",
+    "live-updates": "850a72c6aca6",
+    "admin-table": "63d0cf47ebcf",
+    "paging-filter": "bd94b32302b8",
+    "edit-article": "a719bd698841",
+    "bulk-delete": "0d2108ca69cb",
+    "error-retry": "bf1b688d508c"
+   },
+   "perTask": {
+    "crud-admin": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "admin-table": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "edit-article": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 9,
+    "passed": 9,
+    "staticPassed": 9
+   },
+   "attempts": [
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-19-claude-sonnet-5-5-096088"
+  },
+  {
+   "id": "2026-11-19-claude-haiku-5-5-096088",
+   "date": "2026-11-19",
+   "model": "claude-haiku-5-5",
+   "note": "single turn on the final llms.txt (XO280 sentence in rule 7), only the three tasks with a form (crud-admin, admin-table, edit-article); the other six tasks were not re-run for this wording. The one failure (Haiku, edit-article) put xo-notice on the button instead of the form, which xoong check reports (XO270)",
+   "commit": "14cd383",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.57",
+   "llmsSha256": "09608804431d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "db51455ced5c",
+    "crud-admin": "1ded55131f49",
+    "shared-data": "4a7f811b47fd",
+    "live-updates": "850a72c6aca6",
+    "admin-table": "63d0cf47ebcf",
+    "paging-filter": "bd94b32302b8",
+    "edit-article": "a719bd698841",
+    "bulk-delete": "0d2108ca69cb",
+    "error-retry": "bf1b688d508c"
+   },
+   "perTask": {
+    "crud-admin": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "admin-table": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "edit-article": {
+     "attempts": 3,
+     "passed": 2,
+     "staticPassed": 2
+    }
+   },
+   "total": {
+    "attempts": 9,
+    "passed": 8,
+    "staticPassed": 8
+   },
+   "attempts": [
+    {
+     "task": "crud-admin",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "crud-admin",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "admin-table",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run1",
+     "pass": false,
+     "staticPass": false,
+     "failures": [
+      "edit.html:24 XO270 xo-notice does nothing here: there is no xo-click or xo-submit on the same element"
+     ],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-19-claude-haiku-5-5-096088"
   }
  ]
 }
