@@ -3,6 +3,10 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+* Fixed (site): the **All controls** page showed no data table and no icons in the rich-text toolbar: it holds the markup of live elements but did not load the demo script, so `<xo-view>` and `<xo-richtext>` were never defined (the page CSS hides an undefined view). It now loads it. The **"On this page"** rail of that page listed the titles of the open dialogs and the editor content, and not its sections; the generator now lists headings that already had an id (so More controls, Components, Data states, Focus audit, Icons and Theme builder get a rail too) and leaves out headings inside examples (dialog, editor, side panel). `test/site-rail.test.mjs` keeps both.
+
 ## 0.0.58 (what the AI benchmark found: XO277 to XO280, response shapes, a benchmark suite)
 
 * Added (benchmark): the **AI first-attempt suite, version 2**, repeatable and stored. Six tasks (new: `admin-table`, `paging-filter`); a **behaviour stage** that mounts the page in happy-dom against a mock of the task's API and exercises it (so "works" is measured, not only "looks right"); one fixed single-turn prompt per task with hashes of `llms.txt`, the instructions and the prompt (`tools/benchmark/prepare.mjs`); `extract.mjs` and `record.mjs` turn raw answers into a recorded run in `benchmarks/results/ai.json`, with the answers kept in `benchmarks/ai/answers/`. How to run it again: `tools/benchmark/README.md`.

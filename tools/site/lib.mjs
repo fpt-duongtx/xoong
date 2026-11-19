@@ -128,11 +128,18 @@ ${side.replace(/^/gm, '    ')}
   const heads = [];
   // a table that is wider than the column scrolls inside its own frame (focusable, so the keyboard can scroll it)
   const framed = page.body.replace(/<div class="table-wrap"(?![^>]*tabindex)/g, '<div class="table-wrap" tabindex="0"').replace(/(<div class="table-wrap"[^>]*>\s*)?(<table\b[\s\S]*?<\/table>)/g, (m, wrap, table) => (wrap ? m : `<div class="table-wrap" tabindex="0">${table}</div>`));
-  const bodyHtml = framed.replace(/<h2>(.*?)<\/h2>/g, (_, inner) => {
+  // a heading inside a demo (a dialog shown open, the content of an editor, a side panel) belongs to the example, not to the page: it gets an id but is not an entry of the rail
+  const inDemo = (offset) => ['dialog', 'xo-dialog', 'xo-richtext', 'aside'].some((t) => {
+    const before = framed.slice(0, offset);
+    return (before.match(new RegExp(`<${t}[\\s>]`, 'g')) ?? []).length > (before.match(new RegExp(`</${t}>`, 'g')) ?? []).length;
+  });
+  // a heading the kit already gave an id (<h2 id="tabs">) keeps it and is listed like the others
+  const bodyHtml = framed.replace(/<h2(?: id="([^"]+)")?>(.*?)<\/h2>/g, (_, own, inner, offset) => {
     const plain = inner.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, '');
-    let id = plain.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+    let id = own || plain.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
     for (let n = 2; used.has(id); n++) id = `${id.replace(/-\d+$/, '')}-${n}`;
-    used.add(id); heads.push({ id, text: plain });
+    used.add(id);
+    if (!inDemo(offset)) heads.push({ id, text: plain });
     return `<h2 id="${id}">${inner}</h2>`;
   });
   const rail = heads.length > 1 ? `    <aside class="rail" aria-label="On this page">

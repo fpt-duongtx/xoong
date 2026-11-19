@@ -1072,7 +1072,7 @@ define('rating-stars', RatingStars);`], ['HTML', 'html', `
     body: kit('components.html'),
   },
   {
-    file: 'controls-demo.html', section: 'docs', group: 'Controls', nav: 'All controls', title: 'All controls',
+    file: 'controls-demo.html', section: 'docs', group: 'Controls', nav: 'All controls', title: 'All controls', demo: true, richtext: true,
     description: 'Every control with realistic content, in one place.',
     body: kit('controls-demo.html'),
   },
