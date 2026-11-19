@@ -137,6 +137,14 @@ export const clean = (html, profile = 'rich') =>
   sanitizeHtml(purify.sanitize(html, { USE_PROFILES: { html: true } }), profile);
 ```
 
+Requirements: `jsdom` 31 needs Node `^22.22.2 || ^24.15.0 || >=26`, so raise `engines.node` of your project to match. If your profile keeps `target="_blank"` on links (a profile with `target: ['_blank']`, such as the one `defineRichtextProfile` can build), add `ADD_ATTR: ['target']` to the DOMPurify options, because DOMPurify drops `target` by default (a link that opens a new tab without `rel="noopener"` can reach the page that opened it):
+
+```js
+purify.sanitize(html, { USE_PROFILES: { html: true }, ADD_ATTR: ['target'] })
+```
+
+That is safe here: the built-in step still limits `target` to the values of the profile and writes `rel="noopener noreferrer"` on every link, so what is stored has both. The same option goes into the browser `sanitize` hook when you use one there.
+
 Create the `JSDOM` and the `DOMPurify` instance once, not per request. In the cases tried, cleaning twice gives the same string as once (the built-in filter is stable by design), so cleaning on read as well as on write is safe.
 
 Things to know:
@@ -145,7 +153,7 @@ Things to know:
   parse (DOMPurify alone logs them too), they are blocked and harmless, and they do not appear with the built-in filter alone.
 * **What the editor can keep is still set by the profile**, not by DOMPurify. DOMPurify keeps tables, `<hr>` and `<h4>`, then the profile unwraps them (a table becomes spaced text). To keep more, define a richer profile
   with `defineRichtextProfile`, or for a read-only display (not the editor) show the DOMPurify output directly.
-* **Keep both packages up to date.** DOMPurify has had bypasses fixed over the years; this guide was checked with DOMPurify 3.4.18 and jsdom 31 on Node 26 in Chromium (a set of mutation-XSS shapes: SVG with a style,
+* **Keep both packages up to date.** DOMPurify has had bypasses fixed over the years; install both as ordinary dependencies, not optional ones, so that a weaker filter is never a silent fallback; this guide was checked with DOMPurify 3.4.18 and jsdom 31 on Node 26 in Chromium (a set of mutation-XSS shapes: SVG with a style,
   MathML with `mglyph`, `noscript`, obfuscated `javascript:`), and the result was safe and stable in both places.
 * `sanitize` is the supported hook; if you replace the filter on the server too, keep the built-in `sanitizeHtml` as the last step so the shape matches.
 
