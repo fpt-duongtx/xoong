@@ -52,7 +52,7 @@ describe('XO270: attributes that do nothing where they are', () => {
   it('are fine on the button or the form that has the action, and xo-with also beside xo-add', () => {
     expect(found('<xo-view get="/users"><li xo-each="items"><button xo-click="DELETE /users/{id}" xo-confirm="Delete {name}?" xo-confirm-kind="danger" xo-confirm-ok="Delete" xo-confirm-title="Delete" xo-confirm-cancel="Keep" xo-notice="Gone" xo-then="/users">x</button></li></xo-view>')).toEqual([]);
     expect(found('<xo-view><form xo-submit="POST /users" xo-keep xo-then="/users/{id}" xo-notice="Saved" xo-with="status=new"><button>x</button></form></xo-view>')).toEqual([]);
-    expect(found('<xo-view><form xo-submit="PATCH /users/{id}" xo-body="."><button type="button" xo-add="tags" xo-with="type=a">x</button><button>y</button></form></xo-view>')).toEqual([]);
+    expect(found('<xo-view p-id="1"><form xo-submit="PATCH /users/{id}" xo-body="."><button type="button" xo-add="tags" xo-with="type=a">x</button><button>y</button></form></xo-view>')).toEqual([]);
   });
 
   it('xo-keep is for xo-submit; xo-confirm-* need xo-confirm; <xo-dialog size> needs heading', () => {
@@ -113,8 +113,8 @@ describe('XO272: values with a syntax of their own', () => {
   });
 
   it('xo-move is path:up, path:down or a number; xo-select is empty or all:<list>', () => {
-    expect(found('<xo-view><form xo-submit="PATCH /users/{id}"><button type="button" xo-move="tags[{$index}]:up">x</button><button type="button" xo-move="tags[{$index}]:down">y</button><button type="button" xo-move="tags[{$index}]:-2">z</button></form></xo-view>')).toEqual([]);
-    expect(found('<xo-view><form xo-submit="PATCH /users/{id}"><button type="button" xo-move="tags[{$index}]">x</button></form></xo-view>')).toEqual(['XO272']);
+    expect(found('<xo-view p-id="1"><form xo-submit="PATCH /users/{id}"><button type="button" xo-move="tags[{$index}]:up">x</button><button type="button" xo-move="tags[{$index}]:down">y</button><button type="button" xo-move="tags[{$index}]:-2">z</button></form></xo-view>')).toEqual([]);
+    expect(found('<xo-view p-id="1"><form xo-submit="PATCH /users/{id}"><button type="button" xo-move="tags[{$index}]">x</button></form></xo-view>')).toEqual(['XO272']);
     expect(found('<xo-view><input type="checkbox" xo-select><input type="checkbox" xo-select="all:items"></xo-view>')).toEqual([]);
     expect(found('<xo-view><input type="checkbox" xo-select="items"></xo-view>')).toEqual(['XO272']);
     expect(found('<xo-view><div xo-select="items"></div></xo-view>')).toEqual(['XO254']); // not a checkbox: reported once, by XO254
@@ -204,7 +204,7 @@ describe('XO276: attributes outside the element that gives them meaning', () => 
     expect(found('<button xo-menu-trigger>Go</button>')).toEqual(['XO276']);
     expect(found('<xo-view><form xo-submit="POST /users" xo-guard="off"><button>x</button></form></xo-view>')).toEqual([]);
     expect(found('<xo-view><form xo-guard="Leave?"><button>x</button></form></xo-view>')).toEqual(['XO276']);
-    expect(found('<xo-view><form xo-submit="PATCH /users/{id}"><div><button type="button" xo-add="tags">x</button><button type="button" xo-remove="tags[{$index}]">y</button><span xo-drag="tags[{$index}]">h</span></div></form></xo-view>')).toEqual([]);
+    expect(found('<xo-view p-id="1"><form xo-submit="PATCH /users/{id}"><div><button type="button" xo-add="tags">x</button><button type="button" xo-remove="tags[{$index}]">y</button><span xo-drag="tags[{$index}]">h</span></div></form></xo-view>')).toEqual([]);
     expect(found('<xo-view><button type="button" xo-add="tags">x</button></xo-view>')).toEqual(['XO276']);
     expect(found('<section xo-tab="A">a</section><button xo-menu-trigger>Go</button><button xo-add="x">y</button>', { fragment: true })).toEqual([]); // the container may be outside the fragment
   });

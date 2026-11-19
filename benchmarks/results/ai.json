@@ -1,5 +1,5 @@
 {
- "suiteVersion": 2,
+ "suiteVersion": 3,
  "runs": [
   {
    "id": "2026-11-18-claude-sonnet-5-5-729349",
@@ -881,6 +881,250 @@
     }
    ],
    "answers": "benchmarks/ai/answers/2026-11-18-claude-haiku-5-5-836ea5"
+  },
+  {
+   "id": "2026-11-19-claude-sonnet-5-5-836ea5",
+   "date": "2026-11-19",
+   "model": "claude-sonnet-5-5",
+   "note": "suite 3, the three tasks the fixes were not tuned on (edit-article, bulk-delete, error-retry); llms.txt as at commit of the suite 3 tasks. The bulk-delete scorer was corrected after the first scoring (it did not answer an xo-confirm dialog: 2 of Sonnet's 3 attempts were wrongly failed) and all 9 attempts re-scored with the corrected scorer",
+   "commit": "18a032f",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.57",
+   "llmsSha256": "836ea54c1996",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "41cf440f6fa7",
+    "crud-admin": "c6117aa15d5f",
+    "shared-data": "fce8bf5d3a31",
+    "live-updates": "272563a9ef8c",
+    "admin-table": "79a4921516a2",
+    "paging-filter": "8d72310218cd",
+    "edit-article": "fbcb2c57d23b",
+    "bulk-delete": "759563ba21bb",
+    "error-retry": "774bbac69f96"
+   },
+   "perTask": {
+    "edit-article": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "bulk-delete": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "error-retry": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 9,
+    "passed": 9,
+    "staticPassed": 9
+   },
+   "attempts": [
+    {
+     "task": "edit-article",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-19-claude-sonnet-5-5-836ea5"
+  },
+  {
+   "id": "2026-11-19-claude-haiku-5-5-836ea5",
+   "date": "2026-11-19",
+   "model": "claude-haiku-5-5",
+   "note": "suite 3, the three tasks the fixes were not tuned on (edit-article, bulk-delete, error-retry); llms.txt as at commit of the suite 3 tasks. The bulk-delete scorer was corrected after the first scoring (it did not answer an xo-confirm dialog: 2 of Sonnet's 3 attempts were wrongly failed) and all 9 attempts re-scored with the corrected scorer",
+   "commit": "18a032f",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.57",
+   "llmsSha256": "836ea54c1996",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "41cf440f6fa7",
+    "crud-admin": "c6117aa15d5f",
+    "shared-data": "fce8bf5d3a31",
+    "live-updates": "272563a9ef8c",
+    "admin-table": "79a4921516a2",
+    "paging-filter": "8d72310218cd",
+    "edit-article": "fbcb2c57d23b",
+    "bulk-delete": "759563ba21bb",
+    "error-retry": "774bbac69f96"
+   },
+   "perTask": {
+    "edit-article": {
+     "attempts": 3,
+     "passed": 2,
+     "staticPassed": 3
+    },
+    "bulk-delete": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "error-retry": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 9,
+    "passed": 8,
+    "staticPassed": 9
+   },
+   "attempts": [
+    {
+     "task": "edit-article",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "edit-article",
+     "run": "run3",
+     "pass": false,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": [
+      "the title field is not filled with the article's title (it holds \"\")",
+      "the body field is not filled with the article's body (it holds \"\")",
+      "Save did not call updateArticle"
+     ]
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-19-claude-haiku-5-5-836ea5"
   }
  ]
 }

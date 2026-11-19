@@ -228,7 +228,7 @@ const BEHAVIOURS = {
     win.happyDOM.setURL('http://xoong.local/');
   },
 
-  'bulk-delete': async ({ mount, api, files, check, text, buttonsLike }) => {
+  'bulk-delete': async ({ mount, api, files, check, text, buttonsLike, act }) => {
     const s = await mount(files['index.html']);
     check(/Write tests/.test(text()) && /Ship it/.test(text()), 'the table does not show the task titles');
     const first = api.callsOf('listTasks')[0];
@@ -239,7 +239,7 @@ const BEHAVIOURS = {
     await s.settle();
     const del = buttonsLike(/delete selected/i)[0]; // a table shows its bulk buttons only while rows are ticked
     if (check(!!del, 'there is no "Delete selected" button (to be shown once rows are ticked)')) {
-      await s.click(del);
+      await act(s, del); // a page may ask "Are you sure?" first (xo-confirm): answering it is part of the task
       const calls = api.callsOf('deleteTasks');
       check(calls.length === 1, `deleting the ticked rows should send one request (it sent ${calls.length})`);
       if (calls[0]) check(JSON.stringify([...(calls[0].body?.ids ?? [])].sort()) === '[1,2]', `deleteTasks got ${JSON.stringify(calls[0].body)} instead of the ids of the two ticked rows [1,2]`);

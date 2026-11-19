@@ -57,6 +57,7 @@ Codes (every one has a message that names the fix, and the MCP tool `explain_err
 | XO277 | `<xo-form>`, `xo-click`, `xo-param` or `xo-refresh` outside an `<xo-view>`: nothing handles it (an `<xo-form>` is never expanded) |
 | XO278 | the first `xo-each` of a view does not match the response of its operation: an array is repeated with `.`, an object's array field by its name |
 | XO279 | `{...}` in an attribute holds an expression (`hidden="{!flag}"`), not a path: it stays as written |
+| XO280 | a form that edits a record (`{id}` in its operation) nested in an `<xo-view>` that has no `get` and no `p-id`: it has neither the record nor the id |
 
 Locations are line:column. `--format json` prints the findings as a list. The exit code is 1 when there is an error (warnings do not fail
 it), 0 otherwise. Options that do not exist are refused for every command (`xoong check --exclud` is an error, not a silent no-op), and

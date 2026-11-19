@@ -36,6 +36,7 @@
  *   XO277 <xo-form>, xo-click, xo-param or xo-refresh outside an <xo-view>: nothing handles it, and nothing says so at run time
  *   XO278 xo-each (the first of a view) does not match the response of the view's operation: an array is repeated with ".", an object's array field by its name
  *   XO279 {...} in an attribute holds an expression (`hidden="{!flag}"`), not a path: it stays as written
+ *   XO280 a form that edits a record ({id} in its operation) inside an <xo-view> that has no get and no p-id: nested around the form, that view has neither the record nor the id
  *   (XO250 and XO251 apply to <xo-pager> as they do to <xo-table>)
  */
 import { readFile, readdir, stat } from 'node:fs/promises';
@@ -303,6 +304,12 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           const op = lookup(node, a.name, a.value);
           if (op && op.method === 'GET' && a.name === 'xo-click') report('warn', 'XO202', node, a.name, `${a.name} calls the GET operation ${op.path}`, 'Reads are declared with <xo-view get="...">; xo-click is for mutations');
           if (a.name === 'xo-submit' && tag === 'form' && !view) report('error', 'XO222', node, a.name, '<form xo-submit> is not inside an <xo-view>, so it never binds: no model, the inputs stay empty', 'Wrap it in <xo-view> (an <xo-view> without get is enough)');
+          // XO280: a form that edits a record (its operation has a path parameter such as {id}) needs the view that loads the record. A view without `get` nested around it has neither the record nor the id.
+          if (a.name === 'xo-submit' && tag === 'form' && op && view && !attr(view, 'get') && !ctx.each) {
+            const provided = new Set(view.attrs.filter((x) => x.name.startsWith('p-')).map((x) => camel(x.name.slice(2))));
+            const lacking = [...op.path.matchAll(/\{([^}]+)\}/g)].map((m) => m[1]).filter((p) => !provided.has(p));
+            if (lacking.length) report('warn', 'XO280', node, a.name, `${op.method} ${op.path} needs ${lacking.map((p) => `"${p}"`).join(', ')}, but the <xo-view> around this form has no get and no p-${lacking[0]}: the form is not filled with the record and the call has no ${lacking[0]}`, 'Put the form directly inside the <xo-view get="..."> that loads the record (do not nest another <xo-view> around it), or give its <xo-view> p-' + lacking[0] + '="..."');
+          }
           if (a.name === 'xo-submit' && tag !== 'form') report('error', 'XO220', node, a.name, `xo-submit must be on a <form>, found <${tag}>`, 'Move xo-submit to the form element');
           if (a.name === 'xo-click') {
             if (!INTERACTIVE.has(tag) && !attr(node, 'role') && !attr(node, 'tabindex')) {

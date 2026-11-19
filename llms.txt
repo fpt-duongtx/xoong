@@ -11,7 +11,7 @@ no virtual DOM, JSX, hooks or required build.
 4. Use native elements (`<button>`, `<form>`, `<dialog>`, `<details>`). Buttons need text or `aria-label`.
 5. Run `xoong check <html files>` and fix every error; messages contain the fix.
 6. Never invent attributes or operations; use the `xo-*` attributes below.
-7. Everything that reads or writes data lives INSIDE an `<xo-view>`: `xo-click`, `xo-submit`, `xo-param`, `<xo-form>`, `<xo-table>`, `<xo-pager>` do nothing outside one (no error either). A view without `get` is fine around a form.
+7. Everything that reads or writes data lives INSIDE an `<xo-view>`: `xo-click`, `xo-submit`, `xo-param`, `<xo-form>`, `<xo-table>`, `<xo-pager>` do nothing outside one (no error either). A view without `get` is fine around an add form; an edit form goes directly inside the `<xo-view get>` that loads the record.
 
 ## Project setup
     xoong new my-app --spec openapi.json      # scaffold + first list screen

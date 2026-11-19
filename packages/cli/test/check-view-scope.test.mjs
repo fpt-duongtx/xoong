@@ -89,3 +89,24 @@ describe('XO279: {...} is a path, not an expression', () => {
     expect(codes('<p hidden="{!flag}">x</p>')).toEqual([]);
   });
 });
+
+describe('XO280: a form that edits a record is not nested in a view that does not load it', () => {
+  const t2 = { operations: { ...table.operations,
+    getUser: { id: 'getUser', method: 'GET', path: '/users/{id}', response: { t: 'entity', name: 'User' } },
+    updateUser: { id: 'updateUser', method: 'PUT', path: '/users/{id}', bodyFields: [{ name: 'name', required: true }], response: { t: 'entity', name: 'User' } },
+  } };
+  const c2 = (html) => checkHtml(html, t2, 'a.html').map((f) => f.code);
+
+  it('a view without get nested around an edit form is said to give it neither the record nor the id', () => {
+    const f = checkHtml('<xo-view get="getUser" p-id="?id"><xo-view><form xo-submit="updateUser"><input name="name"><button>Save</button></form></xo-view></xo-view>', t2, 'a.html').find((x) => x.code === 'XO280');
+    expect(f).toMatchObject({ code: 'XO280', level: 'warn' });
+    expect(f.fix).toContain('directly inside');
+  });
+
+  it('the form directly in the view that loads the record, a view that is given the id, an add form and a form in a row are fine', () => {
+    expect(c2('<xo-view get="getUser" p-id="?id"><form xo-submit="updateUser"><input name="name"><button>Save</button></form></xo-view>')).toEqual([]);
+    expect(c2('<xo-view p-id="?id"><form xo-submit="updateUser"><input name="name"><button>Save</button></form></xo-view>')).toEqual([]);
+    expect(c2('<xo-view><form xo-submit="createUser"><input name="name"><button>Add</button></form></xo-view>')).toEqual([]);
+    expect(c2('<xo-view get="listUsers"><li xo-each="items"><form xo-submit="updateUser"><input name="name"><button>Save</button></form></li></xo-view>')).toEqual([]);
+  });
+});
