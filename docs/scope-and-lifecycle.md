@@ -75,10 +75,17 @@ The name may hold data, so the item chooses its template (a page made of blocks 
   On any other element, the template is its content.
 * **What the element holds is the fallback**: `<div xo-use="block-{type}"><i>unknown block</i></div>` shows the note when no template has that name. With nothing to
   show, the console says `no <template xo-define="...">` once per name, and nothing is drawn.
+* **Where a template can be written.** A view finds the nearest one: beside the element that uses it or around it (a row of a list may define its own), then in the view, then in
+  the page. A name defined in a row belongs to that row.
 * A name is letters, digits, `-`, `_`, `.` or `:`. Anything else (it may come from data) never selects a template.
 * The name is read again when its data changes: the content is redrawn with the other template.
 * `xoong check`: XO281 (a fixed `xo-use` name that no template defines, with the closest name), XO282 (`xo-define` away from a `<template>`, or a name defined twice).
   `xo-each` inside a named template is not compared with the view's response (XO278): the template is drawn against another item.
+
+## `xo-each` and `xo-if` on one element
+
+On one element they mean: for each item, show the element when its own condition holds. `<li xo-each="items" xo-if="visible">{name}</li>` lists the items whose `visible` is true;
+`$index` still counts every item, shown or not. (To show or hide the whole list, put `xo-if` on an element around it.)
 
 ## Repeating several elements, and boolean attributes
 

@@ -5,6 +5,7 @@ projects run xoong in production. The `@xoong/*` packages are published to npm u
 
 ## Unreleased
 
+* Fixed (data): **`xo-each` and `xo-if` on the same element** drew every row as raw `{name}` text and filtered nothing (the row had no parent for the `xo-if` to work with); each row is now shown when its own condition holds (`$index` still counts all items). Found with `xo-use`, but it was there before. Fixed (data): **a `<template xo-define>` written inside a list** (beside the element that uses it, or around it) was not found, because a row is bound before it is in the page; the lookup now goes up the parents the row has, then the view, then the page, so a row can define its own. Reported by a project that moved its nested blocks to `xo-use` (0.0.59).
 * Changed (data, docs): a tree drawn by a template that uses itself no longer needs an empty list at every leaf: the examples (docs, reference, `llms.txt`) put `xo-if="children"` on the list (a tree of 13 nodes drew 9 empty `<ul>` without it, 38 elements instead of 29), and `xo-use` is removed from the element once it is read, as `xo-each` and `xo-if` already are. Measured: 1111 nodes draw in about 115 ms (happy-dom), wherever the template stands in the view.
 
 ## 0.0.59 (named templates and recursion in a view; the All controls page)

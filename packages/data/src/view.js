@@ -407,6 +407,14 @@ function bindNode(node, scope, ctx, disposers) {
     for (const n of nodes) bindNode(n, scope, ctx, disposers);
     return;
   }
+  if (el.hasAttribute('xo-each') && el.hasAttribute('xo-if') && el.localName !== 'template') { // both on one element: each row is shown when its own condition holds (a row made of a template can hold the condition)
+    const rows = document.createElement('template'), row = /** @type {Element} */ (el.cloneNode(true));
+    rows.setAttribute('xo-each', /** @type {string} */ (el.getAttribute('xo-each')));
+    row.removeAttribute('xo-each');
+    rows.content.append(row);
+    el.replaceWith(rows);
+    return bindEach(rows, scope, ctx, disposers);
+  }
   if (el.hasAttribute('xo-each')) return bindEach(el, scope, ctx, disposers);
   if (el.hasAttribute('xo-if')) return bindIf(el, scope, ctx, disposers);
 
@@ -484,10 +492,14 @@ function bindNode(node, scope, ctx, disposers) {
 const MAX_USE_DEPTH = 32;
 const warnedUse = new Set();
 
-/** `<template xo-define="name">` of this view, then of the page. A name that is not a plain word is not a name (it may come from data). */
-function findTemplate(host, name) {
+/**
+ * `<template xo-define="name">` nearest to `from`: beside it or around it (a row of a list can define its own, and a row is bound before it is in the page, so
+ * the search goes up the parents it has), then in the view, then in the page. A name that is not a plain word is not a name (it may come from data).
+ */
+function findTemplate(from, host, name) {
   if (!/^[\w:.-]+$/.test(name)) return null;
   const sel = `template[xo-define="${name}"]`;
+  for (let n = from.parentNode; n && n !== host; n = n.parentNode) { const t = /** @type {any} */ (n).querySelector?.(sel); if (t) return /** @type {HTMLTemplateElement} */ (t); }
   return /** @type {HTMLTemplateElement | null} */ (host.querySelector(sel) ?? document.querySelector(sel));
 }
 
@@ -513,7 +525,7 @@ function bindUse(el, spec, scope, ctx, disposers) {
       clear();
       const depth = /** @type {any} */ (scope).useDepth + 1 || 1;
       if (depth > MAX_USE_DEPTH) { console.error(`xoong: xo-use="${spec}" nests more than ${MAX_USE_DEPTH} deep: a template that uses itself needs a list that ends`); return; }
-      const def = findTemplate(ctx.host, next);
+      const def = findTemplate(bare ? end : el, ctx.host, next);
       if (!def && !own.childNodes.length && !warnedUse.has(next)) { warnedUse.add(next); console.warn(`xoong: no <template xo-define="${next}"> for xo-use="${spec}"`); }
       const frag = (def ? def.content : own).cloneNode(true);
       shown = [...frag.childNodes];

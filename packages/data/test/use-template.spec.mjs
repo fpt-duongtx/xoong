@@ -65,3 +65,34 @@ describe('xo-use: a template chosen by the data', () => {
     expect(screen.texts('em')).toEqual(['root']);
   });
 });
+
+describe('templates defined inside a list, and xo-each with xo-if on one element', () => {
+  const blocks = { blocks: [{ type: 'text', text: 'Hello', show: true }, { type: 'text', text: 'Hidden', show: false }, { type: 'text', text: 'Bye', show: true }] };
+  const text = '<template xo-define="text"><p class="o">{text}</p></template>';
+  const run = (html) => mount(`<xo-view get="/page">${html}</xo-view>`, { api: mockApi(table, { getPage: () => blocks }) });
+
+  it('a template written inside the loop (beside the element that uses it) is found, for a loop made of a template', async () => {
+    screen = await run(`<div><template xo-each="blocks">${text}<template xo-use="{type}"></template></template></div>`);
+    expect(screen.texts('.o')).toEqual(['Hello', 'Hidden', 'Bye']);
+  });
+
+  it('and for a loop made of an element', async () => {
+    screen = await run(`<div><section xo-each="blocks">${text}<div xo-use="{type}"></div></section></div>`);
+    expect(screen.texts('.o')).toEqual(['Hello', 'Hidden', 'Bye']);
+  });
+
+  it('xo-each and xo-if on one element: a row is shown when its own condition holds', async () => {
+    screen = await run('<div><p class="o" xo-each="blocks" xo-if="show">{text}</p></div>');
+    expect(screen.texts('.o')).toEqual(['Hello', 'Bye']);
+  });
+
+  it('xo-each, xo-if and xo-use on one element', async () => {
+    screen = await run(`${text}<div><div xo-each="blocks" xo-if="show" xo-use="{type}"></div></div>`);
+    expect(screen.texts('.o')).toEqual(['Hello', 'Bye']);
+  });
+
+  it('a row that becomes shown or hidden follows its own item ($index is still the position among all rows)', async () => {
+    screen = await run('<div><p class="o" xo-each="blocks" xo-if="show">{$index}:{text}</p></div>');
+    expect(screen.texts('.o')).toEqual(['0:Hello', '2:Bye']);
+  });
+});
