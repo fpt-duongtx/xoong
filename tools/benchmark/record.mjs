@@ -1,6 +1,6 @@
 // Scores a set of attempts and records the result, with everything that identifies what was measured.
 //
-//   node tools/benchmark/record.mjs <attempts folder> --model "claude-sonnet-5-5" [--note "..."] [--results benchmarks/results/ai.json] [--no-write]
+//   node tools/benchmark/record.mjs <attempts folder> --model "claude-sonnet-5-5" [--note "..."] [--suffix name] [--results benchmarks/results/ai.json] [--no-write]
 //
 // <attempts folder>/<task>/<run>/<files>    e.g. attempts/crud-admin/run1/index.html (one folder per attempt; a single attempt may also sit directly in <task>/)
 // The result is appended to the results file as one run: the model, the date, the hashes of llms.txt and the prompts, every attempt (static stage, behaviour stage,
@@ -59,7 +59,7 @@ let commit = '';
 try { commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim(); } catch { /* not a checkout */ }
 const date = new Date().toISOString().slice(0, 10);
 const run = {
-  id: `${date}-${opt('model').replace(/[^a-z0-9.]+/gi, '-').toLowerCase()}-${fp.llmsSha256.slice(0, 6)}`,
+  id: `${date}-${opt('model').replace(/[^a-z0-9.]+/gi, '-').toLowerCase()}-${fp.llmsSha256.slice(0, 6)}${opt('suffix') ? `-${opt('suffix')}` : ''}`, // --suffix: two runs of one model, day and llms.txt (different tasks) must not overwrite each other
   date, model: opt('model'), note: opt('note', ''), commit,
   protocol: 'single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once',
   ...fp, perTask, total, attempts: results,

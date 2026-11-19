@@ -1367,6 +1367,420 @@
     }
    ],
    "answers": "benchmarks/ai/answers/2026-11-19-claude-haiku-5-5-096088"
+  },
+  {
+   "id": "2026-11-19-claude-sonnet-5-5-096088-six-tasks",
+   "date": "2026-11-19",
+   "model": "claude-sonnet-5-5",
+   "note": "single turn on the final llms.txt (096088) for the six tasks the form-task run did not cover: small-site, shared-data, live-updates, paging-filter, bulk-delete, error-retry; 3 attempts each",
+   "commit": "ead1b29",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.58",
+   "llmsSha256": "09608804431d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "db51455ced5c",
+    "crud-admin": "1ded55131f49",
+    "shared-data": "4a7f811b47fd",
+    "live-updates": "850a72c6aca6",
+    "admin-table": "63d0cf47ebcf",
+    "paging-filter": "bd94b32302b8",
+    "edit-article": "a719bd698841",
+    "bulk-delete": "0d2108ca69cb",
+    "error-retry": "bf1b688d508c"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "shared-data": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "live-updates": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "paging-filter": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "bulk-delete": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "error-retry": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 18,
+    "passed": 18,
+    "staticPassed": 18
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-19-claude-sonnet-5-5-096088-six-tasks"
+  },
+  {
+   "id": "2026-11-19-claude-haiku-5-5-096088-six-tasks",
+   "date": "2026-11-19",
+   "model": "claude-haiku-5-5",
+   "note": "single turn on the final llms.txt (096088) for the six tasks the form-task run did not cover: small-site, shared-data, live-updates, paging-filter, bulk-delete, error-retry; 3 attempts each",
+   "commit": "ead1b29",
+   "protocol": "single turn, no tools, no feedback loop: the model gets the prompt (spec, operations, task) and answers once",
+   "suiteVersion": 3,
+   "xoong": "0.0.58",
+   "llmsSha256": "09608804431d",
+   "instructionsSha256": "8a158ef471b9",
+   "prompts": {
+    "small-site": "db51455ced5c",
+    "crud-admin": "1ded55131f49",
+    "shared-data": "4a7f811b47fd",
+    "live-updates": "850a72c6aca6",
+    "admin-table": "63d0cf47ebcf",
+    "paging-filter": "bd94b32302b8",
+    "edit-article": "a719bd698841",
+    "bulk-delete": "0d2108ca69cb",
+    "error-retry": "bf1b688d508c"
+   },
+   "perTask": {
+    "small-site": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "shared-data": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "live-updates": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "paging-filter": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "bulk-delete": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    },
+    "error-retry": {
+     "attempts": 3,
+     "passed": 3,
+     "staticPassed": 3
+    }
+   },
+   "total": {
+    "attempts": 18,
+    "passed": 18,
+    "staticPassed": 18
+   },
+   "attempts": [
+    {
+     "task": "small-site",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "small-site",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "shared-data",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "live-updates",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "paging-filter",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "bulk-delete",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run1",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run2",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    },
+    {
+     "task": "error-retry",
+     "run": "run3",
+     "pass": true,
+     "staticPass": true,
+     "failures": [],
+     "behaviour": []
+    }
+   ],
+   "answers": "benchmarks/ai/answers/2026-11-19-claude-haiku-5-5-096088-six-tasks"
   }
  ]
 }

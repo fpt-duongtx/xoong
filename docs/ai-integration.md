@@ -220,7 +220,9 @@ the page passed, so the check now uses the id 7.
 Then, on the final `llms.txt` (hash `096088`):
 
 * **Single turn, the three tasks with a form** (`crud-admin`, `admin-table`, `edit-article`, 3 attempts each): Sonnet 9/9, Haiku 8/9. The failure is Haiku's, on `edit-article`: `xo-notice="Saved"` on the button
-  instead of on the form, which `xoong check` reports as XO270 (the task did not even ask for a notice). The other six tasks were not re-run for the one-sentence change.
+  instead of on the form, which `xoong check` reports as XO270 (the task did not even ask for a notice).
+* **Single turn, the other six tasks** (`small-site`, `shared-data`, `live-updates`, `paging-filter`, `bulk-delete`, `error-retry`, 3 attempts each, same `llms.txt`): Sonnet 18/18, Haiku 18/18.
+  Together, on the `llms.txt` that was released: **all nine tasks, 27 attempts per model: Sonnet 5.5 27/27, Haiku 5.5 26/27.**
 * **With the loop** (the assistant writes the files, runs `xoong check` up to three times, fixes what it reports; all nine tasks, 1 attempt each per model, stored in
   [`benchmarks/results/ai-loop.json`](../benchmarks/results/ai-loop.json)): Sonnet 9/9, Haiku 9/9. Seventeen of the eighteen attempts found nothing to fix on the first check; Sonnet on `paging-filter`
   needed a second round (XO279 in the first).
