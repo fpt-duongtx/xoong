@@ -116,7 +116,7 @@ The expected loop: read spec, write code, `check`, fix from the error message.
 Success metric: **first-attempt correctness**: the share of tasks an assistant solves in **one attempt**, with only `llms.txt` and the
 list of the API's operations, that pass the scorer without human edits.
 
-The harness is in [`tools/benchmark`](../tools/benchmark) (how to run it again: its README): six tasks (small site, CRUD admin, shared-data dashboard, live updates, admin table, paging and filters),
+The harness is in [`tools/benchmark`](../tools/benchmark) (how to run it again: its README): nine tasks (small site, CRUD admin, shared-data dashboard, live updates, admin table, paging and filters, edit by id, bulk delete, error and retry),
 each with an OpenAPI file, a task text and a reference solution. `node tools/benchmark/score.mjs <task> <folder>` and
 `node tools/benchmark/run.mjs <attempts folder>` score what an assistant wrote. A task passes when all expected files exist,
 `xoong check` reports no errors, the required operations and constructs are used, and nothing forbidden appears (hand-written
@@ -199,6 +199,36 @@ The three gaps were fixed and the same suite was run again (3 attempts per task,
 Read this with care. The tasks are the ones the gaps were found on, so the fixes were written for exactly these failures: the 36 passes show the gaps are closed, not that an assistant will do as well on a screen it
 has not seen. The next step for the number to mean more is new tasks the fixes were not made for (a second suite version), and attempts where the assistant can run `xoong check` (the loop with feedback). Two models and 18 attempts each is
 still a small sample.
+
+### Third measurement (2026-11-19): tasks the fixes were not made for, and the loop with `xoong check`
+
+Two questions were left open by the 18/18: does it hold on screens the fixes were not tuned on, and what does the loop add when the assistant can run `xoong check`? Suite 3 added three tasks
+(`edit-article`: edit the article whose id is in `?id=`; `bulk-delete`: tick rows and delete them with one request; `error-retry`: Loading…, the server's message and Retry), each with a reference
+solution, a behaviour check and negative tests. The first measurement of them (`llms.txt` `836ea5`, 3 attempts per task and model):
+
+| Task | Sonnet 5.5 | Haiku 5.5 | What went wrong |
+|---|---|---|---|
+| `edit-article` | 3/3 | 2/3 | Haiku put a `<xo-view>` without `get` around the form (following "a view without `get` is fine around a form"): the form was empty and had no id, and nothing said so |
+| `bulk-delete` | 3/3 | 3/3 | (two of Sonnet's answers were first scored as failures by the scorer: they asked "Are you sure?" with `xo-confirm`, and the scorer did not answer it; fixed, all nine re-scored) |
+| `error-retry` | 3/3 | 3/3 | |
+| **Passed** | **9/9** | **8/9** | |
+
+What was done with it: a fourth gap, now closed. **XO280** (warning) says that a form that edits a record (its operation has `{id}`) in an `<xo-view>` without `get` and without `p-id` has neither the record
+nor the id; the rule in `llms.txt` now says an edit form goes directly inside the `<xo-view get>` that loads the record. The scorer also found a hole of its own: a page that wrote the example's id (3) into
+the page passed, so the check now uses the id 7.
+
+Then, on the final `llms.txt` (hash `096088`):
+
+* **Single turn, the three tasks with a form** (`crud-admin`, `admin-table`, `edit-article`, 3 attempts each): Sonnet 9/9, Haiku 8/9. The failure is Haiku's, on `edit-article`: `xo-notice="Saved"` on the button
+  instead of on the form, which `xoong check` reports as XO270 (the task did not even ask for a notice). The other six tasks were not re-run for the one-sentence change.
+* **With the loop** (the assistant writes the files, runs `xoong check` up to three times, fixes what it reports; all nine tasks, 1 attempt each per model, stored in
+  [`benchmarks/results/ai-loop.json`](../benchmarks/results/ai-loop.json)): Sonnet 9/9, Haiku 9/9. Seventeen of the eighteen attempts found nothing to fix on the first check; Sonnet on `paging-filter`
+  needed a second round (XO279 in the first).
+
+How to read it: on the tasks the fixes were not made for, 17 of 18 attempts worked in a single turn, and the one that did not was a gap found and closed (XO280). The failure that remains (a notice on the
+wrong element) is one `xoong check` reports, so the loop fixes it in one round. The loop did not move the number because a single turn was already near the top: its value shows where the single turn
+fails, which is why XO277-XO280 matter, not in a rate. Still a small sample (two models, one to three attempts per task);
+a stronger claim needs more models and tasks written by someone who has not read `llms.txt`.
 
 ## 6. Fine-tuning (later)
 

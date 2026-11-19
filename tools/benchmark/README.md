@@ -59,6 +59,9 @@ node tools/benchmark/record.mjs <answers> --model "claude-sonnet-5-5" --note "wh
 Add `--no-write` to only look at the score. The answers of a recorded run are kept in `benchmarks/ai/answers/<run id>/`, so a later change of the scorer can be re-applied to the same
 answers.
 
+**The loop** (a separate measurement, `benchmarks/results/ai-loop.json`): the assistant gets a folder with the task's `.xoong/operations.json`, writes the files into it, runs `xoong check <files>` up to
+three times and fixes what it reports. `record.mjs <folder of files> --results benchmarks/results/ai-loop.json` scores the result the same way. Its files are kept in `benchmarks/ai/loop/`.
+
 A model that runs through an API needs nothing else from this folder: send `prompt.md` as the user message and save the text of the reply.
 
 ## What the numbers do and do not show
