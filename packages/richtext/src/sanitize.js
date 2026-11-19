@@ -366,12 +366,12 @@ function render(/** @type {string} */ html, /** @type {any} */ P) {
     let out = '';
     let gap = false; // the previous piece was a flattened block: a space goes before the next one
     for (const k of kids) {
-      const block = k.t === 'el' && BLOCKISH.has(k.tag);
+      const blockish = k.t === 'el' && BLOCKISH.has(k.tag);
       const piece = inline(k, inA);
       if (!piece) continue;
-      if (out && (gap || block) && !/\s$/.test(out) && !/^\s/.test(piece)) out += ' ';
+      if (out && (gap || blockish) && !/\s$/.test(out) && !/^\s/.test(piece)) out += ' ';
       out += piece;
-      gap = block;
+      gap = blockish;
     }
     return out;
   }
