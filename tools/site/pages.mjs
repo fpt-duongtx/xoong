@@ -52,7 +52,7 @@ const USE = `
 const TREE = `<xo-view get="getMenu">
   <template xo-define="node">
     <a href="{url}">{label}</a>
-    <ul><li xo-each="children" xo-use="node"></li></ul>
+    <ul xo-if="children"><li xo-each="children" xo-use="node"></li></ul>
   </template>
   <nav xo-use="node"></nav>
 </xo-view>`;

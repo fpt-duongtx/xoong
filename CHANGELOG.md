@@ -3,6 +3,10 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## Unreleased
+
+* Changed (data, docs): a tree drawn by a template that uses itself no longer needs an empty list at every leaf: the examples (docs, reference, `llms.txt`) put `xo-if="children"` on the list (a tree of 13 nodes drew 9 empty `<ul>` without it, 38 elements instead of 29), and `xo-use` is removed from the element once it is read, as `xo-each` and `xo-if` already are. Measured: 1111 nodes draw in about 115 ms (happy-dom), wherever the template stands in the view.
+
 ## 0.0.59 (named templates and recursion in a view; the All controls page)
 
 * Added (data, cli, mcp, docs): **named templates and recursion in a view**. `<template xo-define="name">` names markup; `xo-use="name"` draws it as the content of an element, bound against the current item, so a template that uses itself draws a tree (`<li xo-each="children" xo-use="node">`) from one template instead of one per level, and `xo-use="{type}"` (or `"block-{type}"`) lets each item choose its template. On a `<template xo-use>` the content stands with no element around it; what the element holds is the fallback when no template has the name; a name must be a plain word (it may come from data); nesting stops at 32 with one console message. A view looks in itself, then in the page. `xoong check`: **XO281** (a fixed `xo-use` name that no template defines, with the closest name) and **XO282** (`xo-define` off a `<template>`, or a name defined twice); `xo-each` inside a named template is no longer compared with the view's response (XO278). Works in `xoong render` (prerendered trees). `@xoong/data` budget 19.8 to 20.5 KB gzip and `llms.txt` 3400 to 3475 tokens for it. Asked for by a project that generated three fixed levels of nesting for blocks made in the admin. See `docs/scope-and-lifecycle.md`, "Named templates".

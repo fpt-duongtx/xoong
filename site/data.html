@@ -317,7 +317,7 @@ empty, and a template that would never end is stopped at 32 levels. On a <code>&
   <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"getMenu"</span>&gt;
   &lt;<span class="tok-t">template</span> <span class="tok-a">xo-define</span>=<span class="tok-s">"node"</span>&gt;
     &lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"<span class="tok-i">{url}</span>"</span>&gt;<span class="tok-i">{label}</span>&lt;/<span class="tok-t">a</span>&gt;
-    &lt;<span class="tok-t">ul</span>&gt;&lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"children"</span> <span class="tok-a">xo-use</span>=<span class="tok-s">"node"</span>&gt;&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;
+    &lt;<span class="tok-t">ul</span> <span class="tok-a">xo-if</span>=<span class="tok-s">"children"</span>&gt;&lt;<span class="tok-t">li</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"children"</span> <span class="tok-a">xo-use</span>=<span class="tok-s">"node"</span>&gt;&lt;/<span class="tok-t">li</span>&gt;&lt;/<span class="tok-t">ul</span>&gt;
   &lt;/<span class="tok-t">template</span>&gt;
   &lt;<span class="tok-t">nav</span> <span class="tok-a">xo-use</span>=<span class="tok-s">"node"</span>&gt;&lt;/<span class="tok-t">nav</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre></section>

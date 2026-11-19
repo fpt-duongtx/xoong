@@ -422,7 +422,7 @@ function bindNode(node, scope, ctx, disposers) {
   // getAttributeNames(), not `attributes`: iterating `attributes` makes the browser create an Attr node for every attribute of every row and keep it as long as the row lives
   for (const name of el.getAttributeNames()) {
     const value = el.getAttribute(name) ?? '';
-    if (name === 'xo-use') { useSpec = value; continue; }
+    if (name === 'xo-use') { useSpec = value; el.removeAttribute(name); continue; } // read once; a row is cloned from the template, which still has it
     if (name === 'xo-click' || name === 'xo-submit') {
       const engine = bindAction(el, name === 'xo-click' ? 'click' : 'submit', value, scope, ctx, disposers);
       if (engine) childScope = { value: () => engine.model.value, parent: scope, vars: { $form: () => engine.model } }; // `$form.dirty`, `$form.errors['title.vi']` ... inside the form

@@ -81,7 +81,7 @@ test('a tree drawn by a template that uses itself (xo-define, xo-use) is prerend
   const menu = { label: 'Home', children: [{ label: 'Docs', children: [{ label: 'Guide', children: [] }] }, { label: 'Blog', children: [] }] };
   const fetch = async () => new Response(JSON.stringify(menu), { status: 200 });
   const html = await renderPage(page('<xo-view get="/menu"><template xo-define="node"><span>{label}</span><ul><li xo-each="children" xo-use="node"></li></ul></template><nav xo-use="node"></nav></xo-view>'), { operations: ops, fetch });
-  const shown = html.slice(html.lastIndexOf('<nav xo-use')); // the prerendered tree; before it the view keeps its own markup in a template
+  const shown = html.slice(html.lastIndexOf('<nav')); // the prerendered tree; before it the view keeps its own markup in a template
   assert.deepEqual([...shown.matchAll(/<span>([^<]*)<\/span>/g)].map((m) => m[1]), ['Home', 'Docs', 'Guide', 'Blog']);
   assert.match(html, /<template data-xo-template[^>]*>[\s\S]*xo-define="node"[\s\S]*xo-use="node"/); // the browser renders it again from this
 });

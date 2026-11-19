@@ -53,13 +53,13 @@ A template may use itself, which is how a tree (a menu, a comment thread, a page
 <xo-view get="getMenu">
   <template xo-define="node">
     <a href="{url}">{label}</a>
-    <ul><li xo-each="children" xo-use="node"></li></ul>
+    <ul xo-if="children"><li xo-each="children" xo-use="node"></li></ul>
   </template>
   <nav xo-use="node"></nav>
 </xo-view>
 ```
 
-The recursion ends where `children` is empty or missing (an `xo-each` over nothing draws nothing). A template that would never end is stopped at **32** nested
+The recursion ends where `children` is empty or missing (an `xo-each` over nothing draws nothing). Put `xo-if="children"` on the list as above: without it every leaf keeps an empty `<ul>` (a tree of 13 nodes drew 9 of them). A template that would never end is stopped at **32** nested
 uses, with one message in the console.
 
 The name may hold data, so the item chooses its template (a page made of blocks of different types):
