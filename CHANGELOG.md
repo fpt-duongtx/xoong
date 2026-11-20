@@ -3,7 +3,7 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
-## Unreleased
+## 0.0.61 (layout elements; fixes found by running the tests in WebKit)
 
 * Fixed (controls, richtext): **three bugs found by running the browser tests in WebKit** (the list now runs in Chromium and WebKit through Playwright's shared browser cache, `XOONG_BROWSER=webkit npm run test:browsers`; 139 tests in 18 files). Safari does not focus a button on click, so: `<xo-drawer>` did not give the focus back to the button that opened it (it now remembers the opener, also for `xo-open`), and a `<xo-popover>` (so the `<xo-color>` panel) did not close on Escape after a click in the panel because the key went to the page (it now listens on the document while open). An empty `<xo-richtext>` now starts in a paragraph, so the first typing is a block as the later ones are. Changed (tests): the multi-engine run is documented in `docs/browser-support.md`.
 
