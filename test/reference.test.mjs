@@ -138,7 +138,7 @@ describe('reference.json', () => {
 
   it('lists the view variables of view.js and the formats of format.js in the template syntax', () => {
     const names = group('template').map((t) => t.name).join(' ');
-    const view = read('packages/data/src/view.js');
+    const view = read('packages/data/src/view.js') + read('packages/data/src/bind.js'); // the variables of the view (view.js) and of a row or a form (bind.js)
     const vars = new Set([...view.matchAll(/^\s*(\$[A-Za-z]\w*):/gm), ...view.matchAll(/vars: \{ (\$[A-Za-z]\w*):/g)].map((m) => m[1]));
     for (const v of ['$loading', '$refreshing', '$error', '$index', '$form', '$selectedCount']) expect(vars.has(v), `view.js no longer defines ${v}`).toBe(true);
     for (const v of vars) expect(names.includes(v), `view.js defines ${v}: document it in TEMPLATE of reference-supplement.mjs`).toBe(true);

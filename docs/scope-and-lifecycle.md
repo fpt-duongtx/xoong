@@ -1,6 +1,6 @@
 # Scope and lifecycle rules
 
-The rules behind `{path}`, `xo-each`, `xo-click` and the view parameters, in one page. They are what `packages/data/src/view.js` does; if
+The rules behind `{path}`, `xo-each`, `xo-click` and the view parameters, in one page. They are what `packages/data/src` does (`view.js` is the element; `bind.js` binds a node to a scope; `actions.js`, `state.js` and `arrays.js` are the attributes that act; `scope.js` is the language of `{path}`); if
 something here and the code disagree, the code is right and this page has a bug.
 
 ## Where `{path}` comes from (the scope chain)
