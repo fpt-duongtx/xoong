@@ -99,7 +99,10 @@ A boolean attribute whose whole value is one `{path}` is present when the value 
 `disabled="{saving}"`, `checked="{done}"`. (`aria-selected="{open}"` gets the text `true` or `false`, as ARIA wants.)
 
 An `<img src="{cover.url}">` inside a view is requested by the browser with the literal text before the data is bound. Use `<xo-image src="{cover.url}" alt="...">`,
-which waits for the data (`xoong check` warns about the plain `<img>`, XO243).
+which waits for the data (`xoong check` warns about the plain `<img>`, XO243). `xo-if` does not help: an `<img xo-if="cover.url" src="{cover.url}">`, or the same inside a `<span xo-if>`, is
+in the page before it is bound, so it is requested with the literal text too (measured in Chromium). Two ways to a plain `<img>` (for HTML that must stay a plain `<img>`): put it inside
+`<template xo-if="cover.url">...</template>` (a template is inert: nothing is requested until the row is drawn, and `xoong check` does not warn), or write `data-src="{cover.url}"`
+(a different attribute, never requested; your script sets `src`).
 
 ## When a view starts
 

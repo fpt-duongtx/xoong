@@ -1,6 +1,6 @@
 {
   "name": "@xoong/icons",
-  "version": "0.0.61",
+  "version": "0.0.62",
   "description": "The xoong icon set: rounded 24px SVG icons in regular, fill and bold, used as <i class=\"xi xi-edit\"> through CSS masks, with a tool that keeps only the icons a project uses.",
   "type": "module",
   "main": "src/index.js",

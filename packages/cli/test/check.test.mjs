@@ -137,6 +137,10 @@ describe('xoong check: admin set', () => {
     expect(found('<xo-view><img src="{cover.url}" alt=""></xo-view>')).toEqual(['XO243']);
     expect(found('<xo-view><xo-image src="{cover.url}" alt=""></xo-image></xo-view>')).toEqual([]);
     expect(found('<img src="/static.png" alt="">')).toEqual([]);
+    // measured in Chromium: an img with xo-if, or inside a wrapper with xo-if, is requested with the literal text; inside a <template> it is not
+    expect(found('<xo-view><img xo-if="a.b" src="{a.b}" alt=""></xo-view>')).toEqual(['XO243']);
+    expect(found('<xo-view><span xo-if="a.b"><img src="{a.b}" alt=""></span></xo-view>')).toEqual(['XO243']);
+    expect(found('<xo-view><template xo-if="a.b"><img src="{a.b}" alt=""></template></xo-view>')).toEqual([]);
   });
 
   it('XO222: a submit form needs an <xo-view>', () => {

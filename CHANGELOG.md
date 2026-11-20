@@ -3,6 +3,12 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.62 (XO243 in templates; Firefox in the tests on macOS 27)
+
+* Fixed (tests): the browser tests run in **Firefox on macOS 27** (`tools/browser.mjs` gives Firefox an empty temporary home, `CFFIXED_USER_HOME`; without it Playwright's Firefox exits with "Could not find profile folder"). Firefox, WebKit and Chromium all pass the 139 browser tests.
+
+* Fixed (cli, docs): **XO243** no longer warns about an `<img src="{path}">` inside a `<template>` (a template is inert, so the browser requests nothing: measured), and its hint now says what works (`<xo-image>` or a `<template xo-if>`), and that an `xo-if` on the `<img>` or a wrapper does not help (it is requested with the literal text; measured in Chromium). Asked for by a rainlet consumer.
+
 ## 0.0.61 (layout elements; fixes found by running the tests in WebKit)
 
 * Fixed (controls, richtext): **three bugs found by running the browser tests in WebKit** (the list now runs in Chromium and WebKit through Playwright's shared browser cache, `XOONG_BROWSER=webkit npm run test:browsers`; 139 tests in 18 files). Safari does not focus a button on click, so: `<xo-drawer>` did not give the focus back to the button that opened it (it now remembers the opener, also for `xo-open`), and a `<xo-popover>` (so the `<xo-color>` panel) did not close on Escape after a click in the panel because the key went to the page (it now listens on the document while open). An empty `<xo-richtext>` now starts in a paragraph, so the first typing is a block as the later ones are. Changed (tests): the multi-engine run is documented in `docs/browser-support.md`.

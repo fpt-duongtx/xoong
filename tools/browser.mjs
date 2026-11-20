@@ -1,7 +1,8 @@
 // Test helpers: launch headless Chromium, and serve the repo over HTTP to a page.
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { extname, join, normalize } from 'node:path';
 import { createRequire } from 'node:module';
 
@@ -27,7 +28,10 @@ export async function launchChromium() {
   const engine = process.env.XOONG_BROWSER ?? 'chromium';
   if (engine !== 'chromium') {
     if (!playwright[engine]) throw new Error(`XOONG_BROWSER=${engine}: expected chromium, firefox or webkit`);
-    return playwright[engine].launch();
+    // macOS 27 protects ~/Library/Application Support/Firefox, which Playwright's Firefox reads even with its own profile: without a stand-in home it exits with
+    // "Could not find profile folder" (microsoft/playwright#42768). An empty home of its own makes it start; other systems and engines are untouched.
+    const env = engine === 'firefox' && process.platform === 'darwin' ? { ...process.env, CFFIXED_USER_HOME: mkdtempSync(join(tmpdir(), 'xoong-ffhome-')) } : undefined;
+    return playwright[engine].launch(env ? { env } : {});
   }
   const { chromium } = playwright;
   const preinstalled = process.env.XOONG_CHROMIUM ?? (existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined);

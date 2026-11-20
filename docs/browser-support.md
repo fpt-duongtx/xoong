@@ -22,5 +22,6 @@ and an entry here.
 
 The whole browser list (139 tests in 18 files, layout elements included) passes in Chromium and WebKit. Engine differences it found, and how they are handled: Safari does not focus a button on click, so
 `<xo-drawer>` gives the focus back to the element that opened it (not only to `document.activeElement`) and `<xo-popover>` (so `<xo-color>`) closes on Escape pressed anywhere on the page, not only
-inside the panel; an empty `<xo-richtext>` starts in a paragraph; and WebKit joins typing and the next format command into one undo step, which the undo test allows. The Firefox build of Playwright 1.65
-(firefox-1572) did not start on macOS 27 ("Could not find profile folder"): Firefox runs in CI only until that is solved.
+inside the panel; an empty `<xo-richtext>` starts in a paragraph; and WebKit joins typing and the next format command into one undo step, which the undo test allows. On macOS 27 Playwright's Firefox exits at once with "Could not find profile folder": it reads `~/Library/Application Support/Firefox`, which macOS now protects, even with its own
+profile (microsoft/playwright#42768). `tools/browser.mjs` starts Firefox there with `CFFIXED_USER_HOME` set to an empty temporary folder, and all 139 browser tests pass in Firefox, WebKit and Chromium.
+A script of your own that launches Playwright's Firefox on macOS 27 needs the same variable.

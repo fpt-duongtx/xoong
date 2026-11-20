@@ -246,7 +246,7 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           }
         }
       }
-      if (tag === 'img' && view) for (const n of ['src', 'srcset']) { const a = attr(node, n); if (a && /\{[^}]+\}/.test(a.value)) report('warn', 'XO243', node, n, `<img ${n}="${a.value}"> inside an <xo-view>: the browser requests the literal text before the data is bound`, 'Use <xo-image src="..." alt="..."> (it waits for the data), or add the image from a data field with xo-if'); }
+      if (tag === 'img' && view && !ctx.inert) for (const n of ['src', 'srcset']) { const a = attr(node, n); if (a && /\{[^}]+\}/.test(a.value)) report('warn', 'XO243', node, n, `<img ${n}="${a.value}"> inside an <xo-view>: the browser requests the literal text before the data is bound`, 'Use <xo-image src="..." alt="..."> (it waits for the data), or put the <img> inside a <template xo-if="..."> (a template is inert: the browser requests nothing until the row is drawn; an xo-if on the <img> or on a wrapper does not help, the element is in the page before it is bound)'); }
       if (tag === 'xo-image' && attr(node, 'alt') === undefined) report('warn', 'XO242', node, undefined, '<xo-image> has no alt attribute', 'Describe the image in alt, or write alt="" when it is decorative');
       if (tag === 'xo-table' || tag === 'xo-pager') { // both read the enclosing view's data; both page through `limit` and `offset`
         const viewGet = view ? attr(view, 'get') : undefined;
@@ -381,7 +381,7 @@ export function checkHtml(source, table, file = '<input>', { fragment = false } 
           }
         }
       }
-      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog' || tag === 'xo-drawer', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined), define: ctx.define || (tag === 'template' && attr(node, 'xo-define') !== undefined), each: (ctx.each && tag !== 'xo-view') || attr(node, 'xo-each') !== undefined };
+      ctx = { view, router, route, dialog: ctx.dialog || tag === 'xo-dialog' || tag === 'xo-drawer', tabs: ctx.tabs || tag === 'xo-tabs', menu: ctx.menu || tag === 'xo-menu', form: ctx.form || (tag === 'form' && attr(node, 'xo-submit') !== undefined), inert: ctx.inert || tag === 'template', define: ctx.define || (tag === 'template' && attr(node, 'xo-define') !== undefined), each: (ctx.each && tag !== 'xo-view') || attr(node, 'xo-each') !== undefined };
     }
     for (const child of children) walk(child, ctx);
   }
