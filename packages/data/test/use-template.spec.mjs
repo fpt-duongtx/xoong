@@ -96,3 +96,20 @@ describe('templates defined inside a list, and xo-each with xo-if on one element
     expect(screen.texts('.o')).toEqual(['0:Hello', '2:Bye']);
   });
 });
+
+describe('xo-src and xo-srcset: the address of an image is set when the row is bound', () => {
+  const imgTable = { operations: { getSlides: { id: 'getSlides', method: 'GET', path: '/slides', response: { t: 'object', props: {} } } } };
+  it('a row gets src and srcset from its item, the xo-* attributes are gone, and an unsafe address is about:blank', async () => {
+    screen = await mount('<xo-view get="/slides"><div xo-each="items" class="s"><img xo-src="{src}" xo-srcset="{big} 2x" alt="{alt}" loading="lazy"></div></xo-view>', {
+      api: mockApi(imgTable, { getSlides: () => ({ items: [{ src: '/a.webp', big: '/a2.webp', alt: 'A' }, { src: 'javascript:alert(1)', big: '/b2.webp', alt: 'B' }] }) }) });
+    const imgs = screen.$$('.s img');
+    expect(imgs.map((i) => i.getAttribute('src'))).toEqual(['/a.webp', 'about:blank']);
+    expect(imgs[0].getAttribute('srcset')).toBe('/a2.webp 2x');
+    expect(imgs[0].getAttribute('loading')).toBe('lazy');
+    expect(imgs[0].hasAttribute('xo-src') || imgs[0].hasAttribute('xo-srcset')).toBe(false);
+  });
+  it('a fixed address is set as written', async () => {
+    screen = await mount('<xo-view get="/slides"><img xo-src="/logo.png" alt=""></xo-view>', { api: mockApi(imgTable, { getSlides: () => ({}) }) });
+    expect(screen.$('img').getAttribute('src')).toBe('/logo.png');
+  });
+});

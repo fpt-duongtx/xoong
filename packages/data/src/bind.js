@@ -57,7 +57,10 @@ export function bindNode(node, scope, ctx, disposers) {
   for (const name of el.getAttributeNames()) {
     const value = el.getAttribute(name) ?? '';
     if (name === 'xo-use') { useSpec = value; el.removeAttribute(name); } // read once; a row is cloned from the template, which still has it
-    else if (name === 'xo-click' || name === 'xo-submit') {
+    else if (name === 'xo-src' || name === 'xo-srcset') { // the address of an image, set when it is bound: the template holds no src, so nothing is requested before the data is there
+      el.removeAttribute(name);
+      if (parseInterpolation(value)) bindDataAttribute(el, name.slice(3), value, scope, ctx, disposers); else el.setAttribute(name.slice(3), value);
+    } else if (name === 'xo-click' || name === 'xo-submit') {
       const engine = bindAction(el, name === 'xo-click' ? 'click' : 'submit', value, scope, ctx, disposers);
       if (engine) childScope = { value: () => engine.model.value, parent: scope, vars: { $form: () => engine.model } }; // `$form.dirty`, `$form.errors['title.vi']` ... inside the form
     } else if (ACTING[name]) ACTING[name](el, value, scope, ctx, disposers, name);

@@ -85,3 +85,11 @@ test('a tree drawn by a template that uses itself (xo-define, xo-use) is prerend
   assert.deepEqual([...shown.matchAll(/<span>([^<]*)<\/span>/g)].map((m) => m[1]), ['Home', 'Docs', 'Guide', 'Blog']);
   assert.match(html, /<template data-xo-template[^>]*>[\s\S]*xo-define="node"[\s\S]*xo-use="node"/); // the browser renders it again from this
 });
+
+test('xo-src: the prerendered <img> has its real src as written and its other attributes; the saved template holds none', async () => {
+  const html = await renderPage(page('<xo-view get="/users"><div xo-each="items"><img xo-src="/assets/{name}.webp" alt="{name}" fetchpriority="high" width="64" height="64"></div></xo-view>'), { operations, fetch: api() });
+  assert.match(html, /<img[^>]*\ssrc="\/assets\/Bob\.webp"[^>]*>/);
+  assert.match(html, /<img[^>]*fetchpriority="high"[^>]*>/);
+  assert.doesNotMatch(html.replace(/<template[\s\S]*?<\/template>/g, ''), /xo-src/); // drawn rows have no xo-src; the saved template keeps the source, inert
+  assert.doesNotMatch(html, /\ssrc="[^"]*\{/); // no literal text in a src, not even in the saved template
+});

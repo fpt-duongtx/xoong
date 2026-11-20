@@ -105,7 +105,7 @@ describe('llms.txt cannot drift from the code (docs/ai-integration.md)', () => {
   const llms = readFileSync('llms.txt', 'utf8');
 
   it('stays within the ~3,000 token budget', () => {
-    expect(llms.length / 3.8).toBeLessThan(3560); // raised from 3000 for the list of the new controls, then 3150 -> 3200 for the built-in dialogs, then 3200 -> 3220 for handling xo-error on a screen, then 3220 -> 3250 for the two xo-tooltip attributes, then 3250 -> 3400 for what the AI benchmark found models get wrong without it (rule 7: reads and writes live inside an xo-view; xo-each follows the shape of the response; {..} is a path), then 3400 -> 3475 for one line on xo-define / xo-use (named templates, a tree), then 3475 -> 3560 for the four layout elements (what every page needs)
+    expect(llms.length / 3.8).toBeLessThan(3600); // raised from 3000 for the list of the new controls, then 3150 -> 3200 for the built-in dialogs, then 3200 -> 3220 for handling xo-error on a screen, then 3220 -> 3250 for the two xo-tooltip attributes, then 3250 -> 3400 for what the AI benchmark found models get wrong without it (rule 7: reads and writes live inside an xo-view; xo-each follows the shape of the response; {..} is a path), then 3400 -> 3475 for one line on xo-define / xo-use (named templates, a tree), then 3475 -> 3560 for the four layout elements (what every page needs), then 3560 -> 3600 for one line on xo-src (an img in a view is requested as literal text without it)
   });
 
   it('only mentions CLI commands that exist', () => {

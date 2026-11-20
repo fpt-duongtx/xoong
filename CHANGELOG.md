@@ -3,6 +3,10 @@
 All notable changes are listed here. The project follows semantic versioning; it stays `0.x` until at least three real
 projects run xoong in production. The `@xoong/*` packages are published to npm under the tag `next`; the repository is public and each version is also a GitHub prerelease.
 
+## 0.0.63 (xo-src and xo-srcset: a plain <img> in a view with no early request)
+
+* Added (data, cli, docs): **`xo-src` and `xo-srcset`**: `<img xo-src="{image.src}" alt="">` sets `src` when the row is bound, so the template holds no `src` and nothing is requested before the data is there (a plain `<img src="{path}">` in a view is requested with the literal text, also with `xo-if`; XO243), and prerendered HTML (`xoong render`, `@xoong/ssr`) has `<img src="/assets/x.webp">` as written, with `fetchpriority`, `loading` and the other attributes kept. Same safe-URL rule as `src`. Asked for by a consumer that keeps its LCP image as a plain `<img>` in server-rendered HTML. Correction (0.0.62): the advice to put the `<img>` in a `<template xo-if>` does not work in prerendered pages (the template stays inert there); XO243 still skips images inside a template, and its hint and the docs now point to `xo-src`.
+
 ## 0.0.62 (XO243 in templates; Firefox in the tests on macOS 27)
 
 * Fixed (tests): the browser tests run in **Firefox on macOS 27** (`tools/browser.mjs` gives Firefox an empty temporary home, `CFFIXED_USER_HOME`; without it Playwright's Firefox exits with "Could not find profile folder"). Firefox, WebKit and Chromium all pass the 139 browser tests.

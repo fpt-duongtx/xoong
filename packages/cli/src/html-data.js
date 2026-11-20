@@ -17,6 +17,8 @@ export const ATTRIBUTE_DOCS = {
   'xo-keep': 'With xo-submit: keep the field values after a successful send.',
   'xo-t': 'Translate this element with @xoong/i18n: `xo-t="key"` for its text, `xo-t="attr:key; attr2:key2"` for attributes. The text written in the HTML is the default. `{placeholders}` come from the enclosing xo-view.',
   'xo-define': 'On a <template>: give its content a name. `xo-use="name"` draws it, against the current item, anywhere in the view or the page. A template may use itself (a tree).',
+  'xo-src': 'On an <img> (or <source>) inside an <xo-view>: the address of the image, set when the row is bound: `<img xo-src="{image.src}" alt="">`. The template holds no `src`, so the browser requests nothing before the data is there, and prerendered HTML (xoong render, @xoong/ssr) has the real `src`. Same safe-URL rule as `src`.',
+  'xo-srcset': 'Like `xo-src`, for `srcset`: `<img xo-src="{a}" xo-srcset="{a2x} 2x">`.',
   'xo-use': 'Draw the template named by this value (`<template xo-define="name">`) as the content of this element, against the current item. The name may hold data: `xo-use="block-{type}"`. On a `<template xo-use>` the content stands with no element around it. What the element holds is shown when no template has the name.',
   'xo-add': 'In a form: append an item to the array at this path (`blocks`); `xo-with="type=image"` gives a union item its tag.',
   'xo-remove': 'In a form row: remove the array item at this path (`blocks[{$index}]`).',

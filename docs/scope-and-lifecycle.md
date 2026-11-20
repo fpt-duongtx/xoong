@@ -100,9 +100,9 @@ A boolean attribute whose whole value is one `{path}` is present when the value 
 
 An `<img src="{cover.url}">` inside a view is requested by the browser with the literal text before the data is bound. Use `<xo-image src="{cover.url}" alt="...">`,
 which waits for the data (`xoong check` warns about the plain `<img>`, XO243). `xo-if` does not help: an `<img xo-if="cover.url" src="{cover.url}">`, or the same inside a `<span xo-if>`, is
-in the page before it is bound, so it is requested with the literal text too (measured in Chromium). Two ways to a plain `<img>` (for HTML that must stay a plain `<img>`): put it inside
-`<template xo-if="cover.url">...</template>` (a template is inert: nothing is requested until the row is drawn, and `xoong check` does not warn), or write `data-src="{cover.url}"`
-(a different attribute, never requested; your script sets `src`).
+in the page before it is bound, so it is requested with the literal text too (measured in Chromium). For a plain `<img>` write **`xo-src`**: `<img xo-src="{cover.url}" alt="..." width="640" height="360" fetchpriority="high">`.
+The template holds no `src`, so nothing is requested early; when the row is drawn the address is set as `src` (the same safe-URL rule), and the page prerendered by `xoong render` or `@xoong/ssr` has
+`<img src="/assets/x.webp" ...>` exactly as written, with every other attribute kept. `xo-srcset="{...} 2x"` does the same for `srcset`. (`data-src` also works, for a script that sets `src` itself.)
 
 ## When a view starts
 

@@ -399,6 +399,24 @@ export const DIRECTIVES = {
 </xo-view>`,
     notes: ['The template is not drawn where it is written; `xo-use` draws it.', 'A name used twice in one view: the first one in the view wins; a view looks in itself, then in the page.'],
   },
+  'xo-src': {
+    category: 'Read data', package: '@xoong/data', guide: 'data.html', keywords: 'image img src srcset picture lazy lcp prerender ssr literal request',
+    applies: 'An `<img>` (or `<source>`) inside `<xo-view>`, also in a row of `xo-each`.', value: 'A `{path}` to the address of the image (`{image.src}`), or fixed text. `xo-srcset` does the same for `srcset`.',
+    example: `
+<xo-view get="listPeople">
+  <div xo-each="items"><img xo-src="{image.src}" alt="{image.alt}" width="640" height="360"></div>
+</xo-view>`,
+    notes: ['A plain `<img src="{image.src}">` inside a view is requested with the literal text before the data is bound (`xoong check` XO243); `xo-src` puts the address in when the row is drawn, so nothing is requested early.', 'Prerendered pages (`xoong render`, `@xoong/ssr`) have `<img src="/assets/x.webp">` as written, with the other attributes (`fetchpriority`, `loading`) untouched.', 'The same safe-URL rule as `src`: `http(s)`, a relative path, `blob:` and raster `data:image` are drawn, anything else becomes `about:blank`.'],
+  },
+  'xo-srcset': {
+    category: 'Read data', package: '@xoong/data', guide: 'data.html', keywords: 'image img srcset responsive retina picture source',
+    applies: 'An `<img>` or `<source>` inside `<xo-view>`.', value: 'A `{path}` or text for the `srcset` list: `{big} 2x`, `{small} 480w, {large} 960w`.',
+    example: `
+<xo-view get="listPeople">
+  <div xo-each="items"><img xo-src="{image.src}" xo-srcset="{image.big} 2x" alt="{image.alt}"></div>
+</xo-view>`,
+    notes: ['Like `xo-src`: set when the row is bound, so nothing is requested early, and prerendered pages have the real `srcset`.'],
+  },
   'xo-use': {
     category: 'Read data', package: '@xoong/data', guide: 'data.html', keywords: 'template include recursive tree polymorphic type block switch partial',
     applies: 'Any element inside `<xo-view>`; on a `<template>` the content stands with no element around it.', value: 'The name of a `<template xo-define>`, or a name with data in it: `block-{type}`.',

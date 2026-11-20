@@ -461,6 +461,12 @@ ${example({
 </xo-view>`,
 })}
 
+<h2>Images: xo-src</h2>
+<p>A plain <code>&lt;img src="{image.src}"&gt;</code> inside a view is requested by the browser with the literal text before the data is bound (<code>xoong check</code> warns, XO243), also with an
+<code>xo-if</code> on it. Write <code>&lt;img xo-src="{image.src}" alt="..."&gt;</code> instead: the template holds no <code>src</code>, so nothing is requested early, the address is set as <code>src</code> when the row is drawn
+(the same safe-URL rule), and a page prerendered by <code>xoong render</code> or <code>@xoong/ssr</code> has <code>&lt;img src="/assets/x.webp"&gt;</code> as written, with <code>fetchpriority</code>, <code>loading</code> and the other attributes kept.
+<code>xo-srcset</code> does the same for <code>srcset</code>.</p>
+
 <h2>Named templates and trees</h2>
 <p><code>&lt;template xo-define="name"&gt;</code> gives markup a name and draws nothing where it is written. <code>xo-use="name"</code> draws it as the content of an element, against the
 current item. The name can hold data, so each item picks its template; what the element holds is the fallback when no template has that name (below, a viewer has none).</p>
