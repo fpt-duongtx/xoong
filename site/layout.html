@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Layout · xoong</title>
+  <meta name="description" content="Stack, row, grid and center: the four arrangements every page needs, as elements with attributes.">
+  <meta property="og:title" content="Layout · xoong">
+  <meta property="og:description" content="Stack, row, grid and center: the four arrangements every page needs, as elements with attributes.">
+  <meta property="og:image" content="brand/mist/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand/mist/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="brand/mist/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="brand/mist/apple-touch-icon.png">
+  <script src="src/palette.js"></script>
+  <link rel="stylesheet" href="/@xoong/ui/src/xoong.css">
+  <link rel="stylesheet" href="/@xoong/controls/controls.css">
+  <link rel="stylesheet" href="/@xoong/richtext/richtext.css">
+  <link rel="stylesheet" href="src/fonts.css">
+  <link rel="stylesheet" href="src/mist-tokens.css">
+  <link rel="stylesheet" href="src/brand.css">
+  <link rel="stylesheet" href="src/xo-map.css">
+  <link rel="stylesheet" href="src/standard.css">
+  <link rel="stylesheet" href="src/icons.css">
+  <link rel="stylesheet" href="src/components.css">
+  <link rel="stylesheet" href="src/states.css">
+  <link rel="stylesheet" href="src/controls-new.css">
+  <link rel="stylesheet" href="src/shell.css">
+  <link rel="stylesheet" href="src/mist.css">
+  <link rel="stylesheet" href="src/site.css">
+  <link rel="stylesheet" href="src/reference.css">
+  <link rel="stylesheet" href="src/print.css" media="print">
+  <script type="module" src="src/site.js"></script>
+  <script type="module" src="src/reference-menu.js"></script>
+  <script type="module" src="src/search.js"></script>
+</head>
+<body class="shell-page">
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <div class="hdr-tools">
+        <a class="hdr-btn hdr-ref" href="reference.html" data-ref-menu>Reference<span class="ic" data-ic="chevron-down" aria-hidden="true"></span></a>
+        <a class="hdr-btn hdr-search" href="reference.html" data-search aria-keyshortcuts="Control+K Meta+K"><span class="ic" data-ic="search" aria-hidden="true"></span><span class="hdr-label">Search</span><kbd class="hdr-kbd" aria-hidden="true">Ctrl K</kbd></a>
+      </div>
+      <nav aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="overview.html" aria-current="page">Docs</a>
+        <a href="demo.html">Demo</a>
+        <a href="brand.html">Brand</a>
+        <xo-menu class="palette" label="Colour palette" value="mist">
+          <button xo-menu-trigger xo-tooltip="Switch the colour palette"><span class="dot" aria-hidden="true"></span>Palette</button>
+          <button value="mist">Mist</button>
+          <button value="calm">Calm</button>
+          <button value="ember">Ember</button>
+          <hr>
+          <a href="theme-builder.html">Build your own theme</a>
+        </xo-menu>
+        <xo-theme-toggle></xo-theme-toggle>
+      </nav>
+    </div>
+  </header>
+  <details class="docs-menu"><summary><span>Menu · <span class="here">Layout</span></span></summary><nav aria-label="Documentation menu">
+    <div class="grp">
+    <h2>Start</h2>
+    <a href="overview.html">Overview</a>
+    <a href="install.html">Install</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="benchmarks.html">Benchmarks</a>
+    </div>
+    <div class="grp">
+    <h2>Guides</h2>
+    <a href="data.html">Data and tables</a>
+    <a href="forms.html">Forms</a>
+    <a href="data-states.html">Loading, empty, error</a>
+    <a href="richtext.html">Rich text</a>
+    </div>
+    <div class="grp">
+    <h2>Overlays</h2>
+    <a href="dialogs.html">Dialogs and modals</a>
+    <a href="menu.html">Menu and tooltip</a>
+    <a href="overlays.html">All overlays</a>
+    </div>
+    <div class="grp">
+    <h2>Controls</h2>
+    <a href="controls.html">Introduction</a>
+    <a href="tabs.html">Tabs</a>
+    <a href="combobox.html">Combobox and tags</a>
+    <a href="more-controls.html">More controls</a>
+    <a href="carousel.html">Carousel</a>
+    <a href="controls-demo.html">All controls</a>
+    </div>
+    <div class="grp">
+    <h2>Reference</h2>
+    <a href="reference.html">All elements and attributes</a>
+    </div>
+    <div class="grp">
+    <h2>Design</h2>
+    <a href="theme-builder.html">Theme builder</a>
+    <a href="layout.html" aria-current="page">Layout</a>
+    <a href="styling.html">Styling</a>
+    <a href="components.html">Controls standard</a>
+    <a href="focus-audit.html">Focus audit</a>
+    <a href="icons.html">Icons</a>
+    </div>
+    <div class="grp">
+    <h2>Extend</h2>
+    <a href="recipes.html">Recipes</a>
+    <a href="own-control.html">Your own control</a>
+    </div>
+    <div class="grp">
+    <h2>Tools</h2>
+    <a href="cli.html">Command line</a>
+    <a href="mcp.html">MCP server</a>
+    <a href="editor.html">Editor support</a>
+    <a href="codes.html">Error codes</a>
+    </div>
+    <div class="grp">
+    <h2>Architecture</h2>
+    <a href="arch-overview.html">Layers</a>
+    <a href="arch-data-flow.html">Data flow</a>
+    <a href="arch-forms.html">Forms flow</a>
+    <a href="arch-rendering.html">Rendering</a>
+    <a href="arch-routing.html">Router</a>
+    <a href="arch-build.html">Build and delivery</a>
+    <a href="arch-tooling.html">Tooling and tests</a>
+    </div>
+    <div class="grp">
+    <h2>Live demos</h2>
+    <a href="demo.html">All demos</a>
+    <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+    </div>
+  </nav></details>
+  <div class="shell">
+    <nav class="side" aria-label="Documentation">
+      <div class="grp">
+      <h2>Start</h2>
+      <a href="overview.html">Overview</a>
+      <a href="install.html">Install</a>
+      <a href="how-it-works.html">How it works</a>
+      <a href="benchmarks.html">Benchmarks</a>
+      </div>
+      <div class="grp">
+      <h2>Guides</h2>
+      <a href="data.html">Data and tables</a>
+      <a href="forms.html">Forms</a>
+      <a href="data-states.html">Loading, empty, error</a>
+      <a href="richtext.html">Rich text</a>
+      </div>
+      <div class="grp">
+      <h2>Overlays</h2>
+      <a href="dialogs.html">Dialogs and modals</a>
+      <a href="menu.html">Menu and tooltip</a>
+      <a href="overlays.html">All overlays</a>
+      </div>
+      <div class="grp">
+      <h2>Controls</h2>
+      <a href="controls.html">Introduction</a>
+      <a href="tabs.html">Tabs</a>
+      <a href="combobox.html">Combobox and tags</a>
+      <a href="more-controls.html">More controls</a>
+      <a href="carousel.html">Carousel</a>
+      <a href="controls-demo.html">All controls</a>
+      </div>
+      <div class="grp">
+      <h2>Reference</h2>
+      <a href="reference.html">All elements and attributes</a>
+      </div>
+      <div class="grp">
+      <h2>Design</h2>
+      <a href="theme-builder.html">Theme builder</a>
+      <a href="layout.html" aria-current="page">Layout</a>
+      <a href="styling.html">Styling</a>
+      <a href="components.html">Controls standard</a>
+      <a href="focus-audit.html">Focus audit</a>
+      <a href="icons.html">Icons</a>
+      </div>
+      <div class="grp">
+      <h2>Extend</h2>
+      <a href="recipes.html">Recipes</a>
+      <a href="own-control.html">Your own control</a>
+      </div>
+      <div class="grp">
+      <h2>Tools</h2>
+      <a href="cli.html">Command line</a>
+      <a href="mcp.html">MCP server</a>
+      <a href="editor.html">Editor support</a>
+      <a href="codes.html">Error codes</a>
+      </div>
+      <div class="grp">
+      <h2>Architecture</h2>
+      <a href="arch-overview.html">Layers</a>
+      <a href="arch-data-flow.html">Data flow</a>
+      <a href="arch-forms.html">Forms flow</a>
+      <a href="arch-rendering.html">Rendering</a>
+      <a href="arch-routing.html">Router</a>
+      <a href="arch-build.html">Build and delivery</a>
+      <a href="arch-tooling.html">Tooling and tests</a>
+      </div>
+      <div class="grp">
+      <h2>Live demos</h2>
+      <a href="demo.html">All demos</a>
+      <a href="live-admin.html" title="A full-page demo, outside the docs">Admin app<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      <a href="live-landing.html" title="A full-page demo, outside the docs">Landing site<span class="ic" data-ic="external-link" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+    <main class="content" id="main">
+      <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Design</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Layout</span></div>
+
+<h1>Layout</h1>
+<p class="lead">Every page needs the same four arrangements: things one under the other, things side by side, equal columns, and a centred page column. <code>xoong.css</code> has them as
+four elements with a few attributes. They are drawn by CSS alone, in a cascade layer (so your own CSS always wins), and they are not utility classes: four names and a handful of values, all checked
+by <code>xoong check</code>.</p>
+<xo-tabs label="Load" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">link</span> <span class="tok-a">rel</span>=<span class="tok-s">"stylesheet"</span> <span class="tok-a">href</span>=<span class="tok-s">"/@xoong/ui/src/xoong.css"</span>&gt;</code></pre></section>
+</xo-tabs>
+
+<h2 id="the-four-elements">The four elements</h2>
+<div class="table-wrap" tabindex="0"><table>
+<thead><tr><th>Element</th><th>What it does</th><th>Attributes</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;xo-stack&gt;</code></td><td>children one under the other</td><td><code>gap</code> 0 to 4 (default 3); <code>align</code> start, center or end (default: they fill the width)</td></tr>
+<tr><td><code>&lt;xo-row&gt;</code></td><td>children side by side, vertically centred</td><td><code>gap</code> 0 to 4 (default 2); <code>wrap</code>; <code>align</code> start, center (default), end, baseline, stretch; <code>justify</code> start (default), center, end, between; a child with <code>grow</code> takes the free space</td></tr>
+<tr><td><code>&lt;xo-grid&gt;</code></td><td>equal columns</td><td><code>gap</code> 0 to 4 (default 3); <code>cols</code> 1 to 4 (one column on a phone); without <code>cols</code>, as many columns of at least 16rem as fit</td></tr>
+<tr><td><code>&lt;xo-center&gt;</code></td><td>the page column: centred, a readable width, side padding</td><td><code>size</code> narrow (40rem) or wide (80rem); default 64rem</td></tr>
+</tbody>
+</table></div>
+<p><code>gap</code> is one scale for all of them: 1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem (the <code>--xo-space-1</code> to <code>--xo-space-4</code> tokens), and 0 is none.</p>
+
+<h2 id="stack">Stack</h2>
+<p>Children one under the other, with a gap between. They fill the width; <code>align="start"</code> (or <code>center</code>, <code>end</code>) lets them keep their own width, for a button that should not stretch.</p>
+<xo-tabs label="xo-stack" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-stack gap="2">
+      <div class="panel">One</div>
+      <div class="panel">Two</div>
+      <div class="panel">Three</div>
+    </xo-stack>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-stack</span> <span class="tok-a">gap</span>=<span class="tok-s">"2"</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;One&lt;/<span class="tok-t">div</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;Two&lt;/<span class="tok-t">div</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;Three&lt;/<span class="tok-t">div</span>&gt;
+&lt;/<span class="tok-t">xo-stack</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<xo-tabs label="xo-stack align" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-stack gap="2" align="start">
+      <button type="button">Save</button>
+      <button type="button">Save and close</button>
+    </xo-stack>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-stack</span> <span class="tok-a">gap</span>=<span class="tok-s">"2"</span> <span class="tok-a">align</span>=<span class="tok-s">"start"</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Save&lt;/<span class="tok-t">button</span>&gt;
+  &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Save and close&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-stack</span>&gt;</code></pre></section>
+
+</xo-tabs>
+
+<h2 id="row">Row</h2>
+<p><code>justify="between"</code> pushes the first child to the start and the last to the end. <code>grow</code> on a child makes it take the rest of the row and lets it shrink below its content, so a search box
+beside a button still fits on a phone. <code>wrap</code> lets children go on a new line when they do not fit. <code>align</code> is the vertical alignment: <code>baseline</code> for text of different sizes,
+<code>stretch</code> for equal heights.</p>
+<xo-tabs label="xo-row" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-row justify="between" wrap>
+      <strong>Articles</strong>
+      <xo-row gap="1"><input type="search" aria-label="Search" placeholder="Search" grow> <button type="button">New</button></xo-row>
+    </xo-row>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-row</span> <span class="tok-a">justify</span>=<span class="tok-s">"between"</span> <span class="tok-a">wrap</span>&gt;
+  &lt;<span class="tok-t">strong</span>&gt;Articles&lt;/<span class="tok-t">strong</span>&gt;
+  &lt;<span class="tok-t">xo-row</span> <span class="tok-a">gap</span>=<span class="tok-s">"1"</span>&gt;&lt;<span class="tok-t">input</span> <span class="tok-a">type</span>=<span class="tok-s">"search"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Search"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Search"</span> <span class="tok-a">grow</span>&gt; &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;New&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">xo-row</span>&gt;
+&lt;/<span class="tok-t">xo-row</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<xo-tabs label="xo-row align" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-row align="baseline" gap="3">
+      <h3>42</h3><span>items</span><a href="#">See all</a>
+    </xo-row>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-row</span> <span class="tok-a">align</span>=<span class="tok-s">"baseline"</span> <span class="tok-a">gap</span>=<span class="tok-s">"3"</span>&gt;
+  &lt;<span class="tok-t">h3</span>&gt;42&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">span</span>&gt;items&lt;/<span class="tok-t">span</span>&gt;&lt;<span class="tok-t">a</span> <span class="tok-a">href</span>=<span class="tok-s">"#"</span>&gt;See all&lt;/<span class="tok-t">a</span>&gt;
+&lt;/<span class="tok-t">xo-row</span>&gt;</code></pre></section>
+
+</xo-tabs>
+
+<h2 id="grid">Grid</h2>
+<p><code>cols</code> fixes the number of equal columns (1 to 4) and falls to one column on a phone, so it never gets three squeezed ones. Without <code>cols</code> the grid fits as many columns as there is
+room for, each at least <code>--xo-grid-min</code> wide (16rem): a list of cards that needs no breakpoint.</p>
+<xo-tabs label="xo-grid cols" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-grid cols="3">
+      <div class="panel">One</div><div class="panel">Two</div><div class="panel">Three</div>
+    </xo-grid>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-grid</span> <span class="tok-a">cols</span>=<span class="tok-s">"3"</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;One&lt;/<span class="tok-t">div</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;Two&lt;/<span class="tok-t">div</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;Three&lt;/<span class="tok-t">div</span>&gt;
+&lt;/<span class="tok-t">xo-grid</span>&gt;</code></pre></section>
+
+</xo-tabs>
+<xo-tabs label="xo-grid" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-grid>
+      <div class="panel">A card</div><div class="panel">A card</div><div class="panel">A card</div><div class="panel">A card</div>
+    </xo-grid>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-grid</span>&gt;
+  &lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;A card&lt;/<span class="tok-t">div</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;A card&lt;/<span class="tok-t">div</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;A card&lt;/<span class="tok-t">div</span>&gt;&lt;<span class="tok-t">div</span> <span class="tok-a">class</span>=<span class="tok-s">"panel"</span>&gt;A card&lt;/<span class="tok-t">div</span>&gt;
+&lt;/<span class="tok-t">xo-grid</span>&gt;</code></pre></section>
+
+</xo-tabs>
+
+<h2 id="center">Center</h2>
+<p>The page column: centred, at most 64rem (<code>size="narrow"</code> 40rem for text and forms, <code>size="wide"</code> 80rem), with 1rem of padding at the sides so text never touches the edge of a phone.
+Change the default with <code>--xo-center-max</code>.</p>
+<xo-tabs label="xo-center" class="example">
+  <section xo-tab="Preview"><div class="preview">
+    <xo-center size="narrow">
+      <xo-stack>
+        <strong>Sign in</strong>
+        <input type="email" aria-label="Email" placeholder="Email">
+        <button type="button">Continue</button>
+      </xo-stack>
+    </xo-center>
+  </div></section>
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-center</span> <span class="tok-a">size</span>=<span class="tok-s">"narrow"</span>&gt;
+  &lt;<span class="tok-t">xo-stack</span>&gt;
+    &lt;<span class="tok-t">strong</span>&gt;Sign in&lt;/<span class="tok-t">strong</span>&gt;
+    &lt;<span class="tok-t">input</span> <span class="tok-a">type</span>=<span class="tok-s">"email"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Email"</span> <span class="tok-a">placeholder</span>=<span class="tok-s">"Email"</span>&gt;
+    &lt;<span class="tok-t">button</span> <span class="tok-a">type</span>=<span class="tok-s">"button"</span>&gt;Continue&lt;/<span class="tok-t">button</span>&gt;
+  &lt;/<span class="tok-t">xo-stack</span>&gt;
+&lt;/<span class="tok-t">xo-center</span>&gt;</code></pre></section>
+
+</xo-tabs>
+
+<h2 id="a-page">A page</h2>
+<p><code>&lt;xo-center&gt;</code> around a <code>&lt;xo-stack&gt;</code>, a <code>&lt;xo-row justify="between"&gt;</code> for the title and its actions, and an <code>&lt;xo-grid&gt;</code> for the content.</p>
+<xo-tabs label="A page" class="example">
+  <section xo-tab="HTML"><pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">body</span>&gt;
+  &lt;<span class="tok-t">xo-center</span>&gt;
+    &lt;<span class="tok-t">xo-stack</span> <span class="tok-a">gap</span>=<span class="tok-s">"4"</span>&gt;
+      &lt;<span class="tok-t">xo-row</span> <span class="tok-a">justify</span>=<span class="tok-s">"between"</span> <span class="tok-a">wrap</span>&gt;&lt;<span class="tok-t">h1</span>&gt;Team&lt;/<span class="tok-t">h1</span>&gt;&lt;<span class="tok-t">button</span>&gt;Invite&lt;/<span class="tok-t">button</span>&gt;&lt;/<span class="tok-t">xo-row</span>&gt;
+      &lt;<span class="tok-t">xo-grid</span>&gt;
+        &lt;<span class="tok-t">xo-view</span> <span class="tok-a">get</span>=<span class="tok-s">"listPeople"</span>&gt;
+          &lt;<span class="tok-t">article</span> <span class="tok-a">xo-each</span>=<span class="tok-s">"items"</span>&gt;&lt;<span class="tok-t">h3</span>&gt;<span class="tok-i">{name}</span>&lt;/<span class="tok-t">h3</span>&gt;&lt;<span class="tok-t">p</span>&gt;<span class="tok-i">{role}</span>&lt;/<span class="tok-t">p</span>&gt;&lt;/<span class="tok-t">article</span>&gt;
+        &lt;/<span class="tok-t">xo-view</span>&gt;
+      &lt;/<span class="tok-t">xo-grid</span>&gt;
+    &lt;/<span class="tok-t">xo-stack</span>&gt;
+  &lt;/<span class="tok-t">xo-center</span>&gt;
+&lt;/<span class="tok-t">body</span>&gt;</code></pre></section>
+</xo-tabs>
+
+<h2 id="when-you-need-more">When you need more</h2>
+<ul>
+<li><strong>Your CSS wins.</strong> The layout is in a cascade layer, so a rule of yours needs no <code>!important</code>: <code>xo-row { gap: 12px; }</code> replaces the scale for every row.</li>
+<li><strong>A sidebar, a hero, a masonry, a sticky header</strong> are not here, on purpose: write them with your own CSS and the tokens (<code>var(--xo-space-3)</code>, <code>var(--xo-color-border)</code>), or use the admin shell
+(<code>&lt;body class="xo-admin"&gt;</code>) for an application with a header, a navigation and a main area. See <a href="styling.html">Styling</a>.</li>
+<li><strong><code>xoong check</code></strong> warns about a value the CSS does not know (<code>&lt;xo-row gap="9"&gt;</code>, <code>&lt;xo-grid cols="5"&gt;</code>), because the browser would silently use the default. Editors complete the
+elements and values from the same data.</li>
+<li>The form-array row of a generated form is <code>.xo-array-row</code> (it was <code>.xo-row</code> before these elements: the name belongs to the layout now).</li>
+</ul>
+
+<nav class="pager" aria-label="Pages"><a rel="prev" href="theme-builder.html"><small>Previous</small><span>Theme builder</span></a><a rel="next" href="styling.html"><small>Next</small><span>Styling</span></a></nav>
+    </main>
+    <aside class="rail" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol><li><a href="#the-four-elements" aria-current="true">The four elements</a></li><li><a href="#stack">Stack</a></li><li><a href="#row">Row</a></li><li><a href="#grid">Grid</a></li><li><a href="#center">Center</a></li><li><a href="#a-page">A page</a></li><li><a href="#when-you-need-more">When you need more</a></li></ol>
+    </aside>
+  </div>
+  <footer class="foot">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="xoong, home"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/mist/xoong-lockup-dark.svg"><img src="brand/mist/xoong-lockup.svg" alt="xoong" width="105" height="28"></picture></a>
+      <p>A working prototype (0.0.x). MIT licence. Made with xoong itself.</p>
+      <nav aria-label="Footer"><a href="install.html">Install</a><a href="overview.html">Docs</a><a href="brand.html">Brand kit</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

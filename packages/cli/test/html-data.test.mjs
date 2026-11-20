@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { htmlData, SYNTAX, VALUE_SETS, FORM_CONTROLS, elementAttributes, explainSyntax } from '../src/html-data.js';
 import { sync } from '../src/index.js';
-import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_LAYOUT_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
 
 const table = { operations: {
   listUsers: { id: 'listUsers', method: 'GET', path: '/users' },
@@ -16,7 +16,7 @@ const table = { operations: {
 
 test('every element and attribute xoong defines has custom data with a description', () => {
   const data = htmlData(table);
-  assert.deepEqual(data.tags.map((t) => t.name).sort(), [...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS].sort());
+  assert.deepEqual(data.tags.map((t) => t.name).sort(), [...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_LAYOUT_ELEMENTS, ...XO_CONTROL_ELEMENTS].sort());
   assert.deepEqual(data.globalAttributes.map((a) => a.name).sort(), [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES].sort());
   for (const item of [...data.tags, ...data.globalAttributes]) assert.ok(item.description.length > 20, `${item.name} needs a real description`);
 });
@@ -44,6 +44,7 @@ test('sync writes xoong.html-data.json next to operations.json', async () => {
 
 const sourceOf = (pkg) => readdirSync(new URL(`../../${pkg}/src/`, import.meta.url)).filter((f) => f.endsWith('.js')).map((f) => readFileSync(new URL(`../../${pkg}/src/${f}`, import.meta.url), 'utf8'));
 const runtimeSources = ['data', 'ui', 'controls', 'richtext'].flatMap(sourceOf);
+const xoongCss = readFileSync(new URL('../../ui/src/xoong.css', import.meta.url), 'utf8'); // the layout elements have no script: their attributes are read by this stylesheet
 const kebab = (s) => s.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 
 describe('attributes with a fixed set of values', () => {
@@ -69,7 +70,7 @@ describe('attributes with a fixed set of values', () => {
   });
 
   it('are the values the runtime knows (each is in the source of the element that reads it)', () => {
-    const text = runtimeSources.join('\n');
+    const text = [...runtimeSources, xoongCss].join('\n');
     for (const [key, values] of Object.entries(VALUE_SETS)) for (const v of values) expect(text, `${key}: the runtime never mentions "${v}"`).toMatch(new RegExp(`['"\`]${v}['"\`]|\\b${v}:`));
   });
 });
@@ -115,7 +116,13 @@ describe('the documented attributes cover what each element reads', () => {
     return [...new Set((cls && props(cls)) || [...text.matchAll(/(?:get|has)Attribute\('([\w-]+)'\)/g)].map((m) => m[1]))];
   }
 
-  for (const tag of SYNTAX.elements) {
+  for (const tag of SYNTAX.elements.filter((t) => XO_LAYOUT_ELEMENTS.includes(t))) {
+    it(`<${tag}> (layout: CSS only): every documented attribute has a rule in xoong.css`, () => {
+      for (const [n] of elementAttributes(tag)) expect(xoongCss, `<${tag} ${n}> is documented but xoong.css has no rule for it`).toMatch(new RegExp(`${tag}[^{]*\\[${n}[=\\]]`));
+    });
+  }
+
+  for (const tag of SYNTAX.elements.filter((t) => !XO_LAYOUT_ELEMENTS.includes(t))) {
     it(`<${tag}>`, () => {
       const documented = elementAttributes(tag).map(([n]) => n);
       const missing = readBy(tag).filter((p) => !documented.includes(p) && !IGNORED.includes(p) && !(NOT_FOR_AUTHORS[tag] ?? []).includes(p));

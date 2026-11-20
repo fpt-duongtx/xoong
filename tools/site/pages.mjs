@@ -57,6 +57,68 @@ const TREE = `<xo-view get="getMenu">
   <nav xo-use="node"></nav>
 </xo-view>`;
 
+const L_STACK = `
+<xo-stack gap="2">
+  <div class="panel">One</div>
+  <div class="panel">Two</div>
+  <div class="panel">Three</div>
+</xo-stack>`;
+const L_STACK_ALIGN = `
+<xo-stack gap="2" align="start">
+  <button type="button">Save</button>
+  <button type="button">Save and close</button>
+</xo-stack>`;
+const L_ROW = `
+<xo-row justify="between" wrap>
+  <strong>Articles</strong>
+  <xo-row gap="1"><input type="search" aria-label="Search" placeholder="Search" grow> <button type="button">New</button></xo-row>
+</xo-row>`;
+const L_ROW_ALIGN = `
+<xo-row align="baseline" gap="3">
+  <h3>42</h3><span>items</span><a href="#">See all</a>
+</xo-row>`;
+const L_GRID = `
+<xo-grid cols="3">
+  <div class="panel">One</div><div class="panel">Two</div><div class="panel">Three</div>
+</xo-grid>`;
+const L_GRID_AUTO = `
+<xo-grid>
+  <div class="panel">A card</div><div class="panel">A card</div><div class="panel">A card</div><div class="panel">A card</div>
+</xo-grid>`;
+const L_CENTER = `
+<xo-center size="narrow">
+  <xo-stack>
+    <strong>Sign in</strong>
+    <input type="email" aria-label="Email" placeholder="Email">
+    <button type="button">Continue</button>
+  </xo-stack>
+</xo-center>`;
+const L_PAGE = `<body>
+  <xo-center>
+    <xo-stack gap="4">
+      <xo-row justify="between" wrap><h1>Team</h1><button>Invite</button></xo-row>
+      <xo-grid>
+        <xo-view get="listPeople">
+          <article xo-each="items"><h3>{name}</h3><p>{role}</p></article>
+        </xo-view>
+      </xo-grid>
+    </xo-stack>
+  </xo-center>
+</body>`;
+
+const LAYOUT = `
+<xo-center size="narrow">
+  <xo-stack gap="3">
+    <xo-row justify="between" wrap>
+      <strong>Articles</strong>
+      <xo-row gap="1"><input type="search" aria-label="Search articles" placeholder="Search" grow> <button type="button">New</button></xo-row>
+    </xo-row>
+    <xo-grid cols="3">
+      <div class="panel">One</div><div class="panel">Two</div><div class="panel">Three</div>
+    </xo-grid>
+  </xo-stack>
+</xo-center>`;
+
 const TABLE = `
 <xo-view get="listPeople">
   <xo-table columns="name,email:E-mail,role" sortable filters="name:Search by name" selectable page-size="5" empty="Nobody here">
@@ -624,6 +686,66 @@ ${callout('note', 'The client is never a trust boundary. <code>@xoong/richtext/s
   },
   // ------------------------------------------------------------------------------------------------------------------------------
   {
+    file: 'layout.html', section: 'docs', group: 'Design', nav: 'Layout', title: 'Layout', demo: false,
+    description: 'Stack, row, grid and center: the four arrangements every page needs, as elements with attributes.',
+    body: `
+<h1>Layout</h1>
+<p class="lead">Every page needs the same four arrangements: things one under the other, things side by side, equal columns, and a centred page column. <code>xoong.css</code> has them as
+four elements with a few attributes. They are drawn by CSS alone, in a cascade layer (so your own CSS always wins), and they are not utility classes: four names and a handful of values, all checked
+by <code>xoong check</code>.</p>
+${tabs('Load', [['HTML', 'html', '<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">']])}
+
+<h2>The four elements</h2>
+<table>
+<thead><tr><th>Element</th><th>What it does</th><th>Attributes</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;xo-stack&gt;</code></td><td>children one under the other</td><td><code>gap</code> 0 to 4 (default 3); <code>align</code> start, center or end (default: they fill the width)</td></tr>
+<tr><td><code>&lt;xo-row&gt;</code></td><td>children side by side, vertically centred</td><td><code>gap</code> 0 to 4 (default 2); <code>wrap</code>; <code>align</code> start, center (default), end, baseline, stretch; <code>justify</code> start (default), center, end, between; a child with <code>grow</code> takes the free space</td></tr>
+<tr><td><code>&lt;xo-grid&gt;</code></td><td>equal columns</td><td><code>gap</code> 0 to 4 (default 3); <code>cols</code> 1 to 4 (one column on a phone); without <code>cols</code>, as many columns of at least 16rem as fit</td></tr>
+<tr><td><code>&lt;xo-center&gt;</code></td><td>the page column: centred, a readable width, side padding</td><td><code>size</code> narrow (40rem) or wide (80rem); default 64rem</td></tr>
+</tbody>
+</table>
+<p><code>gap</code> is one scale for all of them: 1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem (the <code>--xo-space-1</code> to <code>--xo-space-4</code> tokens), and 0 is none.</p>
+
+<h2>Stack</h2>
+<p>Children one under the other, with a gap between. They fill the width; <code>align="start"</code> (or <code>center</code>, <code>end</code>) lets them keep their own width, for a button that should not stretch.</p>
+${example({ label: 'xo-stack', preview: L_STACK })}
+${example({ label: 'xo-stack align', preview: L_STACK_ALIGN })}
+
+<h2>Row</h2>
+<p><code>justify="between"</code> pushes the first child to the start and the last to the end. <code>grow</code> on a child makes it take the rest of the row and lets it shrink below its content, so a search box
+beside a button still fits on a phone. <code>wrap</code> lets children go on a new line when they do not fit. <code>align</code> is the vertical alignment: <code>baseline</code> for text of different sizes,
+<code>stretch</code> for equal heights.</p>
+${example({ label: 'xo-row', preview: L_ROW })}
+${example({ label: 'xo-row align', preview: L_ROW_ALIGN })}
+
+<h2>Grid</h2>
+<p><code>cols</code> fixes the number of equal columns (1 to 4) and falls to one column on a phone, so it never gets three squeezed ones. Without <code>cols</code> the grid fits as many columns as there is
+room for, each at least <code>--xo-grid-min</code> wide (16rem): a list of cards that needs no breakpoint.</p>
+${example({ label: 'xo-grid cols', preview: L_GRID })}
+${example({ label: 'xo-grid', preview: L_GRID_AUTO })}
+
+<h2>Center</h2>
+<p>The page column: centred, at most 64rem (<code>size="narrow"</code> 40rem for text and forms, <code>size="wide"</code> 80rem), with 1rem of padding at the sides so text never touches the edge of a phone.
+Change the default with <code>--xo-center-max</code>.</p>
+${example({ label: 'xo-center', preview: L_CENTER })}
+
+<h2>A page</h2>
+<p><code>&lt;xo-center&gt;</code> around a <code>&lt;xo-stack&gt;</code>, a <code>&lt;xo-row justify="between"&gt;</code> for the title and its actions, and an <code>&lt;xo-grid&gt;</code> for the content.</p>
+${tabs('A page', [['HTML', 'html', L_PAGE]])}
+
+<h2>When you need more</h2>
+<ul>
+<li><strong>Your CSS wins.</strong> The layout is in a cascade layer, so a rule of yours needs no <code>!important</code>: <code>xo-row { gap: 12px; }</code> replaces the scale for every row.</li>
+<li><strong>A sidebar, a hero, a masonry, a sticky header</strong> are not here, on purpose: write them with your own CSS and the tokens (<code>var(--xo-space-3)</code>, <code>var(--xo-color-border)</code>), or use the admin shell
+(<code>&lt;body class="xo-admin"&gt;</code>) for an application with a header, a navigation and a main area. See <a href="styling.html">Styling</a>.</li>
+<li><strong><code>xoong check</code></strong> warns about a value the CSS does not know (<code>&lt;xo-row gap="9"&gt;</code>, <code>&lt;xo-grid cols="5"&gt;</code>), because the browser would silently use the default. Editors complete the
+elements and values from the same data.</li>
+<li>The form-array row of a generated form is <code>.xo-array-row</code> (it was <code>.xo-row</code> before these elements: the name belongs to the layout now).</li>
+</ul>
+`,
+  },
+  {
     file: 'styling.html', section: 'docs', group: 'Design', nav: 'Styling', title: 'Styling', demo: false, script: 'page-styling.js',
     description: 'Change the look of xoong with CSS custom properties and cascade layers.',
     body: `
@@ -671,6 +793,10 @@ xo-dialog > dialog { max-width: 40rem; }
 
 /* or order the layers yourself */
 @layer reset, xoong.tokens, xoong.base, xoong.components, app;`]])}
+
+<h2>Layout</h2>
+<p>The four arrangements every page needs are elements in <code>xoong.css</code>: <code>&lt;xo-stack&gt;</code>, <code>&lt;xo-row&gt;</code>, <code>&lt;xo-grid&gt;</code> and <code>&lt;xo-center&gt;</code>, drawn by CSS alone and in a cascade
+layer, so your own CSS wins. They are not utility classes. See <a href="layout.html">Layout</a>.</p>
 
 <h2>The admin shell</h2>
 <p>Put <code>class="xo-admin"</code> on the body (or on <code>&lt;xo-router&gt;</code>) with a <code>&lt;header&gt;</code>, a <code>&lt;nav&gt;</code> and a <code>&lt;main&gt;</code>, and you have a header, a sidebar and a content area that folds into one column on a phone.</p>

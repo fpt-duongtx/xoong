@@ -108,13 +108,13 @@ xo-combobox[data-invalid] .xo-combobox-box, xo-tags[data-invalid] .xo-combobox-b
 .xo-error:empty { display: none; }
 .xo-object, .xo-array { padding: 1rem 1.1rem; border-color: var(--xo-color-border); border-radius: calc(var(--xo-radius) + 2px); background: color-mix(in srgb, var(--xo-color-surface) 60%, transparent); }
 .xo-object > legend, .xo-array > legend { padding: 0 .4rem; font-weight: 700; font-size: .9rem; }
-.xo-row { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .5rem; padding: .5rem; border: 1px solid var(--xo-color-border); background: var(--xo-color-surface); }
-.xo-row-title { grid-column: 2; }
-.xo-row-actions { gap: .25rem; flex-wrap: nowrap; }
-.xo-row-actions button, .xo-array-add button { min-height: var(--xo-control-height-sm); font-size: .875rem; }
+.xo-array-row { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .5rem; padding: .5rem; border: 1px solid var(--xo-color-border); background: var(--xo-color-surface); }
+.xo-array-row-title { grid-column: 2; }
+.xo-array-row-actions { gap: .25rem; flex-wrap: nowrap; }
+.xo-array-row-actions button, .xo-array-add button { min-height: var(--xo-control-height-sm); font-size: .875rem; }
 .xo-handle { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; font-size: 1.1rem; opacity: 1; color: var(--xo-color-muted); touch-action: none; }
 .xo-handle:hover { color: var(--xo-color-text); }
-.xo-row.xo-drop { outline: 2px dashed var(--xo-color-accent); background: var(--xo-color-accent-soft); }
+.xo-array-row.xo-drop { outline: 2px dashed var(--xo-color-accent); background: var(--xo-color-accent-soft); }
 .xo-form > .xo-submit, button.xo-submit { min-height: var(--xo-control-height); padding: 0 1.3rem; font-weight: 700; color: var(--xo-color-accent-text); background: var(--xo-color-accent); border-color: transparent; }
 
 /* ======================= overlays: xo-dialog, confirm, toast ======================= */

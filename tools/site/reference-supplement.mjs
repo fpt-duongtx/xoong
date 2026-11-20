@@ -77,6 +77,47 @@ export const ELEMENTS = {
   <template xo-route="*">Not found</template>
 </xo-router>`,
   },
+  'xo-stack': {
+    guide: 'layout.html', keywords: 'layout column vertical stack spacing gap space between',
+    defaults: { gap: '3', align: 'stretch' },
+    example: `
+<xo-stack gap="2">
+  <h2>Account</h2>
+  <p>Children one under the other.</p>
+  <button>Save</button>
+</xo-stack>`,
+  },
+  'xo-row': {
+    guide: 'layout.html', keywords: 'layout row horizontal inline flex align justify wrap grow toolbar',
+    defaults: { gap: '2', align: 'center', justify: 'start' },
+    example: `
+<xo-row justify="between" wrap>
+  <h2>Articles</h2>
+  <xo-row gap="1">
+    <input type="search" aria-label="Search" grow>
+    <button>New</button>
+  </xo-row>
+</xo-row>`,
+  },
+  'xo-grid': {
+    guide: 'layout.html', keywords: 'layout grid columns cards responsive tiles',
+    defaults: { gap: '3', cols: 'as many as fit' },
+    example: `
+<xo-grid cols="3">
+  <article>One</article>
+  <article>Two</article>
+  <article>Three</article>
+</xo-grid>`,
+  },
+  'xo-center': {
+    guide: 'layout.html', keywords: 'layout container page column centre center width max readable wrapper',
+    defaults: { size: '64rem' },
+    example: `
+<xo-center size="narrow">
+  <h1>A page</h1>
+  <p>A readable column, centred.</p>
+</xo-center>`,
+  },
   'xo-pager': {
     guide: 'recipes.html', keywords: 'pagination page next previous paging offset limit total',
     types: { 'page-size': 'number', 'page-sizes': 'list' },

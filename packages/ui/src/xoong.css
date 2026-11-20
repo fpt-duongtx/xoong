@@ -134,17 +134,17 @@
   .xo-form { display: grid; gap: var(--xo-space-3); max-width: var(--xo-form-max-width); }
   .xo-object, .xo-array, .xo-group { margin: 0; padding: var(--xo-space-3); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); display: grid; gap: var(--xo-space-3); }
   .xo-group { border: 0; padding: 0; }
-  .xo-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }
-  .xo-row-actions, .xo-array-add { display: flex; gap: var(--xo-space-2); flex-wrap: wrap; }
-  .xo-row-title { font-weight: 600; }
+  .xo-array-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }
+  .xo-array-row-actions, .xo-array-add { display: flex; gap: var(--xo-space-2); flex-wrap: wrap; }
+  .xo-array-row-title { font-weight: 600; }
   .xo-handle { cursor: grab; user-select: none; padding: 0 var(--xo-space-1); opacity: .6; align-self: center; }
-  .xo-row.xo-dragging { opacity: .5; }
-  .xo-row.xo-drop { outline: 2px dashed var(--xo-color-accent, currentColor); outline-offset: 2px; }
+  .xo-array-row.xo-dragging { opacity: .5; }
+  .xo-array-row.xo-drop { outline: 2px dashed var(--xo-color-accent, currentColor); outline-offset: 2px; }
   .xo-hint { color: var(--xo-color-muted); font-size: var(--xo-text-small); }
   .xo-object, .xo-array { margin: 0; padding: var(--xo-space-3); border: 1px solid var(--xo-color-border); border-radius: var(--xo-radius); display: grid; gap: var(--xo-space-3); }
   .xo-group { margin: 0; padding: 0; border: 0; display: grid; gap: var(--xo-space-3); }
-  .xo-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }
-  .xo-row-actions, .xo-array-add { display: flex; gap: var(--xo-space-2); flex-wrap: wrap; }
+  .xo-array-row { display: grid; gap: var(--xo-space-2); padding: var(--xo-space-2); border: 1px dashed var(--xo-color-border); border-radius: var(--xo-radius); }
+  .xo-array-row-actions, .xo-array-add { display: flex; gap: var(--xo-space-2); flex-wrap: wrap; }
   .xo-hint { color: var(--xo-color-muted); font-size: var(--xo-text-small); }
   .xo-field { display: grid; gap: var(--xo-space-1); }
   .xo-field:has(input[type="checkbox"]) { display: flex; align-items: center; gap: var(--xo-space-2); }
@@ -191,6 +191,45 @@
   xo-dialog > dialog { --xo-form-max-width: none; }
   .xo-modal__body .xo-form-actions { position: sticky; bottom: calc(-1 * var(--xo-modal-pad)); z-index: 1; margin: 0 calc(-1 * var(--xo-modal-pad)) calc(-1 * var(--xo-modal-pad)); padding: var(--xo-space-2) var(--xo-modal-pad); background: var(--xo-color-surface); border-top: 1px solid var(--xo-color-border); }
   .xo-modal__foot { display: flex; align-items: center; justify-content: flex-end; gap: var(--xo-space-2); padding: var(--xo-space-2) var(--xo-space-3); border-top: 1px solid var(--xo-color-border); }
+}
+
+/*
+ * Layout: the four arrangements every page needs, as elements with attributes (no utility classes). `gap` is a --xo-space-N token (0 to 4).
+ *   <xo-stack gap="3">     children one under the other           align="start | center | end"  (default: stretch)
+ *   <xo-row gap="2" wrap>  children side by side                  align="start | center | end | baseline | stretch"  justify="start | center | end | between"
+ *                          a child with `grow` takes the free space
+ *   <xo-grid cols="3">     equal columns (1 to 4; one column on a phone); without `cols`, as many columns as fit (--xo-grid-min, 16rem)
+ *   <xo-center>            the page column: centred, readable width (--xo-center-max, 64rem)   size="narrow | wide"
+ */
+@layer xoong.components {
+  xo-stack, xo-row, xo-grid, xo-center { display: block; }
+  xo-stack { display: flex; flex-direction: column; gap: var(--xo-space-3); }
+  xo-row { display: flex; align-items: center; gap: var(--xo-space-2); }
+  xo-grid { display: grid; gap: var(--xo-space-3); grid-template-columns: repeat(auto-fit, minmax(min(var(--xo-grid-min, 16rem), 100%), 1fr)); }
+  xo-center { max-width: var(--xo-center-max, 64rem); margin-inline: auto; padding-inline: var(--xo-space-3); box-sizing: border-box; }
+  xo-center[size="narrow"] { --xo-center-max: 40rem; }
+  xo-center[size="wide"] { --xo-center-max: 80rem; }
+  :is(xo-stack, xo-row, xo-grid)[gap="0"] { gap: 0; }
+  :is(xo-stack, xo-row, xo-grid)[gap="1"] { gap: var(--xo-space-1); }
+  :is(xo-stack, xo-row, xo-grid)[gap="2"] { gap: var(--xo-space-2); }
+  :is(xo-stack, xo-row, xo-grid)[gap="3"] { gap: var(--xo-space-3); }
+  :is(xo-stack, xo-row, xo-grid)[gap="4"] { gap: var(--xo-space-4); }
+  xo-row[wrap] { flex-wrap: wrap; }
+  xo-row[align="start"], xo-stack[align="start"] { align-items: flex-start; }
+  xo-row[align="center"], xo-stack[align="center"] { align-items: center; }
+  xo-row[align="end"], xo-stack[align="end"] { align-items: flex-end; }
+  xo-row[align="baseline"] { align-items: baseline; }
+  xo-row[align="stretch"] { align-items: stretch; }
+  xo-row[justify="start"] { justify-content: flex-start; }
+  xo-row[justify="center"] { justify-content: center; }
+  xo-row[justify="end"] { justify-content: flex-end; }
+  xo-row[justify="between"] { justify-content: space-between; }
+  xo-row > [grow] { flex: 1 1 0; min-width: 0; }
+  xo-grid[cols="1"] { grid-template-columns: minmax(0, 1fr); }
+  xo-grid[cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  xo-grid[cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  xo-grid[cols="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 40rem) { xo-grid[cols] { grid-template-columns: minmax(0, 1fr); } }
 }
 /* Unlayered, so it beats every layered display ( .xo-pager is flex, .xo-form is grid, and the same for a control host or a rule in mist.css ). A stylesheet loaded later still wins. */
 [hidden] { display: none; }

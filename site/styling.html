@@ -97,6 +97,7 @@
     <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
+    <a href="layout.html">Layout</a>
     <a href="styling.html" aria-current="page">Styling</a>
     <a href="components.html">Controls standard</a>
     <a href="focus-audit.html">Focus audit</a>
@@ -169,6 +170,7 @@
       <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
+      <a href="layout.html">Layout</a>
       <a href="styling.html" aria-current="page">Styling</a>
       <a href="components.html">Controls standard</a>
       <a href="focus-audit.html">Focus audit</a>
@@ -253,6 +255,10 @@ xo-dialog &gt; dialog { max-width: <span class="tok-n">40rem</span>; }
 <span class="tok-k">@layer</span> reset, xoong.tokens, xoong.base, xoong.components, app;</code></pre></section>
 </xo-tabs>
 
+<h2 id="layout">Layout</h2>
+<p>The four arrangements every page needs are elements in <code>xoong.css</code>: <code>&lt;xo-stack&gt;</code>, <code>&lt;xo-row&gt;</code>, <code>&lt;xo-grid&gt;</code> and <code>&lt;xo-center&gt;</code>, drawn by CSS alone and in a cascade
+layer, so your own CSS wins. They are not utility classes. See <a href="layout.html">Layout</a>.</p>
+
 <h2 id="the-admin-shell">The admin shell</h2>
 <p>Put <code>class="xo-admin"</code> on the body (or on <code>&lt;xo-router&gt;</code>) with a <code>&lt;header&gt;</code>, a <code>&lt;nav&gt;</code> and a <code>&lt;main&gt;</code>, and you have a header, a sidebar and a content area that folds into one column on a phone.</p>
 <xo-tabs label="Shell" class="example">
@@ -262,11 +268,11 @@ xo-dialog &gt; dialog { max-width: <span class="tok-n">40rem</span>; }
   &lt;<span class="tok-t">main</span>&gt;...&lt;/<span class="tok-t">main</span>&gt;
 &lt;/<span class="tok-t">body</span>&gt;</code></pre></section>
 </xo-tabs>
-<nav class="pager" aria-label="Pages"><a rel="prev" href="theme-builder.html"><small>Previous</small><span>Theme builder</span></a><a rel="next" href="components.html"><small>Next</small><span>Controls standard</span></a></nav>
+<nav class="pager" aria-label="Pages"><a rel="prev" href="layout.html"><small>Previous</small><span>Layout</span></a><a rel="next" href="components.html"><small>Next</small><span>Controls standard</span></a></nav>
     </main>
     <aside class="rail" aria-label="On this page">
       <h2>On this page</h2>
-      <ol><li><a href="#tokens" aria-current="true">Tokens</a></li><li><a href="#layers">Layers</a></li><li><a href="#the-admin-shell">The admin shell</a></li></ol>
+      <ol><li><a href="#tokens" aria-current="true">Tokens</a></li><li><a href="#layers">Layers</a></li><li><a href="#layout">Layout</a></li><li><a href="#the-admin-shell">The admin shell</a></li></ol>
     </aside>
   </div>
   <footer class="foot">

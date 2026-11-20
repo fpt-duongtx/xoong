@@ -89,16 +89,16 @@ describe('<xo-form> from a request schema with nesting, arrays, unions and hints
 
   it('an array of values: rows with add, remove and move buttons that edit the draft', async () => {
     screen = await edit(mockApi(table, { getPage: () => record }));
-    const tags = () => screen.$$('fieldset.xo-array:nth-of-type(1) .xo-row input').map((i) => i.value);
+    const tags = () => screen.$$('fieldset.xo-array:nth-of-type(1) .xo-array-row input').map((i) => i.value);
     expect(screen.$('[name="tags[0]"]').value).toBe('a');
     await screen.click('button[xo-add="tags"]');
     expect(screen.$$('[name^="tags["]').length).toBe(2);
     screen.$('[name="tags[1]"]').value = 'b';
     screen.$('[name="tags[1]"]').dispatchEvent(new Event('input', { bubbles: true }));
     await settle();
-    await screen.click('[name="tags[1]"] ~ .xo-row-actions button[aria-label="Move up"], .xo-row:has([name="tags[1]"]) button[aria-label="Move up"]');
+    await screen.click('[name="tags[1]"] ~ .xo-array-row-actions button[aria-label="Move up"], .xo-array-row:has([name="tags[1]"]) button[aria-label="Move up"]');
     expect(screen.$('form').model.get('tags')).toEqual(['b', 'a']);
-    await screen.click('.xo-row:has([name="tags[0]"]) button[aria-label="Remove"]');
+    await screen.click('.xo-array-row:has([name="tags[0]"]) button[aria-label="Remove"]');
     expect(screen.$('form').model.get('tags')).toEqual(['a']);
     void tags;
   });
@@ -132,9 +132,9 @@ describe('<xo-form> from a request schema with nesting, arrays, unions and hints
 
   it('array rows have a numbered title with the variant; two-letter child names are language codes in upper case; a property title is its label', async () => {
     screen = await edit(mockApi(table, { getPage: () => ({ ...record, blocks: [{ type: 'text', body: 'Hi' }, { type: 'image', url: 'x' }] }) }));
-    expect(screen.texts('.xo-variant .xo-row-title')).toEqual(['1. Text block', '2. Image block']);
+    expect(screen.texts('.xo-variant .xo-array-row-title')).toEqual(['1. Text block', '2. Image block']);
     expect(screen.texts('fieldset.xo-object label > span').slice(0, 2)).toEqual(['EN', 'VI']);
-    expect(screen.texts('.xo-array:has([name^="faq["]) .xo-row-title')).toEqual(['1.']);
+    expect(screen.texts('.xo-array:has([name^="faq["]) .xo-array-row-title')).toEqual(['1.']);
   });
 
   it('a union property: choose the variant, and only that variant\'s fields show', async () => {
@@ -163,7 +163,7 @@ describe('<xo-form> from a request schema with nesting, arrays, unions and hints
 
   it('a create form starts from the schema defaults, with no row for an empty array', async () => {
     screen = await mount('<xo-view><xo-form op="createPage"></xo-form></xo-view>', { api: mockApi(table) });
-    expect(screen.$$('.xo-row').length).toBe(0);
+    expect(screen.$$('.xo-array-row').length).toBe(0);
     expect(screen.$('[name=slug]').value).toBe('');
     expect(screen.text('form > button:last-child')).toBe('Save');
   });

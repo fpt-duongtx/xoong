@@ -139,3 +139,15 @@ describe('XO281 / XO282: named templates', () => {
     expect(twice[0].level).toBe('warn');
   });
 });
+
+describe('layout elements (xo-stack, xo-row, xo-grid, xo-center)', () => {
+  it('are known elements, and a value the CSS does not know is a warning with the values it knows (XO271)', () => {
+    expect(codes('<xo-center size="narrow"><xo-stack gap="2" align="center"><xo-row justify="between" align="baseline" wrap><b>a</b><i grow>b</i></xo-row><xo-grid cols="3" gap="4"><p>x</p></xo-grid></xo-stack></xo-center>')).toEqual([]);
+    const f = checkHtml('<xo-row gap="9" justify="spread"><b>a</b></xo-row>', table, 'a.html');
+    expect(f.map((x) => x.code)).toEqual(['XO271', 'XO271']);
+    expect(f[0].message).toContain('"9"');
+    expect(f[0].message).toContain('is not one of "0", "1"');
+    expect(codes('<xo-grid cols="5"><p>x</p></xo-grid>')).toEqual(['XO271']);
+    expect(codes('<xo-stack align="between"><p>x</p></xo-stack>')).toEqual(['XO271']); // between is a row's justify, not a stack's align
+  });
+});

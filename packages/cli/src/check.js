@@ -46,11 +46,11 @@ import { excluder } from './exclude.js';
 import { join, extname, relative } from 'node:path';
 import { parse } from 'parse5';
 import { nearest } from '@xoong/core/closest';
-import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_LAYOUT_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
 import { VALUE_SETS } from './html-data.js';
 
 const ATTRS = new Set([...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES]);
-const TAGS = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS]);
+const TAGS = new Set([...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_LAYOUT_ELEMENTS, ...XO_CONTROL_ELEMENTS]);
 const INTERACTIVE = new Set(['button', 'a', 'input', 'select', 'textarea', 'summary']);
 /** Attributes that tune an action: they do nothing unless xo-click or xo-submit is on the same element. */
 const NEEDS_ACTION = ['xo-then', 'xo-notice', 'xo-confirm', 'xo-body', 'xo-optimistic'];

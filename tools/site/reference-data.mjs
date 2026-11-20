@@ -8,7 +8,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { SYNTAX, ELEMENT_DOCS, ATTRIBUTE_DOCS, VALUE_SETS, elementAttributes, explainSyntax } from '../../packages/cli/src/html-data.js';
-import { XO_UI_ELEMENTS } from '../../packages/core/src/syntax.js';
+import { XO_UI_ELEMENTS, XO_LAYOUT_ELEMENTS } from '../../packages/core/src/syntax.js';
 import { GROUPS, ELEMENTS, DIRECTIVES, EVENTS, API, TEMPLATE } from './reference-supplement.mjs';
 
 const root = new URL('../..', import.meta.url).pathname;
@@ -105,7 +105,7 @@ export function packageDeclarations(dir) {
 }
 
 // ---- the groups ---------------------------------------------------------------------------------------------------------------------
-const importFor = (pkg, tag) => (tag === 'xo-view' ? "import '@xoong/data/view';" : `import '${pkg}';`);
+const importFor = (pkg, tag) => (tag === 'xo-view' ? "import '@xoong/data/view';" : XO_LAYOUT_ELEMENTS.includes(tag) ? '<link rel="stylesheet" href="/@xoong/ui/src/xoong.css">' : `import '${pkg}';`); // a layout element is CSS only
 
 function elements() {
   const props = propTypes();

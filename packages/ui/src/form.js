@@ -59,10 +59,10 @@ function fields(node, path, depth, skip = []) {
 }
 
 /** The heading of an array row: its number and, for unions, the variant. */
-const rowTitle = (text) => `<span class="xo-row-title"><span class="xo-row-no">{$n}.</span>${text ? ` <strong>${esc(text)}</strong>` : ''}</span>`;
+const rowTitle = (text) => `<span class="xo-array-row-title"><span class="xo-array-row-no">{$n}.</span>${text ? ` <strong>${esc(text)}</strong>` : ''}</span>`;
 
 /** Buttons of an array row. */
-const rowButtons = (path) => `<span class="xo-row-actions"><span class="xo-handle" xo-drag="${path}" aria-hidden="true"><i class="xi xi-grip" aria-hidden="true"></i></span><button type="button" xo-move="${path}:up" aria-label="Move up" xo-t="aria-label:xoong.form.moveUp"><i class="xi xi-arrow-up" aria-hidden="true"></i></button><button type="button" xo-move="${path}:down" aria-label="Move down" xo-t="aria-label:xoong.form.moveDown"><i class="xi xi-arrow-down" aria-hidden="true"></i></button><button type="button" xo-remove="${path}" aria-label="Remove" xo-t="aria-label:xoong.form.remove"><i class="xi xi-close" aria-hidden="true"></i></button></span>`;
+const rowButtons = (path) => `<span class="xo-array-row-actions"><span class="xo-handle" xo-drag="${path}" aria-hidden="true"><i class="xi xi-grip" aria-hidden="true"></i></span><button type="button" xo-move="${path}:up" aria-label="Move up" xo-t="aria-label:xoong.form.moveUp"><i class="xi xi-arrow-up" aria-hidden="true"></i></button><button type="button" xo-move="${path}:down" aria-label="Move down" xo-t="aria-label:xoong.form.moveDown"><i class="xi xi-arrow-down" aria-hidden="true"></i></button><button type="button" xo-remove="${path}" aria-label="Remove" xo-t="aria-label:xoong.form.remove"><i class="xi xi-close" aria-hidden="true"></i></button></span>`;
 
 function field(node, path, name, depth) {
   const text = label(name);
@@ -96,7 +96,7 @@ function array(node, path, text, depth) {
     adds = `<button type="button" xo-add="${esc(path)}" xo-t="xoong.form.add">Add</button>`;
   }
   return `<fieldset class="xo-array"><legend>${esc(node.title ?? text)}</legend>${node.description ? `<small class="xo-hint">${esc(node.description)}</small>` : ''}`
-    + `<div class="xo-row" xo-each="${esc(path)}">${row}${rowButtons(rowPath)}</div><div class="xo-array-add">${adds}</div></fieldset>`;
+    + `<div class="xo-array-row" xo-each="${esc(path)}">${row}${rowButtons(rowPath)}</div><div class="xo-array-add">${adds}</div></fieldset>`;
 }
 
 defineTemplate('xo-form', (el, { client, take }) => {

@@ -7,7 +7,7 @@
    "id": "elements",
    "label": "Elements",
    "summary": "Every xo-* element: what it does, its attributes, its events and an example.",
-   "count": 47,
+   "count": 51,
    "entries": [
     {
      "id": "xo-view",
@@ -408,6 +408,182 @@
      },
      "guide": "recipes.html",
      "keywords": "pagination page next previous paging offset limit total"
+    },
+    {
+     "id": "xo-stack",
+     "name": "xo-stack",
+     "kind": "element",
+     "package": "@xoong/ui",
+     "import": "<link rel=\"stylesheet\" href=\"/@xoong/ui/src/xoong.css\">",
+     "summary": "Layout, CSS only: the children one under the other, with a gap between them.",
+     "description": "Layout, CSS only: the children one under the other, with a gap between them. The page column of a form, a card, a section.",
+     "attributes": [
+      {
+       "name": "gap",
+       "type": "choice",
+       "default": "3",
+       "values": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+       ],
+       "description": "The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 3."
+      },
+      {
+       "name": "align",
+       "type": "choice",
+       "default": "stretch",
+       "values": [
+        "start",
+        "center",
+        "end"
+       ],
+       "description": "Where the children sit across the width: start, center or end. Default: they fill the width."
+      }
+     ],
+     "events": [],
+     "example": {
+      "lang": "html",
+      "code": "<xo-stack gap=\"2\">\n  <h2>Account</h2>\n  <p>Children one under the other.</p>\n  <button>Save</button>\n</xo-stack>"
+     },
+     "guide": "layout.html",
+     "keywords": "layout column vertical stack spacing gap space between"
+    },
+    {
+     "id": "xo-row",
+     "name": "xo-row",
+     "kind": "element",
+     "package": "@xoong/ui",
+     "import": "<link rel=\"stylesheet\" href=\"/@xoong/ui/src/xoong.css\">",
+     "summary": "Layout, CSS only: the children side by side, vertically centred.",
+     "description": "Layout, CSS only: the children side by side, vertically centred. A child with `grow` takes the free space (a search box beside a button).",
+     "attributes": [
+      {
+       "name": "gap",
+       "type": "choice",
+       "default": "2",
+       "values": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+       ],
+       "description": "The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 2."
+      },
+      {
+       "name": "wrap",
+       "type": "text",
+       "default": null,
+       "values": null,
+       "description": "Let the children go on a new line when they do not fit."
+      },
+      {
+       "name": "align",
+       "type": "choice",
+       "default": "center",
+       "values": [
+        "start",
+        "center",
+        "end",
+        "baseline",
+        "stretch"
+       ],
+       "description": "Vertical alignment: start, center (default), end, baseline or stretch."
+      },
+      {
+       "name": "justify",
+       "type": "choice",
+       "default": "start",
+       "values": [
+        "start",
+        "center",
+        "end",
+        "between"
+       ],
+       "description": "Spread along the row: start (default), center, end or between."
+      }
+     ],
+     "events": [],
+     "example": {
+      "lang": "html",
+      "code": "<xo-row justify=\"between\" wrap>\n  <h2>Articles</h2>\n  <xo-row gap=\"1\">\n    <input type=\"search\" aria-label=\"Search\" grow>\n    <button>New</button>\n  </xo-row>\n</xo-row>"
+     },
+     "guide": "layout.html",
+     "keywords": "layout row horizontal inline flex align justify wrap grow toolbar"
+    },
+    {
+     "id": "xo-grid",
+     "name": "xo-grid",
+     "kind": "element",
+     "package": "@xoong/ui",
+     "import": "<link rel=\"stylesheet\" href=\"/@xoong/ui/src/xoong.css\">",
+     "summary": "Layout, CSS only: equal columns.",
+     "description": "Layout, CSS only: equal columns. Without `cols` it fits as many columns as there is room for (--xo-grid-min, 16rem each); with `cols` the number is fixed, and one column on a phone.",
+     "attributes": [
+      {
+       "name": "gap",
+       "type": "choice",
+       "default": "3",
+       "values": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+       ],
+       "description": "The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 3."
+      },
+      {
+       "name": "cols",
+       "type": "choice",
+       "default": "as many as fit",
+       "values": [
+        "1",
+        "2",
+        "3",
+        "4"
+       ],
+       "description": "The number of columns: 1 to 4."
+      }
+     ],
+     "events": [],
+     "example": {
+      "lang": "html",
+      "code": "<xo-grid cols=\"3\">\n  <article>One</article>\n  <article>Two</article>\n  <article>Three</article>\n</xo-grid>"
+     },
+     "guide": "layout.html",
+     "keywords": "layout grid columns cards responsive tiles"
+    },
+    {
+     "id": "xo-center",
+     "name": "xo-center",
+     "kind": "element",
+     "package": "@xoong/ui",
+     "import": "<link rel=\"stylesheet\" href=\"/@xoong/ui/src/xoong.css\">",
+     "summary": "Layout, CSS only: the page column: centred, a readable width (--xo-center-max, 64rem) and side padding.",
+     "description": "Layout, CSS only: the page column: centred, a readable width (--xo-center-max, 64rem) and side padding.",
+     "attributes": [
+      {
+       "name": "size",
+       "type": "choice",
+       "default": "64rem",
+       "values": [
+        "narrow",
+        "wide"
+       ],
+       "description": "narrow (40rem, text and forms) or wide (80rem). Default 64rem."
+      }
+     ],
+     "events": [],
+     "example": {
+      "lang": "html",
+      "code": "<xo-center size=\"narrow\">\n  <h1>A page</h1>\n  <p>A readable column, centred.</p>\n</xo-center>"
+     },
+     "guide": "layout.html",
+     "keywords": "layout container page column centre center width max readable wrapper"
     },
     {
      "id": "xo-tabs",

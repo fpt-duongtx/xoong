@@ -5,7 +5,7 @@
  * for xo-click, xo-submit, <xo-view get> and <xo-form op> from the synced operations table.
  * Format: https://github.com/microsoft/vscode-html-languageservice/blob/main/docs/customData.md
  */
-import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
+import { XO_ATTRIBUTES, XO_ELEMENTS, XO_UI_ATTRIBUTES, XO_UI_ELEMENTS, XO_LAYOUT_ELEMENTS, XO_CONTROL_ATTRIBUTES, XO_CONTROL_ELEMENTS } from '@xoong/core/syntax';
 import { nearest } from '@xoong/core/closest';
 
 export const ATTRIBUTE_DOCS = {
@@ -55,6 +55,10 @@ export const ELEMENT_DOCS = {
   'xo-form': ['A form generated from the request schema of an operation.', [['op', 'The operation to submit to.'], ['submit', 'Text of the submit button.']]],
   'xo-toast': ['Shows the message of the latest xo-error event on the page (not when the event was prevented with `preventDefault()`, or its `handled` is true because a view shows `$error` itself); hides on the next xo-done or after `timeout` seconds. Set `detail.action` (`{ label, run }`, for example Retry) and `detail.timeout` on the error and the toast shows that button, the same way an `xo-notice` does.', [['timeout', 'Seconds before it hides (default 6, 0 = until the next success).']]],
   'xo-router': ['A History-API router declared in markup: one <template xo-route> per route, optional <template xo-layout> shells. Links are intercepted, aria-current marks the active one. Guards and leave-vetoes are JavaScript (`router.guard`, `router.beforeNavigate`).', [['base', 'Path prefix the app lives under, for example `/admin`.'], ['base-links', 'A root-relative link such as `/users` inside the router means `/admin/users`, so the same screens mount under any base. `rel="external"` leaves the app.']]],
+  'xo-stack': ['Layout (@xoong/ui), CSS only: the children one under the other, with a gap between them. The page column of a form, a card, a section.', [['gap', 'The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 3.'], ['align', 'Where the children sit across the width: start, center or end. Default: they fill the width.']]],
+  'xo-row': ['Layout (@xoong/ui), CSS only: the children side by side, vertically centred. A child with `grow` takes the free space (a search box beside a button).', [['gap', 'The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 2.'], ['wrap', 'Let the children go on a new line when they do not fit.'], ['align', 'Vertical alignment: start, center (default), end, baseline or stretch.'], ['justify', 'Spread along the row: start (default), center, end or between.']]],
+  'xo-grid': ['Layout (@xoong/ui), CSS only: equal columns. Without `cols` it fits as many columns as there is room for (--xo-grid-min, 16rem each); with `cols` the number is fixed, and one column on a phone.', [['gap', 'The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 3.'], ['cols', 'The number of columns: 1 to 4.']]],
+  'xo-center': ['Layout (@xoong/ui), CSS only: the page column: centred, a readable width (--xo-center-max, 64rem) and side padding.', [['size', 'narrow (40rem, text and forms) or wide (80rem). Default 64rem.']]],
   'xo-tabs': ['Accessible tabs (@xoong/controls) from the sections that have xo-tab. Panels stay in the DOM, so form controls on other tabs still count; xo-reveal selects the tab of an invalid field.', [['value', 'Key of the selected tab (default: the first).'], ['label', 'Accessible name of the tab list.']]],
   'xo-menu': ['An action menu (@xoong/controls): a trigger button and items (buttons or links) with arrow keys, Home/End, type-ahead and Escape. Drawn in the top layer where the browser supports the Popover API. Items with a `value` make it a choice menu: `xo-menu-select` fires with the value.', [['label', 'Accessible name of the menu.'], ['value', 'The chosen value of a choice menu (the items that have a `value` attribute are radio items).']]],
   'xo-combobox': ['A form control (@xoong/controls) to pick from a list you can filter by typing. <option> children are the choices; `multiple` shows chips; the value is a string, or an array with `multiple`.', [['name', 'Form field path.'], ['multiple', 'Pick several values (chips).'], ['creatable', 'Allow a value that is not in the list.'], ['remote', 'Do not filter locally: listen to xo-search and set `el.options`.'], ['options-op', 'A GET operation whose list is the options (needs @xoong/data/view). With `option-value` and `option-label` (paths in each item, default id and name) and `p-<name>` parameters; a mutation of the list refreshes the options.'], ['option-value', 'With options-op: the path in each item that is the value (default `id`).'], ['option-label', 'With options-op: the path in each item that is the label (default `name`).'], ['placeholder', 'Hint text of the empty field.'], ['label', 'Accessible name when there is no <label>.']]],
@@ -101,7 +105,7 @@ export const ELEMENT_DOCS = {
 
 /** Every element and attribute name xoong defines (the lists of @xoong/core/syntax), for tools that explain or complete them. */
 export const SYNTAX = {
-  elements: [...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_CONTROL_ELEMENTS],
+  elements: [...XO_ELEMENTS, ...XO_UI_ELEMENTS, ...XO_LAYOUT_ELEMENTS, ...XO_CONTROL_ELEMENTS],
   attributes: [...XO_ATTRIBUTES, ...XO_UI_ATTRIBUTES, ...XO_CONTROL_ATTRIBUTES],
 };
 
@@ -112,6 +116,14 @@ export const SYNTAX = {
  */
 export const VALUE_SETS = {
   'xo-confirm-kind': ['danger', 'warning', 'info', 'success'],
+  'xo-stack gap': ['0', '1', '2', '3', '4'],
+  'xo-stack align': ['start', 'center', 'end'],
+  'xo-row gap': ['0', '1', '2', '3', '4'],
+  'xo-row align': ['start', 'center', 'end', 'baseline', 'stretch'],
+  'xo-row justify': ['start', 'center', 'end', 'between'],
+  'xo-grid gap': ['0', '1', '2', '3', '4'],
+  'xo-grid cols': ['1', '2', '3', '4'],
+  'xo-center size': ['narrow', 'wide'],
   'xo-dialog size': ['sm', 'wide', 'full'],
   'xo-switch size': ['sm'],
   'xo-spinner size': ['md', 'lg'],

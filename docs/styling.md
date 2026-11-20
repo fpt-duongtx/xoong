@@ -75,9 +75,14 @@ not required.
 Each platform feature used by xoong lists its browser-support status in the
 docs and its fallback, so a team can decide against its own browser matrix.
 
-## 7. What xoong will not provide
+## 7. Layout
 
-* A utility-class system.
+The four arrangements every page needs (`<xo-stack>`, `<xo-row>`, `<xo-grid>`, `<xo-center>`) are elements with attributes in `xoong.css`, drawn by CSS alone and in a cascade layer: see
+[layout.md](layout.md). They are not utility classes. The form-array row of a generated form is `.xo-array-row`.
+
+## 8. What xoong will not provide
+
+* A utility-class system. (The four layout elements are elements with attributes, not a vocabulary of classes.)
 * A large pre-themed component catalog. The built-in set stays small and
   focused on admin needs: table, form, dialog, layout.
 

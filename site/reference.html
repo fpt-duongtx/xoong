@@ -97,6 +97,7 @@
     <div class="grp">
     <h2>Design</h2>
     <a href="theme-builder.html">Theme builder</a>
+    <a href="layout.html">Layout</a>
     <a href="styling.html">Styling</a>
     <a href="components.html">Controls standard</a>
     <a href="focus-audit.html">Focus audit</a>
@@ -169,6 +170,7 @@
       <div class="grp">
       <h2>Design</h2>
       <a href="theme-builder.html">Theme builder</a>
+      <a href="layout.html">Layout</a>
       <a href="styling.html">Styling</a>
       <a href="components.html">Controls standard</a>
       <a href="focus-audit.html">Focus audit</a>
@@ -207,19 +209,19 @@
       <div class="crumbs"><a href="overview.html">Docs</a><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>Reference</span><span class="ic" data-ic="chevron-right" aria-hidden="true"></span><span>All elements and attributes</span></div>
 
 <h1>Reference</h1>
-<p class="lead">Every element, directive, event, function and piece of template syntax of xoong, in one place: what it does, what it takes, an example, and the guide that explains it. 180 entries, written from the code itself.</p>
+<p class="lead">Every element, directive, event, function and piece of template syntax of xoong, in one place: what it does, what it takes, an example, and the guide that explains it. 184 entries, written from the code itself.</p>
 <p>Press <kbd>Ctrl</kbd> <kbd>K</kbd> (or <kbd>/</kbd>) to search everything on this site, or open the <strong>Reference</strong> menu in the header. The same data is published as <a href="reference.json">reference.json</a> for tools.</p>
 <div class="ref-filter" id="ref-filter" hidden>
   <label for="ref-filter-input">Filter this page</label>
   <input id="ref-filter-input" type="search" autocomplete="off" placeholder="dialog, xo-click, router, confirm…" aria-controls="ref-entries">
   <p class="ref-filter-status" role="status" id="ref-filter-status"></p>
 </div>
-<nav class="ref-jump" aria-label="Reference groups"><ul><li><a href="#elements">Elements <span>47</span></a></li><li><a href="#directives">Directives <span>39</span></a></li><li><a href="#events">Events <span>36</span></a></li><li><a href="#javascript-api">JavaScript API <span>47</span></a></li><li><a href="#template-syntax">Template syntax <span>11</span></a></li></ul></nav>
+<nav class="ref-jump" aria-label="Reference groups"><ul><li><a href="#elements">Elements <span>51</span></a></li><li><a href="#directives">Directives <span>39</span></a></li><li><a href="#events">Events <span>36</span></a></li><li><a href="#javascript-api">JavaScript API <span>47</span></a></li><li><a href="#template-syntax">Template syntax <span>11</span></a></li></ul></nav>
 <details class="ref-types"><summary>What the types mean</summary><dl class="ref-facts"><dt><code>text</code></dt><dd>Any text.</dd><dt><code>number</code></dt><dd>A number.</dd><dt><code>flag</code></dt><dd>Present means on, absent means off.</dd><dt><code>list</code></dt><dd>Comma-separated values.</dd><dt><code>choice</code></dt><dd>One of a fixed set; any other value falls back to the default.</dd><dt><code>path</code></dt><dd>A path into the data: <code>items</code>, <code>name.en</code>.</dd><dt><code>operation</code></dt><dd>An operationId or <code>METHOD /path</code>.</dd><dt><code>selector</code></dt><dd>A CSS selector.</dd><dt><code>JSON</code></dt><dd>A JSON text.</dd></dl></details>
 <div id="ref-entries">
 <h2 id="elements">Elements</h2>
-<p class="ref-group-intro">Every xo-* element: what it does, its attributes, its events and an example. <span class="ref-count">47 entries.</span></p>
-<ul class="ref-names" aria-label="Elements, all entries"><li data-find-for="xo-view"><a href="#xo-view"><code>&lt;xo-view&gt;</code></a></li><li data-find-for="xo-table"><a href="#xo-table"><code>&lt;xo-table&gt;</code></a></li><li data-find-for="xo-form"><a href="#xo-form"><code>&lt;xo-form&gt;</code></a></li><li data-find-for="xo-dialog"><a href="#xo-dialog"><code>&lt;xo-dialog&gt;</code></a></li><li data-find-for="xo-toast"><a href="#xo-toast"><code>&lt;xo-toast&gt;</code></a></li><li data-find-for="xo-router"><a href="#xo-router"><code>&lt;xo-router&gt;</code></a></li><li data-find-for="xo-pager"><a href="#xo-pager"><code>&lt;xo-pager&gt;</code></a></li><li data-find-for="xo-tabs"><a href="#xo-tabs"><code>&lt;xo-tabs&gt;</code></a></li><li data-find-for="xo-menu"><a href="#xo-menu"><code>&lt;xo-menu&gt;</code></a></li><li data-find-for="xo-combobox"><a href="#xo-combobox"><code>&lt;xo-combobox&gt;</code></a></li><li data-find-for="xo-tags"><a href="#xo-tags"><code>&lt;xo-tags&gt;</code></a></li><li data-find-for="xo-richtext"><a href="#xo-richtext"><code>&lt;xo-richtext&gt;</code></a></li><li data-find-for="xo-carousel"><a href="#xo-carousel"><code>&lt;xo-carousel&gt;</code></a></li><li data-find-for="xo-switch"><a href="#xo-switch"><code>&lt;xo-switch&gt;</code></a></li><li data-find-for="xo-date"><a href="#xo-date"><code>&lt;xo-date&gt;</code></a></li><li data-find-for="xo-time"><a href="#xo-time"><code>&lt;xo-time&gt;</code></a></li><li data-find-for="xo-slider"><a href="#xo-slider"><code>&lt;xo-slider&gt;</code></a></li><li data-find-for="xo-stepper"><a href="#xo-stepper"><code>&lt;xo-stepper&gt;</code></a></li><li data-find-for="xo-password"><a href="#xo-password"><code>&lt;xo-password&gt;</code></a></li><li data-find-for="xo-copy"><a href="#xo-copy"><code>&lt;xo-copy&gt;</code></a></li><li data-find-for="xo-image"><a href="#xo-image"><code>&lt;xo-image&gt;</code></a></li><li data-find-for="xo-theme-toggle"><a href="#xo-theme-toggle"><code>&lt;xo-theme-toggle&gt;</code></a></li><li data-find-for="xo-accordion"><a href="#xo-accordion"><code>&lt;xo-accordion&gt;</code></a></li><li data-find-for="xo-popover"><a href="#xo-popover"><code>&lt;xo-popover&gt;</code></a></li><li data-find-for="xo-consent"><a href="#xo-consent"><code>&lt;xo-consent&gt;</code></a></li><li data-find-for="xo-file"><a href="#xo-file"><code>&lt;xo-file&gt;</code></a></li><li data-find-for="xo-command"><a href="#xo-command"><code>&lt;xo-command&gt;</code></a></li><li data-find-for="xo-chart"><a href="#xo-chart"><code>&lt;xo-chart&gt;</code></a></li><li data-find-for="xo-range-slider"><a href="#xo-range-slider"><code>&lt;xo-range-slider&gt;</code></a></li><li data-find-for="xo-segmented"><a href="#xo-segmented"><code>&lt;xo-segmented&gt;</code></a></li><li data-find-for="xo-split-button"><a href="#xo-split-button"><code>&lt;xo-split-button&gt;</code></a></li><li data-find-for="xo-textarea"><a href="#xo-textarea"><code>&lt;xo-textarea&gt;</code></a></li><li data-find-for="xo-stat"><a href="#xo-stat"><code>&lt;xo-stat&gt;</code></a></li><li data-find-for="xo-otp"><a href="#xo-otp"><code>&lt;xo-otp&gt;</code></a></li><li data-find-for="xo-avatar"><a href="#xo-avatar"><code>&lt;xo-avatar&gt;</code></a></li><li data-find-for="xo-avatars"><a href="#xo-avatars"><code>&lt;xo-avatars&gt;</code></a></li><li data-find-for="xo-progress"><a href="#xo-progress"><code>&lt;xo-progress&gt;</code></a></li><li data-find-for="xo-spinner"><a href="#xo-spinner"><code>&lt;xo-spinner&gt;</code></a></li><li data-find-for="xo-steps"><a href="#xo-steps"><code>&lt;xo-steps&gt;</code></a></li><li data-find-for="xo-inline-edit"><a href="#xo-inline-edit"><code>&lt;xo-inline-edit&gt;</code></a></li><li data-find-for="xo-drawer"><a href="#xo-drawer"><code>&lt;xo-drawer&gt;</code></a></li><li data-find-for="xo-breadcrumb"><a href="#xo-breadcrumb"><code>&lt;xo-breadcrumb&gt;</code></a></li><li data-find-for="xo-alert"><a href="#xo-alert"><code>&lt;xo-alert&gt;</code></a></li><li data-find-for="xo-skeleton"><a href="#xo-skeleton"><code>&lt;xo-skeleton&gt;</code></a></li><li data-find-for="xo-tree"><a href="#xo-tree"><code>&lt;xo-tree&gt;</code></a></li><li data-find-for="xo-color"><a href="#xo-color"><code>&lt;xo-color&gt;</code></a></li><li data-find-for="xo-rating"><a href="#xo-rating"><code>&lt;xo-rating&gt;</code></a></li></ul>
+<p class="ref-group-intro">Every xo-* element: what it does, its attributes, its events and an example. <span class="ref-count">51 entries.</span></p>
+<ul class="ref-names" aria-label="Elements, all entries"><li data-find-for="xo-view"><a href="#xo-view"><code>&lt;xo-view&gt;</code></a></li><li data-find-for="xo-table"><a href="#xo-table"><code>&lt;xo-table&gt;</code></a></li><li data-find-for="xo-form"><a href="#xo-form"><code>&lt;xo-form&gt;</code></a></li><li data-find-for="xo-dialog"><a href="#xo-dialog"><code>&lt;xo-dialog&gt;</code></a></li><li data-find-for="xo-toast"><a href="#xo-toast"><code>&lt;xo-toast&gt;</code></a></li><li data-find-for="xo-router"><a href="#xo-router"><code>&lt;xo-router&gt;</code></a></li><li data-find-for="xo-pager"><a href="#xo-pager"><code>&lt;xo-pager&gt;</code></a></li><li data-find-for="xo-stack"><a href="#xo-stack"><code>&lt;xo-stack&gt;</code></a></li><li data-find-for="xo-row"><a href="#xo-row"><code>&lt;xo-row&gt;</code></a></li><li data-find-for="xo-grid"><a href="#xo-grid"><code>&lt;xo-grid&gt;</code></a></li><li data-find-for="xo-center"><a href="#xo-center"><code>&lt;xo-center&gt;</code></a></li><li data-find-for="xo-tabs"><a href="#xo-tabs"><code>&lt;xo-tabs&gt;</code></a></li><li data-find-for="xo-menu"><a href="#xo-menu"><code>&lt;xo-menu&gt;</code></a></li><li data-find-for="xo-combobox"><a href="#xo-combobox"><code>&lt;xo-combobox&gt;</code></a></li><li data-find-for="xo-tags"><a href="#xo-tags"><code>&lt;xo-tags&gt;</code></a></li><li data-find-for="xo-richtext"><a href="#xo-richtext"><code>&lt;xo-richtext&gt;</code></a></li><li data-find-for="xo-carousel"><a href="#xo-carousel"><code>&lt;xo-carousel&gt;</code></a></li><li data-find-for="xo-switch"><a href="#xo-switch"><code>&lt;xo-switch&gt;</code></a></li><li data-find-for="xo-date"><a href="#xo-date"><code>&lt;xo-date&gt;</code></a></li><li data-find-for="xo-time"><a href="#xo-time"><code>&lt;xo-time&gt;</code></a></li><li data-find-for="xo-slider"><a href="#xo-slider"><code>&lt;xo-slider&gt;</code></a></li><li data-find-for="xo-stepper"><a href="#xo-stepper"><code>&lt;xo-stepper&gt;</code></a></li><li data-find-for="xo-password"><a href="#xo-password"><code>&lt;xo-password&gt;</code></a></li><li data-find-for="xo-copy"><a href="#xo-copy"><code>&lt;xo-copy&gt;</code></a></li><li data-find-for="xo-image"><a href="#xo-image"><code>&lt;xo-image&gt;</code></a></li><li data-find-for="xo-theme-toggle"><a href="#xo-theme-toggle"><code>&lt;xo-theme-toggle&gt;</code></a></li><li data-find-for="xo-accordion"><a href="#xo-accordion"><code>&lt;xo-accordion&gt;</code></a></li><li data-find-for="xo-popover"><a href="#xo-popover"><code>&lt;xo-popover&gt;</code></a></li><li data-find-for="xo-consent"><a href="#xo-consent"><code>&lt;xo-consent&gt;</code></a></li><li data-find-for="xo-file"><a href="#xo-file"><code>&lt;xo-file&gt;</code></a></li><li data-find-for="xo-command"><a href="#xo-command"><code>&lt;xo-command&gt;</code></a></li><li data-find-for="xo-chart"><a href="#xo-chart"><code>&lt;xo-chart&gt;</code></a></li><li data-find-for="xo-range-slider"><a href="#xo-range-slider"><code>&lt;xo-range-slider&gt;</code></a></li><li data-find-for="xo-segmented"><a href="#xo-segmented"><code>&lt;xo-segmented&gt;</code></a></li><li data-find-for="xo-split-button"><a href="#xo-split-button"><code>&lt;xo-split-button&gt;</code></a></li><li data-find-for="xo-textarea"><a href="#xo-textarea"><code>&lt;xo-textarea&gt;</code></a></li><li data-find-for="xo-stat"><a href="#xo-stat"><code>&lt;xo-stat&gt;</code></a></li><li data-find-for="xo-otp"><a href="#xo-otp"><code>&lt;xo-otp&gt;</code></a></li><li data-find-for="xo-avatar"><a href="#xo-avatar"><code>&lt;xo-avatar&gt;</code></a></li><li data-find-for="xo-avatars"><a href="#xo-avatars"><code>&lt;xo-avatars&gt;</code></a></li><li data-find-for="xo-progress"><a href="#xo-progress"><code>&lt;xo-progress&gt;</code></a></li><li data-find-for="xo-spinner"><a href="#xo-spinner"><code>&lt;xo-spinner&gt;</code></a></li><li data-find-for="xo-steps"><a href="#xo-steps"><code>&lt;xo-steps&gt;</code></a></li><li data-find-for="xo-inline-edit"><a href="#xo-inline-edit"><code>&lt;xo-inline-edit&gt;</code></a></li><li data-find-for="xo-drawer"><a href="#xo-drawer"><code>&lt;xo-drawer&gt;</code></a></li><li data-find-for="xo-breadcrumb"><a href="#xo-breadcrumb"><code>&lt;xo-breadcrumb&gt;</code></a></li><li data-find-for="xo-alert"><a href="#xo-alert"><code>&lt;xo-alert&gt;</code></a></li><li data-find-for="xo-skeleton"><a href="#xo-skeleton"><code>&lt;xo-skeleton&gt;</code></a></li><li data-find-for="xo-tree"><a href="#xo-tree"><code>&lt;xo-tree&gt;</code></a></li><li data-find-for="xo-color"><a href="#xo-color"><code>&lt;xo-color&gt;</code></a></li><li data-find-for="xo-rating"><a href="#xo-rating"><code>&lt;xo-rating&gt;</code></a></li></ul>
 <section class="ref-entry" id="xo-view" data-find="xo-view declare a screen:  get  names the get operation to read. screen page read fetch load data list query live stream get live url-params p- name ">
 <h3><code>&lt;xo-view&gt;</code></h3>
 <p class="ref-meta"><span class="ref-chip pkg">@xoong/data</span> <code class="ref-import">import '@xoong/data/view';</code></p>
@@ -384,6 +386,92 @@
   &lt;<span class="tok-t">xo-pager</span> <span class="tok-a">page-size</span>=<span class="tok-s">"12"</span> <span class="tok-a">page-sizes</span>=<span class="tok-s">"12,24,48"</span>&gt;&lt;/<span class="tok-t">xo-pager</span>&gt;
 &lt;/<span class="tok-t">xo-view</span>&gt;</code></pre>
 <p class="ref-guide"><span class="ref-label">Guide</span> <a href="recipes.html">Recipes</a></p>
+</section>
+<section class="ref-entry" id="xo-stack" data-find="xo-stack layout, css only: the children one under the other, with a gap between them. layout column vertical stack spacing gap space between gap align">
+<h3><code>&lt;xo-stack&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/ui</span> <code class="ref-import">&lt;link rel="stylesheet" href="/@xoong/ui/src/xoong.css"&gt;</code></p>
+<p>Layout, CSS only: the children one under the other, with a gap between them. The page column of a form, a card, a section.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-stack">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>gap</code><span class="ref-inline-meta">choice, default 3</span></th><td class="ref-type">choice</td><td class="ref-default"><code>3</code></td><td>The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 3.<span class="ref-values">One of <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>.</span></td></tr>
+<tr><th scope="row"><code>align</code><span class="ref-inline-meta">choice, default stretch</span></th><td class="ref-type">choice</td><td class="ref-default"><code>stretch</code></td><td>Where the children sit across the width: start, center or end. Default: they fill the width.<span class="ref-values">One of <code>start</code>, <code>center</code>, <code>end</code>.</span></td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-stack</span> <span class="tok-a">gap</span>=<span class="tok-s">"2"</span>&gt;
+  &lt;<span class="tok-t">h2</span>&gt;Account&lt;/<span class="tok-t">h2</span>&gt;
+  &lt;<span class="tok-t">p</span>&gt;Children one under the other.&lt;/<span class="tok-t">p</span>&gt;
+  &lt;<span class="tok-t">button</span>&gt;Save&lt;/<span class="tok-t">button</span>&gt;
+&lt;/<span class="tok-t">xo-stack</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="layout.html">Layout</a></p>
+</section>
+<section class="ref-entry" id="xo-row" data-find="xo-row layout, css only: the children side by side, vertically centred. layout row horizontal inline flex align justify wrap grow toolbar gap wrap align justify">
+<h3><code>&lt;xo-row&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/ui</span> <code class="ref-import">&lt;link rel="stylesheet" href="/@xoong/ui/src/xoong.css"&gt;</code></p>
+<p>Layout, CSS only: the children side by side, vertically centred. A child with <code>grow</code> takes the free space (a search box beside a button).</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-row">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>gap</code><span class="ref-inline-meta">choice, default 2</span></th><td class="ref-type">choice</td><td class="ref-default"><code>2</code></td><td>The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 2.<span class="ref-values">One of <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>.</span></td></tr>
+<tr><th scope="row"><code>wrap</code><span class="ref-inline-meta">text</span></th><td class="ref-type">text</td><td class="ref-default"><span class="ref-dash" aria-label="none">&mdash;</span></td><td>Let the children go on a new line when they do not fit.</td></tr>
+<tr><th scope="row"><code>align</code><span class="ref-inline-meta">choice, default center</span></th><td class="ref-type">choice</td><td class="ref-default"><code>center</code></td><td>Vertical alignment: start, center (default), end, baseline or stretch.<span class="ref-values">One of <code>start</code>, <code>center</code>, <code>end</code>, <code>baseline</code>, <code>stretch</code>.</span></td></tr>
+<tr><th scope="row"><code>justify</code><span class="ref-inline-meta">choice, default start</span></th><td class="ref-type">choice</td><td class="ref-default"><code>start</code></td><td>Spread along the row: start (default), center, end or between.<span class="ref-values">One of <code>start</code>, <code>center</code>, <code>end</code>, <code>between</code>.</span></td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-row</span> <span class="tok-a">justify</span>=<span class="tok-s">"between"</span> <span class="tok-a">wrap</span>&gt;
+  &lt;<span class="tok-t">h2</span>&gt;Articles&lt;/<span class="tok-t">h2</span>&gt;
+  &lt;<span class="tok-t">xo-row</span> <span class="tok-a">gap</span>=<span class="tok-s">"1"</span>&gt;
+    &lt;<span class="tok-t">input</span> <span class="tok-a">type</span>=<span class="tok-s">"search"</span> <span class="tok-a">aria-label</span>=<span class="tok-s">"Search"</span> <span class="tok-a">grow</span>&gt;
+    &lt;<span class="tok-t">button</span>&gt;New&lt;/<span class="tok-t">button</span>&gt;
+  &lt;/<span class="tok-t">xo-row</span>&gt;
+&lt;/<span class="tok-t">xo-row</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="layout.html">Layout</a></p>
+</section>
+<section class="ref-entry" id="xo-grid" data-find="xo-grid layout, css only: equal columns. layout grid columns cards responsive tiles gap cols">
+<h3><code>&lt;xo-grid&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/ui</span> <code class="ref-import">&lt;link rel="stylesheet" href="/@xoong/ui/src/xoong.css"&gt;</code></p>
+<p>Layout, CSS only: equal columns. Without <code>cols</code> it fits as many columns as there is room for (--xo-grid-min, 16rem each); with <code>cols</code> the number is fixed, and one column on a phone.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-grid">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>gap</code><span class="ref-inline-meta">choice, default 3</span></th><td class="ref-type">choice</td><td class="ref-default"><code>3</code></td><td>The space between the children: 0 to 4, the --xo-space-N tokens (1 is 0.25rem, 2 is 0.5rem, 3 is 1rem, 4 is 1.5rem). Default 3.<span class="ref-values">One of <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>.</span></td></tr>
+<tr><th scope="row"><code>cols</code><span class="ref-inline-meta">choice, default as many as fit</span></th><td class="ref-type">choice</td><td class="ref-default"><code>as many as fit</code></td><td>The number of columns: 1 to 4.<span class="ref-values">One of <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>.</span></td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-grid</span> <span class="tok-a">cols</span>=<span class="tok-s">"3"</span>&gt;
+  &lt;<span class="tok-t">article</span>&gt;One&lt;/<span class="tok-t">article</span>&gt;
+  &lt;<span class="tok-t">article</span>&gt;Two&lt;/<span class="tok-t">article</span>&gt;
+  &lt;<span class="tok-t">article</span>&gt;Three&lt;/<span class="tok-t">article</span>&gt;
+&lt;/<span class="tok-t">xo-grid</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="layout.html">Layout</a></p>
+</section>
+<section class="ref-entry" id="xo-center" data-find="xo-center layout, css only: the page column: centred, a readable width (--xo-center-max, 64rem) and side padding. layout container page column centre center width max readable wrapper size">
+<h3><code>&lt;xo-center&gt;</code></h3>
+<p class="ref-meta"><span class="ref-chip pkg">@xoong/ui</span> <code class="ref-import">&lt;link rel="stylesheet" href="/@xoong/ui/src/xoong.css"&gt;</code></p>
+<p>Layout, CSS only: the page column: centred, a readable width (--xo-center-max, 64rem) and side padding.</p>
+<h4>Attributes</h4>
+<div class="table-wrap" tabindex="0"><table class="ref-table" aria-label="Attributes of xo-center">
+<thead><tr><th scope="col">Attribute</th><th scope="col" class="ref-col-type">Type</th><th scope="col" class="ref-col-default">Default</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><th scope="row"><code>size</code><span class="ref-inline-meta">choice, default 64rem</span></th><td class="ref-type">choice</td><td class="ref-default"><code>64rem</code></td><td>narrow (40rem, text and forms) or wide (80rem). Default 64rem.<span class="ref-values">One of <code>narrow</code>, <code>wide</code>.</span></td></tr>
+</tbody>
+</table></div>
+
+<h4>Example</h4>
+<pre data-lang="html" tabindex="0"><code>&lt;<span class="tok-t">xo-center</span> <span class="tok-a">size</span>=<span class="tok-s">"narrow"</span>&gt;
+  &lt;<span class="tok-t">h1</span>&gt;A page&lt;/<span class="tok-t">h1</span>&gt;
+  &lt;<span class="tok-t">p</span>&gt;A readable column, centred.&lt;/<span class="tok-t">p</span>&gt;
+&lt;/<span class="tok-t">xo-center</span>&gt;</code></pre>
+<p class="ref-guide"><span class="ref-label">Guide</span> <a href="layout.html">Layout</a></p>
 </section>
 <section class="ref-entry" id="xo-tabs" data-find="xo-tabs accessible tabs from the sections that have xo-tab. tab panel section value label">
 <h3><code>&lt;xo-tabs&gt;</code></h3>

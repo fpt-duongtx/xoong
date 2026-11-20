@@ -98,6 +98,9 @@ xoong.hints.json: `{ "idNames": ["id","gid"], "schemas": { "SessionResponse": { 
   <xo-toast></xo-toast> shows errors and xo-notice; detail.action is {label, run}. Style: xoong.css. Layout: `<body class="xo-admin">` + header, nav, main.
   Attributes a template does not take() land on the element it becomes; class and style merge.
 
+## Layout (CSS only, in xoong.css; no utility classes)
+`<xo-center>` page column (`size="narrow|wide"`); `<xo-stack gap="0..4" align="start|center|end">` column; `<xo-row gap wrap align="start|center|end|baseline|stretch" justify="start|center|end|between">` line, a child with `grow` takes the free space; `<xo-grid cols="1..4">` equal columns (without `cols`: as many as fit).
+
 ## Routing (admin apps; `import { router } from '@xoong/ui'`; public pages stay one HTML file each)
     <xo-router base="/admin" base-links>
       <template xo-layout="shell"><nav><a href="/users">Users</a></nav><main xo-outlet></main></template>

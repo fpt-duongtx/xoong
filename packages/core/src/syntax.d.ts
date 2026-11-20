@@ -8,6 +8,7 @@ export const XO_ELEMENTS: string[];
 export const XO_UI_ATTRIBUTES: string[];
 /** Elements that come with @xoong/ui. */
 export const XO_UI_ELEMENTS: string[];
+export const XO_LAYOUT_ELEMENTS: string[];
 /** Attributes of @xoong/controls and @xoong/richtext. */
 export const XO_CONTROL_ATTRIBUTES: string[];
 /** Elements of @xoong/controls and @xoong/richtext. */
