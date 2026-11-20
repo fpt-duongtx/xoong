@@ -66,6 +66,7 @@ class XoDrawer extends XoElement {
     if (foot.childElementCount) d.append(foot);
     this.append(d);
     this.#dialog = d;
+    d.addEventListener('close', () => { const f = this.#from; this.#from = null; if (f?.isConnected && (!document.activeElement || document.activeElement === document.body || d.contains(document.activeElement))) f.focus(); });
     this.#paint();
   }
 
@@ -79,9 +80,12 @@ class XoDrawer extends XoElement {
   }
 
   get dialog() { return this.#dialog; }
-  show() {
+  /** @type {HTMLElement | null} */ #from = null;
+  /** @param {Element | null} [from] what to give the focus back to when it closes (default: the focused element; Safari does not focus a button on click) */
+  show(from) {
     const d = this.#dialog;
     if (!d || d.open) return;
+    this.#from = from instanceof HTMLElement ? from : document.activeElement instanceof HTMLElement ? document.activeElement : null;
     if (d.showModal) d.showModal(); else d.setAttribute('open', ''); // DOMs without <dialog> support (tests)
   }
   /** Open it and wait: resolves with the `returnValue` when it closes ('' for Escape and the Close button). */
@@ -102,7 +106,7 @@ define('xo-drawer', XoDrawer);
 document.addEventListener('click', (event) => {
   const target = /** @type {Element} */ (event.target);
   const opener = target.closest?.('[xo-open]');
-  if (opener) { try { const d = document.querySelector(opener.getAttribute('xo-open') ?? ''); if (d instanceof XoDrawer) d.show(); } catch { /* not a selector: <xo-dialog> reports it */ } }
+  if (opener) { try { const d = document.querySelector(opener.getAttribute('xo-open') ?? ''); if (d instanceof XoDrawer) d.show(opener); } catch { /* not a selector: <xo-dialog> reports it */ } }
   const closer = target.closest?.('[xo-close]');
   const drawer = closer?.closest('xo-drawer');
   if (closer && drawer instanceof XoDrawer) drawer.close(closer.getAttribute('value') ?? undefined);

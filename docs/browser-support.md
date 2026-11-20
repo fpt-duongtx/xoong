@@ -19,3 +19,8 @@ Tested: **Chromium, Firefox and WebKit** through Playwright, in CI (`npm run tes
 controls, build under a strict CSP, prerendering and the admin example end to end). WebKit is Playwright's build, a good proxy for Safari but not Safari itself;
 Chrome and Edge share Chromium's engine. Older versions than the latest two are not tested. A feature that needs a newer browser than this matrix must have a fallback
 and an entry here.
+
+The whole browser list (139 tests in 18 files, layout elements included) passes in Chromium and WebKit. Engine differences it found, and how they are handled: Safari does not focus a button on click, so
+`<xo-drawer>` gives the focus back to the element that opened it (not only to `document.activeElement`) and `<xo-popover>` (so `<xo-color>`) closes on Escape pressed anywhere on the page, not only
+inside the panel; an empty `<xo-richtext>` starts in a paragraph; and WebKit joins typing and the next format command into one undo step, which the undo test allows. The Firefox build of Playwright 1.65
+(firefox-1572) did not start on macOS 27 ("Could not find profile folder"): Firefox runs in CI only until that is solved.

@@ -39,7 +39,9 @@ class XoPopover extends XoElement {
     this.addEventListener('focusout', (e) => { if (this.open && e.relatedTarget && !this.contains(/** @type {Node} */ (e.relatedTarget)) && e.relatedTarget !== this.#trigger) this.close(); });
     this.#paint();
   }
-  disconnected() { this.#trigger?.removeEventListener('click', this.#onClick); document.removeEventListener('pointerdown', this.#onDocument); this.#stop(); }
+  // Escape while the focus is outside the panel: Safari does not focus a button on click, so after a click in the panel the focus is on the page and the panel's own listener never hears it
+  #onEscape = (/** @type {KeyboardEvent} */ e) => { if (e.key === 'Escape' && !e.isComposing && e.keyCode !== 229 && !e.defaultPrevented) this.close(true); };
+  disconnected() { this.#trigger?.removeEventListener('click', this.#onClick); document.removeEventListener('pointerdown', this.#onDocument); document.removeEventListener('keydown', this.#onEscape); this.#stop(); }
   #stop = () => {};
   attributeChangedCallback(attr, old, value) { super.attributeChangedCallback(attr, old, value); this.#paint(); }
 
@@ -58,12 +60,14 @@ class XoPopover extends XoElement {
       this.#stop();
       this.#stop = showLayer(this, this.#trigger ?? this);
       document.addEventListener('pointerdown', this.#onDocument);
+      document.addEventListener('keydown', this.#onEscape);
       this.dispatchEvent(new Event('xo-popover-open', { bubbles: true }));
       /** @type {HTMLElement | null} */ (this.querySelector('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))?.focus();
     } else {
       this.#stop();
       hideLayer(this);
       document.removeEventListener('pointerdown', this.#onDocument);
+      document.removeEventListener('keydown', this.#onEscape);
       this.dispatchEvent(new Event('xo-popover-close', { bubbles: true }));
     }
     this.#wasOpen = this.open;

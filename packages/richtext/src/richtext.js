@@ -335,7 +335,14 @@ class XoRichtext extends XoControl {
   // ---- events ------------------------------------------------------------------------------------------------------------
 
   #wire(/** @type {HTMLElement} */ box, /** @type {HTMLElement} */ toolbar, /** @type {HTMLElement} */ linkBox, /** @type {HTMLElement} */ editor) {
-    editor.addEventListener('focus', () => { exec('defaultParagraphSeparator', 'p'); exec('styleWithCSS', 'false'); });
+    editor.addEventListener('focus', () => {
+      exec('defaultParagraphSeparator', 'p'); exec('styleWithCSS', 'false');
+      if (!editor.firstElementChild && !editor.textContent) { // empty: start in a paragraph, so the first typing is a block like every later one (WebKit types bare text otherwise, and joins it with the next format into one undo step)
+        editor.innerHTML = '<p><br></p>';
+        const range = document.createRange(); range.setStart(/** @type {Node} */ (editor.firstChild), 0); range.collapse(true);
+        const sel = getSelection(); sel?.removeAllRanges(); sel?.addRange(range);
+      }
+    });
     // the editor's own input and change events are not the control's: only userInput speaks for the control
     editor.addEventListener('input', (event) => { event.stopPropagation(); this.#commit(); });
     editor.addEventListener('change', (event) => event.stopPropagation());
