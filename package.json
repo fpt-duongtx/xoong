@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^5.1.0",
-    "axe-core": "^4.14.0",
+    "axe-core": "^4.14.1",
     "esbuild": "0.28.2",
     "happy-dom": "^21.0.4",
     "oxlint": "^1.93.0",
